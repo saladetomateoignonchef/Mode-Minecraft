@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/rpg7_slide",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_gold",
+    "particle": "modeminecraft:item/gun_palette_gold"
+  }
+}

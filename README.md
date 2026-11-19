@@ -60,6 +60,9 @@ Toutes les armes à feu, munitions et accessoires se fabriquent à la **table d'
 - Les touches B et R se changent dans *Options > Commandes > Mode Minecraft*. Munitions infinies en créatif.
 
 **Mécaniques :** tir à la tête x1,5, les balles cassent le verre, recul de la caméra,
+**culasse animée au tir** (pistolets : toute la culasse recule ; fusils : culasse et levier d'armement ;
+fusils à verrou : le verrou est manœuvré après le tir ; fusils à pompe : la pompe recule puis revient ;
+minigun : les canons tournent),
 modèles 3D texturés en main (métal brossé, bois veiné, camouflages), icônes 32x32 dans l'inventaire,
 pose « en joue » à la 3e personne,
 message de mort « X a été abattu par Y ».

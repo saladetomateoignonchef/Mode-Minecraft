@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/spas12_slide",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_default",
+    "particle": "modeminecraft:item/gun_palette_default"
+  }
+}

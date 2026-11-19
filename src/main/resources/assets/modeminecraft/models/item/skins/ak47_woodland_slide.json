@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/ak47_slide",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_woodland",
+    "particle": "modeminecraft:item/gun_palette_woodland"
+  }
+}

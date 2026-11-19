@@ -9,6 +9,7 @@ Utilisation (depuis la racine du projet, APRÈS tools/generate_textures.py) :
 Principe :
 - La forme 3D de chaque arme est décrite dans tools/gun_designs.py (canon vers +X, haut +Y, centrée sur Z = 8).
 - Le chargeur est séparé du corps : quand on monte un chargeur (24, 36, camembert), celui d'origine est masqué.
+- La pièce mobile (culasse, verrou, pompe, canons du minigun) est aussi séparée : le jeu l'anime au tir.
 - Les points de fixation des accessoires sont écrits dans assets/modeminecraft/gun_mounts.json (lu par le jeu).
 - Les icônes 2D sont calculées automatiquement à partir du modèle 3D vu de profil, pour chaque skin.
 - Chaque skin = une palette de couleurs (SKINS). Les camouflages utilisent plusieurs couleurs par case.
@@ -323,12 +324,16 @@ def main():
     for name, design in sorted(GUNS.items()):
         gun = design()
         mounts[name] = {"mounts": gun.mounts, "mag_needs_ammo": gun.flags.get("mag_needs_ammo", False)}
+        if gun.slide:
+            mounts[name]["slide"] = gun.slide_info
         write(os.path.join(models, f"{name}_3d.json"), {"parent": f"{MOD}:item/gun_3d", "elements": gun.body})
         write(os.path.join(models, f"{name}_mag.json"), {"parent": f"{MOD}:item/parts/part_base", "elements": gun.mag})
+        # Pièce mobile (culasse, pompe, canons...) : animée par le jeu au moment du tir
+        write(os.path.join(models, f"{name}_slide.json"), {"parent": f"{MOD}:item/parts/part_base", "elements": gun.slide})
         for skin in SKINS:
             palette = f"{MOD}:item/gun_palette_{skin}"
             base = f"{MOD}:item/skins/{name}_{skin}"
-            icon_img = render_icon(gun.body + gun.mag, skin)
+            icon_img = render_icon(gun.body + gun.slide + gun.mag, skin)
             if skin == "default":
                 icon_img.save(os.path.join(textures, f"{name}.png"))
                 icon = f"{MOD}:item/{name}"
@@ -339,6 +344,8 @@ def main():
                   {"parent": f"{MOD}:item/{name}_3d", "textures": {"p": palette, "particle": palette}})
             write(os.path.join(models, "skins", f"{name}_{skin}_mag.json"),
                   {"parent": f"{MOD}:item/{name}_mag", "textures": {"p": palette, "particle": palette}})
+            write(os.path.join(models, "skins", f"{name}_{skin}_slide.json"),
+                  {"parent": f"{MOD}:item/{name}_slide", "textures": {"p": palette, "particle": palette}})
             write(os.path.join(models, "skins", f"{name}_{skin}_icon.json"),
                   {"parent": "minecraft:item/generated", "textures": {"layer0": icon}})
             write(os.path.join(models, "skins", f"{name}_{skin}.json"), separate(base))

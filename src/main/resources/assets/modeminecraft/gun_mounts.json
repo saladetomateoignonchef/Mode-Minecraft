@@ -22,7 +22,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.5
+    }
   },
   "ak47": {
     "mounts": {
@@ -47,7 +51,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 2.0
+    }
   },
   "ak74": {
     "mounts": {
@@ -72,7 +80,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.6
+    }
   },
   "an94": {
     "mounts": {
@@ -97,7 +109,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.6
+    }
   },
   "at4": {
     "mounts": {
@@ -137,7 +153,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.4
+    }
   },
   "awm": {
     "mounts": {
@@ -162,7 +182,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "bolt",
+      "travel": 2.6
+    }
   },
   "barrett_m82": {
     "mounts": {
@@ -187,7 +211,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.6
+    }
   },
   "benelli_m4": {
     "mounts": {
@@ -207,7 +235,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.4
+    }
   },
   "beretta_m9": {
     "mounts": {
@@ -227,7 +259,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 2.3760000000000003
+    }
   },
   "colt_m1911": {
     "mounts": {
@@ -247,7 +283,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 2.31
+    }
   },
   "colt_python": {
     "mounts": {
@@ -282,7 +322,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 2.53
+    }
   },
   "dragunov": {
     "mounts": {
@@ -307,7 +351,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.6
+    }
   },
   "famas": {
     "mounts": {
@@ -332,7 +380,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.4
+    }
   },
   "g3": {
     "mounts": {
@@ -357,7 +409,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.6
+    }
   },
   "g36": {
     "mounts": {
@@ -382,7 +438,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.6
+    }
   },
   "glock17": {
     "mounts": {
@@ -402,7 +462,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 2.2
+    }
   },
   "hk416": {
     "mounts": {
@@ -427,7 +491,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.6
+    }
   },
   "kar98k": {
     "mounts": {
@@ -447,7 +515,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "bolt",
+      "travel": 2.6
+    }
   },
   "m14_ebr": {
     "mounts": {
@@ -472,7 +544,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.6
+    }
   },
   "m16a4": {
     "mounts": {
@@ -497,7 +573,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.6
+    }
   },
   "m249": {
     "mounts": {
@@ -522,7 +602,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.6
+    }
   },
   "m32_mgl": {
     "mounts": {
@@ -567,7 +651,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.6
+    }
   },
   "m60": {
     "mounts": {
@@ -592,7 +680,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.6
+    }
   },
   "m79": {
     "mounts": {
@@ -627,7 +719,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.98
+    }
   },
   "minigun": {
     "mounts": {
@@ -642,7 +738,15 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "spin",
+      "travel": 0.0,
+      "pivot": [
+        8.3,
+        8
+      ]
+    }
   },
   "mosin_nagant": {
     "mounts": {
@@ -662,7 +766,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "bolt",
+      "travel": 2.6
+    }
   },
   "mp5": {
     "mounts": {
@@ -687,7 +795,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.6
+    }
   },
   "mp7": {
     "mounts": {
@@ -712,7 +824,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.2
+    }
   },
   "p90": {
     "mounts": {
@@ -757,7 +873,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.6
+    }
   },
   "ppsh41": {
     "mounts": {
@@ -782,7 +902,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.6
+    }
   },
   "remington_870": {
     "mounts": {
@@ -802,7 +926,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "pump",
+      "travel": 2.6
+    }
   },
   "rpg7": {
     "mounts": {
@@ -852,7 +980,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.6
+    }
   },
   "spas12": {
     "mounts": {
@@ -872,7 +1004,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "pump",
+      "travel": 2.6
+    }
   },
   "tavor": {
     "mounts": {
@@ -897,7 +1033,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.4
+    }
   },
   "thompson": {
     "mounts": {
@@ -922,7 +1062,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.6
+    }
   },
   "uzi": {
     "mounts": {
@@ -947,7 +1091,11 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 2.0
+    }
   },
   "vector": {
     "mounts": {
@@ -972,6 +1120,10 @@
         8
       ]
     },
-    "mag_needs_ammo": false
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.2
+    }
   }
 }

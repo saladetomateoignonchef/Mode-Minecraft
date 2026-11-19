@@ -229,6 +229,7 @@ public class GunItem extends Item {
         boolean aiming = player.isCrouching();
 
         if (level.isClientSide) {
+            GunAnimations.recordShot(player); // la culasse recule (animation)
             // Recul : la caméra remonte un peu (uniquement côté client, le serveur suit)
             float recoil = aiming ? gun.recoil() * 0.6f : gun.recoil();
             player.setXRot(Mth.clamp(player.getXRot() - recoil, -90f, 90f));

@@ -13,6 +13,8 @@ Couleurs (clés de la palette) :
   t / T / u = kaki   g = or   r = rubis   s = verre
 """
 
+from contextlib import contextmanager
+
 KEYS = ["k", "m", "l", "w", "W", "r", "d", "s", "t", "T", "u", "g", "G"]
 
 
@@ -37,12 +39,36 @@ class Gun:
     """Une arme en construction : corps, chargeur (séparé) et points de fixation."""
 
     def __init__(self):
-        self.body, self.mag = [], []
+        self.body, self.mag, self.slide = [], [], []
         self.mounts = {}
         self.flags = {}
+        self.slide_info = None
+        self._moving = False
 
     def add(self, frm, to, c, rot=None, mag=False):
-        (self.mag if mag else self.body).append(box(frm, to, c, rot))
+        target = self.mag if mag else (self.slide if self._moving else self.body)
+        target.append(box(frm, to, c, rot))
+
+    @contextmanager
+    def moving(self, style, travel=0.0, pivot=None):
+        """Les pavés ajoutés dans ce bloc forment la pièce mobile (culasse, pompe, canons...).
+        style : "fast" (aller-retour rapide), "bolt" (verrou manuel), "pump" (pompe), "spin" (rotation)."""
+        self.slide_info = {"style": style, "travel": travel}
+        if pivot:
+            self.slide_info["pivot"] = pivot
+        self._moving = True
+        try:
+            yield self
+        finally:
+            self._moving = False
+
+    def bolt(self, x, y0, y1, face, travel=1.6, style="fast", handle=True):
+        """Culasse visible dans la fenêtre d'éjection (+ levier d'armement) qui recule au tir."""
+        with self.moving(style, travel):
+            self.add([x, y0, 8 + face + 0.06], [x + 1.8, y1, 8 + face + 0.12], "l")
+            if handle:
+                ym = (y0 + y1) / 2
+                self.add([x + 1.5, ym - 0.25, 8 + face + 0.12], [x + 2.0, ym + 0.25, 8 + face + 0.7], "k")
 
     def zb(self, x0, y0, x1, y1, hw, c, rot=None, mag=False):
         """Pavé centré sur Z = 8, de demi-largeur hw."""
@@ -177,22 +203,24 @@ class Gun:
 def pistol(slide_c="k", frame_c="k", grip_c="k", x0=3.0, x1=13.5, sy0=8.0, sy1=10.4, grip_len=5.0,
            top=None, open_slide=False, accent=True):
     g = Gun()
-    g.zb(x0, sy0, x1, sy1, 0.95, slide_c)                       # culasse
-    g.zb(x0, sy1, x1, sy1 + 0.4, 0.75, top or slide_c)          # dessus
-    g.zb(x0, sy0 - 1, x1 - 0.6, sy0, 0.9, frame_c)              # carcasse
-    for i in range(4):                                          # stries de préhension
-        g.side_detail(x0 + 0.5 + i * 0.45, sy0 + 0.4, x0 + 0.7 + i * 0.45, sy1 - 0.4, 0.95, both=True)
-    g.side_detail(x0 + 5, sy1 - 1.0, x0 + 7, sy1 - 0.15, 0.95)  # fenêtre d'éjection
-    if open_slide:  # Beretta : canon visible sur le dessus
-        g.zb(x1 - 4.5, sy1 - 0.2, x1, sy1 + 0.55, 0.5, "G")
     by = (sy0 + sy1) / 2
-    g.zb(x1 - 0.05, by - 0.45, x1 + 0.05, by + 0.45, 0.45, "d")
+    g.zb(x0 + 2, by - 0.45, x1 - 0.2, by + 0.45, 0.45, "G")    # canon (visible quand la culasse recule)
+    g.zb(x0, sy0 - 1, x1 - 0.6, sy0, 0.9, frame_c)              # carcasse
+    with g.moving("fast", travel=(x1 - x0) * 0.22):             # la culasse entière recule au tir
+        g.zb(x0, sy0, x1, sy1, 0.95, slide_c)                   # culasse
+        g.zb(x0, sy1, x1, sy1 + 0.4, 0.75, top or slide_c)      # dessus
+        for i in range(4):                                      # stries de préhension
+            g.side_detail(x0 + 0.5 + i * 0.45, sy0 + 0.4, x0 + 0.7 + i * 0.45, sy1 - 0.4, 0.95, both=True)
+        g.side_detail(x0 + 5, sy1 - 1.0, x0 + 7, sy1 - 0.15, 0.95)  # fenêtre d'éjection
+        if open_slide:  # Beretta : canon visible sur le dessus
+            g.zb(x1 - 4.5, sy1 - 0.2, x1, sy1 + 0.55, 0.5, "G")
+        g.zb(x1 - 0.05, by - 0.45, x1 + 0.05, by + 0.45, 0.45, "d")
+        g.post(x1 - 0.8, sy1 + 0.4, 0.5)
+        g.post(x0 + 0.3, sy1 + 0.4, 0.5, w=0.8)
     g.mount("muzzle", x1 + 0.05, by)
     gx = x0 + 0.1
     g.grip(gx, sy0 - 1, grip_c, length=grip_len, w=2.8)
     g.trigger(x0 + 3.0, sy0 - 1)
-    g.post(x1 - 0.8, sy1 + 0.4, 0.5)
-    g.post(x0 + 0.3, sy1 + 0.4, 0.5, w=0.8)
     if accent:
         g.zb(x0 + 6.5, sy0 - 0.8, x0 + 7.5, sy0 - 0.2, 1.05, "r")
     g.mount("sight", (x0 + x1) / 2, sy1 + 0.4)
@@ -205,8 +233,9 @@ def rifle(stock="polymer", stock_c="k", rear=-3.0, x0=3.0, x1=10.0, x2=14.5, x3=
           rc="m", ry0=6.4, ry1=9.4, hc="k", hy0=6.8, hy1=9.2, bore=8.0, br=0.4, bc="k",
           grip_x=4.0, grip_c="k", mag=("straight", 8.5, 4.0, "m"), muzzle="flash",
           fsight=True, rsight=False, rail=True, carry=None, gas=False, accent=True, bipod=False,
-          scope=None, upper=None):
-    """Fusil "classique" : crosse | boîtier | garde-main | canon."""
+          scope=None, upper=None, action="fast"):
+    """Fusil "classique" : crosse | boîtier | garde-main | canon.
+    action = "fast" (semi-auto / automatique) ou "bolt" (fusil à verrou : levier manœuvré après le tir)."""
     g = Gun()
     g.stock(stock, rear, x0, ry0, ry1, stock_c, bore)
     g.zb(x0, ry0, x1, ry1, 0.9, rc)                              # boîtier
@@ -214,6 +243,10 @@ def rifle(stock="polymer", stock_c="k", rear=-3.0, x0=3.0, x1=10.0, x2=14.5, x3=
         g.zb(x0, (ry0 + ry1) / 2 + 0.3, x1, ry1 + 0.05, 0.92, upper)
     g.zb(x1, hy0, x2, hy1, 0.85, hc)                             # garde-main
     g.side_detail(x0 + 3.2, (ry0 + ry1) / 2 - 0.1, x0 + 5.4, ry1 - 0.5, 0.9)   # fenêtre d'éjection
+    if action == "bolt":
+        g.bolt(x0 + 3.3, (ry0 + ry1) / 2, ry1 - 0.6, 0.9, travel=2.6, style="bolt")
+    else:
+        g.bolt(x0 + 3.3, (ry0 + ry1) / 2, ry1 - 0.6, 0.9, travel=1.6)
     for i in range(int((x2 - x1 - 1) / 1.3)):                    # fentes de refroidissement
         vx = x1 + 0.7 + i * 1.3
         g.side_detail(vx, (hy0 + hy1) / 2 - 0.3, vx + 0.6, (hy0 + hy1) / 2 + 0.3, 0.85, both=True)
@@ -256,6 +289,8 @@ def bullpup(body_c="k", rear=-3.0, x1=11.0, x2=14.5, x3=18.5, ry0=5.5, ry1=9.3, 
     g.zb(rear, ry0, x1, ry1, 0.95, body_c)
     g.zb(rear - 0.3, ry0 - 0.3, rear, ry1, 1.0, "k")
     g.side_detail(1.0, (ry0 + ry1) / 2, 3.2, ry1 - 0.6, 0.95)  # fenêtre d'éjection
+    if not top_mag:
+        g.bolt(1.1, (ry0 + ry1) / 2 + 0.1, ry1 - 0.7, 0.95, travel=1.4)
     g.zb(x1, ry0 + 1.2, x2, ry1 - 0.4, 0.85, hc or body_c)
     g.barrel(x2, x3, bore, 0.4, "k")
     g.muzzle_device(x3, bore, 0.4, "flash")
@@ -288,7 +323,10 @@ def shotgun(stock="wood", stock_c="W", pump_c="W", rc="k", x0=3.0, x1=8.0, x3=19
     if mag_tube:
         g.zb(x1, 7.4, x3 - 2, 8.5, 0.5, "l")
     if pump:
-        g.zb(pump[0], 6.9, pump[1], 8.9, 0.85, pump_c)
+        with g.moving("pump", travel=2.6):
+            g.zb(pump[0], 6.9, pump[1], 8.9, 0.85, pump_c)
+    else:
+        g.bolt(x0 + 1.5, 8.2, 9.4, 1.0, travel=1.4)
     if shield:  # SPAS-12 : protection perforée sur le canon
         g.zb(x1 + 1, 9.0, x3 - 3, 10.3, 0.75, "k")
         for i in range(5):
@@ -366,6 +404,8 @@ def design_uzi():
     g.trigger(8.4, 6.5)
     g.add([3, 7.2, 8.95], [9, 8.4, 9.25], "k")        # crosse repliée sur le côté
     g.post(11.6, 9.9, 0.7)
+    with g.moving("fast", travel=2.0):                # levier d'armement sur le dessus
+        g.zb(9, 9.9, 10, 10.5, 0.35, "k")
     g.zb(4, 7.2, 5.5, 7.8, 1.0, "r")
     g.mount("sight", 7, 9.9)
     g.mount("grip", 11, 6.5)
@@ -389,6 +429,7 @@ def design_mp7():
     g.zb(5.0, 2.0, 6.6, 2.4, 0.6, "k", mag=True)
     g.trigger(6.8, 6.6)
     g.zb(9.5, 3.8, 10.6, 6.6, 0.6, "k")               # poignée avant repliable
+    g.bolt(6, 7.6, 8.8, 0.9, travel=1.2)
     g.stock("tube", -1, 3, 6.6, 9.4, "k", 8.2)
     g.zb(5, 7.2, 6.5, 7.8, 0.95, "r")
     g.mount("grip", 9.5, 6.6)
@@ -415,6 +456,7 @@ def design_vector():
     g.trigger(6.3, 5.5)
     g.magazine("straight", 9.5, 4.5, 3.5, "k")
     g.stock("skeleton", -2.5, 2, 5.8, 9.4, "k", 8.0)
+    g.bolt(5, 7.5, 8.8, 0.95, travel=1.2)
     g.zb(3, 6.5, 4.5, 7.1, 1.0, "r")
     g.mount("grip", 12.5, 7.8)
     return g
@@ -494,7 +536,7 @@ def design_barrett_m82():
 def design_awm():
     return rifle(stock="thumbhole", stock_c="T", rear=-4, x0=3, x1=10, x2=11, x3=25, rc="T", ry0=6.2,
                  ry1=9.0, hc="T", hy0=6.6, hy1=8.6, bore=8.0, br=0.45, grip_c="T", mag=("straight", 8.5, 1.8, "k"),
-                 muzzle="brake", fsight=False, rail=True, bipod=True, scope=(2.0, 10.5))
+                 muzzle="brake", fsight=False, rail=True, bipod=True, scope=(2.0, 10.5), action="bolt")
 
 
 def design_dragunov():
@@ -510,8 +552,9 @@ def design_mosin_nagant():
     g.zb(3, 6.6, 20, 8.0, 0.75, "W")                  # fût en bois jusqu'à l'avant
     g.zb(3, 8.0, 9, 9.0, 0.7, "m")                    # boîtier
     g.barrel(9, 24, 8.4, 0.4)
-    g.zb(5.5, 8.6, 6.0, 8.9, 1.6, "m")                # levier de culasse
-    g.zb(5.5, 8.3, 6.4, 9.0, 0.5, "m", rot=("z", 0, [6, 8.6, 8]))
+    with g.moving("bolt", travel=2.6):                # levier de verrou
+        g.zb(5.5, 8.6, 6.0, 8.9, 1.6, "m")
+        g.zb(5.5, 8.3, 6.4, 9.0, 0.5, "m")
     g.post(23.0, 8.8, 1.0)
     g.post(9.5, 9.0, 0.6, w=0.8)
     g.trigger(4.2, 6.6)
@@ -528,7 +571,8 @@ def design_kar98k():
     g.zb(3, 6.6, 19, 8.0, 0.75, "w")
     g.zb(3, 8.0, 9, 9.0, 0.7, "k")
     g.barrel(9, 23.5, 8.4, 0.4)
-    g.zb(5.0, 7.8, 5.5, 8.6, 1.6, "k", rot=("x", 22.5, [5.2, 8.6, 8.8]))  # levier coudé
+    with g.moving("bolt", travel=2.6):                # levier coudé
+        g.zb(5.0, 7.8, 5.5, 8.6, 1.6, "k", rot=("x", 22.5, [5.2, 8.6, 8.8]))
     g.post(22.7, 8.8, 1.0)
     g.post(10, 9.0, 0.6, w=0.8)
     g.trigger(4.2, 6.6)
@@ -561,6 +605,7 @@ def design_aa12():
     g.zb(-3, 6.4, 3, 9.6, 0.85, "k")                  # crosse droite
     g.barrel(13, 18, 8.8, 0.55)
     g.carry_handle(4, 12, 10.0, h=1.0)
+    g.bolt(7, 8.2, 9.4, 1.0, travel=1.5)
     g.grip(4.2, 6.6, "k")
     g.trigger(6.0, 6.6)
     g.magazine("drum", 9.5, 6.6, 5.0, "k")
@@ -607,10 +652,11 @@ def design_minigun():
     g = Gun()
     g.zb(0, 6.0, 8, 10.6, 1.5, "k")                   # moteur / boîtier
     g.zb(8, 6.4, 9, 10.2, 1.7, "m")                   # plateau avant
-    for y, z in ((7.3, 7.3), (7.3, 8.7), (8.3, 6.6), (8.3, 9.4), (9.3, 7.3), (9.3, 8.7)):
-        g.add([9, y - 0.3, z - 0.3], [21, y + 0.3, z + 0.3], "k")     # six canons
-    g.zb(14.5, 6.8, 15.2, 9.8, 1.5, "m")              # collier
-    g.zb(20.4, 6.8, 21.0, 9.8, 1.5, "m")
+    with g.moving("spin", pivot=[8.3, 8]):            # six canons qui tournent pendant le tir
+        for y, z in ((7.3, 7.3), (7.3, 8.7), (8.3, 6.6), (8.3, 9.4), (9.3, 7.3), (9.3, 8.7)):
+            g.add([9, y - 0.3, z - 0.3], [21, y + 0.3, z + 0.3], "k")
+        g.zb(14.5, 6.8, 15.2, 9.8, 1.5, "m")          # colliers
+        g.zb(20.4, 6.8, 21.0, 9.8, 1.5, "m")
     g.zb(1, 10.6, 2, 12.6, 0.4, "k")                  # poignées
     g.zb(5, 10.6, 6, 12.6, 0.4, "k")
     g.zb(1, 12.6, 6, 13.2, 0.45, "k")
@@ -687,6 +733,7 @@ def design_ak47():
     g.post(16.5, 8.2, 1.6, w=0.7)
     g.post(10.2, 9.4, 0.5, w=0.6)
     g.zb(4, 7, 5, 7.5, 1.05, "r")
+    g.bolt(6.5, 7.6, 8.6, 0.9, travel=2.0)            # levier d'armement de l'AK
     g.zb(8, 3, 10, 6.5, 0.6, "m", rot=("z", 22.5, [9, 6.5, 8]), mag=True)
     g.zb(9.3, 1, 11.1, 3.6, 0.6, "m", rot=("z", 45, [10.2, 3.6, 8]), mag=True)
     g.mount("sight", 6.5, 9.6)
@@ -707,6 +754,7 @@ def design_famas():
     g.zb(-3, 5.5, 10, 9.5, 0.9, "k")
     g.zb(-3.3, 5, -3, 9.7, 0.85, "m")
     g.zb(-2, 9.5, 0, 10, 0.6, "m")
+    g.bolt(1.0, 7.6, 8.8, 0.9, travel=1.4)
     g.carry_handle(0, 12, 9.5, h=2.0)
     g.zb(10, 6.5, 14, 9.2, 0.85, "m")
     g.barrel(14, 18, 7.8, 0.4)

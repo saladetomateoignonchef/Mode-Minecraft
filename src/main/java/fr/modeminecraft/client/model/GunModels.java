@@ -4,6 +4,7 @@ import com.mojang.math.Transformation;
 import fr.modeminecraft.ModeMinecraft;
 import fr.modeminecraft.item.gun.AttachmentItem;
 import fr.modeminecraft.item.gun.AttachmentSlot;
+import fr.modeminecraft.item.gun.GunAnimations;
 import fr.modeminecraft.item.gun.GunAttachments;
 import fr.modeminecraft.item.gun.GunItem;
 import fr.modeminecraft.item.gun.GunSkin;
@@ -48,7 +49,11 @@ import java.util.Map;
 public final class GunModels {
     private static final Map<Key, BakedModel> CACHE = new HashMap<>();
 
-    private record Key(String gun, GunSkin skin, GunAttachments attachments, boolean loaded) {}
+    /** frame = image de l'animation de la pièce mobile (0 = au repos). */
+    private record Key(String gun, GunSkin skin, GunAttachments attachments, boolean loaded, int frame) {}
+
+    /** Nombre d'images de l'animation de recul (plus = plus fluide, mais plus de modèles en cache). */
+    private static final int FRAMES = 8;
 
     private static ResourceLocation skinModel(String gun, GunSkin skin) {
         return ModeMinecraft.id("item/skins/" + gun + "_" + skin.getSerializedName());
@@ -56,6 +61,10 @@ public final class GunModels {
 
     private static ResourceLocation magModel(String gun, GunSkin skin) {
         return ModeMinecraft.id("item/skins/" + gun + "_" + skin.getSerializedName() + "_mag");
+    }
+
+    private static ResourceLocation slideModel(String gun, GunSkin skin) {
+        return ModeMinecraft.id("item/skins/" + gun + "_" + skin.getSerializedName() + "_slide");
     }
 
     private static ResourceLocation partModel(Item attachment) {
@@ -77,6 +86,7 @@ public final class GunModels {
             for (GunSkin skin : GunSkin.values()) {
                 event.register(ModelResourceLocation.standalone(skinModel(name(gun), skin)));
                 event.register(ModelResourceLocation.standalone(magModel(name(gun), skin)));
+                event.register(ModelResourceLocation.standalone(slideModel(name(gun), skin)));
             }
         }
         ModItems.ITEMS.getEntries().stream().map(h -> h.get()).filter(i -> i instanceof AttachmentItem)
@@ -116,6 +126,21 @@ public final class GunModels {
         for (AttachmentSlot slot : new AttachmentSlot[]{AttachmentSlot.SIGHT, AttachmentSlot.MUZZLE, AttachmentSlot.GRIP}) {
             key.attachments.get(slot).ifPresent(item -> addPart(extra, item, key.gun, slot));
         }
+        // Pièce mobile (culasse, pompe, verrou, canons), déplacée selon l'image de l'animation
+        GunMounts.Slide slide = GunMounts.slide(key.gun);
+        if (slide != null) {
+            Matrix4f m = new Matrix4f();
+            if (slide.style().equals("spin")) {
+                // Minigun : rotation des canons autour de leur axe (60° = symétrie des 6 canons)
+                float angle = (float) Math.toRadians(60.0 * key.frame / FRAMES);
+                m.translation(0, slide.pivotY() / 16f, slide.pivotZ() / 16f).rotateX(angle)
+                        .translate(0, -slide.pivotY() / 16f, -slide.pivotZ() / 16f);
+            } else {
+                m.translation(-slide.travel() / 16f * key.frame / FRAMES, 0, 0); // recul vers l'arrière
+            }
+            addQuads(extra, models.getModel(ModelResourceLocation.standalone(slideModel(key.gun, key.skin))),
+                    key.frame == 0 ? null : new Transformation(m));
+        }
         return new ComposedModel(skin, List.copyOf(extra));
     }
 
@@ -139,6 +164,31 @@ public final class GunModels {
         }
     }
 
+    /** Image de l'animation de la pièce mobile pour cette arme, tenue par cette entité. */
+    private static int animationFrame(String gun, ItemStack stack, @Nullable LivingEntity entity) {
+        GunMounts.Slide slide = GunMounts.slide(gun);
+        if (slide == null || entity == null || entity.level() == null) {
+            return 0; // inventaire, sol, cadre : pas d'animation
+        }
+        boolean inHand = entity.getMainHandItem() == stack || entity.getOffhandItem() == stack;
+        if (!inHand) {
+            return 0;
+        }
+        float partial = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true);
+        if (slide.style().equals("spin")) {
+            // Les canons tournent tant que le joueur tient le clic (lancement + tir)
+            if (!entity.isUsingItem() || entity.getUseItem() != stack) {
+                return 0;
+            }
+            return (int) ((entity.level().getGameTime() + partial) * 3) % FRAMES;
+        }
+        if (entity != Minecraft.getInstance().player) {
+            GunAnimations.observeAmmo(entity, stack);
+        }
+        float t = GunAnimations.ticksSinceShot(entity, partial);
+        return Math.round(GunAnimations.progress(slide.style(), t) * FRAMES);
+    }
+
     /** Modèle de l'item : choisit le modèle composé selon l'ItemStack. */
     private static class DynamicGunModel extends BakedModelWrapper<BakedModel> {
         private final ItemOverrides overrides;
@@ -151,7 +201,8 @@ public final class GunModels {
                                           @Nullable LivingEntity entity, int seed) {
                     // Le RPG-7 n'affiche sa roquette que s'il est chargé
                     boolean loaded = !GunMounts.magNeedsAmmo(gunName) || GunItem.getAmmo(stack) > 0;
-                    Key key = new Key(gunName, GunItem.getSkin(stack), GunItem.getAttachments(stack), loaded);
+                    Key key = new Key(gunName, GunItem.getSkin(stack), GunItem.getAttachments(stack), loaded,
+                            animationFrame(gunName, stack, entity));
                     return CACHE.computeIfAbsent(key, GunModels::compose);
                 }
             };

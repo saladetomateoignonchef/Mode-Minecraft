@@ -25,7 +25,10 @@ public final class GunMounts {
     private static final ResourceLocation FILE = ModeMinecraft.id("gun_mounts.json");
     private static Map<String, Entry> data;
 
-    private record Entry(Map<AttachmentSlot, Vector3f> mounts, boolean magNeedsAmmo) {}
+    private record Entry(Map<AttachmentSlot, Vector3f> mounts, boolean magNeedsAmmo, Slide slide) {}
+
+    /** Pièce mobile : style d'animation, course (en pixels) et axe de rotation (minigun). */
+    public record Slide(String style, float travel, float pivotY, float pivotZ) {}
 
     /** Position (en unités de bloc) où placer l'accessoire, ou null si l'arme n'a pas ce point. */
     public static Vector3f get(String gun, AttachmentSlot slot) {
@@ -38,6 +41,12 @@ public final class GunMounts {
     public static boolean magNeedsAmmo(String gun) {
         Entry e = data().get(gun);
         return e != null && e.magNeedsAmmo;
+    }
+
+    /** Pièce mobile de l'arme, ou null si elle n'en a pas. */
+    public static Slide slide(String gun) {
+        Entry e = data().get(gun);
+        return e == null ? null : e.slide;
     }
 
     /** À appeler quand les ressources sont rechargées (F3 + T). */
@@ -70,7 +79,14 @@ public final class GunMounts {
                     mounts.put(slot, new Vector3f(pos.get(0).getAsFloat(), pos.get(1).getAsFloat(), pos.get(2).getAsFloat()));
                 }
                 JsonElement flag = obj.get("mag_needs_ammo");
-                result.put(gun.getKey(), new Entry(mounts, flag != null && flag.getAsBoolean()));
+                Slide slide = null;
+                if (obj.has("slide")) {
+                    JsonObject sl = obj.getAsJsonObject("slide");
+                    var pivot = sl.has("pivot") ? sl.getAsJsonArray("pivot") : null;
+                    slide = new Slide(sl.get("style").getAsString(), sl.get("travel").getAsFloat(),
+                            pivot == null ? 0 : pivot.get(0).getAsFloat(), pivot == null ? 0 : pivot.get(1).getAsFloat());
+                }
+                result.put(gun.getKey(), new Entry(mounts, flag != null && flag.getAsBoolean(), slide));
             }
         } catch (Exception e) {
             ModeMinecraft.LOGGER.error("Impossible de lire {}", FILE, e);
