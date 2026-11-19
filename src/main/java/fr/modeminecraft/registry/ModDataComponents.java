@@ -51,6 +51,10 @@ public final class ModDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> CHAMBERED =
             DATA_COMPONENTS.registerComponentType("chambered", b -> b.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
 
+    /** Lance-grenades / fusil à pompe sous le canon chargé ? */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> UNDERBARREL_LOADED =
+            DATA_COMPONENTS.registerComponentType("underbarrel_loaded", b -> b.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
+
     /** Instants (temps du monde, en ticks) des animations : armement, vérification de chambre, rechargement. */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> RACK_AT = timestamp("rack_at");
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> CHECK_AT = timestamp("check_at");

@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/m32_mgl_stock",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_arctic",
+    "particle": "modeminecraft:item/gun_palette_arctic"
+  }
+}

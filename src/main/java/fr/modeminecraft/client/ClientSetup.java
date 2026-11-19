@@ -69,6 +69,7 @@ public final class ClientSetup {
         event.register(ModKeyMappings.FIRE_MODE);
         event.register(ModKeyMappings.CHECK_CHAMBER);
         event.register(ModKeyMappings.AMMO_TYPE);
+        event.register(ModKeyMappings.UNDERBARREL);
     }
 
     @SubscribeEvent

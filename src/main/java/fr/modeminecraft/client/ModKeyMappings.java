@@ -20,5 +20,8 @@ public final class ModKeyMappings {
     public static final KeyMapping AMMO_TYPE = new KeyMapping("key.modeminecraft.ammo_type",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_T, CATEGORY);
 
+    public static final KeyMapping UNDERBARREL = new KeyMapping("key.modeminecraft.underbarrel",
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_V, CATEGORY);
+
     private ModKeyMappings() {}
 }

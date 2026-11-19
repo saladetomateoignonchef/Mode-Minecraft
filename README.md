@@ -60,7 +60,7 @@ Toutes les armes à feu, munitions et accessoires se fabriquent à la **table d'
 - **Double appui sur s'accroupir** : s'allonger / se relever (aussi en sautant), avec ou sans arme.
   Allongé : recul et dispersion divisés par 2. Maintenir s'accroupir pour viser.
 - **R** : recharger. **S'accroupir** : viser (moins de dispersion, zoom et réticule si un viseur est monté).
-- Les touches B et R se changent dans *Options > Commandes > Mode Minecraft*. Munitions infinies en créatif.
+- Les touches (R, B, H, T, V) se changent dans *Options > Commandes > Mode Minecraft*. Munitions infinies en créatif.
 
 **Réalisme :** balle chambrée (le HUD affiche `chargeur+1`) ; arme neuve ou vidée = le personnage tire la culasse
 (au clic droit, ou automatiquement à la fin d'un rechargement à vide) ; culasse des pistolets bloquée en arrière
@@ -93,18 +93,30 @@ Se fabrique à la table de craft : `_, vitre, _` / `lingot de fer, table de forg
 Poser l'arme au centre, puis les accessoires autour. Les statistiques finales s'affichent à droite,
 et les flèches changent le **skin** : Défaut, Désert, Camouflage forêt, Camouflage arctique, Or, Rubis.
 
-| Emplacement | Accessoire | Effet |
+La table a **6 emplacements** : viseur, bouche, poignée avant, chargeur, poignée pistolet et crosse.
+**90 accessoires** au total ; l'infobulle de chacun donne ses effets exacts.
+
+| Emplacement | Accessoires | Effets principaux |
 |---|---|---|
-| Viseur | Viseur point rouge | zoom x1,2 en visée, dispersion en visée -30 % |
-| Viseur | Viseur holographique | zoom x1,3, réticule holographique, dispersion en visée -40 % |
-| Viseur | Lunette x4 | zoom x4 avec lunette, dispersion en visée -60 % |
-| Bouche | Silencieux | tir discret (son réduit, pas de flash, pas détecté par le sculk), dégâts -10 % |
-| Bouche | Compensateur | recul -40 % |
-| Poignée | Poignée verticale | recul -35 % |
-| Poignée | Poignée inclinée | dispersion -30 % |
-| Chargeur | Chargeur 24 coups | 24 balles |
-| Chargeur | Chargeur 36 coups | 36 balles, rechargement +10 % |
-| Chargeur | Chargeur camembert | 75 balles, rechargement +60 %, dispersion +10 % |
+| Viseur (23) | point rouge, holographique, Kobra, RMR, réflexe mini, hausse ghost ring, prisme x2, ACOG x4, PSO-1, chasse x4, ELCAN (x1/x4), x4 + viseur à 45° (x4/x1), holo + loupe x3 (x1,3/x3), **lunette variable 1-6x**, x6, x8, x12, télémétrique, numérique, rubis, **thermique**, **vision nocturne**, laser PEQ-15 | zoom, réticule propre à chaque viseur, précision en visée |
+| Bouche (2) | silencieux, compensateur | tir discret / recul |
+| Poignée avant (22) | verticale, inclinée, courte, Magpul AFG/RVG/MVG, BCM KAG, Tango Down, butée de main, bois, pliante, carbone, caoutchouc, rubis, lampe, laser, lampe + laser, Grip-Pod, bipied Harris, **M203**, **M26 MASS**, **baïonnette** | recul, dispersion, stabilité allongé, gadgets |
+| Chargeur (3) | 24 coups, 36 coups, camembert | capacité |
+| Poignée pistolet (20) | Magpul MOE/K2/MIAD, Hogue, BCM Gunfighter, Tango Down, ergonomique, noyer, nacrée, or, rubis, squelette, compacte, compétition, granitée, repose-pouce, Crimson Trace, rangement, empreintes, gel | recul, vitesse de visée, rechargement, sortie de l'arme |
+| Crosse (20) | A2, CTR, Magpul PRS, squelette, pliante, filaire, bois, appui-joue, trou de pouce, **sans crosse**, attelle de pistolet (pistolets uniquement), tube tampon, Limbsaver, Knoxx, carbone, monopode, Accuracy International, Zhukov, SCAR, rubis | recul, mobilité, précision |
+
+Fonctions spéciales :
+- **Molette en visant** : change le grossissement (lunette variable 1-6x, loupe x3, ELCAN, viseur à 45°). Le zoom est progressif.
+- **Lunette thermique** : l'image devient froide (bleue) et les créatures apparaissent en blanc, même derrière les blocs.
+- **Lunette / lampe de vision nocturne** : vision nocturne tant que l'on vise.
+- **Lunette télémétrique** : affiche la distance de la cible ; **lunette numérique** : affiche ses points de vie ;
+  **lunette en rubis** : l'ennemi visé brille en rouge.
+- **Laser** (poignée laser, PEQ-15, Crimson Trace) : point rouge visible par tous, dispersion sans viser réduite.
+- **M203 / M26 MASS** : touche **V** pour charger puis tirer une grenade 40 mm / une cartouche de calibre 12.
+- **Baïonnette** : +6 dégâts au corps à corps avec l'arme.
+- **Bipied, Grip-Pod, monopode** : recul et dispersion très réduits quand on est allongé ou immobile en visée.
+- **Délai pour sortir l'arme** : chaque arme a un temps de sortie (plus long pour les armes lourdes), modifié par la crosse et la poignée.
+- Les poignées pistolet et les crosses **remplacent** celles d'origine sur le modèle 3D ; les armes bullpup n'acceptent pas de crosse.
 
 Un chargeur ne se monte que s'il contient plus de balles que celui d'origine. En le retirant,
 les balles en trop sont rendues. Les accessoires montés sont **visibles sur le modèle 3D**.

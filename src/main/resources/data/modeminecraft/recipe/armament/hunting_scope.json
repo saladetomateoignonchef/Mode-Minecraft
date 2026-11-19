@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "attachments",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 3
+    },
+    {
+      "item": "minecraft:spyglass",
+      "count": 1
+    },
+    {
+      "item": "minecraft:gold_nugget",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:hunting_scope",
+    "count": 1
+  }
+}

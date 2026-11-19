@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "attachments",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 4
+    },
+    {
+      "item": "minecraft:glass_pane",
+      "count": 3
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 2
+    },
+    {
+      "item": "minecraft:spyglass",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:holo_magnifier",
+    "count": 1
+  }
+}

@@ -44,10 +44,29 @@ class Gun:
         self.flags = {}
         self.slide_info = None
         self._moving = False
+        # Pièces d'origine remplaçables par un accessoire (poignée pistolet, crosse)
+        self.parts = {"grip": [], "stock": []}
+        self._part = None
 
     def add(self, frm, to, c, rot=None, mag=False):
-        target = self.mag if mag else (self.slide if self._moving else self.body)
+        if mag:
+            target = self.mag
+        elif self._moving:
+            target = self.slide
+        elif self._part:
+            target = self.parts[self._part]
+        else:
+            target = self.body
         target.append(box(frm, to, c, rot))
+
+    @contextmanager
+    def part(self, name):
+        """Les pavés ajoutés dans ce bloc forment une pièce remplaçable ("grip" ou "stock")."""
+        self._part = name
+        try:
+            yield self
+        finally:
+            self._part = None
 
     @contextmanager
     def moving(self, style, travel=0.0, pivot=None):
@@ -107,8 +126,10 @@ class Gun:
         self.mount("muzzle", end + 0.05, y)
 
     def grip(self, x, ytop, c="k", length=3.5, w=1.6, angle=-22.5):
-        """Poignée pistolet, inclinée vers l'arrière."""
-        self.zb(x, ytop - length, x + w, ytop, 0.7, c, rot=("z", angle, [x + w / 2, ytop, 8]))
+        """Poignée pistolet, inclinée vers l'arrière (pièce remplaçable)."""
+        with self.part("grip"):
+            self.zb(x, ytop - length, x + w, ytop, 0.7, c, rot=("z", angle, [x + w / 2, ytop, 8]))
+        self.mount("pistol_grip", x + w / 2, ytop)
 
     def trigger(self, x, y):
         """Pontet + détente sous la carcasse (y = bas de la carcasse)."""
@@ -156,7 +177,12 @@ class Gun:
         self.zb(x0, y + h, x1, y + h + 0.5, 0.45, c)
 
     def stock(self, kind, rear, x0, y0, y1, c, bore):
-        """Crosse entre rear (arrière) et x0 (début du boîtier). y0/y1 = bas/haut du boîtier."""
+        """Crosse entre rear (arrière) et x0 (début du boîtier). y0/y1 = bas/haut du boîtier (pièce remplaçable)."""
+        self.mount("stock", x0, (y0 + y1) / 2)
+        with self.part("stock"):
+            self._stock(kind, rear, x0, y0, y1, c, bore)
+
+    def _stock(self, kind, rear, x0, y0, y1, c, bore):
         if kind in ("fixed", "wood", "polymer"):
             self.zb(rear, y0 - 1.0, x0, y1 - 0.6, 0.8, c)
             self.zb(rear - 0.3, y0 - 1.4, rear, y1 - 0.4, 0.85, "k")
@@ -224,6 +250,7 @@ def pistol(slide_c="k", frame_c="k", grip_c="k", x0=3.0, x1=13.5, sy0=8.0, sy1=1
     if accent:
         g.zb(x0 + 6.5, sy0 - 0.8, x0 + 7.5, sy0 - 0.2, 1.05, "r")
     g.mount("sight", (x0 + x1) / 2, sy1 + 0.4)
+    g.mount("stock", x0, sy0 - 0.5)  # attelle (brace) à l'arrière de la carcasse
     cx = gx + 1.4
     g.magazine("grip", 0, 0, 0, None, grip_bottom=(cx - 0.383 * grip_len, sy0 - 1 - 0.924 * grip_len))
     return g
@@ -402,7 +429,9 @@ def design_uzi():
     g.grip(6.2, 6.5, "k", length=4.5, w=2.0, angle=0)  # la poignée contient le chargeur
     g.zb(6.4, 1.6, 8.0, 2.0, 0.6, "k", mag=True)      # bas du chargeur
     g.trigger(8.4, 6.5)
-    g.add([3, 7.2, 8.95], [9, 8.4, 9.25], "k")        # crosse repliée sur le côté
+    with g.part("stock"):
+        g.add([3, 7.2, 8.95], [9, 8.4, 9.25], "k")    # crosse repliée sur le côté
+    g.mount("stock", 2.5, 8.0)
     g.post(11.6, 9.9, 0.7)
     with g.moving("fast", travel=2.0):                # levier d'armement sur le dessus
         g.zb(9, 9.9, 10, 10.5, 0.35, "k")
@@ -602,7 +631,9 @@ def design_spas12():
 def design_aa12():
     g = Gun()
     g.zb(3, 6.6, 13, 10.0, 1.0, "k")                  # boîtier carré
-    g.zb(-3, 6.4, 3, 9.6, 0.85, "k")                  # crosse droite
+    with g.part("stock"):
+        g.zb(-3, 6.4, 3, 9.6, 0.85, "k")              # crosse droite
+    g.mount("stock", 3, 8.3)
     g.barrel(13, 18, 8.8, 0.55)
     g.carry_handle(4, 12, 10.0, h=1.0)
     g.bolt(7, 8.2, 9.4, 1.0, travel=1.5)
@@ -719,8 +750,10 @@ def design_at4():
 # Armes conçues à la main (déjà existantes)
 def design_ak47():
     g = Gun()
-    g.zb(-3, 4.8, 3, 8, 0.75, "W")
-    g.zb(-3.3, 4.4, -3, 8.3, 0.8, "k")
+    with g.part("stock"):
+        g.zb(-3, 4.8, 3, 8, 0.75, "W")
+        g.zb(-3.3, 4.4, -3, 8.3, 0.8, "k")
+    g.mount("stock", 3, 7.6)
     g.zb(3, 6.5, 10.5, 9, 0.9, "m")
     g.zb(3, 9, 10, 9.6, 0.7, "l")
     g.grip(4, 6.5, "w", length=3.5)

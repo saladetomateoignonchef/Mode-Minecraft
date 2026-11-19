@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/m249_grip",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_desert",
+    "particle": "modeminecraft:item/gun_palette_desert"
+  }
+}

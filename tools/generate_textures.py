@@ -494,112 +494,6 @@ GUNS.update({  # icônes dessinées à la main (les armes, elles, sont généré
         "..f.....TTTTT",
         ".........TTT",
     ],
-    # ----- Accessoires -----
-    "red_dot_sight": [
-        "", "", "", "", "",
-        "......kkkk",
-        ".....kssssk",
-        ".....ksRssk",
-        ".....kssssk",
-        "....kkkkkkkk",
-        "....mmmmmmmm",
-    ],
-    "holo_sight": [
-        "", "", "",
-        "....kkkkkkkk",
-        "....kssssssk",
-        "....kssssssk",
-        "....kssRsssk",
-        "....kssssssk",
-        "...kkkkkkkkkk",
-        "...mmmmmmmmmm",
-    ],
-    "acog_scope": [
-        "", "", "", "",
-        ".kk.........kkk",
-        ".kkkkkkkkkkkkkks",
-        ".kkllllllllllkks",
-        ".kkkkkkkkkkkkkks",
-        ".kk...kkkk..kkk",
-        "......mmmm",
-    ],
-    "silencer": [
-        "", "", "", "", "",
-        "..kkkkkkkkkkkk",
-        "..kllllllllllk",
-        "..kmmmmmmmmmmkd",
-        "..kmmmmmmmmmmkd",
-        "..kkkkkkkkkkkk",
-    ],
-    "compensator": [
-        "", "", "", "", "", "",
-        "....kkkkkkk",
-        "....kldldlk",
-        "....kmmmmmkd",
-        "....kkkkkkk",
-    ],
-    "vertical_grip": [
-        "", "", "",
-        "....kkkkkkkk",
-        "....mmmmmmmm",
-        "......kmmk",
-        "......kmmk",
-        "......kmmk",
-        "......kmmk",
-        "......kmmk",
-        "......kmmk",
-        "......kkkk",
-    ],
-    "angled_grip": [
-        "", "", "", "",
-        "...kkkkkkkkk",
-        "...mmmmmmmmm",
-        "...kmmmmmmk",
-        "....kmmmmk",
-        ".....kmmk",
-        "......kk",
-    ],
-    "magazine_24": [
-        "", "",
-        "......bBb",
-        ".....kmmmk",
-        ".....kmlmk",
-        ".....kmlmk",
-        ".....kmlmk",
-        ".....kmlmk",
-        ".....kmlmk",
-        ".....kmmmk",
-        ".....kkkkk",
-    ],
-    "magazine_36": [
-        "......bBb",
-        ".....kmmmk",
-        ".....kmlmk",
-        ".....kmlmk",
-        ".....kmlmk",
-        ".....kmlmk",
-        ".....kmlmk",
-        ".....kmlmk",
-        ".....kmlmk",
-        ".....kmlmk",
-        ".....kmlmk",
-        ".....kmlmk",
-        ".....kmmmk",
-        ".....kkkkk",
-    ],
-    "drum_magazine": [
-        "", "",
-        "......kk",
-        "......kk",
-        "....kkkkkk",
-        "...kmmmmmmk",
-        "..kmmmllmmmk",
-        "..kmmllllmmk",
-        "..kmmllllmmk",
-        "..kmmmllmmmk",
-        "...kmmmmmmk",
-        "....kkkkkk",
-    ],
 })
 
 
@@ -884,6 +778,146 @@ def casing_sprite(body, light, base):
     return img
 
 
+# ---------- Réticules des nouveaux viseurs ----------
+def reticle_small(n, draw_fn):
+    img = Image.new("RGBA", (n, n), (0, 0, 0, 0))
+    draw_fn(ImageDraw.Draw(img), n / 2)
+    return img
+
+
+def kobra(n=48):
+    red = (255, 40, 40, 240)
+    def f(d, c):
+        d.line([(c - 9, c - 9), (c, c + 1), (c + 9, c - 9)], fill=red, width=2)
+        d.rectangle([c - 1, c + 4, c, c + 10], fill=red)
+    return reticle_small(n, f)
+
+
+def mini_dot(n=16):
+    def f(d, c):
+        d.ellipse([c - 1.5, c - 1.5, c + 1.5, c + 1.5], fill=(255, 40, 40, 255))
+    return reticle_small(n, f)
+
+
+def ghost_ring(n=48):
+    def f(d, c):
+        d.ellipse([c - 14, c - 14, c + 14, c + 14], outline=(20, 20, 20, 230), width=3)
+        d.rectangle([c - 1, c - 14, c, c - 4], fill=(20, 20, 20, 230))
+    return reticle_small(n, f)
+
+
+def framed_scope(reticle, n=512, radius=0.44, feather=0.05, tint=None):
+    """Lunette générique : cercle (bord flou) + réticule dessiné par reticle(draw, c, inner)."""
+    img = scope_mask(n, radius, feather)
+    if tint:
+        overlay = Image.new("RGBA", (n, n), tint)
+        mask = Image.new("L", (n, n), 0)
+        ImageDraw.Draw(mask).ellipse([n / 2 - n * radius, n / 2 - n * radius, n / 2 + n * radius, n / 2 + n * radius], fill=255)
+        img.paste(overlay, (0, 0), mask)
+    reticle(ImageDraw.Draw(img), n / 2, n * radius)
+    return img
+
+
+BLACK = (0, 0, 0, 255)
+
+
+def duplex(d, c, r, thick=6, gap=0.35, color=BLACK, dots=0):
+    """Réticule "duplex" : traits épais à l'extérieur, fins au centre (+ points mil éventuels)."""
+    inner = r * gap
+    d.rectangle([c - r, c - thick / 2, c - inner, c + thick / 2], fill=color)
+    d.rectangle([c + inner, c - thick / 2, c + r, c + thick / 2], fill=color)
+    d.rectangle([c - thick / 2, c - r, c + thick / 2, c - inner], fill=color)
+    d.rectangle([c - thick / 2, c + inner, c + thick / 2, c + r], fill=color)
+    d.rectangle([c - inner, c - 1, c + inner, c], fill=color)
+    d.rectangle([c - 1, c - inner, c, c + inner], fill=color)
+    for i in range(1, dots + 1):
+        k = inner * i / (dots + 1)
+        for x, y in ((c + k, c), (c - k, c), (c, c + k), (c, c - k)):
+            d.ellipse([x - 2.5, y - 2.5, x + 2.5, y + 2.5], fill=color)
+
+
+def overlays():
+    font = ImageFont.load_default()
+    out = {}
+    out["kobra"] = kobra()
+    out["mini_dot"] = mini_dot()
+    out["ghost_ring"] = ghost_ring()
+
+    def prism(d, c, r):  # cercle gravé + point + échelle de chute
+        d.ellipse([c - 26, c - 26, c + 26, c + 26], outline=BLACK, width=3)
+        d.ellipse([c - 3, c - 3, c + 3, c + 3], fill=(220, 40, 40, 255))
+        for i in range(1, 4):
+            y = c + 26 + i * 14
+            d.rectangle([c - 8 + i * 2, y, c + 8 - i * 2, y + 2], fill=BLACK)
+    out["prism"] = framed_scope(prism, radius=0.4)
+
+    def lpvo(d, c, r):  # réticule allemand n°4 + point lumineux
+        d.rectangle([c - r, c - 4, c - 30, c + 4], fill=BLACK)
+        d.rectangle([c + 30, c - 4, c + r, c + 4], fill=BLACK)
+        d.rectangle([c - 4, c + 30, c + 4, c + r], fill=BLACK)
+        d.rectangle([c - 1, c - 1, c + 0, c + 30], fill=BLACK)
+        d.ellipse([c - 3, c - 3, c + 3, c + 3], fill=(255, 60, 30, 255))
+    out["lpvo"] = framed_scope(lpvo, radius=0.45, feather=0.04)
+
+    out["scope_x6"] = framed_scope(lambda d, c, r: duplex(d, c, r, dots=2))
+    out["scope_x8"] = framed_scope(lambda d, c, r: duplex(d, c, r, dots=4))
+    out["scope_x12"] = framed_scope(lambda d, c, r: duplex(d, c, r, thick=4, gap=0.45, dots=5), radius=0.42)
+
+    def pso1(d, c, r):  # chevrons russes + échelle de distance
+        for i in range(4):
+            y = c + i * 22
+            w = 9 if i == 0 else 6
+            d.line([(c - w, y + w), (c, y), (c + w, y + w)], fill=BLACK, width=2)
+        d.rectangle([c - r * 0.55, c - 1, c - 40, c], fill=BLACK)
+        for i in range(1, 6):
+            d.rectangle([c - 40 - i * 12, c - 5, c - 39 - i * 12, c + 5], fill=BLACK)
+        for i in range(6):
+            x = c + 40 + i * 14
+            d.line([(x, c + 30 - i * 6), (x + 14, c + 30 - (i + 1) * 6)], fill=BLACK, width=2)
+            d.text((x, c + 34 - i * 6), str(i + 2), fill=BLACK, font=font)
+    out["pso1"] = framed_scope(pso1)
+
+    out["rangefinder"] = framed_scope(lambda d, c, r: (duplex(d, c, r), d.rectangle([c - 30, c - 30, c + 30, c + 30], outline=(200, 30, 30, 255), width=2)))
+
+    def elcan(d, c, r):  # point + traits horizontaux, échelle de chute
+        d.rectangle([c - r, c - 2, c - 20, c + 2], fill=BLACK)
+        d.rectangle([c + 20, c - 2, c + r, c + 2], fill=BLACK)
+        d.rectangle([c - 1, c + 12, c, c + r * 0.6], fill=BLACK)
+        d.ellipse([c - 4, c - 4, c + 4, c + 4], fill=(230, 40, 40, 255))
+        for i in range(1, 5):
+            y = c + 12 + i * 18
+            d.rectangle([c - 10 + i, y, c + 10 - i, y + 1], fill=BLACK)
+    out["elcan"] = framed_scope(elcan, radius=0.42, feather=0.06)
+
+    out["hunting"] = framed_scope(lambda d, c, r: duplex(d, c, r, thick=5, gap=0.3), radius=0.4, feather=0.07)
+
+    def digital(d, c, r):
+        green = (60, 255, 120, 255)
+        d.rectangle([c - 40, c - 1, c - 8, c], fill=green)
+        d.rectangle([c + 8, c - 1, c + 40, c], fill=green)
+        d.rectangle([c - 1, c + 8, c, c + 40], fill=green)
+        d.rectangle([c - 1, c - 40, c, c - 8], fill=green)
+        d.rectangle([c - r * 0.7, c - r * 0.7, c + r * 0.7, c + r * 0.7], outline=green, width=2)
+    out["digital"] = framed_scope(digital, tint=(10, 30, 20, 60))
+
+    def ruby(d, c, r):
+        red = (200, 30, 50, 255)
+        duplex(d, c, r, thick=5, gap=0.35, color=BLACK, dots=3)
+        d.ellipse([c - 3, c - 3, c + 3, c + 3], fill=red)
+        d.ellipse([c - r * 0.95, c - r * 0.95, c + r * 0.95, c + r * 0.95], outline=red, width=6)
+    out["ruby_scope"] = framed_scope(ruby, tint=(200, 30, 50, 25))
+
+    def holo_mag(d, c, r):
+        red = (255, 50, 50, 235)
+        d.ellipse([c - 60, c - 60, c + 60, c + 60], outline=red, width=5)
+        d.ellipse([c - 5, c - 5, c + 5, c + 5], fill=red)
+    out["holo_magnified"] = framed_scope(holo_mag, radius=0.4)
+
+    out["thermal"] = framed_scope(lambda d, c, r: duplex(d, c, r, thick=4, color=(255, 255, 255, 220)), radius=0.45)
+    out["night_vision"] = framed_scope(lambda d, c, r: duplex(d, c, r, thick=3, gap=0.4, color=(10, 60, 10, 220)), radius=0.45)
+    return out
+
+
 def main():
     items = {
         "rubis": gem(),
@@ -929,6 +963,8 @@ def main():
     save(acog_scope(), "misc", "acog_scope.png")
     save(red_dot(), "misc", "red_dot.png")
     save(holo_reticle(), "misc", "holo_reticle.png")
+    for name, img in overlays().items():
+        save(img, "misc", f"{name}.png")
     for name, img in table_textures().items():
         save(img, "block", f"{name}.png")
     save(armor_layer(1), "models", "armor", "rubis_layer_1.png")

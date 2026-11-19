@@ -13,6 +13,7 @@ import fr.modeminecraft.item.gun.AttachmentSlot;
 import fr.modeminecraft.item.gun.FireMode;
 import fr.modeminecraft.item.gun.GunItem;
 import fr.modeminecraft.item.gun.GunStats;
+import fr.modeminecraft.item.gun.SightMode;
 import fr.modeminecraft.item.gun.SightOverlay;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -165,34 +166,38 @@ public final class ModItems {
 
     // Emplacements d'accessoires selon le type d'arme
     private static final AttachmentSlot SIGHT = AttachmentSlot.SIGHT, MUZZLE = AttachmentSlot.MUZZLE,
-            GRIP = AttachmentSlot.GRIP, MAG = AttachmentSlot.MAGAZINE;
+            GRIP = AttachmentSlot.GRIP, MAG = AttachmentSlot.MAGAZINE,
+            PGRIP = AttachmentSlot.PISTOL_GRIP, STOCK = AttachmentSlot.STOCK;
 
     // Pistolet / pistolet-mitrailleur / fusil : réglages communs
     private static GunStats.Builder pistol() {
-        return GunStats.builder().velocity(4.0f).spread(1.5f, 0.5f).sound(SHOT, 0.4f, 1.9f).slots(SIGHT, MUZZLE, MAG);
+        return GunStats.builder().pistolCategory().velocity(4.0f).spread(1.5f, 0.5f).sound(SHOT, 0.4f, 1.9f)
+                .slots(SIGHT, MUZZLE, MAG, PGRIP, STOCK);
     }
 
     private static GunStats.Builder smg() {
         return GunStats.builder().automatic().velocity(4.0f).spread(2.2f, 0.9f).recoil(0.9f).sound(SHOT, 0.35f, 1.95f)
-                .slots(SIGHT, MUZZLE, GRIP, MAG);
+                .draw(7).slots(SIGHT, MUZZLE, GRIP, MAG, PGRIP, STOCK);
     }
 
     private static GunStats.Builder rifle() {
         return GunStats.builder().automatic().velocity(4.8f).spread(2.2f, 0.8f).recoil(1.2f).sound(SHOT, 0.4f, 1.7f)
-                .slots(SIGHT, MUZZLE, GRIP, MAG);
+                .slots(SIGHT, MUZZLE, GRIP, MAG, PGRIP, STOCK);
     }
 
     private static GunStats.Builder sniper() {
-        return GunStats.builder().velocity(7.5f).spread(4.0f, 0.0f).sound(SHOT, 0.9f, 1.35f).slots(MUZZLE, GRIP);
+        return GunStats.builder().velocity(7.5f).spread(4.0f, 0.0f).sound(SHOT, 0.9f, 1.35f).draw(14)
+                .slots(SIGHT, MUZZLE, GRIP, PGRIP, STOCK);
     }
 
     private static GunStats.Builder shotgun() {
         return GunStats.builder().velocity(3.0f).spread(8.0f, 6.0f).ammo(ModItems.SHOTGUN_SHELL).sound(SHOT, 0.7f, 1.2f)
-                .slots(SIGHT, MUZZLE, GRIP);
+                .slots(SIGHT, MUZZLE, GRIP, PGRIP, STOCK);
     }
 
     private static GunStats.Builder machineGun() {
-        return GunStats.builder().automatic().velocity(4.8f).spread(3.2f, 1.4f).sound(SHOT, 0.5f, 1.5f).slots(SIGHT, MUZZLE, GRIP);
+        return GunStats.builder().automatic().velocity(4.8f).spread(3.2f, 1.4f).sound(SHOT, 0.5f, 1.5f).draw(18)
+                .slots(SIGHT, MUZZLE, GRIP, PGRIP, STOCK);
     }
 
     // ================= PISTOLETS =================
@@ -209,7 +214,7 @@ public final class ModItems {
     /** Revolver : rechargement balle par balle. */
     public static final DeferredItem<GunItem> COLT_PYTHON = gun("colt_python", Rarity.UNCOMMON,
             GunStats.builder().noChamber().casing(GunStats.Casing.NONE).damage(11).magazine(6).fireDelay(7).reloadPerRound(10).velocity(4.5f).spread(1.4f, 0.4f)
-                    .recoil(5.5f).ammo(ModItems.AMMO_357).sound(SHOT, 0.6f, 1.55f).slots(SIGHT));
+                    .recoil(5.5f).ammo(ModItems.AMMO_357).sound(SHOT, 0.6f, 1.55f).pistolCategory().slots(SIGHT, PGRIP));
     public static final DeferredItem<GunItem> MAKAROV = gun("makarov", Rarity.COMMON,
             pistol().slideLock().damage(5.5f).magazine(8).fireDelay(4).reload(26).recoil(2).ammo(ModItems.AMMO_9MM));
 
@@ -220,7 +225,7 @@ public final class ModItems {
             smg().damage(4.5f).magazine(32).fireDelay(2).reload(36).spread(3.0f, 1.4f).recoil(1.0f).ammo(ModItems.AMMO_9MM));
     public static final DeferredItem<GunItem> P90 = gun("p90", Rarity.UNCOMMON,
             smg().damage(4.5f).magazine(50).fireDelay(2).reload(50).recoil(0.7f).ammo(ModItems.AMMO_57)
-                    .noSlots().slots(SIGHT, MUZZLE)); // chargeur posé sur le dessus : pas de chargeur alternatif
+                    .noSlots().slots(SIGHT, MUZZLE, PGRIP)); // chargeur sur le dessus, bullpup : ni chargeur ni crosse
     /** MP7 : balles perforantes (ignorent l'armure). */
     public static final DeferredItem<GunItem> MP7 = gun("mp7", Rarity.UNCOMMON,
             smg().damage(4).magazine(40).fireDelay(2).reload(40).spread(2.0f, 0.8f).armorPiercing().ammo(ModItems.AMMO_46));
@@ -246,20 +251,20 @@ public final class ModItems {
                     .ammo(ModItems.AMMO_556));
     public static final DeferredItem<GunItem> FAMAS = gun("famas", Rarity.UNCOMMON,
             rifle().damage(4.5f).magazine(25).fireDelay(1).reload(42).velocity(5.0f).spread(2.2f, 0.9f).recoil(0.9f)
-                    .ammo(ModItems.AMMO_556).sound(SHOT, 0.35f, 1.85f));
+                    .ammo(ModItems.AMMO_556).sound(SHOT, 0.35f, 1.85f).without(STOCK));
     public static final DeferredItem<GunItem> SCAR_H = gun("scar_h", Rarity.RARE,
             rifle().damage(8).magazine(20).fireDelay(3).reload(45).spread(2.2f, 0.8f).recoil(2.2f).ammo(ModItems.AMMO_762)
                     .sound(SHOT, 0.5f, 1.45f));
     /** G36 : lunette intégrée (pas d'emplacement viseur). */
     public static final DeferredItem<GunItem> G36 = gun("g36", Rarity.UNCOMMON,
             rifle().damage(5.5f).magazine(30).fireDelay(2).reload(42).spread(2.0f, 0.6f).recoil(1.0f).ammo(ModItems.AMMO_556)
-                    .scope(0.4f, SightOverlay.SCOPE_X4).noSlots().slots(MUZZLE, GRIP, MAG));
+                    .scope(0.4f, SightOverlay.SCOPE_X4).noSlots().slots(MUZZLE, GRIP, MAG, PGRIP, STOCK));
     /** Steyr AUG : bullpup avec lunette intégrée. */
     public static final DeferredItem<GunItem> AUG = gun("aug", Rarity.UNCOMMON,
             rifle().damage(5.5f).magazine(30).fireDelay(2).reload(44).spread(2.0f, 0.6f).recoil(1.0f).ammo(ModItems.AMMO_556)
-                    .scope(0.6f, SightOverlay.SCOPE_X4).noSlots().slots(MUZZLE, GRIP, MAG));
+                    .scope(0.6f, SightOverlay.SCOPE_X4).noSlots().slots(MUZZLE, GRIP, MAG, PGRIP)); // bullpup : pas de crosse
     public static final DeferredItem<GunItem> TAVOR = gun("tavor", Rarity.UNCOMMON,
-            rifle().damage(5.5f).magazine(30).fireDelay(2).reload(40).spread(2.0f, 0.8f).recoil(1.0f).ammo(ModItems.AMMO_556));
+            rifle().damage(5.5f).magazine(30).fireDelay(2).reload(40).spread(2.0f, 0.8f).recoil(1.0f).ammo(ModItems.AMMO_556).without(STOCK));
     /** M16A4 : coup par coup ou rafale de 3 (pas d'automatique). */
     public static final DeferredItem<GunItem> M16A4 = gun("m16a4", Rarity.UNCOMMON,
             rifle().modes(FireMode.SEMI, FireMode.BURST).damage(6.5f).magazine(30).fireDelay(2).burst(3, 8).reload(42).velocity(5.2f).spread(1.6f, 0.5f)
@@ -293,7 +298,7 @@ public final class ModItems {
     /** M14 EBR : fusil de tireur d'élite semi-automatique. */
     public static final DeferredItem<GunItem> M14_EBR = gun("m14_ebr", Rarity.RARE,
             sniper().damage(12).magazine(20).fireDelay(5).reload(50).velocity(6.0f).spread(2.5f, 0.3f).recoil(3.5f)
-                    .ammo(ModItems.AMMO_762).noSlots().slots(SIGHT, MUZZLE, GRIP, MAG));
+                    .ammo(ModItems.AMMO_762).noSlots().slots(SIGHT, MUZZLE, GRIP, MAG, PGRIP, STOCK));
 
     // ================= FUSILS À POMPE =================
     public static final DeferredItem<GunItem> REMINGTON_870 = gun("remington_870", Rarity.COMMON,
@@ -305,7 +310,7 @@ public final class ModItems {
     /** AA-12 : fusil à pompe automatique avec camembert. */
     public static final DeferredItem<GunItem> AA12 = gun("aa12", Rarity.RARE,
             shotgun().casing(GunStats.Casing.SHELL).damage(3.0f).pellets(7).magazine(20).fireDelay(4).automatic().reload(60).spread(9.0f, 7.0f).recoil(3)
-                    .noSlots().slots(SIGHT, GRIP));
+                    .noSlots().slots(SIGHT, GRIP, PGRIP, STOCK));
     public static final DeferredItem<GunItem> SAWED_OFF = gun("sawed_off", Rarity.COMMON,
             shotgun().noChamber().casing(GunStats.Casing.NONE).damage(3.5f).pellets(10).magazine(2).fireDelay(4).reload(40).spread(14.0f, 12.0f).recoil(9)
                     .sound(SHOT, 0.9f, 1.0f).noSlots());
@@ -320,12 +325,12 @@ public final class ModItems {
     /** Minigun : temps de lancement d'une seconde, puis 20 balles par seconde. */
     public static final DeferredItem<GunItem> MINIGUN = gun("minigun", Rarity.EPIC,
             machineGun().noChamber().damage(5).magazine(200).fireDelay(1).spinUp(20).reload(160).spread(4.0f, 3.0f).recoil(0.4f)
-                    .ammo(ModItems.AMMO_762).noSlots());
+                    .ammo(ModItems.AMMO_762).draw(25).noSlots());
 
     // ================= LANCEURS =================
     public static final DeferredItem<GunItem> RPG7 = gun("rpg7", Rarity.EPIC, GunStats.builder().noChamber()
             .magazine(1).fireDelay(20).reload(70).velocity(2.2f).spread(0.6f, 0.15f).recoil(10).rocket(4.0f)
-            .ammo(ModItems.RPG_ROCKET).sound(ROCKET_SHOT, 1.6f, 0.5f).slots(SIGHT));
+            .ammo(ModItems.RPG_ROCKET).sound(ROCKET_SHOT, 1.6f, 0.5f).draw(16).slots(SIGHT));
     /** M32 MGL : lance-grenades à barillet de 6, rechargement grenade par grenade. */
     public static final DeferredItem<GunItem> M32_MGL = gun("m32_mgl", Rarity.EPIC, GunStats.builder().noChamber()
             .magazine(6).fireDelay(10).reloadPerRound(14).velocity(1.6f).spread(1.0f, 0.4f).recoil(5).grenade(2.2f)
@@ -359,6 +364,135 @@ public final class ModItems {
             AttachmentItem.Stats.of(AttachmentSlot.MAGAZINE).magazine(36).reload(1.1f));
     public static final DeferredItem<AttachmentItem> DRUM_MAGAZINE = attachment("drum_magazine",
             AttachmentItem.Stats.of(AttachmentSlot.MAGAZINE).magazine(75).reload(1.6f).spread(1.1f));
+
+
+    // ---------- Poignées AVANT (emplacement "poignée avant", sous le canon) ----------
+    public static final DeferredItem<AttachmentItem> STUBBY_GRIP = attachment("stubby_grip", fg().recoil(0.8f));
+    public static final DeferredItem<AttachmentItem> MAGPUL_AFG = attachment("magpul_afg", fg().spread(0.7f).recoil(0.9f));
+    public static final DeferredItem<AttachmentItem> MAGPUL_RVG = attachment("magpul_rvg", fg().recoil(0.75f).spread(0.9f));
+    public static final DeferredItem<AttachmentItem> MAGPUL_MVG = attachment("magpul_mvg", fg().recoil(0.8f).reload(0.95f));
+    public static final DeferredItem<AttachmentItem> BCM_KAG = attachment("bcm_kag", fg().recoil(0.65f).aimSpeed(0.85f));
+    public static final DeferredItem<AttachmentItem> HAND_STOP = attachment("hand_stop", fg().aimSpread(0.8f));
+    public static final DeferredItem<AttachmentItem> GRIP_POD = attachment("grip_pod", fg().steady(0.3f, 1.0f));
+    public static final DeferredItem<AttachmentItem> HARRIS_BIPOD = attachment("harris_bipod", fg().steady(0.2f, 0.5f));
+    public static final DeferredItem<AttachmentItem> FLASHLIGHT_GRIP = attachment("flashlight_grip",
+            fg().special(AttachmentItem.Special.NIGHT_VISION));
+    public static final DeferredItem<AttachmentItem> LASER_GRIP = attachment("laser_grip",
+            fg().hipSpread(0.5f).special(AttachmentItem.Special.LASER));
+    public static final DeferredItem<AttachmentItem> LIGHT_LASER_GRIP = attachment("light_laser_grip",
+            fg().hipSpread(0.5f).reload(1.1f).special(AttachmentItem.Special.NIGHT_VISION, AttachmentItem.Special.LASER));
+    public static final DeferredItem<AttachmentItem> WOODEN_FOREGRIP = attachment("wooden_foregrip", fg().recoil(0.7f));
+    public static final DeferredItem<AttachmentItem> FOLDING_GRIP = attachment("folding_grip", fg().recoil(0.85f));
+    public static final DeferredItem<AttachmentItem> CARBON_GRIP = attachment("carbon_grip", fg().recoil(0.9f).mobility(1.15f));
+    public static final DeferredItem<AttachmentItem> RUBBER_FOREGRIP = attachment("rubber_foregrip", fg().recoil(0.8f).movingSpread(0.0f));
+    public static final DeferredItem<AttachmentItem> M203 = attachment("m203",
+            fg().mobility(0.85f).aimSpeed(0.85f).special(AttachmentItem.Special.UNDERBARREL_GRENADE));
+    public static final DeferredItem<AttachmentItem> M26_MASS = attachment("m26_mass",
+            fg().mobility(0.85f).aimSpeed(0.85f).special(AttachmentItem.Special.UNDERBARREL_SHOTGUN));
+    public static final DeferredItem<AttachmentItem> BAYONET = attachment("bayonet", fg().special(AttachmentItem.Special.BAYONET));
+    public static final DeferredItem<AttachmentItem> RUBY_FOREGRIP = attachment("ruby_foregrip", fg().recoil(0.6f));
+    public static final DeferredItem<AttachmentItem> TANGO_DOWN_GRIP = attachment("tango_down_grip", fg().recoil(0.75f).spread(0.95f));
+
+    // ---------- Poignées PISTOLET ----------
+    public static final DeferredItem<AttachmentItem> MAGPUL_MOE = attachment("magpul_moe", pg().recoil(0.9f));
+    public static final DeferredItem<AttachmentItem> MAGPUL_K2 = attachment("magpul_k2", pg().aimSpeed(1.25f));
+    public static final DeferredItem<AttachmentItem> HOGUE_GRIP = attachment("hogue_grip", pg().recoil(0.8f));
+    public static final DeferredItem<AttachmentItem> BCM_GUNFIGHTER = attachment("bcm_gunfighter", pg().spread(0.85f));
+    public static final DeferredItem<AttachmentItem> TANGO_BATTLE_GRIP = attachment("tango_battle_grip", pg().recoil(0.85f).reload(0.9f));
+    public static final DeferredItem<AttachmentItem> ERGO_GRIP = attachment("ergo_grip", pg().movingSpread(0.5f));
+    public static final DeferredItem<AttachmentItem> WALNUT_GRIP = attachment("walnut_grip", pg().recoil(0.9f));
+    public static final DeferredItem<AttachmentItem> PEARL_GRIP = attachment("pearl_grip", pg().cosmetic());
+    public static final DeferredItem<AttachmentItem> GOLD_GRIP = attachment("gold_grip", pg().cosmetic());
+    public static final DeferredItem<AttachmentItem> RUBY_PISTOL_GRIP = attachment("ruby_pistol_grip", pg().recoil(0.75f).spread(0.9f));
+    public static final DeferredItem<AttachmentItem> SKELETON_GRIP = attachment("skeleton_grip", pg().reload(0.85f));
+    public static final DeferredItem<AttachmentItem> COMPACT_GRIP = attachment("compact_grip", pg().draw(0.0f));
+    public static final DeferredItem<AttachmentItem> COMPETITION_GRIP = attachment("competition_grip", pg().spread(0.75f).reload(1.1f));
+    public static final DeferredItem<AttachmentItem> STIPPLED_GRIP = attachment("stippled_grip", pg().recoil(0.85f));
+    public static final DeferredItem<AttachmentItem> THUMB_REST_GRIP = attachment("thumb_rest_grip", pg().aimSpread(0.8f));
+    public static final DeferredItem<AttachmentItem> LASERGRIP = attachment("lasergrip",
+            pg().hipSpread(0.6f).special(AttachmentItem.Special.LASER));
+    public static final DeferredItem<AttachmentItem> STORAGE_GRIP = attachment("storage_grip", pg().reload(0.8f));
+    public static final DeferredItem<AttachmentItem> FINGER_GROOVE_GRIP = attachment("finger_groove_grip", pg().recoil(0.8f).spread(0.95f));
+    public static final DeferredItem<AttachmentItem> MAGPUL_MIAD = attachment("magpul_miad", pg().recoil(0.9f).spread(0.9f));
+    public static final DeferredItem<AttachmentItem> GEL_GRIP = attachment("gel_grip", pg().recoil(0.7f).reload(1.1f));
+
+    // ---------- Réticules / viseurs / lunettes ----------
+    public static final DeferredItem<AttachmentItem> THERMAL_SCOPE = attachment("thermal_scope",
+            AttachmentItem.Stats.of(AttachmentSlot.SIGHT).sight(0.4f, SightOverlay.THERMAL).aimSpread(0.5f)
+                    .special(AttachmentItem.Special.THERMAL));
+    public static final DeferredItem<AttachmentItem> NIGHT_VISION_SCOPE = attachment("night_vision_scope",
+            AttachmentItem.Stats.of(AttachmentSlot.SIGHT).sight(0.4f, SightOverlay.NIGHT_VISION).aimSpread(0.5f)
+                    .special(AttachmentItem.Special.NIGHT_VISION));
+    public static final DeferredItem<AttachmentItem> KOBRA_SIGHT = attachment("kobra_sight", sight(0.85f, SightOverlay.KOBRA).aimSpread(0.7f));
+    public static final DeferredItem<AttachmentItem> RMR_SIGHT = attachment("rmr_sight",
+            sight(0.9f, SightOverlay.MINI_DOT).aimSpread(0.75f).aimSpeed(1.1f));
+    public static final DeferredItem<AttachmentItem> MINI_REFLEX = attachment("mini_reflex",
+            sight(0.9f, SightOverlay.MINI_DOT).aimSpread(0.8f).aimSpeed(1.2f));
+    public static final DeferredItem<AttachmentItem> HOLO_MAGNIFIER = attachment("holo_magnifier",
+            AttachmentItem.Stats.of(AttachmentSlot.SIGHT).aimSpread(0.6f)
+                    .sights(new SightMode(0.75f, SightOverlay.HOLO), new SightMode(0.33f, SightOverlay.HOLO_MAGNIFIED)));
+    public static final DeferredItem<AttachmentItem> LPVO = attachment("lpvo",
+            AttachmentItem.Stats.of(AttachmentSlot.SIGHT).aimSpread(0.5f).sights(
+                    new SightMode(0.9f, SightOverlay.LPVO), new SightMode(0.5f, SightOverlay.LPVO),
+                    new SightMode(0.33f, SightOverlay.LPVO), new SightMode(0.25f, SightOverlay.LPVO),
+                    new SightMode(0.2f, SightOverlay.LPVO), new SightMode(0.166f, SightOverlay.LPVO)));
+    public static final DeferredItem<AttachmentItem> SCOPE_X6 = attachment("scope_x6",
+            sight(0.166f, SightOverlay.SCOPE_X6).aimSpread(0.35f).aimSpeed(0.85f));
+    public static final DeferredItem<AttachmentItem> SCOPE_X8 = attachment("scope_x8",
+            sight(0.125f, SightOverlay.SCOPE_X8).aimSpread(0.3f).aimSpeed(0.8f));
+    public static final DeferredItem<AttachmentItem> SCOPE_X12 = attachment("scope_x12",
+            sight(0.083f, SightOverlay.SCOPE_X12).aimSpread(0.25f).aimSpeed(0.7f));
+    public static final DeferredItem<AttachmentItem> PSO1 = attachment("pso1", sight(0.25f, SightOverlay.PSO1).aimSpread(0.4f));
+    public static final DeferredItem<AttachmentItem> RANGEFINDER_SCOPE = attachment("rangefinder_scope",
+            sight(0.2f, SightOverlay.RANGEFINDER).aimSpread(0.35f).special(AttachmentItem.Special.RANGEFINDER));
+    public static final DeferredItem<AttachmentItem> ELCAN = attachment("elcan",
+            AttachmentItem.Stats.of(AttachmentSlot.SIGHT).aimSpread(0.45f)
+                    .sights(new SightMode(0.9f, SightOverlay.MINI_DOT), new SightMode(0.25f, SightOverlay.ELCAN)));
+    public static final DeferredItem<AttachmentItem> PRISM_X2 = attachment("prism_x2", sight(0.5f, SightOverlay.PRISM).aimSpread(0.6f));
+    public static final DeferredItem<AttachmentItem> GHOST_RING = attachment("ghost_ring",
+            sight(0.95f, SightOverlay.GHOST_RING).aimSpread(0.85f).aimSpeed(1.4f));
+    public static final DeferredItem<AttachmentItem> CANTED_SCOPE = attachment("canted_scope",
+            AttachmentItem.Stats.of(AttachmentSlot.SIGHT).aimSpread(0.45f)
+                    .sights(new SightMode(0.25f, SightOverlay.SCOPE_X4), new SightMode(0.95f, SightOverlay.IRON)));
+    public static final DeferredItem<AttachmentItem> PEQ15 = attachment("peq15",
+            AttachmentItem.Stats.of(AttachmentSlot.SIGHT).hipSpread(0.5f).special(AttachmentItem.Special.LASER));
+    public static final DeferredItem<AttachmentItem> HUNTING_SCOPE = attachment("hunting_scope",
+            sight(0.25f, SightOverlay.HUNTING).aimSpread(0.4f));
+    public static final DeferredItem<AttachmentItem> DIGITAL_SCOPE = attachment("digital_scope",
+            sight(0.25f, SightOverlay.DIGITAL).aimSpread(0.4f).special(AttachmentItem.Special.DIGITAL));
+    public static final DeferredItem<AttachmentItem> RUBY_SCOPE = attachment("ruby_scope",
+            sight(0.125f, SightOverlay.RUBY).aimSpread(0.3f).special(AttachmentItem.Special.RUBY_MARK));
+
+    // ---------- Crosses ----------
+    public static final DeferredItem<AttachmentItem> A2_STOCK = attachment("a2_stock", st().recoil(0.8f));
+    public static final DeferredItem<AttachmentItem> CTR_STOCK = attachment("ctr_stock", st().recoil(0.85f).aimSpeed(1.15f));
+    public static final DeferredItem<AttachmentItem> PRS_STOCK = attachment("prs_stock", st().aimSpread(0.6f).mobility(0.85f).aimSpeed(0.9f));
+    public static final DeferredItem<AttachmentItem> SKELETON_STOCK = attachment("skeleton_stock", st().recoil(0.9f).mobility(1.1f));
+    public static final DeferredItem<AttachmentItem> FOLDING_STOCK = attachment("folding_stock", st().recoil(0.9f).mobility(1.15f));
+    public static final DeferredItem<AttachmentItem> WIRE_STOCK = attachment("wire_stock", st().recoil(0.9f).mobility(1.15f));
+    public static final DeferredItem<AttachmentItem> WOODEN_STOCK = attachment("wooden_stock", st().recoil(0.75f).aimSpeed(0.85f));
+    public static final DeferredItem<AttachmentItem> CHEEK_REST_STOCK = attachment("cheek_rest_stock", st().aimSpread(0.7f));
+    public static final DeferredItem<AttachmentItem> THUMBHOLE_STOCK = attachment("thumbhole_stock", st().recoil(0.8f).spread(0.9f));
+    public static final DeferredItem<AttachmentItem> NO_STOCK = attachment("no_stock",
+            st().recoil(1.5f).mobility(1.4f).aimSpeed(1.2f).draw(0.7f));
+    public static final DeferredItem<AttachmentItem> PISTOL_BRACE = attachment("pistol_brace",
+            AttachmentItem.Stats.of(AttachmentSlot.STOCK).recoil(0.75f).only(AttachmentItem.Compat.PISTOL));
+    public static final DeferredItem<AttachmentItem> BUFFER_TUBE = attachment("buffer_tube", st().recoil(0.95f).mobility(1.1f));
+    public static final DeferredItem<AttachmentItem> LIMBSAVER_PAD = attachment("limbsaver_pad", st().recoil(0.75f));
+    public static final DeferredItem<AttachmentItem> KNOXX_STOCK = attachment("knoxx_stock", st().recoil(0.55f).mobility(0.85f));
+    public static final DeferredItem<AttachmentItem> CARBON_STOCK = attachment("carbon_stock", st().recoil(0.85f));
+    public static final DeferredItem<AttachmentItem> MONOPOD_STOCK = attachment("monopod_stock", st().steady(1.0f, 0.5f));
+    public static final DeferredItem<AttachmentItem> AI_STOCK = attachment("ai_stock", st().aimSpread(0.5f).mobility(0.85f));
+    public static final DeferredItem<AttachmentItem> ZHUKOV_STOCK = attachment("zhukov_stock", st().recoil(0.8f));
+    public static final DeferredItem<AttachmentItem> SCAR_FOLDING_STOCK = attachment("scar_folding_stock", st().recoil(0.85f).reload(0.95f));
+    public static final DeferredItem<AttachmentItem> RUBY_STOCK = attachment("ruby_stock", st().recoil(0.65f).spread(0.85f));
+
+    private static AttachmentItem.Stats fg() { return AttachmentItem.Stats.of(AttachmentSlot.GRIP); }
+    private static AttachmentItem.Stats pg() { return AttachmentItem.Stats.of(AttachmentSlot.PISTOL_GRIP); }
+    private static AttachmentItem.Stats st() { return AttachmentItem.Stats.of(AttachmentSlot.STOCK).only(AttachmentItem.Compat.LONG); }
+    private static AttachmentItem.Stats sight(float zoom, SightOverlay overlay) {
+        return AttachmentItem.Stats.of(AttachmentSlot.SIGHT).sight(zoom, overlay);
+    }
 
     // ---------- Tables ----------
     public static final DeferredItem<BlockItem> ARMAMENT_TABLE = ITEMS.registerSimpleBlockItem(ModBlocks.ARMAMENT_TABLE);

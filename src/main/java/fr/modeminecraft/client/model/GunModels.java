@@ -65,6 +65,11 @@ public final class GunModels {
         return ModeMinecraft.id("item/skins/" + gun + "_" + skin.getSerializedName() + "_mag");
     }
 
+    /** Pièce d'origine remplaçable (poignée "grip", crosse "stock") pour un skin. */
+    private static ResourceLocation defaultPartModel(String gun, GunSkin skin, String part) {
+        return ModeMinecraft.id("item/skins/" + gun + "_" + skin.getSerializedName() + "_" + part);
+    }
+
     private static ResourceLocation slideModel(String gun, GunSkin skin) {
         return ModeMinecraft.id("item/skins/" + gun + "_" + skin.getSerializedName() + "_slide");
     }
@@ -89,6 +94,8 @@ public final class GunModels {
                 event.register(ModelResourceLocation.standalone(skinModel(name(gun), skin)));
                 event.register(ModelResourceLocation.standalone(magModel(name(gun), skin)));
                 event.register(ModelResourceLocation.standalone(slideModel(name(gun), skin)));
+                event.register(ModelResourceLocation.standalone(defaultPartModel(name(gun), skin, "grip")));
+                event.register(ModelResourceLocation.standalone(defaultPartModel(name(gun), skin, "stock")));
             }
         }
         ModItems.ITEMS.getEntries().stream().map(h -> h.get()).filter(i -> i instanceof AttachmentItem)
@@ -127,6 +134,17 @@ public final class GunModels {
         }
         for (AttachmentSlot slot : new AttachmentSlot[]{AttachmentSlot.SIGHT, AttachmentSlot.MUZZLE, AttachmentSlot.GRIP}) {
             key.attachments.get(slot).ifPresent(item -> addPart(extra, item, key.gun, slot));
+        }
+        // Poignée pistolet et crosse : celles montées en accessoire, sinon celles d'origine
+        String[][] replaceable = {{"PISTOL_GRIP", "grip"}, {"STOCK", "stock"}};
+        for (String[] r : replaceable) {
+            AttachmentSlot slot = AttachmentSlot.valueOf(r[0]);
+            var mounted = key.attachments.get(slot);
+            if (mounted.isPresent()) {
+                addPart(extra, mounted.get(), key.gun, slot);
+            } else {
+                addQuads(extra, models.getModel(ModelResourceLocation.standalone(defaultPartModel(key.gun, key.skin, r[1]))), null);
+            }
         }
         // Pièce mobile (culasse, pompe, verrou, canons), déplacée selon l'image de l'animation
         GunMounts.Slide slide = GunMounts.slide(key.gun);

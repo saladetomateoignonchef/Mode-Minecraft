@@ -17,7 +17,8 @@ import net.minecraft.world.item.ItemStack;
  */
 public class ModificationTableScreen extends AbstractContainerScreen<ModificationTableMenu> {
     private static final String[] SLOT_HINTS = {"gui.modeminecraft.slot.sight", "gui.modeminecraft.slot.muzzle",
-            "gui.modeminecraft.slot.grip", "gui.modeminecraft.slot.magazine"};
+            "gui.modeminecraft.slot.grip", "gui.modeminecraft.slot.magazine", "gui.modeminecraft.slot.pistol_grip",
+            "gui.modeminecraft.slot.stock"};
     private static final int STATS_X = 98;
 
     private Button previousSkin, nextSkin;
@@ -51,7 +52,7 @@ public class ModificationTableScreen extends AbstractContainerScreen<Modificatio
         super.render(g, mouseX, mouseY, partialTick);
         renderTooltip(g, mouseX, mouseY);
         // Infobulle "Viseur", "Bouche"... sur les cases vides
-        for (int i = 1; i <= 4; i++) {
+        for (int i = 1; i <= SLOT_HINTS.length; i++) {
             Slot slot = menu.slots.get(i);
             if (!slot.hasItem() && isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY)) {
                 g.renderTooltip(font, Component.translatable(SLOT_HINTS[i - 1]), mouseX, mouseY);
@@ -76,7 +77,7 @@ public class ModificationTableScreen extends AbstractContainerScreen<Modificatio
             GuiDraw.slot(g, leftPos + slot.x, topPos + slot.y);
         }
         // Cases indisponibles pour cette arme : grisées avec une croix
-        for (int i = 1; i <= 4; i++) {
+        for (int i = 1; i <= SLOT_HINTS.length; i++) {
             if (menu.slots.get(i) instanceof ModificationTableMenu.PartSlot part && !part.isAvailable()) {
                 int x = leftPos + part.x, y = topPos + part.y;
                 g.fill(x, y, x + 16, y + 16, 0xA0303030);

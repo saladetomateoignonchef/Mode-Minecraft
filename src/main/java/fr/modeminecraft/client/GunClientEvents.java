@@ -9,6 +9,7 @@ import fr.modeminecraft.network.AmmoTypePayload;
 import fr.modeminecraft.network.CheckChamberPayload;
 import fr.modeminecraft.network.FireModePayload;
 import fr.modeminecraft.network.PronePayload;
+import fr.modeminecraft.network.UnderbarrelPayload;
 import fr.modeminecraft.network.ReloadPayload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
@@ -47,6 +48,11 @@ public final class GunClientEvents {
         while (ModKeyMappings.AMMO_TYPE.consumeClick()) {
             if (holdingGun) {
                 PacketDistributor.sendToServer(AmmoTypePayload.INSTANCE);
+            }
+        }
+        while (ModKeyMappings.UNDERBARREL.consumeClick()) {
+            if (holdingGun) {
+                PacketDistributor.sendToServer(UnderbarrelPayload.INSTANCE);
             }
         }
         while (ModKeyMappings.CHECK_CHAMBER.consumeClick()) {
@@ -102,14 +108,25 @@ public final class GunClientEvents {
             event.getInput().leftImpulse *= 5.0f;
             event.getInput().forwardImpulse *= 5.0f;
         }
+        // Mobilité en visant (crosses légères, sans crosse...)
+        ResolvedGun aim = aiming(player);
+        if (aim != null && aim.mobility() != 1.0f) {
+            event.getInput().leftImpulse *= aim.mobility();
+            event.getInput().forwardImpulse *= aim.mobility();
+        }
     }
 
-    /** Zoom quand on vise (accroupi) : lunette du sniper ou viseur monté sur l'arme. */
+    private static float currentZoom = 1.0f;
+
+    /** Zoom quand on vise (accroupi), progressif selon la vitesse de visée des accessoires. */
     @SubscribeEvent
     public static void onComputeFov(ComputeFovModifierEvent event) {
         ResolvedGun aim = aiming(event.getPlayer());
-        if (aim != null && aim.zoom() < 1.0f) {
-            event.setNewFovModifier(aim.zoom());
+        float target = aim == null ? 1.0f : SightEffects.currentMode(aim).zoom();
+        float speed = aim == null ? 0.4f : Math.min(1.0f, 0.3f * aim.aimSpeed());
+        currentZoom += (target - currentZoom) * speed;
+        if (Math.abs(currentZoom - 1.0f) > 0.002f) {
+            event.setNewFovModifier(event.getNewFovModifier() * currentZoom);
         }
     }
 
@@ -117,7 +134,7 @@ public final class GunClientEvents {
     @SubscribeEvent
     public static void onRenderHand(RenderHandEvent event) {
         ResolvedGun aim = aiming(Minecraft.getInstance().player);
-        if (aim != null && aim.overlay().isFullScope()) {
+        if (aim != null && SightEffects.currentMode(aim).overlay().isFullScope()) {
             event.setCanceled(true);
         }
     }
@@ -127,7 +144,7 @@ public final class GunClientEvents {
     public static void onRenderGuiLayer(RenderGuiLayerEvent.Pre event) {
         if (event.getName().equals(VanillaGuiLayers.CROSSHAIR)) {
             ResolvedGun aim = aiming(Minecraft.getInstance().player);
-            if (aim != null && aim.overlay() != SightOverlay.NONE) {
+            if (aim != null && SightEffects.currentMode(aim).overlay() != SightOverlay.NONE) {
                 event.setCanceled(true);
             }
         }

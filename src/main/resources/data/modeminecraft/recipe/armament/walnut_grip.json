@@ -1,0 +1,14 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "attachments",
+  "ingredients": [
+    {
+      "tag": "minecraft:logs",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:walnut_grip",
+    "count": 1
+  }
+}

@@ -5,6 +5,7 @@ import fr.modeminecraft.item.AmmoItem;
 import fr.modeminecraft.entity.RocketEntity;
 import fr.modeminecraft.registry.ModDataComponents;
 import fr.modeminecraft.registry.ModEntities;
+import fr.modeminecraft.registry.ModItems;
 import fr.modeminecraft.registry.ModParticles;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -217,6 +218,10 @@ public class GunItem extends Item {
         if (!stats.slots().contains(attachment.slot())) {
             return false;
         }
+        AttachmentItem.Compat compat = attachment.stats().compat();
+        if (compat == AttachmentItem.Compat.PISTOL && !stats.pistol() || compat == AttachmentItem.Compat.LONG && stats.pistol()) {
+            return false;
+        }
         // Un chargeur doit contenir plus de balles que celui d'origine
         return attachment.slot() != AttachmentSlot.MAGAZINE
                 || attachment.stats().magazineSize() > stats.magazineSize();
@@ -363,6 +368,20 @@ public class GunItem extends Item {
         return UseAnim.NONE;
     }
 
+    /** Le joueur se déplace-t-il ? (la précision baisse en marchant) */
+    public static boolean isMoving(Player player) {
+        if (player.level().isClientSide) {
+            return player.getDeltaMovement().horizontalDistanceSqr() > 0.002;
+        }
+        double dx = player.getX() - player.xo, dz = player.getZ() - player.zo;
+        return dx * dx + dz * dz > 0.002;
+    }
+
+    /** Stable = allongé, ou en train de viser sans bouger (bipieds, monopode...). */
+    public static boolean isSteady(Player player) {
+        return ProneHandler.isProne(player) || isAiming(player) && !isMoving(player);
+    }
+
     /** Le joueur vise-t-il ? (touche accroupir maintenue, debout ou allongé) */
     public static boolean isAiming(Player player) {
         return player.isShiftKeyDown();
@@ -374,20 +393,23 @@ public class GunItem extends Item {
         boolean shells = stats.ammo().get() instanceof AmmoItem a && a.isShotgunShell();
         boolean silenced = gun.silenced() || type == AmmoType.SUBSONIC;
         boolean aiming = isAiming(player);
-        // Allongé : l'arme est bien plus stable
+        // Allongé : l'arme est bien plus stable ; stable (bipied, monopode...) : bonus des accessoires
         float stability = ProneHandler.isProne(player) ? 0.5f : 1.0f;
+        boolean steady = isSteady(player);
+        float steadyRecoil = steady ? gun.steadyRecoil() : 1, steadySpread = steady ? gun.steadySpread() : 1;
 
         if (level.isClientSide) {
             GunAnimations.recordShot(player); // la culasse recule (animation)
             ejectCasing(level, player, null);
             // Recul : la caméra remonte un peu (uniquement côté client, le serveur suit)
-            float recoil = (aiming ? gun.recoil() * 0.6f : gun.recoil()) * stability * type.recoilMul;
+            float recoil = (aiming ? gun.recoil() * 0.6f : gun.recoil()) * stability * type.recoilMul * steadyRecoil;
             player.setXRot(Mth.clamp(player.getXRot() - recoil, -90f, 90f));
             player.setYRot(player.getYRot() + (player.getRandom().nextFloat() - 0.5f) * recoil * 0.5f);
             return;
         }
 
-        float spread = (aiming ? gun.aimSpread() : gun.spread()) * stability * type.spreadMul;
+        float spread = (aiming ? gun.aimSpread() : gun.spread()) * stability * type.spreadMul * steadySpread
+                * (isMoving(player) ? gun.movingPenalty() : 1);
         int pellets = shells ? type.pellets(stats.pellets()) : stats.pellets();
         float damage = shells ? type.pelletDamage(gun.damage(), stats.pellets()) : gun.damage() * type.damageMul;
         for (int i = 0; i < pellets; i++) {
@@ -481,6 +503,81 @@ public class GunItem extends Item {
                     stats.pierce() + (type == AmmoType.ARMOR_PIERCING ? 1 : 0),
                     stats.armorPiercing() || type == AmmoType.ARMOR_PIERCING, type);
         };
+    }
+
+    // ------------------------------------------------------------------
+    // Tir secondaire (touche V) : lance-grenades M203 ou fusil à pompe M26 sous le canon
+    // ------------------------------------------------------------------
+    public static boolean isUnderbarrelLoaded(ItemStack stack) {
+        return stack.getOrDefault(ModDataComponents.UNDERBARREL_LOADED.get(), false);
+    }
+
+    public void secondaryFire(Player player, ItemStack stack) {
+        ResolvedGun gun = resolve(stack);
+        boolean grenade = gun.has(AttachmentItem.Special.UNDERBARREL_GRENADE);
+        if (!grenade && !gun.has(AttachmentItem.Special.UNDERBARREL_SHOTGUN)) {
+            player.displayClientMessage(Component.translatable("message.modeminecraft.underbarrel.none")
+                    .withStyle(ChatFormatting.GRAY), true);
+            return;
+        }
+        if (player.getCooldowns().isOnCooldown(this)) {
+            return;
+        }
+        Level level = player.level();
+        Item ammo = grenade ? ModItems.GRENADE_40MM.get() : ModItems.SHOTGUN_SHELL.get();
+        if (!isUnderbarrelLoaded(stack)) {
+            // On charge une grenade / une cartouche
+            if (!player.getAbilities().instabuild) {
+                if (countPlain(player, ammo) == 0) {
+                    player.displayClientMessage(Component.translatable("message.modeminecraft.no_ammo",
+                            ammo.getDescription()).withStyle(ChatFormatting.RED), true);
+                    return;
+                }
+                removePlain(player, ammo);
+            }
+            stack.set(ModDataComponents.UNDERBARREL_LOADED.get(), true);
+            player.getCooldowns().addCooldown(this, grenade ? 30 : 20);
+            level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                    SoundEvents.CROSSBOW_LOADING_END, SoundSource.PLAYERS, 1.0f, 0.6f);
+            player.displayClientMessage(Component.translatable(grenade ? "message.modeminecraft.underbarrel.loaded_grenade"
+                    : "message.modeminecraft.underbarrel.loaded_shell").withStyle(ChatFormatting.YELLOW), true);
+            return;
+        }
+        stack.set(ModDataComponents.UNDERBARREL_LOADED.get(), false);
+        if (grenade) {
+            var g = new RocketEntity(ModEntities.GRENADE.get(), level, player, 2.2f);
+            g.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 1.6f, 1.0f);
+            level.addFreshEntity(g);
+        } else {
+            for (int i = 0; i < 8; i++) {
+                var b = new BulletEntity(level, player, 3.5f, 0, false, AmmoType.STANDARD);
+                b.shootFromRotation(player, player.getXRot(), player.getYRot(), 0, 3.0f, 8.0f);
+                level.addFreshEntity(b);
+            }
+        }
+        level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                grenade ? SoundEvents.FIREWORK_ROCKET_BLAST : SoundEvents.GENERIC_EXPLODE.value(),
+                SoundSource.PLAYERS, grenade ? 1.0f : 0.7f, grenade ? 0.6f : 1.2f);
+        player.getCooldowns().addCooldown(this, 10);
+    }
+
+    private static int countPlain(Player player, Item item) {
+        int n = 0;
+        for (ItemStack s : player.getInventory().items) {
+            if (s.is(item) && !s.has(ModDataComponents.AMMO_TYPE.get())) {
+                n += s.getCount();
+            }
+        }
+        return n;
+    }
+
+    private static void removePlain(Player player, Item item) {
+        for (ItemStack s : player.getInventory().items) {
+            if (s.is(item) && !s.has(ModDataComponents.AMMO_TYPE.get())) {
+                s.shrink(1);
+                return;
+            }
+        }
     }
 
     // ------------------------------------------------------------------

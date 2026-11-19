@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/mp5_stock",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_ruby",
+    "particle": "modeminecraft:item/gun_palette_ruby"
+  }
+}

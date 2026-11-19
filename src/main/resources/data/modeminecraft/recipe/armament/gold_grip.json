@@ -1,0 +1,14 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "attachments",
+  "ingredients": [
+    {
+      "item": "minecraft:gold_ingot",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:gold_grip",
+    "count": 1
+  }
+}

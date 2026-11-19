@@ -1,0 +1,14 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "attachments",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_nugget",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:no_stock",
+    "count": 1
+  }
+}

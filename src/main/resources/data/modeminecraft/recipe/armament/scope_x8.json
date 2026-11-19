@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "attachments",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 5
+    },
+    {
+      "item": "minecraft:spyglass",
+      "count": 2
+    },
+    {
+      "item": "minecraft:glass_pane",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:scope_x8",
+    "count": 1
+  }
+}

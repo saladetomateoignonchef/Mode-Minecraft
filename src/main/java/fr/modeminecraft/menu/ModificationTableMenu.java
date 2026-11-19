@@ -21,7 +21,8 @@ import net.minecraft.world.item.ItemStack;
 /**
  * Menu de la table de modification.
  *
- * Emplacement 0 = l'arme. Emplacements 1 à 4 = accessoires (viseur, bouche, poignée, chargeur).
+ * Emplacement 0 = l'arme. Emplacements 1 à 6 = accessoires (viseur, bouche, poignée avant, chargeur,
+ * poignée pistolet, crosse).
  * Les emplacements d'accessoires sont "virtuels" : ils montrent ce qui est monté sur l'arme,
  * et chaque changement est immédiatement écrit dans l'arme. Quand on retire l'arme,
  * ses accessoires partent avec elle (ils ne sont jamais dupliqués).
@@ -32,14 +33,17 @@ public class ModificationTableMenu extends AbstractContainerMenu {
 
     /** Position des emplacements dans l'écran. */
     public static final int GUN_X = 44, GUN_Y = 38;
+    /** Position de chaque emplacement d'accessoire (même ordre que AttachmentSlot). */
     public static final int[][] PART_POS = {
             {44, 14},  // viseur : au-dessus
-            {72, 38},  // bouche : à droite
-            {44, 62},  // poignée : en dessous
-            {16, 62},  // chargeur : en bas à gauche
+            {72, 38},  // bouche du canon : à droite
+            {72, 62},  // poignée avant : en bas à droite (sous le canon)
+            {44, 62},  // chargeur : en dessous
+            {16, 62},  // poignée pistolet : en bas à gauche
+            {16, 38},  // crosse : à gauche
     };
 
-    private static final int TABLE_SLOTS = 5;
+    private static final int TABLE_SLOTS = 1 + AttachmentSlot.values().length;
     private final SimpleContainer container = new SimpleContainer(TABLE_SLOTS);
     private final ContainerLevelAccess access;
     private final Player player;

@@ -23,6 +23,7 @@ import zlib
 
 from PIL import Image, ImageDraw
 
+from attachment_designs import ACCESSORIES
 from gun_designs import GUNS, KEYS, box
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
@@ -160,65 +161,6 @@ def palette_image(skin):
     return img
 
 
-# =====================================================================
-# ACCESSOIRES (dessinés autour de l'origine)
-# =====================================================================
-ACCESSORIES = {
-    # Viseurs : posés sur le rail (bas du viseur en y = 0)
-    "red_dot_sight": [
-        box([-1.5, 0, -0.7], [1.5, 0.4, 0.7], "k"),
-        box([-0.8, 0.4, -0.7], [1, 1.8, 0.7], "k"),
-        box([1, 0.6, -0.5], [1.05, 1.6, 0.5], "s"),
-        box([-0.85, 0.6, -0.5], [-0.8, 1.6, 0.5], "r"),
-    ],
-    "holo_sight": [
-        box([-2, 0, -0.9], [2, 0.5, 0.9], "k"),
-        box([-1.5, 0.5, -0.9], [1.5, 2.5, -0.6], "k"),
-        box([-1.5, 0.5, 0.6], [1.5, 2.5, 0.9], "k"),
-        box([-1.5, 2.5, -0.9], [1.5, 2.8, 0.9], "k"),
-        box([0.9, 0.5, -0.6], [1, 2.5, 0.6], "s"),
-    ],
-    "acog_scope": [
-        box([-1.5, 0, -0.6], [1.5, 0.6, 0.6], "k"),
-        box([-3, 0.6, -0.9], [3, 2.4, 0.9], "k"),
-        box([2, 0.4, -1.1], [3.5, 2.6, 1.1], "k"),
-        box([3.5, 0.7, -0.8], [3.55, 2.3, 0.8], "s"),
-        box([-3.5, 0.5, -1], [-2.5, 2.5, 1], "k"),
-        box([-3.55, 0.8, -0.7], [-3.5, 2.2, 0.7], "s"),
-    ],
-    # Bouche : part de l'extrémité du canon vers +X
-    "silencer": [
-        box([0, -0.9, -0.9], [6, 0.9, 0.9], "k"),
-        box([6, -0.6, -0.6], [6.1, 0.6, 0.6], "d"),
-        box([0.5, -0.95, -0.95], [1, 0.95, 0.95], "m"),
-    ],
-    "compensator": [
-        box([0, -0.7, -0.7], [2, 0.7, 0.7], "l"),
-        box([0.5, 0.7, -0.3], [1.5, 0.75, 0.3], "d"),
-        box([2, -0.4, -0.4], [2.05, 0.4, 0.4], "d"),
-    ],
-    # Poignées : sous le garde-main, vers le bas
-    "vertical_grip": [
-        box([-0.7, -4, -0.7], [0.7, 0, 0.7], "k"),
-        box([-0.8, -4.3, -0.8], [0.8, -4, 0.8], "m"),
-        box([-1.2, -0.4, -0.75], [1.2, 0, 0.75], "m"),
-    ],
-    "angled_grip": [
-        box([-1.5, -2, -0.7], [1.5, 0, 0.7], "k", ("z", -22.5, [0, 0, 0])),
-        box([-1.8, -0.4, -0.75], [1.8, 0, 0.75], "m"),
-    ],
-    # Chargeurs : sous le puits de chargeur, vers le bas
-    "magazine_24": [box([-1, -5, -0.6], [1, 0, 0.6], "l"), box([-1.05, -5.3, -0.65], [1.05, -5, 0.65], "k")],
-    "magazine_36": [box([-1, -7, -0.6], [1, 0, 0.6], "l"), box([-1.05, -7.3, -0.65], [1.05, -7, 0.65], "k")],
-    "drum_magazine": [
-        box([-0.8, -1.5, -0.6], [0.8, 0, 0.6], "k"),
-        box([-2.6, -6, -1.2], [2.6, -1, 1.2], "k"),
-        box([-2.6, -6, -1.2], [2.6, -1, 1.2], "k", ("z", 45, [0, -3.5, 0])),
-        box([-1, -4.5, -1.3], [1, -2.5, 1.3], "l"),
-    ],
-}
-
-
 # Position de l'arme 3D selon l'affichage (valeurs réglées à partir de captures en jeu)
 DISPLAY_3D = {
     "thirdperson_righthand": {"rotation": [0, 90, 0], "translation": [0, 1.5, -4], "scale": [0.85, 0.85, 0.85]},
@@ -330,10 +272,13 @@ def main():
         write(os.path.join(models, f"{name}_mag.json"), {"parent": f"{MOD}:item/parts/part_base", "elements": gun.mag})
         # Pièce mobile (culasse, pompe, canons...) : animée par le jeu au moment du tir
         write(os.path.join(models, f"{name}_slide.json"), {"parent": f"{MOD}:item/parts/part_base", "elements": gun.slide})
+        # Poignée et crosse d'origine : masquées quand un accessoire les remplace
+        for part, elements in gun.parts.items():
+            write(os.path.join(models, f"{name}_{part}.json"), {"parent": f"{MOD}:item/parts/part_base", "elements": elements})
         for skin in SKINS:
             palette = f"{MOD}:item/gun_palette_{skin}"
             base = f"{MOD}:item/skins/{name}_{skin}"
-            icon_img = render_icon(gun.body + gun.slide + gun.mag, skin)
+            icon_img = render_icon(gun.body + gun.slide + gun.mag + gun.parts["grip"] + gun.parts["stock"], skin)
             if skin == "default":
                 icon_img.save(os.path.join(textures, f"{name}.png"))
                 icon = f"{MOD}:item/{name}"
@@ -344,8 +289,9 @@ def main():
                   {"parent": f"{MOD}:item/{name}_3d", "textures": {"p": palette, "particle": palette}})
             write(os.path.join(models, "skins", f"{name}_{skin}_mag.json"),
                   {"parent": f"{MOD}:item/{name}_mag", "textures": {"p": palette, "particle": palette}})
-            write(os.path.join(models, "skins", f"{name}_{skin}_slide.json"),
-                  {"parent": f"{MOD}:item/{name}_slide", "textures": {"p": palette, "particle": palette}})
+            for part in ["slide"] + list(gun.parts):
+                write(os.path.join(models, "skins", f"{name}_{skin}_{part}.json"),
+                      {"parent": f"{MOD}:item/{name}_{part}", "textures": {"p": palette, "particle": palette}})
             write(os.path.join(models, "skins", f"{name}_{skin}_icon.json"),
                   {"parent": "minecraft:item/generated", "textures": {"layer0": icon}})
             write(os.path.join(models, "skins", f"{name}_{skin}.json"), separate(base))
@@ -358,6 +304,11 @@ def main():
         write(os.path.join(models, "parts", f"{name}.json"), {"parent": f"{MOD}:item/parts/part_base", "elements": elements})
         write(os.path.join(models, f"{name}.json"),
               {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{name}"}})
+        # Icône calculée à partir du modèle 3D (vue de profil)
+        if elements:
+            render_icon(elements, "default").save(os.path.join(textures, f"{name}.png"))
+        else:  # "sans crosse" : on dessine une crosse barrée
+            render_icon(ACCESSORIES["buffer_tube"], "default").save(os.path.join(textures, f"{name}.png"))
 
     print(f"{len(GUNS)} armes x {len(SKINS)} skins + {len(ACCESSORIES)} accessoires générés")
 

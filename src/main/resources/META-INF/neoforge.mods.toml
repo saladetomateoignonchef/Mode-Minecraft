@@ -24,3 +24,7 @@ type="required"
 versionRange="${minecraft_version_range}"
 ordering="NONE"
 side="BOTH"
+
+# Mixins (côté client) : vision thermique et marquage de la lunette en rubis
+[[mixins]]
+config="${mod_id}.mixins.json"

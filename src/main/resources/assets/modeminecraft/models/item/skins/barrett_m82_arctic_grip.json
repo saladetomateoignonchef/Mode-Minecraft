@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/barrett_m82_grip",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_arctic",
+    "particle": "modeminecraft:item/gun_palette_arctic"
+  }
+}

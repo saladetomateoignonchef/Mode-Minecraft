@@ -1,0 +1,18 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "attachments",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 2
+    },
+    {
+      "item": "minecraft:slime_ball",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:limbsaver_pad",
+    "count": 1
+  }
+}

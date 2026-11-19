@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/an94_grip",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_gold",
+    "particle": "modeminecraft:item/gun_palette_gold"
+  }
+}

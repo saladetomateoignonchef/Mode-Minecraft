@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/dragunov_grip",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_default",
+    "particle": "modeminecraft:item/gun_palette_default"
+  }
+}
