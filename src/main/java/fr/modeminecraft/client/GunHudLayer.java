@@ -95,19 +95,15 @@ public final class GunHudLayer {
         int h = graphics.guiHeight();
         RenderSystem.enableBlend(); // les réticules sont transparents
         if (overlay.isFullScope()) {
-            int size = Math.min(w, h);
+            // Lunette : elle remplit tout l'écran (on a l'œil collé à l'oculaire) ; seuls les coins sont sombres
+            int size = Math.max(w, h);
             int x = (w - size) / 2;
             int y = (h - size) / 2;
             graphics.blit(texture, x, y, -90, 0.0f, 0.0f, size, size, size, size);
-            // Bandes noires autour de la lunette
-            graphics.fill(0, 0, w, y, -90, 0xFF000000);
-            graphics.fill(0, y + size, w, h, -90, 0xFF000000);
-            graphics.fill(0, y, x, y + size, -90, 0xFF000000);
-            graphics.fill(x + size, y, w, y + size, -90, 0xFF000000);
         } else {
             // Viseur point rouge / holographique : petit réticule au centre
             int size = switch (overlay) {
-                case HOLO, KOBRA, GHOST_RING -> 48;
+                case HOLO, KOBRA, GHOST_RING -> 64;
                 default -> 16;
             };
             graphics.blit(texture, (w - size) / 2, (h - size) / 2, 0, 0.0f, 0.0f, size, size, size, size);

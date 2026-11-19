@@ -49,9 +49,33 @@ public final class GunMounts {
         return e == null ? null : e.slide;
     }
 
+    private static Map<String, Float> optics;
+
+    /**
+     * Hauteur du centre optique d'un viseur au-dessus de son point de fixation (pixels), calculée par
+     * tools/generate_gun_models.py (assets/modeminecraft/sight_optics.json), ou null si inconnue.
+     */
+    public static Float opticHeight(String sight) {
+        if (optics == null) {
+            optics = new HashMap<>();
+            var res = Minecraft.getInstance().getResourceManager().getResource(ModeMinecraft.id("sight_optics.json"));
+            if (res.isPresent()) {
+                try (Reader reader = res.get().openAsReader()) {
+                    for (var e : JsonParser.parseReader(reader).getAsJsonObject().entrySet()) {
+                        optics.put(e.getKey(), e.getValue().getAsFloat());
+                    }
+                } catch (Exception e) {
+                    ModeMinecraft.LOGGER.error("Impossible de lire sight_optics.json", e);
+                }
+            }
+        }
+        return optics.get(sight);
+    }
+
     /** À appeler quand les ressources sont rechargées (F3 + T). */
     static void clear() {
         data = null;
+        optics = null;
     }
 
     private static Map<String, Entry> data() {

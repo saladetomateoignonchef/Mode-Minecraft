@@ -153,7 +153,7 @@ def material_pixel(skin, key, x, y, size=CELL, edges=True):
     c = _scale(base, f)
     if key == "s" and not skin.startswith("lens_"):
         # Vitre presque invisible (légère teinte, sans reflet) : en visant on voit à travers, comme dans un FPS
-        c = _scale(base, 1.15)[:3] + (34 if not (x == 0 or y == 0 or x == size - 1 or y == size - 1) else 60,)
+        c = (205, 235, 245) + (12 if not (x == 0 or y == 0 or x == size - 1 or y == size - 1) else 40,)
     return c
 
 
@@ -330,6 +330,17 @@ def main():
             render_icon(elements, f"lens_{name}" if name in LENS_COLORS else "default").save(os.path.join(textures, f"{name}.png"))
         else:  # "sans crosse" : on dessine une crosse barrée
             render_icon(ACCESSORIES["buffer_tube"], "default").save(os.path.join(textures, f"{name}.png"))
+
+    # Hauteur du centre optique de chaque viseur (pixels au-dessus du rail) : la vraie visée met l'œil pile dessus
+    optics = {}
+    for name, elements in ACCESSORIES.items():
+        glass = [e for e in elements if element_key(e) == "s" and e["from"][1] >= 0.3]
+        if glass:
+            g = max(glass, key=lambda e: (e["to"][1] - e["from"][1]) * (e["to"][2] - e["from"][2]))
+            optics[name] = round((g["from"][1] + g["to"][1]) / 2, 3)
+    optics["ghost_ring"] = 1.0                                     # œilleton
+    optics["peq15"] = max(e["to"][1] for e in ACCESSORIES["peq15"]) + 0.5  # on vise au-dessus du boîtier laser
+    write(os.path.join(ASSETS, "sight_optics.json"), optics)
 
     print(f"{len(GUNS)} armes x {len(SKINS) - len(LENS_COLORS)} skins + {len(ACCESSORIES)} accessoires générés")
 

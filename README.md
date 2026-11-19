@@ -111,8 +111,10 @@ message de mort « X a été abattu par Y ».
   **canon de rechange** dans l'inventaire, **R** change le canon (puis 20 s avant de pouvoir rechanger).
 
 ### Visuel et sons
-- **Vraie visée** : en visant, l'arme vient au centre de l'écran et on regarde à travers son viseur 3D
-  (point rouge, holo, hausse) ; les lunettes passent en plein écran une fois l'arme épaulée.
+- **Vraie visée** : en visant, l'arme vient au centre de l'écran, l'œil tout près du viseur : on regarde à travers
+  la vitre (transparente) du point rouge, de l'holo, du Kobra..., l'œil pile au centre optique de chaque viseur.
+  Les **lunettes grossissantes** (x2 et plus : ACOG x3, x6, x12, sniper...) **remplissent tout l'écran**
+  une fois l'arme épaulée, comme quand on colle l'œil à l'oculaire.
 - **Bras en 1re personne** : main droite sur la poignée, main gauche sous le garde-main (ou sur la poignée avant).
 - **Rechargement animé** : l'ancien chargeur sort, la main va en chercher un autre, le nouveau entre, puis la
   culasse est armée (visible aussi en 3e personne par les autres joueurs).

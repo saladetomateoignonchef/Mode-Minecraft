@@ -40,9 +40,9 @@ public final class GunPoseHelper {
     /** Distance du viseur à l'œil en vraie visée (blocs) : bras tendus pour un pistolet. */
     private static float adsDistance(ItemStack stack, boolean optic) {
         if (stack.getItem() instanceof GunItem g && g.stats().pistol()) {
-            return 0.62f;
+            return optic ? 0.34f : 0.42f;
         }
-        return optic ? 0.24f : 0.3f; // viseur proche de l'œil : grande fenêtre, comme dans un FPS
+        return optic ? 0.2f : 0.18f; // l'œil tout près du viseur : grande fenêtre, comme dans un FPS
     }
     private static final Vector3f RIGHT_SHOULDER = new Vector3f(0.36f, -0.62f, 0.12f);
     private static final Vector3f LEFT_SHOULDER = new Vector3f(-0.34f, -0.62f, 0.05f);
@@ -146,8 +146,11 @@ public final class GunPoseHelper {
         if (sight == null) {
             sight = new Vector3f(8 / 16f, 10 / 16f, 0.5f);
         }
-        boolean optic = GunItem.getAttachments(stack).get(AttachmentSlot.SIGHT).isPresent();
-        Vector3f eyePoint = new Vector3f(sight).add(0, (optic ? 1.3f : 0.55f) / 16f, 0);
+        var mounted = GunItem.getAttachments(stack).get(AttachmentSlot.SIGHT);
+        boolean optic = mounted.isPresent();
+        Float h = optic ? GunMounts.opticHeight(BuiltInRegistries.ITEM.getKey(mounted.get()).getPath()) : null;
+        // L'œil pile au centre de la vitre du viseur (ou juste au-dessus du rail pour les organes de visée)
+        Vector3f eyePoint = new Vector3f(sight).add(0, (h != null ? h : optic ? 1.3f : 0.55f) / 16f, 0);
         // Position du point de visée après la transformation d'affichage, puis la rotation de -10°
         Vector3f q = displayMatrix().transformPosition(eyePoint, new Vector3f());
         new Matrix4f().rotate(Axis.YP.rotationDegrees(-10f)).transformPosition(q);
