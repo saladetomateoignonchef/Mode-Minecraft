@@ -13,7 +13,8 @@ public enum AttachmentSlot implements StringRepresentable {
     GRIP("grip"),               // poignée AVANT (sous le canon), bipied, lance-grenades...
     MAGAZINE("magazine"),       // chargeur
     PISTOL_GRIP("pistol_grip"), // poignée pistolet (celle qu'on tient)
-    STOCK("stock");             // crosse
+    STOCK("stock"),             // crosse
+    SIDE_RAIL("side_rail");     // rail latéral (laser), fusils d'assaut
 
     public static final Codec<AttachmentSlot> CODEC = StringRepresentable.fromEnum(AttachmentSlot::values);
     public static final StreamCodec<FriendlyByteBuf, AttachmentSlot> STREAM_CODEC = NeoForgeStreamCodecs.enumCodec(AttachmentSlot.class);

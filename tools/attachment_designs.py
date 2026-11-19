@@ -227,3 +227,112 @@ ACCESSORIES = {
     "scar_folding_stock": [zc(-5.8, -1.5, 0, 1.1, 0.75, "T"), zc(-4, 1.1, -1, 1.6, 0.6, "T"), zc(-6.1, -1.7, -5.8, 1.2, 0.8, "k")],
     "ruby_stock": solid_stock("r", pad="g"),
 }
+
+
+# =====================================================================
+# Phase 4 : lasers, silencieux, lance-grenades, grosses lunettes
+# =====================================================================
+def side_laser(body="k"):
+    """Laser sur rail latéral : boîtier collé au flanc gauche (vers -Z), lentille colorée à l'avant."""
+    return [box([-1.8, -0.55, -1.1], [1.6, 0.55, -0.15], body),
+            box([-1.1, -0.7, -0.3], [0.9, 0.7, 0.0], "m"),                 # collier de fixation
+            box([1.6, -0.42, -1.0], [1.95, 0.42, -0.25], "s"),             # lentille (couleur du laser)
+            box([-1.4, 0.55, -0.85], [-0.6, 0.75, -0.4], "s"),             # voyant sur le dessus
+            box([-2.1, -0.2, -0.9], [-1.8, 0.2, -0.45], "d")]              # interrupteur
+
+
+def can(length, r, c="k", end="d", rings=(), collar="m", holes=False):
+    """Silencieux cylindrique : collier de fixation, corps, embout percé, bagues décoratives."""
+    els = [zc(0, -r - 0.05, 0.7, r + 0.05, r + 0.05, collar), zc(0.7, -r, length, r, r, c),
+           zc(length, -r * 0.75, length + 0.08, r * 0.75, r * 0.75, end),
+           zc(length + 0.08, -0.22, length + 0.1, 0.22, 0.22, "d")]
+    for x in rings:
+        els.append(zc(x, -r - 0.04, x + 0.25, r + 0.04, r + 0.04, collar))
+    if holes:
+        for i in range(3):
+            x = length - 1.2 - i * 0.8
+            els.append(zc(x, r - 0.05, x + 0.35, r + 0.02, 0.2, "d"))
+    return els
+
+
+def gl_tube(x0, x1, y0, y1, hw, c="k"):
+    """Tube de lance-grenades + bouche."""
+    return [zc(x0, y0, x1, y1, hw, c), zc(x1 - 0.05, y0 + 0.25, x1 + 0.05, y1 - 0.25, hw - 0.2, "d")]
+
+
+def big_scope(length, r, obj, c="k", ring=None, turrets=True):
+    """Grosse lunette de sniper : tube, objectif large, tourelles de réglage, bague colorée."""
+    els = scope(length, r=r, obj=obj, c=c)
+    cy = 1.2 + r
+    h = length / 2
+    if turrets:
+        els += [zc(-0.6, cy + r, 0.6, cy + r + 0.9, 0.5, "m"), zc(-0.5, cy + r + 0.9, 0.5, cy + r + 1.0, 0.45, "d"),
+                box([-0.6, cy - 0.5, r], [0.6, cy + 0.5, r + 0.9], "m")]
+    if ring:
+        els.append(zc(h - 1.7, cy - r - 0.3 * obj - 0.02, h - 1.5, cy + r + 0.3 * obj + 0.02, r + 0.3 * obj + 0.02, ring))
+    return els
+
+
+LENS_COLORS = {
+    "laser_red": "#ff2020", "laser_green": "#30ff40", "laser_blue": "#3060ff", "laser_purple": "#b040ff",
+    "laser_yellow": "#ffe030", "laser_orange": "#ff8a20", "laser_cyan": "#30f0ff", "laser_white": "#ffffff",
+    "laser_rainbow": ["#ff2020", "#ff8a20", "#ffe030", "#30ff40", "#3060ff", "#b040ff"],
+}
+
+ACCESSORIES.update({name: side_laser() for name in LENS_COLORS})
+ACCESSORIES.update({
+    # ---------- Silencieux pour pistolets / PM ----------
+    "omega_9k": can(3.6, 0.62),
+    "osprey_45": [zc(0, -0.65, 0.7, 0.65, 0.68, "m"), zc(0.7, -1.5, 5.0, 0.62, 0.72, "k"),
+                  zc(5.0, -1.2, 5.08, 0.4, 0.55, "d")],
+    "gemtech_gm9": can(4.2, 0.6, c="m", collar="k"),
+    "bt_impuls": can(4.5, 0.66, rings=(1.6, 3.0)),
+    "dead_air_wolfman": can(5.4, 0.7, c="G", collar="k"),
+    "hybrid_46": can(6.4, 0.76, holes=True),
+    "obsidian_45": can(5.4, 0.74, c="m", rings=(1.4, 2.4, 3.4, 4.4), collar="k"),
+    "ti_rant_45": can(5.2, 0.7, c="l", collar="m"),
+    # ---------- Fusils d'assaut 5,56 ----------
+    "socom556": can(6.0, 0.8),
+    "huxwrx_flow": can(5.6, 0.86, c="t", collar="k", holes=True),
+    "bt_rotex": can(6.0, 0.8, c="G", rings=(2.0, 4.0)),
+    "sandman_s": can(6.8, 0.84, rings=(1.6,)),
+    # ---------- Armes russes ----------
+    "pbs1": can(7.0, 0.8, c="d", collar="k", rings=(2.5, 4.8)),
+    "pbs4": can(6.0, 0.74, c="d", collar="k", rings=(3.0,)),
+    "tgp_a": can(6.4, 0.8, c="k", rings=(1.4, 2.2, 3.0, 3.8, 4.6, 5.4), collar="d"),
+    "surge_762": can(7.4, 0.9, c="m", collar="k"),
+    # ---------- Précision ----------
+    "socom762": can(7.0, 0.9),
+    "aac_sdn6": can(7.2, 0.86, c="d", rings=(5.6,)),
+    "omega_300": can(7.0, 0.85, c="m", collar="k", holes=True),
+    "thunder_beast": can(8.0, 0.95, c="l", rings=(2.0, 6.0)),
+    # ---------- Spéciaux ----------
+    "integral_sd": [zc(-6.0, -1.0, 3.5, 1.0, 1.0, "k"), zc(3.5, -0.7, 3.6, 0.7, 0.7, "d")]
+                   + [zc(-5.5 + i * 1.6, 0.98, -4.9 + i * 1.6, 1.05, 0.5, "d") for i in range(5)],
+    "bottle_silencer": [zc(0, -0.45, 0.8, 0.45, 0.45, "k"), zc(0.8, -0.5, 1.6, 0.5, 0.5, "q"),
+                        zc(1.6, -1.1, 2.2, 1.1, 1.1, "q"), zc(2.2, -1.4, 6.4, 1.4, 1.4, "q"),
+                        zc(3.4, -1.45, 4.4, 1.45, 1.45, "r"), zc(6.4, -1.0, 6.5, 1.0, 1.0, "q")],
+    "ruby_silencer": can(6.0, 0.8, c="r", collar="g", rings=(2.0, 4.0)),
+    "echo_silencer": can(6.2, 0.86, c="e", collar="d", rings=(1.6, 3.2, 4.8))
+                     + [zc(1.0 + i * 1.6, 0.8, 1.4 + i * 1.6, 0.9, 0.3, "s") for i in range(3)],
+    "obsidian_silencer": can(6.6, 1.0, c="o", collar="o", rings=(2.0, 4.4)),
+    "oss_helix": can(6.4, 0.9, rings=(1.2, 2.0, 2.8, 3.6, 4.4, 5.2), collar="m"),
+
+    # ---------- Lance-grenades sous le canon ----------
+    "m320": gl_tube(-1, 6, -2.3, -0.4, 0.9) + [zc(-1, -0.4, 6, 0, 0.6, "m"), zc(-3.2, -2.7, -1, -0.3, 1.0, "k"),
+                                               zc(-3.6, -4.5, -2.4, -2.7, 0.55, "k")],
+    "gp25": gl_tube(-0.5, 5.2, -2.2, -0.4, 0.85) + [zc(-0.5, -0.4, 5.2, 0, 0.55, "m"),
+                                                   zc(-2.6, -2.4, -0.5, -0.3, 0.9, "m"), zc(-2.7, -4.4, -1.5, -2.4, 0.62, "w")],
+    "ag36": [zc(-2.6, -2.9, 5.5, -0.2, 1.0, "d")] + gl_tube(5.5, 7.0, -2.3, -0.7, 0.75)
+            + [zc(-2.7, -4.7, -1.5, -2.9, 0.55, "d"), zc(-1, -0.2, 5.5, 0, 0.7, "k")],
+    "fn_eglm": gl_tube(-1.5, 5.6, -2.5, -0.3, 0.95) + [zc(-2.8, -2.6, -1.5, -0.3, 0.95, "k"),
+                                                     zc(-2.9, -4.5, -1.8, -2.6, 0.55, "T"), zc(0, -0.3, 5.6, 0, 0.7, "m")],
+    "hk79": gl_tube(-0.6, 4.6, -2.0, -0.4, 0.8, "m") + [zc(-0.6, -0.4, 4.6, 0, 0.6, "k"),
+                                                       zc(-1.4, -1.8, -0.6, -0.6, 0.6, "k")],
+
+    # ---------- Grosses lunettes de sniper ----------
+    "leupold_x6": big_scope(11.0, 0.9, 2.0, ring="g", turrets=False) + [zc(-0.5, 2.1 + 0.9, 0.5, 2.1 + 1.6, 0.42, "m")],
+    "sb_x12": big_scope(13.0, 1.0, 2.8),
+    "nightforce_x20": big_scope(15.0, 1.05, 3.4, ring="m"),
+    "sb_pm2_5_25": big_scope(14.0, 1.0, 3.0, ring="l") + [zc(-4.6, 0.6, -4.0, 3.2, 1.6, "m")],
+})

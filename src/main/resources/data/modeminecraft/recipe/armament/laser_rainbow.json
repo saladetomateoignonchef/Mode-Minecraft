@@ -1,0 +1,38 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "attachments",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 1
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 2
+    },
+    {
+      "item": "minecraft:glass_pane",
+      "count": 1
+    },
+    {
+      "item": "minecraft:red_dye",
+      "count": 1
+    },
+    {
+      "item": "minecraft:lime_dye",
+      "count": 1
+    },
+    {
+      "item": "minecraft:blue_dye",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:rubis",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:laser_rainbow",
+    "count": 1
+  }
+}

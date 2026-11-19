@@ -55,6 +55,14 @@ public final class ModDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> UNDERBARREL_LOADED =
             DATA_COMPONENTS.registerComponentType("underbarrel_loaded", b -> b.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
 
+    /** Laser allumé ? (touche T ; allumé par défaut) */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> LASER_ON =
+            DATA_COMPONENTS.registerComponentType("laser_on", b -> b.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
+
+    /** Nombre de tirs effectués avec un silencieux qui s'use (silencieux artisanal). */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> MUZZLE_WEAR =
+            DATA_COMPONENTS.registerComponentType("muzzle_wear", b -> b.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT));
+
     /** Instants (temps du monde, en ticks) des animations : armement, vérification de chambre, rechargement. */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> RACK_AT = timestamp("rack_at");
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> CHECK_AT = timestamp("check_at");

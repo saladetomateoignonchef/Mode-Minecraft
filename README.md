@@ -60,14 +60,14 @@ Toutes les armes à feu, munitions et accessoires se fabriquent à la **table d'
 - **Double appui sur s'accroupir** : s'allonger / se relever (aussi en sautant), avec ou sans arme.
   Allongé : recul et dispersion divisés par 2. Maintenir s'accroupir pour viser.
 - **R** : recharger. **S'accroupir** : viser (moins de dispersion, zoom et réticule si un viseur est monté).
-- Les touches (R, B, H, T, V) se changent dans *Options > Commandes > Mode Minecraft*. Munitions infinies en créatif.
+- Les touches (R recharger, B mode de tir, H vérifier la chambre, G type de munition, T laser, V tir sous le canon) se changent dans *Options > Commandes > Mode Minecraft*. Munitions infinies en créatif.
 
 **Réalisme :** balle chambrée (le HUD affiche `chargeur+1`) ; arme neuve ou vidée = le personnage tire la culasse
 (au clic droit, ou automatiquement à la fin d'un rechargement à vide) ; culasse des pistolets bloquée en arrière
 quand ils sont vides ; douilles éjectées (laiton, acier ou cartouche rouge) ; l'arme s'incline pendant le rechargement.
 
 **Munitions spéciales** (table d'armement, onglet *Spéciales* : 16 munitions normales + un ingrédient,
-touche **T** pour changer le type chargé ; les balles chargées sont rendues) :
+touche **G** pour changer le type chargé ; les balles chargées sont rendues) :
 perforantes (flint + fer), explosives (TNT), traçantes (glowstone, traînée lumineuse visible par tous),
 incendiaires (poudre de blaze), pointe creuse (pépites de fer), subsoniques (laine), caoutchouc (boules de slime),
 marqueuses (poche d'encre lumineuse), venimeuses (yeux d'araignée), givrantes (glace compacte),
@@ -93,16 +93,17 @@ Se fabrique à la table de craft : `_, vitre, _` / `lingot de fer, table de forg
 Poser l'arme au centre, puis les accessoires autour. Les statistiques finales s'affichent à droite,
 et les flèches changent le **skin** : Défaut, Désert, Camouflage forêt, Camouflage arctique, Or, Rubis.
 
-La table a **6 emplacements** : viseur, bouche, poignée avant, chargeur, poignée pistolet et crosse.
-**90 accessoires** au total ; l'infobulle de chacun donne ses effets exacts.
+La table a **7 emplacements** : viseur, bouche, poignée avant, chargeur, poignée pistolet, crosse et rail latéral (laser, fusils d'assaut).
+**134 accessoires** au total ; l'infobulle de chacun donne ses effets exacts.
 
 | Emplacement | Accessoires | Effets principaux |
 |---|---|---|
-| Viseur (23) | point rouge, holographique, Kobra, RMR, réflexe mini, hausse ghost ring, prisme x2, ACOG x4, PSO-1, chasse x4, ELCAN (x1/x4), x4 + viseur à 45° (x4/x1), holo + loupe x3 (x1,3/x3), **lunette variable 1-6x**, x6, x8, x12, télémétrique, numérique, rubis, **thermique**, **vision nocturne**, laser PEQ-15 | zoom, réticule propre à chaque viseur, précision en visée |
-| Bouche (2) | silencieux, compensateur | tir discret / recul |
-| Poignée avant (22) | verticale, inclinée, courte, Magpul AFG/RVG/MVG, BCM KAG, Tango Down, butée de main, bois, pliante, carbone, caoutchouc, rubis, lampe, laser, lampe + laser, Grip-Pod, bipied Harris, **M203**, **M26 MASS**, **baïonnette** | recul, dispersion, stabilité allongé, gadgets |
+| Viseur (27) | **lunettes de sniper Leupold x6, Schmidt & Bender x12, Nightforce x20, S&B PM II 5-25x (fusils de précision uniquement)**, point rouge, holographique, Kobra, RMR, réflexe mini, hausse ghost ring, prisme x2, ACOG x4, PSO-1, chasse x4, ELCAN (x1/x4), x4 + viseur à 45° (x4/x1), holo + loupe x3 (x1,3/x3), **lunette variable 1-6x**, x6, x8, x12, télémétrique, numérique, rubis, **thermique**, **vision nocturne**, laser PEQ-15 | zoom, réticule propre à chaque viseur, précision en visée |
+| Bouche (28) | compensateur, silencieux générique + 26 silencieux réels selon le calibre : Omega 9K, Osprey 45, Gemtech GM-9, B&T Impuls-IIA (9 mm / .45) ; Dead Air Wolfman, Hybrid 46, Rugged Obsidian 45, AAC Ti-RANT 45 (PM) ; SureFire SOCOM556, Huxwrx Flow, B&T Rotex-V, Dead Air Sandman-S (5,56) ; PBS-1, PBS-4, TGP-A (AK), Rugged Surge 7.62 ; SureFire SOCOM762, AAC SDN-6, Omega 300, Thunder Beast Ultra 9 (précision) ; **intégral MP5SD** (PM), **bouteille** (casse après 40 tirs), **rubis** (+5 % dégâts), **écho** (aucun bruit), **obsidienne**, OSS Helix 6 | tir discret, chaque silencieux a ses bonus |
+| Poignée avant (22) | verticale, inclinée, courte, Magpul AFG/RVG/MVG, BCM KAG, Tango Down, butée de main, bois, pliante, carbone, caoutchouc, rubis, lampe, laser, lampe + laser, Grip-Pod, bipied Harris, **baïonnette**, lance-grenades **M203** (M4, M16A4, HK416, Tavor), **M320** (M4, M16A4, HK416), **GP-25** (AK-47, AK-74, AN-94), **AG36** (G36), **FN EGLM** (SCAR-H), **HK79** (G3), fusil à pompe **M26 MASS** (M4, M16A4, HK416) | recul, dispersion, stabilité allongé, gadgets |
 | Chargeur (3) | 24 coups, 36 coups, camembert | capacité |
 | Poignée pistolet (20) | Magpul MOE/K2/MIAD, Hogue, BCM Gunfighter, Tango Down, ergonomique, noyer, nacrée, or, rubis, squelette, compacte, compétition, granitée, repose-pouce, Crimson Trace, rangement, empreintes, gel | recul, vitesse de visée, rechargement, sortie de l'arme |
+| Rail latéral (9) | lasers rouge, vert, bleu, violet, jaune, orange, cyan, blanc, **arc-en-ciel** (fusils d'assaut uniquement) | laser visible, dispersion sans viser réduite |
 | Crosse (20) | A2, CTR, Magpul PRS, squelette, pliante, filaire, bois, appui-joue, trou de pouce, **sans crosse**, attelle de pistolet (pistolets uniquement), tube tampon, Limbsaver, Knoxx, carbone, monopode, Accuracy International, Zhukov, SCAR, rubis | recul, mobilité, précision |
 
 Fonctions spéciales :
@@ -112,7 +113,9 @@ Fonctions spéciales :
 - **Lunette télémétrique** : affiche la distance de la cible ; **lunette numérique** : affiche ses points de vie ;
   **lunette en rubis** : l'ennemi visé brille en rouge.
 - **Laser** (poignée laser, PEQ-15, Crimson Trace) : point rouge visible par tous, dispersion sans viser réduite.
-- **M203 / M26 MASS** : touche **V** pour charger puis tirer une grenade 40 mm / une cartouche de calibre 12.
+- **Lasers** : touche **T** pour allumer / éteindre ; faisceau et point lumineux de la couleur du laser, visibles par tous les joueurs.
+- **Compatibilité réaliste** : un silencieux ne se monte que sur les armes de son calibre (ou sur les armes prévues, ex. PBS-1 sur AK-47) ; un lance-grenades seulement sur les armes qui l'acceptent en vrai. L'infobulle indique les armes ou calibres compatibles.
+- **Lance-grenades / M26 MASS** : touche **V** pour charger puis tirer une grenade 40 mm / une cartouche de calibre 12.
 - **Baïonnette** : +6 dégâts au corps à corps avec l'arme.
 - **Bipied, Grip-Pod, monopode** : recul et dispersion très réduits quand on est allongé ou immobile en visée.
 - **Délai pour sortir l'arme** : chaque arme a un temps de sortie (plus long pour les armes lourdes), modifié par la crosse et la poignée.

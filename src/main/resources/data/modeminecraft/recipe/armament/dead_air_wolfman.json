@@ -1,0 +1,18 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "attachments",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 5
+    },
+    {
+      "tag": "minecraft:wool",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:dead_air_wolfman",
+    "count": 1
+  }
+}

@@ -45,11 +45,15 @@ public record GunStats(
         boolean chamber,       // l'arme a une chambre : +1 balle, et il faut armer la culasse si elle est vide
         boolean slideLock,     // la culasse reste bloquée en arrière quand l'arme est vide (pistolets)
         boolean pistol,        // arme de poing (pour la compatibilité des accessoires, ex. attelle)
+        Category category,     // famille d'arme (compatibilité des accessoires)
         int drawTicks,         // délai pour sortir l'arme (ticks)
         Set<AttachmentSlot> slots) { // emplacements d'accessoires disponibles
 
     /** Douille éjectée au tir. */
     public enum Casing { NONE, BRASS, STEEL, SHELL }
+
+    /** Famille d'arme. */
+    public enum Category { PISTOL, SMG, ASSAULT, SNIPER, SHOTGUN, MACHINE_GUN, LAUNCHER }
 
     /** Type de projectile tiré. */
     public enum ProjectileKind { BULLET, ROCKET, GRENADE }
@@ -84,6 +88,7 @@ public record GunStats(
         private Casing casing = Casing.BRASS;
         private boolean chamber = true, slideLock = false, pistol = false;
         private int drawTicks = 10;
+        private Category category = Category.LAUNCHER;
         private Supplier<? extends Item> ammo;
         private Supplier<SoundEvent> sound;
         private final Set<AttachmentSlot> slots = EnumSet.noneOf(AttachmentSlot.class);
@@ -119,7 +124,8 @@ public record GunStats(
         public Builder noChamber() { chamber = false; return this; }
         public Builder slideLock() { slideLock = true; return this; }
         /** Arme de poing : sortie rapide, accepte les accessoires pour pistolets. */
-        public Builder pistolCategory() { pistol = true; drawTicks = 5; return this; }
+        public Builder pistolCategory() { pistol = true; drawTicks = 5; category = Category.PISTOL; return this; }
+        public Builder category(Category c) { category = c; return this; }
         public Builder draw(int ticks) { drawTicks = ticks; return this; }
         public Builder slots(AttachmentSlot... s) { slots.addAll(Set.of(s)); return this; }
         /** Retire certains emplacements (ex. pas de crosse sur un bullpup). */
@@ -143,7 +149,7 @@ public record GunStats(
             return new GunStats(damage, pellets, magazine, fireDelay, reload, velocity, spread, aimSpread, recoil,
                     automatic, ammo, sound, volume, pitch, explosionPower, projectile, scopeZoom, scopeOverlay,
                     burst, burstCooldown, reloadPerRound, pierce, armorPiercing, spinUp, disposable, fireModes,
-                    projectile == ProjectileKind.BULLET ? casing : Casing.NONE, chamber && !disposable, slideLock, pistol, drawTicks,
+                    projectile == ProjectileKind.BULLET ? casing : Casing.NONE, chamber && !disposable, slideLock, pistol, category, drawTicks,
                     Set.copyOf(slots));
         }
     }

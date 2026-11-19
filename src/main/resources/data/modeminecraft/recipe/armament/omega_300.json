@@ -1,0 +1,18 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "attachments",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 6
+    },
+    {
+      "item": "minecraft:quartz",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:omega_300",
+    "count": 1
+  }
+}

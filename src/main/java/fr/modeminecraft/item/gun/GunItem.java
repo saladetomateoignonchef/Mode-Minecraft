@@ -218,8 +218,7 @@ public class GunItem extends Item {
         if (!stats.slots().contains(attachment.slot())) {
             return false;
         }
-        AttachmentItem.Compat compat = attachment.stats().compat();
-        if (compat == AttachmentItem.Compat.PISTOL && !stats.pistol() || compat == AttachmentItem.Compat.LONG && stats.pistol()) {
+        if (!attachment.fits(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(this).getPath(), stats)) {
             return false;
         }
         // Un chargeur doit contenir plus de balles que celui d'origine
@@ -457,6 +456,7 @@ public class GunItem extends Item {
             ejectCasing(serverLevel, player, serverLevel);
         }
 
+        wearMuzzle(player, stack);
         player.awardStat(Stats.ITEM_USED.get(this));
         if (!silenced) {
             // Un tir silencieux n'est pas détecté par les capteurs sculk
@@ -510,6 +510,58 @@ public class GunItem extends Item {
     // ------------------------------------------------------------------
     public static boolean isUnderbarrelLoaded(ItemStack stack) {
         return stack.getOrDefault(ModDataComponents.UNDERBARREL_LOADED.get(), false);
+    }
+
+    /** Silencieux artisanal : il s'use à chaque tir et finit par casser. */
+    private void wearMuzzle(Player player, ItemStack stack) {
+        if (!(getAttachments(stack).get(AttachmentSlot.MUZZLE).orElse(null) instanceof AttachmentItem muzzle)
+                || muzzle.stats().wearShots() <= 0 || stack.isEmpty()) {
+            return;
+        }
+        int wear = stack.getOrDefault(ModDataComponents.MUZZLE_WEAR.get(), 0) + 1;
+        if (wear < muzzle.stats().wearShots()) {
+            stack.set(ModDataComponents.MUZZLE_WEAR.get(), wear);
+            return;
+        }
+        stack.remove(ModDataComponents.MUZZLE_WEAR.get());
+        setAttachments(stack, getAttachments(stack).with(AttachmentSlot.MUZZLE, null));
+        player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
+                SoundEvents.GLASS_BREAK, SoundSource.PLAYERS, 0.8f, 1.2f);
+        player.displayClientMessage(Component.translatable("message.modeminecraft.muzzle_broken", muzzle.getDescription())
+                .withStyle(ChatFormatting.RED), true);
+    }
+
+    /** Laser allumé ? (allumé par défaut quand on le monte) */
+    public static boolean isLaserOn(ItemStack stack) {
+        return stack.getOrDefault(ModDataComponents.LASER_ON.get(), true);
+    }
+
+    /** Couleur du laser monté (0xRRGGBB, -1 = arc-en-ciel), ou null si l'arme n'a pas de laser allumé. */
+    public static Integer activeLaserColor(ItemStack stack) {
+        if (!isLaserOn(stack)) {
+            return null;
+        }
+        for (Item item : getAttachments(stack).parts().values()) {
+            if (item instanceof AttachmentItem a && a.stats().specials().contains(AttachmentItem.Special.LASER)) {
+                return a.stats().laserColor();
+            }
+        }
+        return null;
+    }
+
+    /** Touche T : allumer / éteindre le laser. */
+    public void toggleLaser(Player player, ItemStack stack) {
+        if (!resolve(stack).has(AttachmentItem.Special.LASER)) {
+            player.displayClientMessage(Component.translatable("message.modeminecraft.laser.none")
+                    .withStyle(ChatFormatting.GRAY), true);
+            return;
+        }
+        boolean on = !isLaserOn(stack);
+        stack.set(ModDataComponents.LASER_ON.get(), on);
+        player.displayClientMessage(Component.translatable(on ? "message.modeminecraft.laser.on" : "message.modeminecraft.laser.off")
+                .withStyle(on ? ChatFormatting.GREEN : ChatFormatting.GRAY), true);
+        player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
+                SoundEvents.STONE_BUTTON_CLICK_ON, SoundSource.PLAYERS, 0.4f, on ? 1.8f : 1.4f);
     }
 
     public void secondaryFire(Player player, ItemStack stack) {

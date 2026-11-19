@@ -167,7 +167,8 @@ public final class ModItems {
     // Emplacements d'accessoires selon le type d'arme
     private static final AttachmentSlot SIGHT = AttachmentSlot.SIGHT, MUZZLE = AttachmentSlot.MUZZLE,
             GRIP = AttachmentSlot.GRIP, MAG = AttachmentSlot.MAGAZINE,
-            PGRIP = AttachmentSlot.PISTOL_GRIP, STOCK = AttachmentSlot.STOCK;
+            PGRIP = AttachmentSlot.PISTOL_GRIP, STOCK = AttachmentSlot.STOCK,
+            RAIL = AttachmentSlot.SIDE_RAIL;
 
     // Pistolet / pistolet-mitrailleur / fusil : réglages communs
     private static GunStats.Builder pistol() {
@@ -176,27 +177,27 @@ public final class ModItems {
     }
 
     private static GunStats.Builder smg() {
-        return GunStats.builder().automatic().velocity(4.0f).spread(2.2f, 0.9f).recoil(0.9f).sound(SHOT, 0.35f, 1.95f)
+        return GunStats.builder().category(GunStats.Category.SMG).automatic().velocity(4.0f).spread(2.2f, 0.9f).recoil(0.9f).sound(SHOT, 0.35f, 1.95f)
                 .draw(7).slots(SIGHT, MUZZLE, GRIP, MAG, PGRIP, STOCK);
     }
 
     private static GunStats.Builder rifle() {
-        return GunStats.builder().automatic().velocity(4.8f).spread(2.2f, 0.8f).recoil(1.2f).sound(SHOT, 0.4f, 1.7f)
-                .slots(SIGHT, MUZZLE, GRIP, MAG, PGRIP, STOCK);
+        return GunStats.builder().category(GunStats.Category.ASSAULT).automatic().velocity(4.8f).spread(2.2f, 0.8f).recoil(1.2f)
+                .sound(SHOT, 0.4f, 1.7f).slots(SIGHT, MUZZLE, GRIP, MAG, PGRIP, STOCK, RAIL);
     }
 
     private static GunStats.Builder sniper() {
-        return GunStats.builder().velocity(7.5f).spread(4.0f, 0.0f).sound(SHOT, 0.9f, 1.35f).draw(14)
+        return GunStats.builder().category(GunStats.Category.SNIPER).velocity(7.5f).spread(4.0f, 0.0f).sound(SHOT, 0.9f, 1.35f).draw(14)
                 .slots(SIGHT, MUZZLE, GRIP, PGRIP, STOCK);
     }
 
     private static GunStats.Builder shotgun() {
-        return GunStats.builder().velocity(3.0f).spread(8.0f, 6.0f).ammo(ModItems.SHOTGUN_SHELL).sound(SHOT, 0.7f, 1.2f)
+        return GunStats.builder().category(GunStats.Category.SHOTGUN).velocity(3.0f).spread(8.0f, 6.0f).ammo(ModItems.SHOTGUN_SHELL).sound(SHOT, 0.7f, 1.2f)
                 .slots(SIGHT, MUZZLE, GRIP, PGRIP, STOCK);
     }
 
     private static GunStats.Builder machineGun() {
-        return GunStats.builder().automatic().velocity(4.8f).spread(3.2f, 1.4f).sound(SHOT, 0.5f, 1.5f).draw(18)
+        return GunStats.builder().category(GunStats.Category.MACHINE_GUN).automatic().velocity(4.8f).spread(3.2f, 1.4f).sound(SHOT, 0.5f, 1.5f).draw(18)
                 .slots(SIGHT, MUZZLE, GRIP, PGRIP, STOCK);
     }
 
@@ -258,11 +259,11 @@ public final class ModItems {
     /** G36 : lunette intégrée (pas d'emplacement viseur). */
     public static final DeferredItem<GunItem> G36 = gun("g36", Rarity.UNCOMMON,
             rifle().damage(5.5f).magazine(30).fireDelay(2).reload(42).spread(2.0f, 0.6f).recoil(1.0f).ammo(ModItems.AMMO_556)
-                    .scope(0.4f, SightOverlay.SCOPE_X4).noSlots().slots(MUZZLE, GRIP, MAG, PGRIP, STOCK));
+                    .scope(0.4f, SightOverlay.SCOPE_X4).noSlots().slots(MUZZLE, GRIP, MAG, PGRIP, STOCK, RAIL));
     /** Steyr AUG : bullpup avec lunette intégrée. */
     public static final DeferredItem<GunItem> AUG = gun("aug", Rarity.UNCOMMON,
             rifle().damage(5.5f).magazine(30).fireDelay(2).reload(44).spread(2.0f, 0.6f).recoil(1.0f).ammo(ModItems.AMMO_556)
-                    .scope(0.6f, SightOverlay.SCOPE_X4).noSlots().slots(MUZZLE, GRIP, MAG, PGRIP)); // bullpup : pas de crosse
+                    .scope(0.6f, SightOverlay.SCOPE_X4).noSlots().slots(MUZZLE, GRIP, MAG, PGRIP, RAIL)); // bullpup : pas de crosse
     public static final DeferredItem<GunItem> TAVOR = gun("tavor", Rarity.UNCOMMON,
             rifle().damage(5.5f).magazine(30).fireDelay(2).reload(40).spread(2.0f, 0.8f).recoil(1.0f).ammo(ModItems.AMMO_556).without(STOCK));
     /** M16A4 : coup par coup ou rafale de 3 (pas d'automatique). */
@@ -386,9 +387,9 @@ public final class ModItems {
     public static final DeferredItem<AttachmentItem> CARBON_GRIP = attachment("carbon_grip", fg().recoil(0.9f).mobility(1.15f));
     public static final DeferredItem<AttachmentItem> RUBBER_FOREGRIP = attachment("rubber_foregrip", fg().recoil(0.8f).movingSpread(0.0f));
     public static final DeferredItem<AttachmentItem> M203 = attachment("m203",
-            fg().mobility(0.85f).aimSpeed(0.85f).special(AttachmentItem.Special.UNDERBARREL_GRENADE));
+            launcher().guns("m4", "m16a4", "hk416", "tavor"));
     public static final DeferredItem<AttachmentItem> M26_MASS = attachment("m26_mass",
-            fg().mobility(0.85f).aimSpeed(0.85f).special(AttachmentItem.Special.UNDERBARREL_SHOTGUN));
+            fg().mobility(0.85f).aimSpeed(0.85f).special(AttachmentItem.Special.UNDERBARREL_SHOTGUN).guns("m4", "m16a4", "hk416"));
     public static final DeferredItem<AttachmentItem> BAYONET = attachment("bayonet", fg().special(AttachmentItem.Special.BAYONET));
     public static final DeferredItem<AttachmentItem> RUBY_FOREGRIP = attachment("ruby_foregrip", fg().recoil(0.6f));
     public static final DeferredItem<AttachmentItem> TANGO_DOWN_GRIP = attachment("tango_down_grip", fg().recoil(0.75f).spread(0.95f));
@@ -455,7 +456,7 @@ public final class ModItems {
             AttachmentItem.Stats.of(AttachmentSlot.SIGHT).aimSpread(0.45f)
                     .sights(new SightMode(0.25f, SightOverlay.SCOPE_X4), new SightMode(0.95f, SightOverlay.IRON)));
     public static final DeferredItem<AttachmentItem> PEQ15 = attachment("peq15",
-            AttachmentItem.Stats.of(AttachmentSlot.SIGHT).hipSpread(0.5f).special(AttachmentItem.Special.LASER));
+            AttachmentItem.Stats.of(AttachmentSlot.SIGHT).hipSpread(0.5f).laser(0x30FF40));
     public static final DeferredItem<AttachmentItem> HUNTING_SCOPE = attachment("hunting_scope",
             sight(0.25f, SightOverlay.HUNTING).aimSpread(0.4f));
     public static final DeferredItem<AttachmentItem> DIGITAL_SCOPE = attachment("digital_scope",
@@ -486,6 +487,88 @@ public final class ModItems {
     public static final DeferredItem<AttachmentItem> ZHUKOV_STOCK = attachment("zhukov_stock", st().recoil(0.8f));
     public static final DeferredItem<AttachmentItem> SCAR_FOLDING_STOCK = attachment("scar_folding_stock", st().recoil(0.85f).reload(0.95f));
     public static final DeferredItem<AttachmentItem> RUBY_STOCK = attachment("ruby_stock", st().recoil(0.65f).spread(0.85f));
+
+    // ---------- Lance-grenades sous le canon (seulement sur les armes qui l'acceptent en vrai) ----------
+    public static final DeferredItem<AttachmentItem> M320 = attachment("m320", launcher().guns("m4", "m16a4", "hk416"));
+    public static final DeferredItem<AttachmentItem> GP25 = attachment("gp25", launcher().guns("ak47", "ak74", "an94"));
+    public static final DeferredItem<AttachmentItem> AG36 = attachment("ag36", launcher().guns("g36"));
+    public static final DeferredItem<AttachmentItem> FN_EGLM = attachment("fn_eglm", launcher().guns("scar_h"));
+    public static final DeferredItem<AttachmentItem> HK79 = attachment("hk79", launcher().guns("g3"));
+
+    // ---------- Lasers (rail latéral des fusils d'assaut, touche T) ----------
+    public static final DeferredItem<AttachmentItem> LASER_RED = attachment("laser_red", laser(0xFF1010));
+    public static final DeferredItem<AttachmentItem> LASER_GREEN = attachment("laser_green", laser(0x20FF30));
+    public static final DeferredItem<AttachmentItem> LASER_BLUE = attachment("laser_blue", laser(0x2050FF));
+    public static final DeferredItem<AttachmentItem> LASER_PURPLE = attachment("laser_purple", laser(0xB030FF));
+    public static final DeferredItem<AttachmentItem> LASER_YELLOW = attachment("laser_yellow", laser(0xFFE020));
+    public static final DeferredItem<AttachmentItem> LASER_ORANGE = attachment("laser_orange", laser(0xFF8010));
+    public static final DeferredItem<AttachmentItem> LASER_CYAN = attachment("laser_cyan", laser(0x20F0FF));
+    public static final DeferredItem<AttachmentItem> LASER_WHITE = attachment("laser_white", laser(0xFFFFFF));
+    public static final DeferredItem<AttachmentItem> LASER_RAINBOW = attachment("laser_rainbow", laser(-1));
+
+    // ---------- Silencieux (selon le calibre, comme en vrai) ----------
+    public static final DeferredItem<AttachmentItem> OMEGA_9K = attachment("omega_9k", sil().damage(0.95f).calibers("ammo_9mm"));
+    public static final DeferredItem<AttachmentItem> OSPREY_45 = attachment("osprey_45",
+            sil().damage(0.92f).aimSpread(0.9f).calibers("ammo_45acp", "ammo_9mm"));
+    public static final DeferredItem<AttachmentItem> GEMTECH_GM9 = attachment("gemtech_gm9", sil().damage(0.95f).calibers("ammo_9mm"));
+    public static final DeferredItem<AttachmentItem> BT_IMPULS = attachment("bt_impuls",
+            sil().damage(0.92f).recoil(0.9f).only(AttachmentItem.Compat.PISTOL).calibers("ammo_9mm", "ammo_45acp"));
+    public static final DeferredItem<AttachmentItem> DEAD_AIR_WOLFMAN = attachment("dead_air_wolfman",
+            sil().volume(0.1f).damage(0.92f).calibers("ammo_9mm"));
+    public static final DeferredItem<AttachmentItem> HYBRID_46 = attachment("hybrid_46",
+            sil().damage(0.9f).calibers("ammo_9mm", "ammo_45acp", "ammo_357", "ammo_57", "ammo_46", "ammo_762x25", "ammo_556"));
+    public static final DeferredItem<AttachmentItem> OBSIDIAN_45 = attachment("obsidian_45",
+            sil().damage(0.93f).recoil(0.95f).calibers("ammo_9mm", "ammo_45acp", "ammo_357"));
+    public static final DeferredItem<AttachmentItem> TI_RANT_45 = attachment("ti_rant_45",
+            sil().damage(0.92f).draw(0.9f).calibers("ammo_45acp", "ammo_9mm"));
+    public static final DeferredItem<AttachmentItem> SOCOM556 = attachment("socom556", sil().damage(0.92f).recoil(0.9f).calibers("ammo_556"));
+    public static final DeferredItem<AttachmentItem> HUXWRX_FLOW = attachment("huxwrx_flow", sil().damage(0.95f).calibers("ammo_556"));
+    public static final DeferredItem<AttachmentItem> BT_ROTEX = attachment("bt_rotex", sil().damage(0.92f).spread(0.95f).calibers("ammo_556"));
+    public static final DeferredItem<AttachmentItem> SANDMAN_S = attachment("sandman_s",
+            sil().volume(0.1f).damage(0.9f).calibers("ammo_556", "ammo_762", "ammo_545"));
+    public static final DeferredItem<AttachmentItem> PBS1 = attachment("pbs1", sil().damage(0.9f).guns("ak47"));
+    public static final DeferredItem<AttachmentItem> PBS4 = attachment("pbs4", sil().damage(0.9f).recoil(0.9f).guns("ak74", "an94"));
+    public static final DeferredItem<AttachmentItem> TGP_A = attachment("tgp_a", sil().damage(0.93f).guns("ak47", "ak74", "an94", "pkm"));
+    public static final DeferredItem<AttachmentItem> SURGE_762 = attachment("surge_762",
+            sil().volume(0.12f).damage(0.92f).calibers("ammo_762", "ammo_762x54r", "ammo_556"));
+    public static final DeferredItem<AttachmentItem> SOCOM762 = attachment("socom762", sil().damage(0.95f).calibers("ammo_762", "ammo_556"));
+    public static final DeferredItem<AttachmentItem> AAC_SDN6 = attachment("aac_sdn6",
+            sil().damage(0.92f).aimSpread(0.9f).calibers("ammo_762", "ammo_556"));
+    public static final DeferredItem<AttachmentItem> OMEGA_300 = attachment("omega_300",
+            sil().damage(0.92f).calibers("ammo_556", "ammo_545", "ammo_762", "ammo_762x54r", "ammo_792", "ammo_338"));
+    public static final DeferredItem<AttachmentItem> THUNDER_BEAST = attachment("thunder_beast",
+            sil().damage(0.95f).recoil(0.85f).calibers("ammo_762", "ammo_762x54r", "ammo_792", "ammo_338"));
+    public static final DeferredItem<AttachmentItem> INTEGRAL_SD = attachment("integral_sd",
+            sil().volume(0.05f).damage(0.9f).mobility(0.9f).only(AttachmentItem.Compat.SMG));
+    public static final DeferredItem<AttachmentItem> BOTTLE_SILENCER = attachment("bottle_silencer", sil().spread(1.15f).wears(40));
+    public static final DeferredItem<AttachmentItem> RUBY_SILENCER = attachment("ruby_silencer", sil().damage(1.05f));
+    public static final DeferredItem<AttachmentItem> ECHO_SILENCER = attachment("echo_silencer",
+            sil().volume(0.0f).damage(0.92f).special(AttachmentItem.Special.ECHO));
+    public static final DeferredItem<AttachmentItem> OBSIDIAN_SILENCER = attachment("obsidian_silencer",
+            sil().damage(0.92f).recoil(0.75f).mobility(0.9f));
+    public static final DeferredItem<AttachmentItem> OSS_HELIX = attachment("oss_helix",
+            sil().damage(0.93f).aimSpeed(1.15f).calibers("ammo_556", "ammo_762", "ammo_545", "ammo_762x54r"));
+
+    // ---------- Grosses lunettes (fusils de précision uniquement) ----------
+    public static final DeferredItem<AttachmentItem> LEUPOLD_X6 = attachment("leupold_x6",
+            sight(0.166f, SightOverlay.SCOPE_X6).aimSpread(0.3f).aimSpeed(0.85f).only(AttachmentItem.Compat.SNIPER));
+    public static final DeferredItem<AttachmentItem> SB_X12 = attachment("sb_x12",
+            sight(0.083f, SightOverlay.SCOPE_X12).aimSpread(0.2f).aimSpeed(0.75f).only(AttachmentItem.Compat.SNIPER));
+    public static final DeferredItem<AttachmentItem> NIGHTFORCE_X20 = attachment("nightforce_x20",
+            sight(0.05f, SightOverlay.SNIPER).aimSpread(0.15f).aimSpeed(0.65f).only(AttachmentItem.Compat.SNIPER));
+    public static final DeferredItem<AttachmentItem> SB_PM2_5_25 = attachment("sb_pm2_5_25",
+            AttachmentItem.Stats.of(AttachmentSlot.SIGHT).aimSpread(0.15f).aimSpeed(0.7f).only(AttachmentItem.Compat.SNIPER).sights(
+                    new SightMode(0.2f, SightOverlay.SCOPE_X12), new SightMode(0.1f, SightOverlay.SCOPE_X12),
+                    new SightMode(0.0667f, SightOverlay.SCOPE_X12), new SightMode(0.05f, SightOverlay.SCOPE_X12),
+                    new SightMode(0.04f, SightOverlay.SCOPE_X12)));
+
+    private static AttachmentItem.Stats launcher() {
+        return fg().mobility(0.85f).aimSpeed(0.85f).special(AttachmentItem.Special.UNDERBARREL_GRENADE);
+    }
+    private static AttachmentItem.Stats laser(int color) {
+        return AttachmentItem.Stats.of(AttachmentSlot.SIDE_RAIL).hipSpread(0.6f).laser(color).only(AttachmentItem.Compat.ASSAULT);
+    }
+    private static AttachmentItem.Stats sil() { return AttachmentItem.Stats.of(AttachmentSlot.MUZZLE).silencer(); }
 
     private static AttachmentItem.Stats fg() { return AttachmentItem.Stats.of(AttachmentSlot.GRIP); }
     private static AttachmentItem.Stats pg() { return AttachmentItem.Stats.of(AttachmentSlot.PISTOL_GRIP); }

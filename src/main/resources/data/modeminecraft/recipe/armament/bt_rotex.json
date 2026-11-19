@@ -1,0 +1,14 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "attachments",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 7
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:bt_rotex",
+    "count": 1
+  }
+}

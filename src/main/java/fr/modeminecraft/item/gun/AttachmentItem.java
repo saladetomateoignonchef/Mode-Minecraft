@@ -42,11 +42,56 @@ public class AttachmentItem extends Item {
         RUBY_MARK,           // l'ennemi visé brille en rouge
         UNDERBARREL_GRENADE, // tir secondaire (touche V) : grenade 40 mm
         UNDERBARREL_SHOTGUN, // tir secondaire (touche V) : coup de calibre 12
-        BAYONET              // +6 dégâts au corps à corps
+        BAYONET,             // +6 dégâts au corps à corps
+        ECHO                 // silencieux à écho : aucun bruit du tout
     }
 
     /** Sur quelles armes l'accessoire se monte. */
-    public enum Compat { ANY, PISTOL, LONG }
+    public enum Compat {
+        ANY, PISTOL, LONG, SMG, ASSAULT, SNIPER;
+
+        public boolean accepts(GunStats gun) {
+            return switch (this) {
+                case ANY -> true;
+                case PISTOL -> gun.pistol();
+                case LONG -> !gun.pistol();
+                case SMG -> gun.category() == GunStats.Category.SMG;
+                case ASSAULT -> gun.category() == GunStats.Category.ASSAULT;
+                case SNIPER -> gun.category() == GunStats.Category.SNIPER;
+            };
+        }
+    }
+
+    /** Peut-on monter cet accessoire sur l'arme gunId (ex. "m4") de statistiques gun ? */
+    public boolean fits(String gunId, GunStats gun) {
+        if (!stats.compat.accepts(gun)) {
+            return false;
+        }
+        if (!stats.guns.isEmpty() && !stats.guns.contains(gunId)) {
+            return false;
+        }
+        if (!stats.calibers.isEmpty()) {
+            var ammo = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(gun.ammo().get());
+            return stats.calibers.contains(ammo.getPath());
+        }
+        return true;
+    }
+
+    private static Component itemName(String id) {
+        return net.minecraft.core.registries.BuiltInRegistries.ITEM
+                .get(fr.modeminecraft.ModeMinecraft.id(id)).getDescription();
+    }
+
+    private static Component joined(List<String> ids) {
+        var out = Component.empty();
+        for (int i = 0; i < ids.size(); i++) {
+            if (i > 0) {
+                out.append(", ");
+            }
+            out.append(itemName(ids.get(i)));
+        }
+        return out;
+    }
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
@@ -55,6 +100,12 @@ public class AttachmentItem extends Item {
         if (stats.compat != Compat.ANY) {
             tooltip.add(Component.translatable("tooltip.modeminecraft.attachment.compat." + stats.compat.name().toLowerCase())
                     .withStyle(ChatFormatting.GRAY));
+        }
+        if (!stats.guns.isEmpty()) {
+            tooltip.add(Component.translatable("tooltip.modeminecraft.attachment.guns", joined(stats.guns)).withStyle(ChatFormatting.GRAY));
+        }
+        if (!stats.calibers.isEmpty()) {
+            tooltip.add(Component.translatable("tooltip.modeminecraft.attachment.calibers", joined(stats.calibers)).withStyle(ChatFormatting.GRAY));
         }
         if (stats.magazineSize > 0) {
             line(tooltip, "magazine", stats.magazineSize);
@@ -81,6 +132,12 @@ public class AttachmentItem extends Item {
         percent(tooltip, "draw", stats.drawMul, false);
         if (stats.silenced) {
             tooltip.add(Component.translatable("tooltip.modeminecraft.attachment.silenced").withStyle(ChatFormatting.BLUE));
+        }
+        if (stats.wearShots > 0) {
+            tooltip.add(Component.translatable("tooltip.modeminecraft.attachment.wear", stats.wearShots).withStyle(ChatFormatting.RED));
+        }
+        if (stats.specials.contains(Special.LASER)) {
+            tooltip.add(Component.translatable("tooltip.modeminecraft.attachment.laser_toggle").withStyle(ChatFormatting.GRAY));
         }
         for (Special special : stats.specials) {
             tooltip.add(Component.translatable("tooltip.modeminecraft.attachment.special." + special.name().toLowerCase())
@@ -120,6 +177,10 @@ public class AttachmentItem extends Item {
         List<SightMode> modes = List.of(); // réglages du viseur (plusieurs = molette pour changer)
         boolean silenced = false, cosmetic = false;
         Compat compat = Compat.ANY;
+        List<String> guns = List.of();     // armes compatibles (vide = toutes)
+        List<String> calibers = List.of(); // munitions compatibles (vide = toutes)
+        int laserColor = 0xFF1010;         // couleur du laser (-1 = arc-en-ciel)
+        int wearShots = 0;                 // > 0 : l'accessoire casse après ce nombre de tirs
         final Set<Special> specials = EnumSet.noneOf(Special.class);
 
         private Stats(AttachmentSlot slot) {
@@ -150,6 +211,18 @@ public class AttachmentItem extends Item {
         public Stats special(Special... s) { specials.addAll(List.of(s)); return this; }
         public Stats only(Compat c) { compat = c; return this; }
         public Stats cosmetic() { cosmetic = true; return this; }
+        /** Seulement sur ces armes (identifiants : "m4", "ak47"...). */
+        public Stats guns(String... ids) { guns = List.of(ids); return this; }
+        /** Seulement pour ces munitions (identifiants : "ammo_9mm"...). */
+        public Stats calibers(String... ids) { calibers = List.of(ids); return this; }
+        /** Laser de cette couleur (0xRRGGBB, -1 = arc-en-ciel). */
+        public Stats laser(int color) { laserColor = color; specials.add(Special.LASER); return this; }
+        /** Son du tir multiplié par mul (après le silencieux). */
+        public Stats volume(float mul) { volumeMul = mul; return this; }
+        public Stats wears(int shots) { wearShots = shots; return this; }
+
+        public int laserColor() { return laserColor; }
+        public int wearShots() { return wearShots; }
 
         public AttachmentSlot slot() { return slot; }
         public int magazineSize() { return magazineSize; }

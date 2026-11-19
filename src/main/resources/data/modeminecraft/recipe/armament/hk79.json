@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "attachments",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 7
+    },
+    {
+      "item": "minecraft:tnt",
+      "count": 1
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 3
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:hk79",
+    "count": 1
+  }
+}

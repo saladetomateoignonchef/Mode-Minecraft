@@ -18,6 +18,9 @@ public final class ModKeyMappings {
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_H, CATEGORY);
 
     public static final KeyMapping AMMO_TYPE = new KeyMapping("key.modeminecraft.ammo_type",
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_G, CATEGORY);
+
+    public static final KeyMapping LASER = new KeyMapping("key.modeminecraft.laser",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_T, CATEGORY);
 
     public static final KeyMapping UNDERBARREL = new KeyMapping("key.modeminecraft.underbarrel",

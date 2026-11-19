@@ -1,0 +1,14 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "attachments",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 3
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:omega_9k",
+    "count": 1
+  }
+}

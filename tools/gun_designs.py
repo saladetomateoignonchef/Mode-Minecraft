@@ -15,7 +15,7 @@ Couleurs (clés de la palette) :
 
 from contextlib import contextmanager
 
-KEYS = ["k", "m", "l", "w", "W", "r", "d", "s", "t", "T", "u", "g", "G"]
+KEYS = ["k", "m", "l", "w", "W", "r", "d", "s", "t", "T", "u", "g", "G", "e", "o", "q"]
 
 
 def cell_uv(color):

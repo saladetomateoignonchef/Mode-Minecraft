@@ -23,7 +23,7 @@ import zlib
 
 from PIL import Image, ImageDraw
 
-from attachment_designs import ACCESSORIES
+from attachment_designs import ACCESSORIES, LENS_COLORS
 from gun_designs import GUNS, KEYS, box
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
@@ -44,6 +44,9 @@ DEFAULT = {
     "u": "#353f1d",  # kaki sombre
     "g": "#dba521",  # or
     "G": "#9aa3ad",  # acier
+    "e": "#0e4a57",  # sculk (silencieux à écho)
+    "o": "#1d1230",  # obsidienne
+    "q": "#9fd8c4",  # plastique de bouteille
 }
 
 # ---------- Skins : remplacements de couleurs (liste = motif camouflage) ----------
@@ -97,7 +100,7 @@ def skin_color(skin, key, x, y, seed=0):
 # Matière de chaque couleur : détermine la texture dessinée (métal brossé, bois veiné...)
 MATERIAL = {"k": "metal", "m": "metal", "l": "metal", "G": "metal", "g": "metal",
             "w": "wood", "W": "wood", "t": "polymer", "T": "polymer", "u": "polymer",
-            "d": "flat", "s": "glass", "r": "gem"}
+            "d": "flat", "s": "glass", "r": "gem", "e": "gem", "o": "gem", "q": "glass"}
 CELL = 16  # taille d'une case de la palette, en pixels (texture 64x64)
 
 
@@ -265,6 +268,10 @@ def main():
     mounts = {}
     for name, design in sorted(GUNS.items()):
         gun = design()
+        # Rail latéral (laser) : sur le flanc gauche du garde-main (côté visible en vue à la 1re personne)
+        if "grip" in gun.mounts and "side_rail" not in gun.mounts:
+            gx, gy, _ = gun.mounts["grip"]
+            gun.mounts["side_rail"] = [round(gx - 0.5, 3), round(gy + 1.0, 3), 7.15]
         mounts[name] = {"mounts": gun.mounts, "mag_needs_ammo": gun.flags.get("mag_needs_ammo", False)}
         if gun.slide:
             mounts[name]["slide"] = gun.slide_info
@@ -300,17 +307,26 @@ def main():
 
     write(os.path.join(ASSETS, "gun_mounts.json"), mounts)
 
+    # Lasers : une palette par couleur (la vitre "s" prend la couleur du laser)
+    for name, color in LENS_COLORS.items():
+        SKINS[f"lens_{name}"] = {"s": color}
+        palette_image(f"lens_{name}").save(os.path.join(textures, f"gun_palette_lens_{name}.png"))
+
     for name, elements in ACCESSORIES.items():
-        write(os.path.join(models, "parts", f"{name}.json"), {"parent": f"{MOD}:item/parts/part_base", "elements": elements})
+        part = {"parent": f"{MOD}:item/parts/part_base", "elements": elements}
+        if name in LENS_COLORS:
+            pal = f"{MOD}:item/gun_palette_lens_{name}"
+            part["textures"] = {"p": pal, "particle": pal}
+        write(os.path.join(models, "parts", f"{name}.json"), part)
         write(os.path.join(models, f"{name}.json"),
               {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{name}"}})
         # Icône calculée à partir du modèle 3D (vue de profil)
         if elements:
-            render_icon(elements, "default").save(os.path.join(textures, f"{name}.png"))
+            render_icon(elements, f"lens_{name}" if name in LENS_COLORS else "default").save(os.path.join(textures, f"{name}.png"))
         else:  # "sans crosse" : on dessine une crosse barrée
             render_icon(ACCESSORIES["buffer_tube"], "default").save(os.path.join(textures, f"{name}.png"))
 
-    print(f"{len(GUNS)} armes x {len(SKINS)} skins + {len(ACCESSORIES)} accessoires générés")
+    print(f"{len(GUNS)} armes x {len(SKINS) - len(LENS_COLORS)} skins + {len(ACCESSORIES)} accessoires générés")
 
 
 if __name__ == "__main__":

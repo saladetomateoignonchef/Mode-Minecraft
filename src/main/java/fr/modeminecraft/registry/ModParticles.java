@@ -23,5 +23,20 @@ public final class ModParticles {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> TRACER =
             PARTICLES.register("tracer", () -> new SimpleParticleType(true));
 
+    /** Laser : point (alpha 255) ou faisceau (alpha plus faible), de la couleur donnée. */
+    public static final DeferredHolder<ParticleType<?>, ParticleType<net.minecraft.core.particles.ColorParticleOption>> LASER =
+            PARTICLES.register("laser", () -> new ParticleType<net.minecraft.core.particles.ColorParticleOption>(true) {
+                @Override
+                public com.mojang.serialization.MapCodec<net.minecraft.core.particles.ColorParticleOption> codec() {
+                    return net.minecraft.core.particles.ColorParticleOption.codec(this);
+                }
+
+                @Override
+                public net.minecraft.network.codec.StreamCodec<? super net.minecraft.network.RegistryFriendlyByteBuf,
+                        net.minecraft.core.particles.ColorParticleOption> streamCodec() {
+                    return net.minecraft.core.particles.ColorParticleOption.streamCodec(this);
+                }
+            });
+
     private ModParticles() {}
 }

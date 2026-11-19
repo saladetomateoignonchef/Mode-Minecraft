@@ -1,0 +1,18 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "attachments",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 8
+    },
+    {
+      "tag": "minecraft:wool",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:integral_sd",
+    "count": 1
+  }
+}

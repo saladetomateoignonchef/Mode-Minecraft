@@ -18,7 +18,7 @@ import net.minecraft.world.item.ItemStack;
 public class ModificationTableScreen extends AbstractContainerScreen<ModificationTableMenu> {
     private static final String[] SLOT_HINTS = {"gui.modeminecraft.slot.sight", "gui.modeminecraft.slot.muzzle",
             "gui.modeminecraft.slot.grip", "gui.modeminecraft.slot.magazine", "gui.modeminecraft.slot.pistol_grip",
-            "gui.modeminecraft.slot.stock"};
+            "gui.modeminecraft.slot.stock", "gui.modeminecraft.slot.side_rail"};
     private static final int STATS_X = 98;
 
     private Button previousSkin, nextSkin;

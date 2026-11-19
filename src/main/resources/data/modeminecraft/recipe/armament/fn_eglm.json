@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "attachments",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 8
+    },
+    {
+      "item": "minecraft:tnt",
+      "count": 1
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 3
+    },
+    {
+      "item": "minecraft:yellow_dye",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:fn_eglm",
+    "count": 1
+  }
+}

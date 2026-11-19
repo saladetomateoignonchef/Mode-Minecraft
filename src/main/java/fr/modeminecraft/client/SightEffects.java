@@ -6,7 +6,9 @@ import fr.modeminecraft.item.gun.GunItem;
 import fr.modeminecraft.item.gun.ResolvedGun;
 import fr.modeminecraft.item.gun.SightMode;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.particles.DustParticleOptions;
+import fr.modeminecraft.registry.ModParticles;
+import net.minecraft.core.particles.ColorParticleOption;
+import net.minecraft.util.Mth;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,7 +25,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
 /**
  * Effets des viseurs côté client :
@@ -35,7 +36,7 @@ import org.joml.Vector3f;
  */
 @EventBusSubscriber(modid = ModeMinecraft.MODID, value = Dist.CLIENT)
 public final class SightEffects {
-    private static final DustParticleOptions LASER_DOT = new DustParticleOptions(new Vector3f(1.0f, 0.05f, 0.05f), 0.7f);
+    private static final double LASER_RANGE = 64;
     private static final double SIGHT_RANGE = 160;
 
     private static int modeIndex;
@@ -102,17 +103,44 @@ public final class SightEffects {
         rubyTarget = aim != null && aim.has(AttachmentItem.Special.RUBY_MARK) && aimedAt instanceof EntityHitResult e
                 ? e.getEntity().getId() : -1;
 
-        // Point laser de tous les joueurs proches qui tiennent une arme avec laser
+        // Laser (point + faisceau) de tous les joueurs proches dont le laser est allumé
         for (Player other : mc.level.players()) {
             ItemStack stack = other.getMainHandItem();
-            if (other.distanceToSqr(player) < 64 * 64 && stack.getItem() instanceof GunItem gun
-                    && gun.resolve(stack).has(AttachmentItem.Special.LASER)) {
-                HitResult hit = pick(other, 48);
-                if (hit.getType() != HitResult.Type.MISS) {
-                    Vec3 p = hit.getLocation();
-                    mc.level.addParticle(LASER_DOT, p.x, p.y, p.z, 0, 0, 0);
+            if (other.distanceToSqr(player) < 64 * 64 && stack.getItem() instanceof GunItem) {
+                Integer color = GunItem.activeLaserColor(stack);
+                if (color != null) {
+                    drawLaser(mc, other, color == -1
+                            ? Mth.hsvToRgb((mc.level.getGameTime() % 80) / 80f, 1f, 1f) : color);
                 }
             }
+        }
+    }
+
+    /** Point lumineux sur ce que vise le joueur, et faisceau translucide depuis l'arme. */
+    private static void drawLaser(Minecraft mc, Player shooter, int rgb) {
+        HitResult hit = pick(shooter, LASER_RANGE);
+        Vec3 eye = shooter.getEyePosition();
+        Vec3 look = shooter.getLookAngle();
+        boolean touched = hit.getType() != HitResult.Type.MISS;
+        Vec3 end = touched ? hit.getLocation() : eye.add(look.scale(LASER_RANGE));
+        if (touched) {
+            Vec3 p = end.subtract(look.scale(0.03)); // juste devant la surface touchée
+            mc.level.addParticle(ColorParticleOption.create(ModParticles.LASER.get(), 0xFF000000 | rgb), p.x, p.y, p.z, 0, 0, 0);
+        }
+        // Départ du faisceau : à peu près au bout de l'arme (main droite)
+        float yaw = (float) Math.toRadians(shooter.getYRot());
+        Vec3 right = new Vec3(-Math.cos(yaw), 0, -Math.sin(yaw));
+        Vec3 up = right.cross(look).normalize();
+        boolean self = shooter == mc.player && mc.options.getCameraType().isFirstPerson();
+        Vec3 start = self ? eye.add(look.scale(0.9)).add(right.scale(0.2)).add(up.scale(-0.16))
+                : eye.add(look.scale(0.9)).add(right.scale(0.36)).add(up.scale(-0.3));
+        double length = start.distanceTo(end);
+        int alpha = self ? 0x50 : 0x90;
+        var beam = ColorParticleOption.create(ModParticles.LASER.get(), alpha << 24 | rgb);
+        int steps = (int) Math.min(320, length / 0.15);
+        for (int i = 1; i < steps; i++) {
+            Vec3 p = start.lerp(end, i / (double) steps);
+            mc.level.addParticle(beam, p.x, p.y, p.z, 0, 0, 0);
         }
     }
 

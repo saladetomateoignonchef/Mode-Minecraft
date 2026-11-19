@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "attachments",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 1
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 2
+    },
+    {
+      "item": "minecraft:glass_pane",
+      "count": 1
+    },
+    {
+      "item": "minecraft:cyan_dye",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:laser_cyan",
+    "count": 1
+  }
+}

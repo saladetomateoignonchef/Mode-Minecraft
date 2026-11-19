@@ -132,7 +132,7 @@ public final class GunModels {
         } else if (key.loaded) {
             addQuads(extra, models.getModel(ModelResourceLocation.standalone(magModel(key.gun, key.skin))), null);
         }
-        for (AttachmentSlot slot : new AttachmentSlot[]{AttachmentSlot.SIGHT, AttachmentSlot.MUZZLE, AttachmentSlot.GRIP}) {
+        for (AttachmentSlot slot : new AttachmentSlot[]{AttachmentSlot.SIGHT, AttachmentSlot.MUZZLE, AttachmentSlot.GRIP, AttachmentSlot.SIDE_RAIL}) {
             key.attachments.get(slot).ifPresent(item -> addPart(extra, item, key.gun, slot));
         }
         // Poignée pistolet et crosse : celles montées en accessoire, sinon celles d'origine

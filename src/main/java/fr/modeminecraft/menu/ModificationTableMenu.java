@@ -41,6 +41,7 @@ public class ModificationTableMenu extends AbstractContainerMenu {
             {44, 62},  // chargeur : en dessous
             {16, 62},  // poignée pistolet : en bas à gauche
             {16, 38},  // crosse : à gauche
+            {72, 14},  // rail latéral (laser) : en haut à droite
     };
 
     private static final int TABLE_SLOTS = 1 + AttachmentSlot.values().length;
@@ -102,6 +103,9 @@ public class ModificationTableMenu extends AbstractContainerMenu {
             if (!part.isEmpty()) {
                 attachments = attachments.with(type, part.getItem());
             }
+        }
+        if (!attachments.get(AttachmentSlot.MUZZLE).equals(GunItem.getAttachments(stack).get(AttachmentSlot.MUZZLE))) {
+            stack.remove(fr.modeminecraft.registry.ModDataComponents.MUZZLE_WEAR.get()); // nouveau silencieux : neuf
         }
         GunItem.setAttachments(stack, attachments);
 

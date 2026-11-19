@@ -50,6 +50,11 @@ public final class GunClientEvents {
                 PacketDistributor.sendToServer(AmmoTypePayload.INSTANCE);
             }
         }
+        while (ModKeyMappings.LASER.consumeClick()) {
+            if (holdingGun) {
+                PacketDistributor.sendToServer(fr.modeminecraft.network.LaserPayload.INSTANCE);
+            }
+        }
         while (ModKeyMappings.UNDERBARREL.consumeClick()) {
             if (holdingGun) {
                 PacketDistributor.sendToServer(UnderbarrelPayload.INSTANCE);

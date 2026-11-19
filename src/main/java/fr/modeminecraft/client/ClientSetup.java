@@ -61,6 +61,8 @@ public final class ClientSetup {
         event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.CASING_SHELL.get(), CasingParticle.Provider::new);
         event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.TRACER.get(),
                 fr.modeminecraft.client.particle.TracerParticle.Provider::new);
+        event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.LASER.get(),
+                fr.modeminecraft.client.particle.LaserParticle.Provider::new);
     }
 
     @SubscribeEvent
@@ -70,6 +72,7 @@ public final class ClientSetup {
         event.register(ModKeyMappings.CHECK_CHAMBER);
         event.register(ModKeyMappings.AMMO_TYPE);
         event.register(ModKeyMappings.UNDERBARREL);
+        event.register(ModKeyMappings.LASER);
     }
 
     @SubscribeEvent
