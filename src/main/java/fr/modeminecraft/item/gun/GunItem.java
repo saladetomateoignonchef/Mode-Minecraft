@@ -39,7 +39,7 @@ import java.util.List;
  * - accessoires montés (ATTACHMENTS) -> modifient les statistiques, voir {@link ResolvedGun} ;
  * - skin (SKIN) -> purement visuel.
  *
- * Commandes : clic droit = tirer, R = recharger, accroupi = viser.
+ * Commandes : clic droit = tirer, B = mode de tir, R = recharger, accroupi = viser.
  */
 public class GunItem extends Item {
     protected final GunStats stats;
@@ -90,6 +90,33 @@ public class GunItem extends Item {
         }
     }
 
+    /** Mode de tir actuel de l'arme. */
+    public FireMode getFireMode(ItemStack stack) {
+        FireMode mode = stack.get(ModDataComponents.FIRE_MODE.get());
+        return mode != null && stats.fireModes().contains(mode) ? mode : stats.defaultMode();
+    }
+
+    /** Touche B : passe au mode de tir suivant (coup par coup -> rafale -> automatique). */
+    public void cycleFireMode(Player player, ItemStack stack) {
+        List<FireMode> modes = stats.fireModes();
+        if (modes.size() <= 1) {
+            player.displayClientMessage(Component.translatable("message.modeminecraft.fire_mode.single",
+                    Component.translatable(getFireMode(stack).translationKey())).withStyle(ChatFormatting.GRAY), true);
+            return;
+        }
+        FireMode next = modes.get((modes.indexOf(getFireMode(stack)) + 1) % modes.size());
+        stack.set(ModDataComponents.FIRE_MODE.get(), next);
+        player.stopUsingItem();
+        Component name = Component.translatable(next.translationKey());
+        if (next == FireMode.BURST) {
+            name = Component.translatable("message.modeminecraft.fire_mode.burst_count", name, stats.burstSize());
+        }
+        player.displayClientMessage(Component.translatable("message.modeminecraft.fire_mode", name)
+                .withStyle(ChatFormatting.YELLOW), true);
+        player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
+                SoundEvents.LEVER_CLICK, SoundSource.PLAYERS, 0.6f, 1.6f);
+    }
+
     /** Statistiques finales (accessoires compris). */
     public ResolvedGun resolve(ItemStack stack) {
         return ResolvedGun.of(stats, getAttachments(stack));
@@ -132,12 +159,15 @@ public class GunItem extends Item {
             return InteractionResultHolder.fail(stack);
         }
 
-        if (stats.usesHold()) {
-            // Automatique, rafale ou minigun : le tir se fait dans onUseTick
-            player.startUsingItem(hand);
-        } else {
+        // On "utilise" l'arme tant que le clic est maintenu : comme une vraie détente,
+        // il faut relâcher le clic pour tirer à nouveau en coup par coup ou en rafale.
+        player.startUsingItem(hand);
+        if (stats.spinUp() == 0) {
+            // La première balle part tout de suite (les suivantes dans onUseTick)
             shoot(level, player, stack);
-            player.getCooldowns().addCooldown(this, stats.fireDelay());
+            if (getFireMode(stack) == FireMode.SEMI) {
+                player.getCooldowns().addCooldown(this, Math.max(stats.fireDelay(), 3));
+            }
         }
         // "consume" = pas d'animation de coup de poing
         return InteractionResultHolder.consume(stack);
@@ -163,10 +193,15 @@ public class GunItem extends Item {
         if (ticksUsed % stats.fireDelay() != 0) {
             return;
         }
-        if (stats.burst() > 0 && ticksUsed / stats.fireDelay() >= stats.burst()) {
-            // Fin de la rafale : pause avant la suivante
-            player.stopUsingItem();
-            player.getCooldowns().addCooldown(this, stats.burstCooldown());
+        FireMode mode = getFireMode(stack);
+        int shotIndex = ticksUsed / stats.fireDelay();
+        if (mode == FireMode.SEMI || (shotIndex == 0 && stats.spinUp() == 0)) {
+            return; // coup par coup : une seule balle par appui ; la 1re balle est tirée dans use()
+        }
+        if (mode == FireMode.BURST && shotIndex >= stats.burstSize()) {
+            if (shotIndex == stats.burstSize()) {
+                player.getCooldowns().addCooldown(this, stats.burstPause()); // pause après la rafale
+            }
             return;
         }
         if (getAmmo(stack) <= 0 && !player.getAbilities().instabuild) {
@@ -342,9 +377,8 @@ public class GunItem extends Item {
             tooltip.add(Component.translatable("tooltip.modeminecraft.gun.skin", Component.translatable(skin.translationKey()))
                     .withStyle(ChatFormatting.LIGHT_PURPLE));
         }
-        if (stats.burst() > 0) {
-            tooltip.add(Component.translatable("tooltip.modeminecraft.gun.burst", stats.burst()).withStyle(ChatFormatting.BLUE));
-        }
+        tooltip.add(Component.translatable("tooltip.modeminecraft.gun.fire_mode",
+                Component.translatable(getFireMode(stack).translationKey())).withStyle(ChatFormatting.YELLOW));
         if (stats.pierce() > 0) {
             tooltip.add(Component.translatable("tooltip.modeminecraft.gun.pierce", stats.pierce()).withStyle(ChatFormatting.BLUE));
         }
@@ -354,9 +388,7 @@ public class GunItem extends Item {
         if (stats.disposable()) {
             tooltip.add(Component.translatable("tooltip.modeminecraft.gun.disposable").withStyle(ChatFormatting.BLUE));
         }
-        tooltip.add(Component.translatable(stats.usesHold() && stats.burst() == 0
-                ? "tooltip.modeminecraft.gun.controls_auto"
-                : "tooltip.modeminecraft.gun.controls").withStyle(ChatFormatting.DARK_GRAY));
+        tooltip.add(Component.translatable("tooltip.modeminecraft.gun.controls").withStyle(ChatFormatting.DARK_GRAY));
     }
 
     private static String format(float value) {

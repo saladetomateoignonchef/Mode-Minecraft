@@ -9,6 +9,7 @@ import fr.modeminecraft.item.ThunderHammerItem;
 import fr.modeminecraft.item.WarHammerItem;
 import fr.modeminecraft.item.gun.AttachmentItem;
 import fr.modeminecraft.item.gun.AttachmentSlot;
+import fr.modeminecraft.item.gun.FireMode;
 import fr.modeminecraft.item.gun.GunItem;
 import fr.modeminecraft.item.gun.GunStats;
 import fr.modeminecraft.item.gun.SightOverlay;
@@ -257,16 +258,16 @@ public final class ModItems {
                     .scope(0.6f, SightOverlay.SCOPE_X4).noSlots().slots(MUZZLE, GRIP, MAG));
     public static final DeferredItem<GunItem> TAVOR = gun("tavor", Rarity.UNCOMMON,
             rifle().damage(5.5f).magazine(30).fireDelay(2).reload(40).spread(2.0f, 0.8f).recoil(1.0f).ammo(ModItems.AMMO_556));
-    /** M16A4 : rafale de 3 coups. */
+    /** M16A4 : coup par coup ou rafale de 3 (pas d'automatique). */
     public static final DeferredItem<GunItem> M16A4 = gun("m16a4", Rarity.UNCOMMON,
-            rifle().damage(6.5f).magazine(30).fireDelay(2).burst(3, 8).reload(42).velocity(5.2f).spread(1.6f, 0.5f)
+            rifle().modes(FireMode.SEMI, FireMode.BURST).damage(6.5f).magazine(30).fireDelay(2).burst(3, 8).reload(42).velocity(5.2f).spread(1.6f, 0.5f)
                     .recoil(1.0f).ammo(ModItems.AMMO_556));
     public static final DeferredItem<GunItem> G3 = gun("g3", Rarity.UNCOMMON,
             rifle().damage(8.5f).magazine(20).fireDelay(3).reload(48).spread(2.5f, 0.9f).recoil(2.5f).ammo(ModItems.AMMO_762)
                     .sound(SHOT, 0.5f, 1.4f));
-    /** AN-94 : rafale de 2 coups ultra-rapide. */
+    /** AN-94 : rafale de 2 coups ultra-rapide (ou coup par coup, ou automatique). */
     public static final DeferredItem<GunItem> AN94 = gun("an94", Rarity.RARE,
-            rifle().damage(6).magazine(30).fireDelay(1).burst(2, 6).reload(46).spread(1.6f, 0.4f).recoil(0.8f)
+            rifle().damage(6).magazine(30).fireDelay(1).burst(2, 6).reload(46).modes(FireMode.SEMI, FireMode.BURST, FireMode.AUTO).spread(1.6f, 0.4f).recoil(0.8f)
                     .ammo(ModItems.AMMO_545));
 
     // ================= FUSILS DE PRÉCISION =================

@@ -92,13 +92,70 @@ def skin_color(skin, key, x, y, seed=0):
     return hexc(rng.choice(value))
 
 
+# Matière de chaque couleur : détermine la texture dessinée (métal brossé, bois veiné...)
+MATERIAL = {"k": "metal", "m": "metal", "l": "metal", "G": "metal", "g": "metal",
+            "w": "wood", "W": "wood", "t": "polymer", "T": "polymer", "u": "polymer",
+            "d": "flat", "s": "glass", "r": "gem"}
+CELL = 16  # taille d'une case de la palette, en pixels (texture 64x64)
+
+
+def _noise(seed, x, y, cell=4):
+    """Bruit doux (interpolé) entre -1 et 1 : sert aux camouflages et aux variations de matière."""
+    def rnd(ix, iy):
+        return random.Random(zlib.crc32(repr((seed, ix, iy)).encode())).uniform(-1, 1)
+    fx, fy = x / cell, y / cell
+    ix, iy = int(fx), int(fy)
+    tx, ty = fx - ix, fy - iy
+    tx, ty = tx * tx * (3 - 2 * tx), ty * ty * (3 - 2 * ty)
+    top = rnd(ix, iy) * (1 - tx) + rnd(ix + 1, iy) * tx
+    bottom = rnd(ix, iy + 1) * (1 - tx) + rnd(ix + 1, iy + 1) * tx
+    return top * (1 - ty) + bottom * ty
+
+
+def _scale(c, f):
+    return tuple(max(0, min(255, int(v * f))) for v in c[:3]) + (255,)
+
+
+def material_pixel(skin, key, x, y, size=CELL, edges=True):
+    """Couleur d'un pixel de la case (x, y dans [0, size[) pour une clé de palette et un skin."""
+    value = SKINS[skin].get(key, DEFAULT[key])
+    if isinstance(value, list):
+        # Camouflage : chaque couleur occupe les zones où "son" bruit est le plus fort
+        scores = [_noise((skin, key, i), x, y, cell=size / 3) for i in range(len(value))]
+        base = hexc(value[scores.index(max(scores))])
+    else:
+        base = hexc(value)
+    mat = MATERIAL[key]
+    rng = random.Random(zlib.crc32(repr((skin, key, x, y)).encode()))
+    f = 1.0
+    if mat == "metal":
+        streak = random.Random(zlib.crc32(repr((key, "row", y)).encode())).uniform(-0.05, 0.05)
+        f = 1 + streak + rng.uniform(-0.03, 0.03)
+        if y == 1:
+            f *= 1.12  # reflet sous l'arête du haut
+    elif mat == "wood":
+        f = 0.92 + 0.12 * math.sin(y * 1.4 + 0.8 * math.sin(x * 0.35 + y * 0.2)) + rng.uniform(-0.03, 0.03)
+    elif mat == "polymer":
+        f = 1 + 0.06 * _noise((key, "grain"), x, y, cell=2) + rng.uniform(-0.03, 0.03)
+    elif mat == "glass":
+        f = 1.25 - 0.5 * (x + y) / (2 * size)
+        if abs(x - y) <= 1 and x < size * 0.6:
+            f = 1.6
+    elif mat == "gem":
+        f = 1.25 if (x + y) % 8 < 3 else (0.8 if (x - y) % 8 < 2 else 1.0)
+    if edges and (x == 0 or y == 0 or x == size - 1 or y == size - 1):
+        f *= 0.72  # arêtes plus sombres : chaque pavé ressort mieux
+    return _scale(base, f)
+
+
 def palette_image(skin):
-    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    """Palette 64x64 : 13 cases de 16x16 pixels, une par couleur, avec la texture de la matière."""
+    img = Image.new("RGBA", (4 * CELL, 4 * CELL), (0, 0, 0, 0))
     for i, key in enumerate(KEYS):
-        cx, cy = (i % 4) * 4, (i // 4) * 4
-        for y in range(4):
-            for x in range(4):
-                img.putpixel((cx + x, cy + y), skin_color(skin, key, x, y))
+        cx, cy = (i % 4) * CELL, (i // 4) * CELL
+        for y in range(CELL):
+            for x in range(CELL):
+                img.putpixel((cx + x, cy + y), material_pixel(skin, key, x, y))
     return img
 
 
@@ -190,7 +247,7 @@ def element_polygon(el):
     return pts
 
 
-def render_icon(elements, skin, size=16):
+def render_icon(elements, skin, size=32):
     """Icône 2D : le modèle 3D vu de profil, dessiné en pixel art avec contour."""
     polys = [(el["to"][2], element_polygon(el), element_key(el)) for el in elements]
     xs = [x for _, p, _ in polys for x, _ in p]
@@ -225,7 +282,7 @@ def render_icon(elements, skin, size=16):
                        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
                     img.putpixel((x, y), OUTLINE)
                 continue
-            c = skin_color(skin, key, x, y, seed=1)
+            c = material_pixel(skin, key, x % CELL, y % CELL, edges=False)
             delta = 35 * shade[y][x]
             img.putpixel((x, y), tuple(max(0, min(255, v + delta)) for v in c[:3]) + (255,))
     return img

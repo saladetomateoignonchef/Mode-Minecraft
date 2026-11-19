@@ -50,11 +50,18 @@ Toutes les armes à feu, munitions et accessoires se fabriquent à la **table d'
 **17 munitions réalistes :** 9 mm, .45 ACP, .50 AE, .357 Magnum, 5,7 mm, 4,6 mm, 7,62×25, 5,45 mm, 5,56 mm,
 7,62 mm, 7,62×54R, 7,92 mm, .338 Lapua, .50 BMG, cartouches calibre 12, grenades 40 mm, roquettes RPG.
 
-**Commandes :** clic droit = tirer (rechargement automatique si le chargeur est vide), **R** = recharger,
-**s'accroupir** = viser (moins de dispersion, zoom et réticule si un viseur est monté). Munitions infinies en créatif.
+**Commandes :**
+- **Clic droit** : tirer (rechargement automatique si le chargeur est vide).
+- **B** : changer de mode de tir — **coup par coup → rafale → automatique** (selon les modes de l'arme).
+  Comme une vraie détente, il faut relâcher le clic entre deux tirs en coup par coup et entre deux rafales.
+  Armes automatiques : les 3 modes (sauf le minigun, toujours automatique). M16A4 : coup par coup / rafale.
+  Pistolets, snipers, fusils à pompe et lanceurs : coup par coup.
+- **R** : recharger. **S'accroupir** : viser (moins de dispersion, zoom et réticule si un viseur est monté).
+- Les touches B et R se changent dans *Options > Commandes > Mode Minecraft*. Munitions infinies en créatif.
 
 **Mécaniques :** tir à la tête x1,5, les balles cassent le verre, recul de la caméra,
-modèles 3D en main (icône 2D dans l'inventaire), pose « en joue » à la 3e personne,
+modèles 3D texturés en main (métal brossé, bois veiné, camouflages), icônes 32x32 dans l'inventaire,
+pose « en joue » à la 3e personne,
 message de mort « X a été abattu par Y ».
 
 ### Table d'armement

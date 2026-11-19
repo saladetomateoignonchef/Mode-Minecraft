@@ -95,7 +95,17 @@ class Gun:
 
     def rail(self, x0, x1, y):
         self.zb(x0, y, x1, y + 0.45, 0.55, "k")
+        x = x0 + 0.4
+        while x < x1 - 0.4:  # crans du rail Picatinny
+            self.add([x, y + 0.45, 7.5], [x + 0.25, y + 0.5, 8.5], "d")
+            x += 0.9
         self.mount("sight", (x0 + x1) / 2, y + 0.45)
+
+    def side_detail(self, x0, y0, x1, y1, face, c="d", both=False):
+        """Détail plat collé sur le flanc d'une pièce (face = demi-largeur de la pièce)."""
+        self.add([x0, y0, 8 + face], [x1, y1, 8 + face + 0.06], c)
+        if both:
+            self.add([x0, y0, 8 - face - 0.06], [x1, y1, 8 - face], c)
 
     def scope(self, x0, x1, y, r=0.8, c="k"):
         """Lunette de visée : tube, oculaire, objectif, verres et montages (y = base)."""
@@ -170,6 +180,9 @@ def pistol(slide_c="k", frame_c="k", grip_c="k", x0=3.0, x1=13.5, sy0=8.0, sy1=1
     g.zb(x0, sy0, x1, sy1, 0.95, slide_c)                       # culasse
     g.zb(x0, sy1, x1, sy1 + 0.4, 0.75, top or slide_c)          # dessus
     g.zb(x0, sy0 - 1, x1 - 0.6, sy0, 0.9, frame_c)              # carcasse
+    for i in range(4):                                          # stries de préhension
+        g.side_detail(x0 + 0.5 + i * 0.45, sy0 + 0.4, x0 + 0.7 + i * 0.45, sy1 - 0.4, 0.95, both=True)
+    g.side_detail(x0 + 5, sy1 - 1.0, x0 + 7, sy1 - 0.15, 0.95)  # fenêtre d'éjection
     if open_slide:  # Beretta : canon visible sur le dessus
         g.zb(x1 - 4.5, sy1 - 0.2, x1, sy1 + 0.55, 0.5, "G")
     by = (sy0 + sy1) / 2
@@ -200,6 +213,10 @@ def rifle(stock="polymer", stock_c="k", rear=-3.0, x0=3.0, x1=10.0, x2=14.5, x3=
     if upper:  # partie haute du boîtier d'une autre couleur
         g.zb(x0, (ry0 + ry1) / 2 + 0.3, x1, ry1 + 0.05, 0.92, upper)
     g.zb(x1, hy0, x2, hy1, 0.85, hc)                             # garde-main
+    g.side_detail(x0 + 3.2, (ry0 + ry1) / 2 - 0.1, x0 + 5.4, ry1 - 0.5, 0.9)   # fenêtre d'éjection
+    for i in range(int((x2 - x1 - 1) / 1.3)):                    # fentes de refroidissement
+        vx = x1 + 0.7 + i * 1.3
+        g.side_detail(vx, (hy0 + hy1) / 2 - 0.3, vx + 0.6, (hy0 + hy1) / 2 + 0.3, 0.85, both=True)
     if gas:  # AK : tube de gaz au-dessus du canon
         g.zb(x1, hy1 + 0.2, x2 - 0.5, hy1 + 1.0, 0.6, hc)
     g.barrel(x2, x3, bore, br, bc)
@@ -238,6 +255,7 @@ def bullpup(body_c="k", rear=-3.0, x1=11.0, x2=14.5, x3=18.5, ry0=5.5, ry1=9.3, 
     g = Gun()
     g.zb(rear, ry0, x1, ry1, 0.95, body_c)
     g.zb(rear - 0.3, ry0 - 0.3, rear, ry1, 1.0, "k")
+    g.side_detail(1.0, (ry0 + ry1) / 2, 3.2, ry1 - 0.6, 0.95)  # fenêtre d'éjection
     g.zb(x1, ry0 + 1.2, x2, ry1 - 0.4, 0.85, hc or body_c)
     g.barrel(x2, x3, bore, 0.4, "k")
     g.muzzle_device(x3, bore, 0.4, "flash")

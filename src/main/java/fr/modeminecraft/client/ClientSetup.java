@@ -49,6 +49,7 @@ public final class ClientSetup {
     @SubscribeEvent
     public static void registerKeys(RegisterKeyMappingsEvent event) {
         event.register(ModKeyMappings.RELOAD);
+        event.register(ModKeyMappings.FIRE_MODE);
     }
 
     @SubscribeEvent

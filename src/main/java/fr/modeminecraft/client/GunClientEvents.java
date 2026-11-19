@@ -4,6 +4,7 @@ import fr.modeminecraft.ModeMinecraft;
 import fr.modeminecraft.item.gun.GunItem;
 import fr.modeminecraft.item.gun.ResolvedGun;
 import fr.modeminecraft.item.gun.SightOverlay;
+import fr.modeminecraft.network.FireModePayload;
 import fr.modeminecraft.network.ReloadPayload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
@@ -24,13 +25,19 @@ import org.jetbrains.annotations.Nullable;
 @EventBusSubscriber(modid = ModeMinecraft.MODID, value = Dist.CLIENT)
 public final class GunClientEvents {
 
-    /** Touche R : on demande au serveur de recharger l'arme en main. */
+    /** Touche R : recharger. Touche B : changer de mode de tir. (Le serveur fait le travail.) */
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
+        boolean holdingGun = mc.player != null && mc.player.getMainHandItem().getItem() instanceof GunItem;
         while (ModKeyMappings.RELOAD.consumeClick()) {
-            if (mc.player != null && mc.player.getMainHandItem().getItem() instanceof GunItem) {
+            if (holdingGun) {
                 PacketDistributor.sendToServer(ReloadPayload.INSTANCE);
+            }
+        }
+        while (ModKeyMappings.FIRE_MODE.consumeClick()) {
+            if (holdingGun) {
+                PacketDistributor.sendToServer(FireModePayload.INSTANCE);
             }
         }
     }

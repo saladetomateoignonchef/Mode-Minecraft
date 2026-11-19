@@ -9,6 +9,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -43,6 +44,9 @@ public final class GunHudLayer {
         graphics.renderItem(new ItemStack(gun.stats().ammo().get()), x, y - 1);
         int color = ammo == 0 ? 0xFF5555 : (ammo <= max / 4 ? 0xFFAA00 : 0xFFFFFF);
         graphics.drawString(mc.font, text, x + 18, y + 4, color, true);
+        // Mode de tir, juste au-dessus des munitions
+        Component mode = Component.translatable(gun.getFireMode(stack).shortKey());
+        graphics.drawString(mc.font, mode, x + 18, y - 6, 0xFFD84A, true);
     }
 
     private static void renderSight(GuiGraphics graphics, DeltaTracker deltaTracker) {

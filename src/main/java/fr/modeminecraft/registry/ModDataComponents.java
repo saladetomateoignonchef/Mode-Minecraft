@@ -2,6 +2,7 @@ package fr.modeminecraft.registry;
 
 import com.mojang.serialization.Codec;
 import fr.modeminecraft.ModeMinecraft;
+import fr.modeminecraft.item.gun.FireMode;
 import fr.modeminecraft.item.gun.GunAttachments;
 import fr.modeminecraft.item.gun.GunSkin;
 import net.minecraft.core.component.DataComponentType;
@@ -34,6 +35,12 @@ public final class ModDataComponents {
             DATA_COMPONENTS.registerComponentType("skin", builder -> builder
                     .persistent(GunSkin.CODEC)
                     .networkSynchronized(GunSkin.STREAM_CODEC));
+
+    /** Mode de tir choisi (coup par coup, rafale, automatique). */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<FireMode>> FIRE_MODE =
+            DATA_COMPONENTS.registerComponentType("fire_mode", builder -> builder
+                    .persistent(FireMode.CODEC)
+                    .networkSynchronized(FireMode.STREAM_CODEC));
 
     private ModDataComponents() {}
 }

@@ -10,7 +10,9 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 public final class ModNetwork {
     @SubscribeEvent
     public static void register(RegisterPayloadHandlersEvent event) {
-        event.registrar("1").playToServer(ReloadPayload.TYPE, ReloadPayload.STREAM_CODEC, ReloadPayload::handle);
+        event.registrar("1")
+                .playToServer(ReloadPayload.TYPE, ReloadPayload.STREAM_CODEC, ReloadPayload::handle)
+                .playToServer(FireModePayload.TYPE, FireModePayload.STREAM_CODEC, FireModePayload::handle);
     }
 
     private ModNetwork() {}

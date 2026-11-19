@@ -4,6 +4,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.Item;
 
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -39,14 +40,24 @@ public record GunStats(
         boolean armorPiercing, // ignore l'armure
         int spinUp,            // ticks de lancement avant de tirer (minigun)
         boolean disposable,    // arme jetable (AT4) : vendue chargée, détruite après le tir
+        List<FireMode> fireModes, // modes de tir disponibles (touche B), dans l'ordre
         Set<AttachmentSlot> slots) { // emplacements d'accessoires disponibles
 
     /** Type de projectile tiré. */
     public enum ProjectileKind { BULLET, ROCKET, GRENADE }
 
-    /** Mode de tir, pour l'affichage. */
-    public boolean usesHold() {
-        return automatic || burst > 0 || spinUp > 0;
+    /** Mode de tir d'une arme neuve : le plus "rapide" disponible. */
+    public FireMode defaultMode() {
+        return fireModes.get(fireModes.size() - 1);
+    }
+
+    /** Nombre de balles d'une rafale (3 si l'arme n'a pas de rafale spéciale). */
+    public int burstSize() {
+        return burst > 0 ? burst : 3;
+    }
+
+    public int burstPause() {
+        return burstCooldown > 0 ? burstCooldown : 8;
     }
 
     public static Builder builder() {
@@ -61,6 +72,7 @@ public record GunStats(
         private boolean automatic, reloadPerRound, armorPiercing, disposable;
         private ProjectileKind projectile = ProjectileKind.BULLET;
         private SightOverlay scopeOverlay = SightOverlay.NONE;
+        private List<FireMode> modes;
         private Supplier<? extends Item> ammo;
         private Supplier<SoundEvent> sound;
         private final Set<AttachmentSlot> slots = EnumSet.noneOf(AttachmentSlot.class);
@@ -89,14 +101,28 @@ public record GunStats(
         /** Canons rotatifs : délai avant le premier tir. */
         public Builder spinUp(int ticks) { spinUp = ticks; automatic = true; return this; }
         public Builder disposable() { disposable = true; return this; }
+        /** Force les modes de tir disponibles (sinon : déduits de automatic/burst). */
+        public Builder modes(FireMode... m) { modes = List.of(m); return this; }
         public Builder slots(AttachmentSlot... s) { slots.addAll(Set.of(s)); return this; }
         /** Retire tous les emplacements (puis on peut en rajouter avec slots(...)). */
         public Builder noSlots() { slots.clear(); return this; }
 
         public GunStats build() {
+            List<FireMode> fireModes = modes;
+            if (fireModes == null) {
+                if (spinUp > 0) {
+                    fireModes = List.of(FireMode.AUTO);                                   // minigun
+                } else if (automatic) {
+                    fireModes = List.of(FireMode.SEMI, FireMode.BURST, FireMode.AUTO);    // armes automatiques
+                } else if (burst > 0) {
+                    fireModes = List.of(FireMode.SEMI, FireMode.BURST);                   // M16A4
+                } else {
+                    fireModes = List.of(FireMode.SEMI);                                   // pistolets, snipers...
+                }
+            }
             return new GunStats(damage, pellets, magazine, fireDelay, reload, velocity, spread, aimSpread, recoil,
                     automatic, ammo, sound, volume, pitch, explosionPower, projectile, scopeZoom, scopeOverlay,
-                    burst, burstCooldown, reloadPerRound, pierce, armorPiercing, spinUp, disposable, Set.copyOf(slots));
+                    burst, burstCooldown, reloadPerRound, pierce, armorPiercing, spinUp, disposable, fireModes, Set.copyOf(slots));
         }
     }
 }
