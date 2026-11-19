@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "weapons",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 2
+    },
+    {
+      "item": "minecraft:leather",
+      "count": 1
+    },
+    {
+      "item": "minecraft:gold_nugget",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:dagger",
+    "count": 1
+  }
+}

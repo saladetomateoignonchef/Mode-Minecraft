@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "weapons",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 2
+    },
+    {
+      "item": "minecraft:black_dye",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:rubis",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:karambit",
+    "count": 1
+  }
+}

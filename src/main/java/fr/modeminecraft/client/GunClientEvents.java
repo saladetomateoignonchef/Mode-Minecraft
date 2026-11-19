@@ -112,6 +112,9 @@ public final class GunClientEvents {
     @SubscribeEvent
     public static void onClickInput(net.neoforged.neoforge.client.event.InputEvent.InteractionKeyMappingTriggered event) {
         Minecraft mc = Minecraft.getInstance();
+        if (mc.player != null && event.isAttack() && mc.player.getMainHandItem().getItem() instanceof fr.modeminecraft.item.melee.MeleeWeaponItem) {
+            fr.modeminecraft.item.melee.MeleeEvents.advanceCombo(mc.player); // animation du coup suivant du combo
+        }
         boolean mounted = mc.player != null && mc.player.getVehicle() instanceof fr.modeminecraft.entity.MountedGunEntity;
         if (mc.player == null || !(mc.player.getMainHandItem().getItem() instanceof GunItem) && !mounted) {
             return;

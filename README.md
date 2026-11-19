@@ -21,6 +21,40 @@ Matériau entre le diamant et la netherite (1800 de durabilité, enchantabilité
 | Dague en rubis | 5.5 | 2.5 | Très rapide |
 | Marteau de guerre | 11.5 | 0.6 | Onde de choc : blesse et repousse les ennemis autour |
 
+### Armes blanches du cahier des charges (20)
+Mécaniques communes :
+- **Combos de 3 coups** : enchaîner les clics gauches (moins de 1,5 s entre deux coups) donne 3 animations différentes
+  (balayage droite → gauche, revers gauche → droite, coup vertical ou estoc) ; le **3e coup fait +25 %**.
+- **Parade** (clic droit maintenu) : l'arme en travers devant le torse, **-60 %** des dégâts au corps à corps, et les
+  projectiles lents (flèches, boules de neige...) sont renvoyés. **Parade parfaite** (le coup arrive moins de 0,3 s après
+  le début de la parade) : aucun dégât, son métallique, l'attaquant est étourdi 1 s.
+- **Coup dans le dos** (cône de 90° derrière la cible) avec les armes légères : x2,5 (couteau), x3 (dague, karambit).
+
+| Arme | Dégâts | Particularités |
+|---|---|---|
+| Couteau de combat | 6 | très rapide, +10 % de vitesse de marche |
+| Karambit | 5,5 | tourne autour du poignet quand on le sort, +15 % de vitesse, ultra-rapide |
+| Katana | 9 | portée 4,2, balayage ; **clic droit : ruée** de 4 blocs (3 s de recharge) |
+| Masse d'armes | 11 | lente, ignore 50 % de l'armure, gros recul |
+| Marteau de guerre | 14 | très lent ; **clic droit : onde de choc** qui projette les ennemis en l'air et brise les boucliers |
+| Tomahawk | 8,5 | **clic droit : lancer** (12 dégâts), à ramasser ensuite |
+| Matraque électrique | 5 | Lenteur IV + nausée 2,5 s, empêche les Creepers d'exploser |
+| Machette | 8 | +50 % contre les morts-vivants, coupe plantes et toiles |
+| Kukri | 8,5 | saignement (1 PV/s pendant 4 s) |
+| Wakizashi | 7,5 | rapide, portée 3,5, parade parfaite plus facile (0,5 s) |
+| Dague | 5,5 | portée 2,2, vitesse maximale |
+| Claymore | 13 | portée 4,5, balayage qui touche jusqu'à 5 ennemis, lente |
+| Rapière | 7,5 | estoc, perce 40 % de l'armure, portée 3,8, cible unique |
+| Cimeterre | 8 | coup critique dès qu'on saute |
+| Lance | 8 | portée 5, +50 % en courant ou à cheval |
+| Hallebarde | 11,5 | portée 4,8, désarçonne les cavaliers |
+| Faux de guerre | 10 | portée 4,5, attire les ennemis vers soi |
+| Poing américain | 6 | portée 2, ultra-rapide, 25 % de chances d'étourdir 1 s |
+| Pied-de-biche | 7,5 | clic droit : force portes et trappes en fer ; perce 30 % de l'armure |
+| Sabre d'abordage | 8,5 | nage plus vite, +30 % de dégâts dans l'eau |
+
+Toutes se fabriquent à la table d'armement (onglet Armes).
+
 ### Armes magiques
 | Arme | Pouvoir | Craft (sans forme) |
 |---|---|---|

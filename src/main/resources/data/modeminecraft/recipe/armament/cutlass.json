@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "weapons",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 4
+    },
+    {
+      "item": "minecraft:gold_ingot",
+      "count": 1
+    },
+    {
+      "tag": "minecraft:planks",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:cutlass",
+    "count": 1
+  }
+}

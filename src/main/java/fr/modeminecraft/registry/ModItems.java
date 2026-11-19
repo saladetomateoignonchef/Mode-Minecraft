@@ -463,6 +463,52 @@ public final class ModItems {
     public static final DeferredItem<Item> DSHK = ITEMS.register("dshk",
             () -> new fr.modeminecraft.item.MountedGunItem(fr.modeminecraft.entity.MountedGunEntity.Kind.DSHK, new Item.Properties().rarity(Rarity.EPIC)));
 
+    // ================= ARMES BLANCHES (cahier des charges) =================
+    private static DeferredItem<fr.modeminecraft.item.melee.MeleeWeaponItem> melee(String name, Rarity rarity, float damage, float speed,
+            float reach, float walk, float backstab, float armorPen, fr.modeminecraft.item.melee.MeleeWeaponItem.Ability ability) {
+        var stats = new fr.modeminecraft.item.melee.MeleeWeaponItem.Stats(damage, speed, reach, walk, backstab, armorPen, ability);
+        return ITEMS.register(name, () -> new fr.modeminecraft.item.melee.MeleeWeaponItem(stats, new Item.Properties().rarity(rarity)));
+    }
+    private static final fr.modeminecraft.item.melee.MeleeWeaponItem.Ability
+            A_NONE = fr.modeminecraft.item.melee.MeleeWeaponItem.Ability.NONE;
+    public static final DeferredItem<fr.modeminecraft.item.melee.MeleeWeaponItem> COMBAT_KNIFE = melee("combat_knife", Rarity.COMMON, 6, 2.4f, 3, 1.1f, 2.5f, 0, A_NONE);
+    public static final DeferredItem<fr.modeminecraft.item.melee.MeleeWeaponItem> KARAMBIT = melee("karambit", Rarity.RARE, 5.5f, 3.0f, 3, 1.15f, 3, 0, A_NONE);
+    public static final DeferredItem<fr.modeminecraft.item.melee.MeleeWeaponItem> KATANA = melee("katana", Rarity.RARE, 9, 1.6f, 4.2f, 1, 1, 0,
+            fr.modeminecraft.item.melee.MeleeWeaponItem.Ability.DASH);
+    public static final DeferredItem<fr.modeminecraft.item.melee.MeleeWeaponItem> MACE = melee("mace", Rarity.UNCOMMON, 11, 0.9f, 3, 1, 1, 0.5f,
+            fr.modeminecraft.item.melee.MeleeWeaponItem.Ability.ARMOR_BREAK);
+    public static final DeferredItem<fr.modeminecraft.item.melee.MeleeWeaponItem> WAR_HAMMER = melee("war_hammer", Rarity.EPIC, 14, 0.7f, 3, 0.95f, 1, 0.2f,
+            fr.modeminecraft.item.melee.MeleeWeaponItem.Ability.SHOCKWAVE);
+    public static final DeferredItem<fr.modeminecraft.item.melee.MeleeWeaponItem> TOMAHAWK = melee("tomahawk", Rarity.UNCOMMON, 8.5f, 1.2f, 3, 1, 1, 0,
+            fr.modeminecraft.item.melee.MeleeWeaponItem.Ability.THROW);
+    public static final DeferredItem<fr.modeminecraft.item.melee.MeleeWeaponItem> STUN_BATON = melee("stun_baton", Rarity.UNCOMMON, 5, 1.6f, 3, 1, 1, 0,
+            fr.modeminecraft.item.melee.MeleeWeaponItem.Ability.STUN);
+    public static final DeferredItem<fr.modeminecraft.item.melee.MeleeWeaponItem> MACHETE = melee("machete", Rarity.COMMON, 8, 1.4f, 3, 1, 1, 0,
+            fr.modeminecraft.item.melee.MeleeWeaponItem.Ability.ANTI_UNDEAD);
+    public static final DeferredItem<fr.modeminecraft.item.melee.MeleeWeaponItem> KUKRI = melee("kukri", Rarity.UNCOMMON, 8.5f, 1.3f, 3, 1, 1, 0,
+            fr.modeminecraft.item.melee.MeleeWeaponItem.Ability.BLEED);
+    public static final DeferredItem<fr.modeminecraft.item.melee.MeleeWeaponItem> WAKIZASHI = melee("wakizashi", Rarity.UNCOMMON, 7.5f, 2.0f, 3.5f, 1, 1, 0,
+            fr.modeminecraft.item.melee.MeleeWeaponItem.Ability.FAST_PARRY);
+    public static final DeferredItem<fr.modeminecraft.item.melee.MeleeWeaponItem> DAGGER = melee("dagger", Rarity.COMMON, 5.5f, 3.2f, 2.2f, 1, 3, 0, A_NONE);
+    public static final DeferredItem<fr.modeminecraft.item.melee.MeleeWeaponItem> CLAYMORE = melee("claymore", Rarity.RARE, 13, 0.8f, 4.5f, 0.95f, 1, 0,
+            fr.modeminecraft.item.melee.MeleeWeaponItem.Ability.WIDE_SWEEP);
+    public static final DeferredItem<fr.modeminecraft.item.melee.MeleeWeaponItem> RAPIER = melee("rapier", Rarity.UNCOMMON, 7.5f, 1.8f, 3.8f, 1, 1, 0.4f,
+            fr.modeminecraft.item.melee.MeleeWeaponItem.Ability.THRUST_PIERCE);
+    public static final DeferredItem<fr.modeminecraft.item.melee.MeleeWeaponItem> SCIMITAR = melee("scimitar", Rarity.UNCOMMON, 8, 1.8f, 3, 1, 1, 0,
+            fr.modeminecraft.item.melee.MeleeWeaponItem.Ability.JUMP_CRITS);
+    public static final DeferredItem<fr.modeminecraft.item.melee.MeleeWeaponItem> LANCE = melee("lance", Rarity.UNCOMMON, 8, 1.1f, 5.0f, 1, 1, 0,
+            fr.modeminecraft.item.melee.MeleeWeaponItem.Ability.CHARGE);
+    public static final DeferredItem<fr.modeminecraft.item.melee.MeleeWeaponItem> HALBERD = melee("halberd", Rarity.RARE, 11.5f, 0.9f, 4.8f, 1, 1, 0,
+            fr.modeminecraft.item.melee.MeleeWeaponItem.Ability.DISMOUNT);
+    public static final DeferredItem<fr.modeminecraft.item.melee.MeleeWeaponItem> WAR_SCYTHE = melee("war_scythe", Rarity.RARE, 10, 1.0f, 4.5f, 1, 1, 0,
+            fr.modeminecraft.item.melee.MeleeWeaponItem.Ability.PULL);
+    public static final DeferredItem<fr.modeminecraft.item.melee.MeleeWeaponItem> BRASS_KNUCKLES = melee("brass_knuckles", Rarity.COMMON, 6, 3.5f, 2.0f, 1, 1, 0,
+            fr.modeminecraft.item.melee.MeleeWeaponItem.Ability.STUN_CHANCE);
+    public static final DeferredItem<fr.modeminecraft.item.melee.MeleeWeaponItem> CROWBAR = melee("crowbar", Rarity.COMMON, 7.5f, 1.3f, 3, 1, 1, 0.3f,
+            fr.modeminecraft.item.melee.MeleeWeaponItem.Ability.CROWBAR);
+    public static final DeferredItem<fr.modeminecraft.item.melee.MeleeWeaponItem> CUTLASS = melee("cutlass", Rarity.UNCOMMON, 8.5f, 1.6f, 3, 1, 1, 0,
+            fr.modeminecraft.item.melee.MeleeWeaponItem.Ability.WATER);
+
     // ---------- Accessoires ----------
     public static final DeferredItem<AttachmentItem> RED_DOT_SIGHT = attachment("red_dot_sight",
             AttachmentItem.Stats.of(AttachmentSlot.SIGHT).sight(0.85f, SightOverlay.RED_DOT).aimSpread(0.7f));

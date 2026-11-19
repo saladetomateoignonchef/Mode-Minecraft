@@ -55,6 +55,7 @@ public final class ClientSetup {
         event.registerEntityRenderer(ModEntities.MISSILE.get(), ctx -> new ThrownItemRenderer<>(ctx, 1.4f, true));
         event.registerEntityRenderer(ModEntities.PLASMA.get(), ctx -> new ThrownItemRenderer<>(ctx, 0.9f, true));
         event.registerEntityRenderer(ModEntities.BOLT.get(), BoltRenderer::new);
+        event.registerEntityRenderer(ModEntities.TOMAHAWK.get(), ctx -> new ThrownItemRenderer<>(ctx, 1.2f, false));
         event.registerEntityRenderer(ModEntities.MOUNTED_GUN.get(), MountedGunRenderer::new);
     }
 
@@ -125,6 +126,23 @@ public final class ClientSetup {
             }
         }, ModItems.ITEMS.getEntries().stream().map(h -> h.get())
                 .filter(item -> item instanceof GunItem).toArray(Item[]::new));
+        // Armes blanches : 3 coups de combo différents, parade, pose à deux mains / de garde en 3e personne
+        event.registerItem(new IClientItemExtensions() {
+            @Override
+            public HumanoidModel.ArmPose getArmPose(LivingEntity entity, InteractionHand hand, ItemStack stack) {
+                return entity.isUsingItem() && entity.getUseItem() == stack ? HumanoidModel.ArmPose.BLOCK : null;
+            }
+
+            @Override
+            public boolean applyForgeHandTransform(com.mojang.blaze3d.vertex.PoseStack poseStack,
+                                                   net.minecraft.client.player.LocalPlayer player,
+                                                   net.minecraft.world.entity.HumanoidArm arm, ItemStack stack,
+                                                   float partialTick, float equipProcess, float swingProcess) {
+                MeleePoseHelper.apply(poseStack, player, arm, stack, partialTick, equipProcess, swingProcess);
+                return true;
+            }
+        }, ModItems.ITEMS.getEntries().stream().map(h -> h.get())
+                .filter(item -> item instanceof fr.modeminecraft.item.melee.MeleeWeaponItem).toArray(Item[]::new));
     }
 
     @SubscribeEvent

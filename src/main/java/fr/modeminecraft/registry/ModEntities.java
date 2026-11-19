@@ -54,5 +54,10 @@ public final class ModEntities {
             () -> EntityType.Builder.<fr.modeminecraft.entity.MountedGunEntity>of(fr.modeminecraft.entity.MountedGunEntity::new, MobCategory.MISC)
                     .sized(1.0f, 1.0f).clientTrackingRange(10).updateInterval(3).build("mounted_gun"));
 
+    /** Tomahawk lancé. */
+    public static final DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.entity.TomahawkEntity>> TOMAHAWK = ENTITY_TYPES.register("tomahawk",
+            () -> EntityType.Builder.<fr.modeminecraft.entity.TomahawkEntity>of(fr.modeminecraft.entity.TomahawkEntity::new, MobCategory.MISC)
+                    .sized(0.4f, 0.4f).clientTrackingRange(6).updateInterval(4).build("tomahawk"));
+
     private ModEntities() {}
 }
