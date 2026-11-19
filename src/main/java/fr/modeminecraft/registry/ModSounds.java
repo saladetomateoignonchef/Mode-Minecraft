@@ -41,6 +41,11 @@ public final class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> GARAND_PING = register("gun.garand_ping");
     public static final DeferredHolder<SoundEvent, SoundEvent> LOCK_SEARCH = register("gun.lock_search");
     public static final DeferredHolder<SoundEvent, SoundEvent> LOCK_TONE = register("gun.lock_tone");
+    public static final DeferredHolder<SoundEvent, SoundEvent> GRENADE_PIN = register("gun.grenade_pin");
+    public static final DeferredHolder<SoundEvent, SoundEvent> GRENADE_BOUNCE = register("gun.grenade_bounce");
+    public static final DeferredHolder<SoundEvent, SoundEvent> GRENADE_BEEP = register("gun.grenade_beep");
+    public static final DeferredHolder<SoundEvent, SoundEvent> SONAR = register("gun.sonar");
+    public static final DeferredHolder<SoundEvent, SoundEvent> FLASH_RING = register("gun.flash_ring");
 
     private static DeferredHolder<SoundEvent, SoundEvent> register(String name) {
         return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(ModeMinecraft.id(name)));

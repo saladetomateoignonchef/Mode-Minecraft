@@ -26,7 +26,8 @@ public final class ModNetwork {
                 .playToClient(ShotFxPayload.TYPE, ShotFxPayload.STREAM_CODEC, ShotFxPayload::handle)
                 .playToClient(HitMarkerPayload.TYPE, HitMarkerPayload.STREAM_CODEC, HitMarkerPayload::handle)
                 .playToClient(ImpactPayload.TYPE, ImpactPayload.STREAM_CODEC, ImpactPayload::handle)
-                .playToClient(BackGunsPayload.TYPE, BackGunsPayload.STREAM_CODEC, BackGunsPayload::handle);
+                .playToClient(BackGunsPayload.TYPE, BackGunsPayload.STREAM_CODEC, BackGunsPayload::handle)
+                .playToClient(FlashPayload.TYPE, FlashPayload.STREAM_CODEC, FlashPayload::handle);
     }
 
     private ModNetwork() {}

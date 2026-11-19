@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "weapons",
+  "ingredients": [
+    {
+      "item": "minecraft:leather",
+      "count": 3
+    },
+    {
+      "item": "minecraft:glass_pane",
+      "count": 2
+    },
+    {
+      "item": "minecraft:charcoal",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:gas_mask",
+    "count": 1
+  }
+}

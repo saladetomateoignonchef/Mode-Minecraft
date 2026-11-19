@@ -57,6 +57,9 @@ public final class ClientSetup {
         event.registerEntityRenderer(ModEntities.BOLT.get(), BoltRenderer::new);
         event.registerEntityRenderer(ModEntities.TOMAHAWK.get(), ctx -> new ThrownItemRenderer<>(ctx, 1.2f, false));
         event.registerEntityRenderer(ModEntities.MOUNTED_GUN.get(), MountedGunRenderer::new);
+        event.registerEntityRenderer(ModEntities.THROWN_GRENADE.get(), ExplosiveRenderers.Grenade::new);
+        event.registerEntityRenderer(ModEntities.PLACED_EXPLOSIVE.get(), ExplosiveRenderers.Placed::new);
+        event.registerEntityRenderer(ModEntities.AREA_CLOUD.get(), ExplosiveRenderers.Invisible::new);
     }
 
     @SubscribeEvent
@@ -92,6 +95,8 @@ public final class ClientSetup {
         event.registerBelow(VanillaGuiLayers.HOTBAR, ModeMinecraft.id("gun_sight"), GunHudLayer.SIGHT_OVERLAY);
         event.registerAbove(VanillaGuiLayers.CROSSHAIR, ModeMinecraft.id("hit_marker"), GunFx::renderHitMarker);
         event.registerAbove(VanillaGuiLayers.CROSSHAIR, ModeMinecraft.id("lock_on"), LockOnClient::render);
+        event.registerAbove(VanillaGuiLayers.CROSSHAIR, ModeMinecraft.id("grenade_timer"), GunHudLayer::renderGrenadeTimer);
+        event.registerAboveAll(ModeMinecraft.id("flashbang"), FlashClient::render);
         event.registerAbove(VanillaGuiLayers.HOTBAR, ModeMinecraft.id("mounted_gun"), GunHudLayer::renderMounted);
     }
 
@@ -143,6 +148,18 @@ public final class ClientSetup {
             }
         }, ModItems.ITEMS.getEntries().stream().map(h -> h.get())
                 .filter(item -> item instanceof fr.modeminecraft.item.melee.MeleeWeaponItem).toArray(Item[]::new));
+        // Grenades : dégoupillage avec l'autre bras, puis lancer en arc de cercle
+        event.registerItem(new IClientItemExtensions() {
+            @Override
+            public boolean applyForgeHandTransform(com.mojang.blaze3d.vertex.PoseStack poseStack,
+                                                   net.minecraft.client.player.LocalPlayer player,
+                                                   net.minecraft.world.entity.HumanoidArm arm, ItemStack stack,
+                                                   float partialTick, float equipProcess, float swingProcess) {
+                GrenadePoseHelper.apply(poseStack, player, arm, stack, partialTick, equipProcess, swingProcess);
+                return true;
+            }
+        }, ModItems.ITEMS.getEntries().stream().map(h -> h.get())
+                .filter(item -> item instanceof fr.modeminecraft.item.explosive.GrenadeItem).toArray(Item[]::new));
     }
 
     @SubscribeEvent

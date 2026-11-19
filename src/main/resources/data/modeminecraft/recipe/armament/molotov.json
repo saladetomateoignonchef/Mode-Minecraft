@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "weapons",
+  "ingredients": [
+    {
+      "item": "minecraft:glass_bottle",
+      "count": 1
+    },
+    {
+      "item": "minecraft:blaze_powder",
+      "count": 1
+    },
+    {
+      "item": "minecraft:string",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:molotov",
+    "count": 1
+  }
+}

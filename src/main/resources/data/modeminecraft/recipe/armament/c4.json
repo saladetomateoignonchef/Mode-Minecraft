@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "weapons",
+  "ingredients": [
+    {
+      "item": "minecraft:tnt",
+      "count": 2
+    },
+    {
+      "item": "minecraft:clay_ball",
+      "count": 2
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:c4",
+    "count": 2
+  }
+}

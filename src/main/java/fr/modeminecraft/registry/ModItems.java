@@ -509,6 +509,33 @@ public final class ModItems {
     public static final DeferredItem<fr.modeminecraft.item.melee.MeleeWeaponItem> CUTLASS = melee("cutlass", Rarity.UNCOMMON, 8.5f, 1.6f, 3, 1, 1, 0,
             fr.modeminecraft.item.melee.MeleeWeaponItem.Ability.WATER);
 
+    // ================= GRENADES & EXPLOSIFS (cahier des charges) =================
+    private static DeferredItem<Item> grenade(String name, fr.modeminecraft.item.explosive.GrenadeItem.Kind kind, Rarity rarity) {
+        return ITEMS.register(name, () -> new fr.modeminecraft.item.explosive.GrenadeItem(kind, new Item.Properties().rarity(rarity)));
+    }
+    public static final DeferredItem<Item> FRAG_GRENADE = grenade("frag_grenade", fr.modeminecraft.item.explosive.GrenadeItem.Kind.FRAG, Rarity.COMMON);
+    public static final DeferredItem<Item> OFFENSIVE_GRENADE = grenade("offensive_grenade", fr.modeminecraft.item.explosive.GrenadeItem.Kind.OFFENSIVE, Rarity.UNCOMMON);
+    public static final DeferredItem<Item> SEMTEX = grenade("semtex", fr.modeminecraft.item.explosive.GrenadeItem.Kind.SEMTEX, Rarity.UNCOMMON);
+    public static final DeferredItem<Item> MOLOTOV = grenade("molotov", fr.modeminecraft.item.explosive.GrenadeItem.Kind.MOLOTOV, Rarity.COMMON);
+    public static final DeferredItem<Item> CLUSTER_GRENADE = grenade("cluster_grenade", fr.modeminecraft.item.explosive.GrenadeItem.Kind.CLUSTER, Rarity.RARE);
+    public static final DeferredItem<Item> FLASHBANG = grenade("flashbang", fr.modeminecraft.item.explosive.GrenadeItem.Kind.FLASHBANG, Rarity.COMMON);
+    public static final DeferredItem<Item> SMOKE_GRENADE = grenade("smoke_grenade", fr.modeminecraft.item.explosive.GrenadeItem.Kind.SMOKE, Rarity.COMMON);
+    public static final DeferredItem<Item> GAS_GRENADE = grenade("gas_grenade", fr.modeminecraft.item.explosive.GrenadeItem.Kind.GAS, Rarity.UNCOMMON);
+    public static final DeferredItem<Item> EMP_GRENADE = grenade("emp_grenade", fr.modeminecraft.item.explosive.GrenadeItem.Kind.EMP, Rarity.RARE);
+    public static final DeferredItem<Item> DECOY_GRENADE = grenade("decoy_grenade", fr.modeminecraft.item.explosive.GrenadeItem.Kind.DECOY, Rarity.UNCOMMON);
+    public static final DeferredItem<Item> IMPULSE_GRENADE = grenade("impulse_grenade", fr.modeminecraft.item.explosive.GrenadeItem.Kind.IMPULSE, Rarity.RARE);
+    public static final DeferredItem<Item> SENSOR_GRENADE = grenade("sensor_grenade", fr.modeminecraft.item.explosive.GrenadeItem.Kind.SENSOR, Rarity.UNCOMMON);
+    public static final DeferredItem<Item> BOMBLET = grenade("bomblet", fr.modeminecraft.item.explosive.GrenadeItem.Kind.BOMBLET, Rarity.COMMON);
+    public static final DeferredItem<Item> C4 = ITEMS.register("c4", () -> new fr.modeminecraft.item.explosive.PlaceableExplosiveItem(
+            fr.modeminecraft.entity.PlacedExplosiveEntity.Kind.C4, new Item.Properties().rarity(Rarity.RARE)));
+    public static final DeferredItem<Item> DETONATOR = ITEMS.register("detonator", () -> new fr.modeminecraft.item.explosive.DetonatorItem(new Item.Properties()));
+    public static final DeferredItem<Item> CLAYMORE_MINE = ITEMS.register("claymore_mine", () -> new fr.modeminecraft.item.explosive.PlaceableExplosiveItem(
+            fr.modeminecraft.entity.PlacedExplosiveEntity.Kind.CLAYMORE, new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final DeferredItem<Item> MORTAR = ITEMS.register("mortar", () -> new fr.modeminecraft.item.explosive.PlaceableExplosiveItem(
+            fr.modeminecraft.entity.PlacedExplosiveEntity.Kind.MORTAR, new Item.Properties().rarity(Rarity.RARE)));
+    public static final DeferredItem<Item> MORTAR_SHELL = ITEMS.registerSimpleItem("mortar_shell", new Item.Properties().stacksTo(16));
+    public static final DeferredItem<Item> GAS_MASK = ITEMS.register("gas_mask", () -> new fr.modeminecraft.item.explosive.GasMaskItem(new Item.Properties()));
+
     // ---------- Accessoires ----------
     public static final DeferredItem<AttachmentItem> RED_DOT_SIGHT = attachment("red_dot_sight",
             AttachmentItem.Stats.of(AttachmentSlot.SIGHT).sight(0.85f, SightOverlay.RED_DOT).aimSpread(0.7f));

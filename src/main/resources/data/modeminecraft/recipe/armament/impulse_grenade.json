@@ -1,0 +1,18 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "weapons",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 2
+    },
+    {
+      "item": "minecraft:wind_charge",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:impulse_grenade",
+    "count": 1
+  }
+}

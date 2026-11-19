@@ -1,0 +1,18 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "weapons",
+  "ingredients": [
+    {
+      "item": "minecraft:gunpowder",
+      "count": 3
+    },
+    {
+      "item": "minecraft:slime_ball",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:semtex",
+    "count": 2
+  }
+}

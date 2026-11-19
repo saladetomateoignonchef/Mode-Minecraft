@@ -59,5 +59,15 @@ public final class ModEntities {
             () -> EntityType.Builder.<fr.modeminecraft.entity.TomahawkEntity>of(fr.modeminecraft.entity.TomahawkEntity::new, MobCategory.MISC)
                     .sized(0.4f, 0.4f).clientTrackingRange(6).updateInterval(4).build("tomahawk"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.entity.ThrownGrenadeEntity>> THROWN_GRENADE = ENTITY_TYPES.register("thrown_grenade",
+            () -> EntityType.Builder.<fr.modeminecraft.entity.ThrownGrenadeEntity>of(fr.modeminecraft.entity.ThrownGrenadeEntity::new, MobCategory.MISC)
+                    .sized(0.25f, 0.25f).clientTrackingRange(8).updateInterval(2).build("thrown_grenade"));
+    public static final DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.entity.AreaCloudEntity>> AREA_CLOUD = ENTITY_TYPES.register("area_cloud",
+            () -> EntityType.Builder.<fr.modeminecraft.entity.AreaCloudEntity>of(fr.modeminecraft.entity.AreaCloudEntity::new, MobCategory.MISC)
+                    .sized(0.5f, 0.5f).clientTrackingRange(10).updateInterval(20).fireImmune().build("area_cloud"));
+    public static final DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.entity.PlacedExplosiveEntity>> PLACED_EXPLOSIVE = ENTITY_TYPES.register("placed_explosive",
+            () -> EntityType.Builder.<fr.modeminecraft.entity.PlacedExplosiveEntity>of(fr.modeminecraft.entity.PlacedExplosiveEntity::new, MobCategory.MISC)
+                    .sized(0.5f, 0.4f).clientTrackingRange(8).updateInterval(5).build("placed_explosive"));
+
     private ModEntities() {}
 }

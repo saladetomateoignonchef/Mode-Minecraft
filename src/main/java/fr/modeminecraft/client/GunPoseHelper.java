@@ -45,7 +45,7 @@ public final class GunPoseHelper {
         return optic ? 0.2f : 0.18f; // l'œil tout près du viseur : grande fenêtre, comme dans un FPS
     }
     private static final Vector3f RIGHT_SHOULDER = new Vector3f(0.36f, -0.62f, 0.12f);
-    private static final Vector3f LEFT_SHOULDER = new Vector3f(-0.34f, -0.62f, 0.05f);
+    static final Vector3f LEFT_SHOULDER = new Vector3f(-0.34f, -0.62f, 0.05f);
 
     private static float aim, aimPrev;
 
@@ -223,7 +223,7 @@ public final class GunPoseHelper {
     }
 
     /** Un bras (et sa manche) allant de l'épaule à la main, la main sur le point donné. */
-    private static void drawArm(PoseStack pose, MultiBufferSource buffers, int light, net.minecraft.resources.ResourceLocation skin,
+    static void drawArm(PoseStack pose, MultiBufferSource buffers, int light, net.minecraft.resources.ResourceLocation skin,
                                 ModelPart arm, ModelPart sleeve, Vector3f shoulder, Vector3f hand, boolean right) {
         Vector3f dir = new Vector3f(hand).sub(shoulder).normalize();
         pose.pushPose();

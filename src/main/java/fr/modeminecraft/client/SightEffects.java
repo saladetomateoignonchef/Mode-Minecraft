@@ -89,14 +89,15 @@ public final class SightEffects {
         SightMode mode = aim == null ? null : currentMode(aim);
 
         // Vision thermique / nocturne : effet d'image tant que l'on vise
-        String wanted = mode == null ? null : mode.overlay().postEffect;
+        boolean emp = player.hasEffect(fr.modeminecraft.registry.ModEffects.EMP);
+        String wanted = mode == null || emp ? null : mode.overlay().postEffect;
         if (wanted == null) {
             clearPost(mc);
         } else if (!wanted.equals(activePostEffect)) {
             mc.gameRenderer.loadEffect(ModeMinecraft.id("shaders/post/" + wanted + ".json"));
             activePostEffect = wanted;
         }
-        thermal = aim != null && aim.has(AttachmentItem.Special.THERMAL);
+        thermal = aim != null && !emp && aim.has(AttachmentItem.Special.THERMAL);
 
         // Ce que l'on vise (lunette numérique, télémètre, rubis)
         aimedAt = aim == null ? null : pick(player, SIGHT_RANGE);
@@ -106,7 +107,8 @@ public final class SightEffects {
         // Laser (point + faisceau) de tous les joueurs proches dont le laser est allumé
         for (Player other : mc.level.players()) {
             ItemStack stack = other.getMainHandItem();
-            if (other.distanceToSqr(player) < 64 * 64 && stack.getItem() instanceof GunItem) {
+            if (other.distanceToSqr(player) < 64 * 64 && stack.getItem() instanceof GunItem
+                    && !other.hasEffect(fr.modeminecraft.registry.ModEffects.EMP)) {
                 Integer color = GunItem.activeLaserColor(stack);
                 if (color != null) {
                     drawLaser(mc, other, color == -1

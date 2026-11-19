@@ -177,6 +177,31 @@ les cartouches diminuer, la M249 une bande de munitions qui avance à chaque tir
 - **Impacts** : trous de balle sur les blocs (30 secondes), éclats et étincelles.
 - **Armes rangées visibles** : la 1re arme longue de la barre d'action dans le dos, le 1er pistolet à la hanche.
 
+### Grenades et explosifs (12 grenades + C4, Claymore, mortier)
+Clic droit maintenu : on dégoupille (le bras libre tire l'anneau, le minuteur tourne et s'affiche).
+On relâche pour lancer ; si on la garde trop longtemps, elle explose dans la main. Les grenades rebondissent sur les murs
+(réflexion V' = V - 2(V·N)N, puis perte d'énergie) et s'immobilisent au sol.
+
+| Grenade | Effet |
+|---|---|
+| M67 (fragmentation) | 3,5 s, 45 éclats jusqu'à 12 blocs, brise les vitres |
+| MK3A2 (offensive) | 3 s, onde de choc de 5 blocs, recul x3, sans éclats |
+| Semtex | se colle aux blocs et aux créatures, explose 2,5 s après (bips + LED rouge) |
+| Molotov | éclate à l'impact : flaque de feu de 4,5 blocs pendant 10 s |
+| Sous-munitions | libère 6 mini-grenades qui rebondissent |
+| M84 (flashbang) | écran blanc 3 s + persistance + acouphène si on regarde ; étourdit les monstres 5 s |
+| M18 (fumigène) | dôme de fumée de 6 blocs pendant 20 s : les monstres perdent leur cible, pseudos masqués |
+| Gaz toxique | nuage au ras du sol 15 s : poison + nausée + lenteur ; le **masque à gaz** protège |
+| IEM | viseurs électroniques et lasers coupés 10 s (10 blocs), 15 dégâts aux golems de fer |
+| Leurre | faux coups de feu et flashs pendant 12 s, attire les monstres à 30 blocs |
+| Impulsion | aucun dégât : projette tout dans les airs ; le lanceur ne prend pas de dégâts de chute |
+| Détection | se colle, impulsion sonar toutes les 2 s : les créatures brillent à travers les murs |
+
+- **C4** : clic droit sur un bloc ou une créature pour le coller, puis le **détonateur** fait exploser tous tes C4 (128 blocs).
+- **Mine Claymore** : à poser face à l'ennemi ; elle projette 40 éclats dans un cône quand une créature passe devant (jamais pour son poseur).
+- **Mortier** : clic droit avec un obus = tir en cloche ; clic droit = angle +5° (45 à 85°) ; Shift + clic droit = tourner de 15°.
+- Les explosifs posés explosent en chaîne s'ils sont pris dans une explosion. On les ramasse en les frappant.
+
 ### Table d'armement
 Se fabrique à la table de craft : `lingot de fer, poudre à canon, lingot de fer` / `lingot de fer, table de craft, lingot de fer` / `3 planches`.
 Clic droit dessus : choisir un onglet (Armes / Munitions / Accessoires), un objet, puis **Fabriquer**
@@ -273,6 +298,8 @@ tools/generate_textures.py      # génère les textures pixel art (provisoires) 
 tools/gun_designs.py            # formes 3D des 44 armes (constructeurs paramétrés)
 tools/generate_gun_models.py    # génère modèles 3D, icônes, skins, accessoires et gun_mounts.json
 tools/generate_ammo.py          # munitions spéciales : pastilles, modèles, recettes
+tools/generate_melee.py         # icônes des 20 armes blanches
+tools/generate_explosives.py    # modèles 3D des grenades et explosifs
 ```
 
 ### Ajouter une nouvelle arme magique

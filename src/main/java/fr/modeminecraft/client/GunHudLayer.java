@@ -76,6 +76,19 @@ public final class GunHudLayer {
         }
     }
 
+    /** Grenade dégoupillée : temps restant avant l'explosion. */
+    public static void renderGrenadeTimer(GuiGraphics graphics, DeltaTracker deltaTracker) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null || !mc.player.isUsingItem()
+                || !(mc.player.getUseItem().getItem() instanceof fr.modeminecraft.item.explosive.GrenadeItem g) || !g.kind().cooks()) {
+            return;
+        }
+        float left = (g.kind().fuse - mc.player.getTicksUsingItem()) / 20f;
+        int color = left < 1 ? 0xFF4040 : 0xFFD84A;
+        graphics.drawCenteredString(mc.font, Component.translatable("hud.modeminecraft.grenade_timer", String.format("%.1f", Math.max(0, left))),
+                graphics.guiWidth() / 2, graphics.guiHeight() / 2 + 16, color);
+    }
+
     /** Mitrailleuse posée : bande de munitions et chaleur. */
     public static void renderMounted(GuiGraphics graphics, DeltaTracker deltaTracker) {
         Minecraft mc = Minecraft.getInstance();

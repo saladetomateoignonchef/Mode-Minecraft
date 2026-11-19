@@ -1,0 +1,18 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "weapons",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 2
+    },
+    {
+      "item": "minecraft:tnt",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:offensive_grenade",
+    "count": 1
+  }
+}

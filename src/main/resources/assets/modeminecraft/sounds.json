@@ -201,5 +201,35 @@
     "sounds": [
       "modeminecraft:gun/lock_tone_0"
     ]
+  },
+  "gun.grenade_pin": {
+    "subtitle": "subtitles.modeminecraft.grenade_pin",
+    "sounds": [
+      "modeminecraft:gun/grenade_pin_0"
+    ]
+  },
+  "gun.grenade_bounce": {
+    "subtitle": "subtitles.modeminecraft.grenade_bounce",
+    "sounds": [
+      "modeminecraft:gun/grenade_bounce_0"
+    ]
+  },
+  "gun.grenade_beep": {
+    "subtitle": "subtitles.modeminecraft.grenade_beep",
+    "sounds": [
+      "modeminecraft:gun/grenade_beep_0"
+    ]
+  },
+  "gun.sonar": {
+    "subtitle": "subtitles.modeminecraft.sonar",
+    "sounds": [
+      "modeminecraft:gun/sonar_0"
+    ]
+  },
+  "gun.flash_ring": {
+    "subtitle": "subtitles.modeminecraft.flash_ring",
+    "sounds": [
+      "modeminecraft:gun/flash_ring_0"
+    ]
   }
 }

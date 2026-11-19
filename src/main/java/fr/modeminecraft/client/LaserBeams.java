@@ -72,7 +72,7 @@ public final class LaserBeams {
      */
     public static void drawFirstPerson(Player player, ItemStack stack, Vector3f lensVertex) {
         Integer color = GunItem.activeLaserColor(stack);
-        if (color == null) {
+        if (color == null || player.hasEffect(fr.modeminecraft.registry.ModEffects.EMP)) {
             return;
         }
         Minecraft mc = Minecraft.getInstance();
@@ -107,7 +107,8 @@ public final class LaserBeams {
                 continue;
             }
             ItemStack stack = p.getMainHandItem();
-            Integer color = stack.getItem() instanceof GunItem ? GunItem.activeLaserColor(stack) : null;
+            Integer color = stack.getItem() instanceof GunItem && !p.hasEffect(fr.modeminecraft.registry.ModEffects.EMP)
+                    ? GunItem.activeLaserColor(stack) : null;
             if (color == null) {
                 continue;
             }

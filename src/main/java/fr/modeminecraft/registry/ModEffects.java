@@ -21,6 +21,10 @@ public final class ModEffects {
                     .addAttributeModifier(Attributes.ATTACK_DAMAGE, ModeMinecraft.id("stunned_attack"), -1.0,
                             AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
 
+    /** IEM : viseurs électroniques, lasers et lunettes spéciales coupés. */
+    public static final DeferredHolder<MobEffect, MobEffect> EMP = EFFECTS.register("emp",
+            () -> new MobEffect(net.minecraft.world.effect.MobEffectCategory.HARMFUL, 0x3C8CFF) {});
+
     /** Saignement : 1 PV par seconde (kukri). */
     public static final DeferredHolder<MobEffect, MobEffect> BLEEDING = EFFECTS.register("bleeding",
             () -> new fr.modeminecraft.effect.BleedingEffect());

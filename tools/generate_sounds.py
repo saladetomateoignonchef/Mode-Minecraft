@@ -150,6 +150,23 @@ def mechanical(name, seed):
         t = t_axis(0.12)
         x = np.sign(np.sin(2 * np.pi * f * t)) * 0.4 * np.clip(t / 0.005, 0, 1) * np.clip((0.12 - t) / 0.01, 0, 1)
         x = band(x, hi=6000)
+    elif name == "grenade_pin":
+        t = t_axis(0.5)
+        x = click(rng, t, 0.0, 3200, 0.006, 1.0) + scrape(rng, t, 0.03, 0.08, 0.3, 3000, 9000) \
+            + sum(np.sin(2 * np.pi * f * t) * w * env(t, 0.06, 0.12) for f, w in [(5200, 0.3), (7800, 0.2)])
+    elif name == "grenade_bounce":
+        t = t_axis(0.35)
+        x = click(rng, t, 0.0, 1800, 0.02, 1.0, 400, 5000) + np.sin(2 * np.pi * 2400 * t) * env(t, 0.0005, 0.05) * 0.4
+    elif name == "grenade_beep":
+        t = t_axis(0.1)
+        x = np.sin(2 * np.pi * 2200 * t) * np.clip(t / 0.004, 0, 1) * np.clip((0.1 - t) / 0.01, 0, 1)
+    elif name == "sonar":
+        t = t_axis(1.0)
+        x = np.sin(2 * np.pi * (1500 - 300 * t) * t) * env(t, 0.005, 0.35)
+        x = echo(x, [0.25, 0.5], [0.35, 0.15])
+    elif name == "flash_ring":
+        t = t_axis(3.0)
+        x = np.sin(2 * np.pi * 4100 * t) * (0.8 + 0.2 * np.sin(2 * np.pi * 6 * t)) * np.exp(-t / 1.4) * np.clip(t / 0.05, 0, 1)
     elif name == "casing":
         t = t_axis(0.7)
         x = np.zeros(len(t))
@@ -250,7 +267,8 @@ def main():
     write_ogg(os.path.join(sounds_dir, "shot", "launcher_0.ogg"), launcher(seed + 3))
     write_ogg(os.path.join(sounds_dir, "shot", "launcher_1.ogg"), launcher(seed + 4))
     add("shot.launcher", ["shot/launcher_0", "shot/launcher_1"], "shot_launcher")
-    for name in ["mag_out", "mag_in", "rack", "bolt", "pump", "shell_insert", "empty_click", "casing", "shell_casing", "hitmarker", "headshot", "garand_ping", "lock_search", "lock_tone"]:
+    for name in ["mag_out", "mag_in", "rack", "bolt", "pump", "shell_insert", "empty_click", "casing", "shell_casing", "hitmarker", "headshot", "garand_ping", "lock_search", "lock_tone",
+                 "grenade_pin", "grenade_bounce", "grenade_beep", "sonar", "flash_ring"]:
         files = []
         for v in range(2 if name in ("casing", "mag_in", "rack") else 1):
             write_ogg(os.path.join(sounds_dir, "gun", f"{name}_{v}.ogg"), mechanical(name, seed))

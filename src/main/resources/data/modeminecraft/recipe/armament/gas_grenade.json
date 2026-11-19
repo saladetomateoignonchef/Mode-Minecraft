@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "weapons",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 1
+    },
+    {
+      "item": "minecraft:spider_eye",
+      "count": 2
+    },
+    {
+      "item": "minecraft:fermented_spider_eye",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:gas_grenade",
+    "count": 1
+  }
+}
