@@ -1,7 +1,7 @@
 {
   "textures": {
-    "p": "modeminecraft:item/gun_palette",
-    "particle": "modeminecraft:item/gun_palette"
+    "p": "modeminecraft:item/gun_palette_default",
+    "particle": "modeminecraft:item/gun_palette_default"
   },
   "display": {
     "thirdperson_righthand": {

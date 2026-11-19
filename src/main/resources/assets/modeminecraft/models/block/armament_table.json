@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "modeminecraft:block/armament_table_side",
+    "north": "modeminecraft:block/armament_table_front",
+    "south": "modeminecraft:block/armament_table_front",
+    "east": "modeminecraft:block/armament_table_side",
+    "west": "modeminecraft:block/armament_table_side",
+    "up": "modeminecraft:block/armament_table_top",
+    "down": "minecraft:block/oak_planks"
+  }
+}

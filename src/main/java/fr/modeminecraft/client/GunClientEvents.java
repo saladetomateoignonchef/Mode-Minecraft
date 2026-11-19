@@ -2,21 +2,25 @@ package fr.modeminecraft.client;
 
 import fr.modeminecraft.ModeMinecraft;
 import fr.modeminecraft.item.gun.GunItem;
+import fr.modeminecraft.item.gun.ResolvedGun;
+import fr.modeminecraft.item.gun.SightOverlay;
 import fr.modeminecraft.network.ReloadPayload;
-import fr.modeminecraft.registry.ModItems;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.ComputeFovModifierEvent;
 import net.neoforged.neoforge.client.event.MovementInputUpdateEvent;
+import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.client.event.RenderHandEvent;
+import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.Nullable;
 
-/** Événements client liés aux armes à feu (touche R, vitesse de déplacement, zoom du sniper). */
+/** Événements client liés aux armes à feu (touche R, vitesse de déplacement, visée). */
 @EventBusSubscriber(modid = ModeMinecraft.MODID, value = Dist.CLIENT)
 public final class GunClientEvents {
 
@@ -33,7 +37,7 @@ public final class GunClientEvents {
 
     /**
      * Minecraft ralentit le joueur (x0.2) quand il "utilise" un objet, comme pour tendre un arc.
-     * Le fusil d'assaut tire en mode "utilisation" : on compense pour pouvoir marcher normalement.
+     * Les armes automatiques tirent en mode "utilisation" : on compense pour pouvoir marcher normalement.
      * (Cet événement est appelé juste AVANT le ralentissement vanilla.)
      */
     @SubscribeEvent
@@ -45,31 +49,43 @@ public final class GunClientEvents {
         }
     }
 
-    /** Zoom x5 quand on s'accroupit avec le sniper en main. */
+    /** Zoom quand on vise (accroupi) : lunette du sniper ou viseur monté sur l'arme. */
     @SubscribeEvent
     public static void onComputeFov(ComputeFovModifierEvent event) {
-        if (isScoping(event.getPlayer())) {
-            event.setNewFovModifier(0.2f);
+        ResolvedGun aim = aiming(event.getPlayer());
+        if (aim != null && aim.zoom() < 1.0f) {
+            event.setNewFovModifier(aim.zoom());
         }
     }
 
-    /** On cache la main et l'arme pendant la visée à la lunette. */
+    /** On cache la main et l'arme quand on regarde dans une lunette. */
     @SubscribeEvent
     public static void onRenderHand(RenderHandEvent event) {
-        if (isScoping(Minecraft.getInstance().player)) {
+        ResolvedGun aim = aiming(Minecraft.getInstance().player);
+        if (aim != null && aim.overlay().isFullScope()) {
             event.setCanceled(true);
         }
     }
 
-    public static boolean isScoping(Player player) {
-        return player != null
-                && player.isCrouching()
-                && player.getMainHandItem().is(ModItems.SNIPER_RIFLE.get())
-                && Minecraft.getInstance().options.getCameraType().isFirstPerson();
+    /** Quand on vise avec un viseur, son réticule remplace la croix de visée de Minecraft. */
+    @SubscribeEvent
+    public static void onRenderGuiLayer(RenderGuiLayerEvent.Pre event) {
+        if (event.getName().equals(VanillaGuiLayers.CROSSHAIR)) {
+            ResolvedGun aim = aiming(Minecraft.getInstance().player);
+            if (aim != null && aim.overlay() != SightOverlay.NONE) {
+                event.setCanceled(true);
+            }
+        }
     }
 
-    public static boolean isScoping(LocalPlayer player) {
-        return isScoping((Player) player);
+    /** Statistiques de l'arme si le joueur est en train de viser en vue à la 1re personne, sinon null. */
+    public static @Nullable ResolvedGun aiming(@Nullable Player player) {
+        if (player == null || !player.isCrouching()
+                || !Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
+            return null;
+        }
+        ItemStack stack = player.getMainHandItem();
+        return stack.getItem() instanceof GunItem gun ? gun.resolve(stack) : null;
     }
 
     private GunClientEvents() {}

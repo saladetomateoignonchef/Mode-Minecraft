@@ -2,6 +2,8 @@ package fr.modeminecraft.registry;
 
 import com.mojang.serialization.Codec;
 import fr.modeminecraft.ModeMinecraft;
+import fr.modeminecraft.item.gun.GunAttachments;
+import fr.modeminecraft.item.gun.GunSkin;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -20,6 +22,18 @@ public final class ModDataComponents {
             DATA_COMPONENTS.registerComponentType("ammo", builder -> builder
                     .persistent(Codec.INT)
                     .networkSynchronized(ByteBufCodecs.VAR_INT));
+
+    /** Accessoires montés sur une arme. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<GunAttachments>> ATTACHMENTS =
+            DATA_COMPONENTS.registerComponentType("attachments", builder -> builder
+                    .persistent(GunAttachments.CODEC)
+                    .networkSynchronized(GunAttachments.STREAM_CODEC));
+
+    /** Skin (apparence) d'une arme. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<GunSkin>> SKIN =
+            DATA_COMPONENTS.registerComponentType("skin", builder -> builder
+                    .persistent(GunSkin.CODEC)
+                    .networkSynchronized(GunSkin.STREAM_CODEC));
 
     private ModDataComponents() {}
 }

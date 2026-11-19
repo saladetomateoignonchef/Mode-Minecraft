@@ -2,14 +2,14 @@
   "loader": "neoforge:separate_transforms",
   "gui_light": "front",
   "base": {
-    "parent": "modeminecraft:item/sniper_rifle_3d"
+    "parent": "modeminecraft:item/skins/sniper_rifle_default_3d"
   },
   "perspectives": {
     "gui": {
-      "parent": "modeminecraft:item/sniper_rifle_icon"
+      "parent": "modeminecraft:item/skins/sniper_rifle_default_icon"
     },
     "fixed": {
-      "parent": "modeminecraft:item/sniper_rifle_icon"
+      "parent": "modeminecraft:item/skins/sniper_rifle_default_icon"
     }
   }
 }

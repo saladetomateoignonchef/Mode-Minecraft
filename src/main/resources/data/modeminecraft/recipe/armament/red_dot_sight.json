@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "attachments",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 2
+    },
+    {
+      "item": "minecraft:glass_pane",
+      "count": 1
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:red_dot_sight",
+    "count": 1
+  }
+}

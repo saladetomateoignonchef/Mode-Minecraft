@@ -3,6 +3,7 @@ package fr.modeminecraft.entity;
 import fr.modeminecraft.registry.ModEntities;
 import fr.modeminecraft.registry.ModItems;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
@@ -16,20 +17,22 @@ import net.minecraft.world.phys.Vec3;
  * Les dégâts aux blocs suivent la règle mobGriefing (comme un creeper).
  */
 public class RocketEntity extends ThrowableItemProjectile {
-    private static final float EXPLOSION_POWER = 3.0f; // TNT = 4
     private static final int MAX_LIFE_TICKS = 200;
+
+    private float explosionPower = 3.0f; // TNT = 4
 
     public RocketEntity(EntityType<? extends RocketEntity> type, Level level) {
         super(type, level);
     }
 
-    public RocketEntity(Level level, LivingEntity shooter) {
+    public RocketEntity(Level level, LivingEntity shooter, float explosionPower) {
         super(ModEntities.ROCKET.get(), shooter, level);
+        this.explosionPower = explosionPower;
     }
 
     @Override
     protected Item getDefaultItem() {
-        return ModItems.ROCKET.get();
+        return ModItems.RPG_ROCKET.get();
     }
 
     @Override
@@ -57,8 +60,20 @@ public class RocketEntity extends ThrowableItemProjectile {
         }
     }
 
+    @Override
+    public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        tag.putFloat("ExplosionPower", explosionPower);
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        explosionPower = tag.getFloat("ExplosionPower");
+    }
+
     private void explode() {
-        level().explode(this, getX(), getY(), getZ(), EXPLOSION_POWER, Level.ExplosionInteraction.MOB);
+        level().explode(this, getX(), getY(), getZ(), explosionPower, Level.ExplosionInteraction.MOB);
         discard();
     }
 }

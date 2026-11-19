@@ -476,7 +476,7 @@ GUN_COLORS = {
     "t": hexc("#4b5a2a"), "T": hexc("#6b7d3a"), "u": hexc("#353f1d"),
     "c": hexc("#b5603a"), "C": hexc("#e08a5a"), "b": hexc("#b8901c"), "B": hexc("#e8cf5a"),
     "p": hexc("#9e1c26"), "P": hexc("#d8404e"), "g": hexc("#7d838b"), "G": hexc("#b9bec4"),
-    "f": hexc("#3a3f46"),
+    "f": hexc("#3a3f46"), "n": hexc("#3f8a3a"), "e": hexc("#6a6e58"), "E": hexc("#989c82"),
 }
 GUN_OUTLINE = hexc("#121417")
 
@@ -627,9 +627,206 @@ GUNS = {
     ],
 }
 
+# Anciennes munitions génériques remplacées par les calibres
+del GUNS["bullet"], GUNS["rocket"]
+
+# Lignes plus courtes que 16 caractères : complétées automatiquement par des "."
+GUNS.update({
+    "ak47": [
+        "", "", "", "", "",
+        "..........k",
+        "wWWkmmmmmWWWkkkk",
+        "wWWWkmmmmWWWk",
+        "wW...kd.mm",
+        "w....kk..mm",
+        "......k...mm",
+        "...........m",
+    ],
+    "m4": [
+        "", "", "", "",
+        "...kkkkkkkk",
+        "kkkkmmmmmmkkk.k",
+        "kkk.mmmmmmkkkkkk",
+        "kk...kd.mm",
+        "k....kk.mm",
+        ".....k..mm",
+    ],
+    "famas": [
+        "", "", "",
+        "..kkkkkkkkkk",
+        "..k........k",
+        "kkkkkkkkkkkkk",
+        "kmmmmmmmmmmmkkkk",
+        "kkkkkkkkkkkkk",
+        "...mm..kkdk",
+        "...mm..kk.k",
+        "...mm...kkk",
+    ],
+    "rpg7": [
+        "", "", "", "", "",
+        "............TT",
+        "...k.......TTTT",
+        "kkmmmWWWWmmtTTTT",
+        "kkmmmWWWWmmtTTTT",
+        "....kd..k..TTTT",
+        "....kk..k...TT",
+    ],
+    "ammo_9mm": [
+        "", "", "", "", "",
+        "....c...c...c",
+        "...cCc.cCc.cCc",
+        "...bBb.bBb.bBb",
+        "...bBb.bBb.bBb",
+        "...bBb.bBb.bBb",
+        "...bbb.bbb.bbb",
+    ],
+    "ammo_556": [
+        "",
+        "....n...n...n",
+        "....c...c...c",
+        "...cCc.cCc.cCc",
+        "....b...b...b",
+        "...bBb.bBb.bBb",
+        "...bBb.bBb.bBb",
+        "...bBb.bBb.bBb",
+        "...bBb.bBb.bBb",
+        "...bBb.bBb.bBb",
+        "...bBb.bBb.bBb",
+        "...bbb.bbb.bbb",
+    ],
+    "ammo_762": [
+        "",
+        "....c...c...c",
+        "...cCc.cCc.cCc",
+        "...cCc.cCc.cCc",
+        "....e...e...e",
+        "...eEe.eEe.eEe",
+        "...eEe.eEe.eEe",
+        "...eEe.eEe.eEe",
+        "...eEe.eEe.eEe",
+        "...eEe.eEe.eEe",
+        "...eEe.eEe.eEe",
+        "...eee.eee.eee",
+    ],
+    "rpg_rocket": [
+        "", "", "", "", "",
+        ".........TTT",
+        "..f.....TTTTT",
+        "..fggggtTTTTTTu",
+        "..f.....TTTTT",
+        ".........TTT",
+    ],
+    # ----- Accessoires -----
+    "red_dot_sight": [
+        "", "", "", "", "",
+        "......kkkk",
+        ".....kssssk",
+        ".....ksRssk",
+        ".....kssssk",
+        "....kkkkkkkk",
+        "....mmmmmmmm",
+    ],
+    "holo_sight": [
+        "", "", "",
+        "....kkkkkkkk",
+        "....kssssssk",
+        "....kssssssk",
+        "....kssRsssk",
+        "....kssssssk",
+        "...kkkkkkkkkk",
+        "...mmmmmmmmmm",
+    ],
+    "acog_scope": [
+        "", "", "", "",
+        ".kk.........kkk",
+        ".kkkkkkkkkkkkkks",
+        ".kkllllllllllkks",
+        ".kkkkkkkkkkkkkks",
+        ".kk...kkkk..kkk",
+        "......mmmm",
+    ],
+    "silencer": [
+        "", "", "", "", "",
+        "..kkkkkkkkkkkk",
+        "..kllllllllllk",
+        "..kmmmmmmmmmmkd",
+        "..kmmmmmmmmmmkd",
+        "..kkkkkkkkkkkk",
+    ],
+    "compensator": [
+        "", "", "", "", "", "",
+        "....kkkkkkk",
+        "....kldldlk",
+        "....kmmmmmkd",
+        "....kkkkkkk",
+    ],
+    "vertical_grip": [
+        "", "", "",
+        "....kkkkkkkk",
+        "....mmmmmmmm",
+        "......kmmk",
+        "......kmmk",
+        "......kmmk",
+        "......kmmk",
+        "......kmmk",
+        "......kmmk",
+        "......kkkk",
+    ],
+    "angled_grip": [
+        "", "", "", "",
+        "...kkkkkkkkk",
+        "...mmmmmmmmm",
+        "...kmmmmmmk",
+        "....kmmmmk",
+        ".....kmmk",
+        "......kk",
+    ],
+    "magazine_24": [
+        "", "",
+        "......bBb",
+        ".....kmmmk",
+        ".....kmlmk",
+        ".....kmlmk",
+        ".....kmlmk",
+        ".....kmlmk",
+        ".....kmlmk",
+        ".....kmmmk",
+        ".....kkkkk",
+    ],
+    "magazine_36": [
+        "......bBb",
+        ".....kmmmk",
+        ".....kmlmk",
+        ".....kmlmk",
+        ".....kmlmk",
+        ".....kmlmk",
+        ".....kmlmk",
+        ".....kmlmk",
+        ".....kmlmk",
+        ".....kmlmk",
+        ".....kmlmk",
+        ".....kmlmk",
+        ".....kmmmk",
+        ".....kkkkk",
+    ],
+    "drum_magazine": [
+        "", "",
+        "......kk",
+        "......kk",
+        "....kkkkkk",
+        "...kmmmmmmk",
+        "..kmmmllmmmk",
+        "..kmmllllmmk",
+        "..kmmllllmmk",
+        "..kmmmllmmmk",
+        "...kmmmmmmk",
+        "....kkkkkk",
+    ],
+})
+
 
 def gun_icon(rows):
-    assert len(rows) == 16 and all(len(r) == 16 for r in rows), rows
+    rows = [r.ljust(16, ".")[:16] for r in rows] + ["." * 16] * (16 - len(rows))
     cv = Canvas()
     for y, row in enumerate(rows):
         for x, ch in enumerate(row):
@@ -691,6 +888,150 @@ def sniper_scope(n=512):
     return img
 
 
+# ---------- Réticules de visée ----------
+def scope_mask(n=512, radius_ratio=0.44, feather_ratio=0.05):
+    """Image noire avec un cercle transparent au centre (bord flou)."""
+    c = n / 2
+    radius, feather = n * radius_ratio, n * feather_ratio
+    img = Image.new("RGBA", (n, n), (0, 0, 0, 0))
+    px = img.load()
+    for y in range(n):
+        for x in range(n):
+            d = math.hypot(x + 0.5 - c, y + 0.5 - c)
+            t = min(max((d - (radius - feather)) / feather, 0.0), 1.0)
+            px[x, y] = (0, 0, 0, int(255 * t * t * (3 - 2 * t)))
+    return img
+
+
+def acog_scope(n=512):
+    """Lunette x4 : chevron rouge + fine ligne verticale graduée."""
+    img = scope_mask(n, 0.42, 0.08)
+    draw = ImageDraw.Draw(img)
+    c = n / 2
+    black, red = (0, 0, 0, 255), (230, 40, 40, 255)
+    draw.rectangle([c - 1, c + 14, c, c + n * 0.25], fill=black)
+    for i in range(1, 6):
+        y = c + 14 + i * n * 0.04
+        draw.rectangle([c - 6 + i, y, c + 6 - i, y + 1], fill=black)
+    draw.rectangle([0, c - 1, c - n * 0.18, c], fill=black)
+    draw.rectangle([c + n * 0.18, c - 1, n, c], fill=black)
+    # chevron
+    draw.line([(c - 10, c + 10), (c, c), (c + 10, c + 10)], fill=red, width=3)
+    return img
+
+
+def red_dot(n=32):
+    img = Image.new("RGBA", (n, n), (0, 0, 0, 0))
+    c = n / 2
+    for y in range(n):
+        for x in range(n):
+            d = math.hypot(x + 0.5 - c, y + 0.5 - c)
+            if d <= 2.2:
+                img.putpixel((x, y), (255, 40, 40, 255))
+            elif d <= 4.5:
+                img.putpixel((x, y), (255, 60, 60, int(120 * (4.5 - d) / 2.3)))
+    return img
+
+
+def holo_reticle(n=64):
+    img = Image.new("RGBA", (n, n), (0, 0, 0, 0))
+    c = n / 2
+    for y in range(n):
+        for x in range(n):
+            d = math.hypot(x + 0.5 - c, y + 0.5 - c)
+            if abs(d - 22) <= 1.0 or d <= 1.8:
+                img.putpixel((x, y), (255, 50, 50, 235))
+            elif abs(d - 22) <= 2.2:
+                img.putpixel((x, y), (255, 60, 60, 70))
+    for dx, dy in ((0, -1), (0, 1), (-1, 0), (1, 0)):
+        for k in range(17, 22):
+            x, y = int(c + dx * k), int(c + dy * k)
+            img.putpixel((x, y), (255, 50, 50, 235))
+    return img
+
+
+# ---------- Blocs des tables ----------
+def plank_base(rng, dark, light):
+    img = Image.new("RGBA", (16, 16))
+    for y in range(16):
+        for x in range(16):
+            base = light if (y // 4) % 2 == 0 else dark
+            v = rng.randint(-10, 10)
+            img.putpixel((x, y), tuple(max(0, min(255, c + v)) for c in base[:3]) + (255,))
+        if y % 4 == 3:
+            for x in range(16):
+                img.putpixel((x, y), (60, 40, 20, 255))
+    return img
+
+
+def table_textures():
+    rng = random.Random(7)
+    metal = [hexc(c) for c in ("#3a3f46", "#454b54", "#50565f")]
+    tex = {}
+
+    # Table d'armement : plateau en métal sombre bordé de rubis, côtés en bois avec bande métal
+    top = Image.new("RGBA", (16, 16))
+    for y in range(16):
+        for x in range(16):
+            top.putpixel((x, y), rng.choice(metal))
+    for i in range(16):
+        for p in ((i, 0), (0, i), (i, 15), (15, i)):
+            top.putpixel(p, RUBIS["m"])
+    for p in ((2, 2), (13, 2), (2, 13), (13, 13)):
+        top.putpixel(p, hexc("#9aa3ad"))
+    for x in range(4, 12):  # silhouette d'arme gravée sur le plateau
+        top.putpixel((x, 7), hexc("#1d2024"))
+    for p in ((4, 8), (5, 8), (5, 9), (8, 8), (8, 9), (11, 6)):
+        top.putpixel(p, hexc("#1d2024"))
+    tex["armament_table_top"] = top
+
+    side = plank_base(rng, hexc("#5a3e1b"), hexc("#7a5a2c"))
+    for x in range(16):
+        for y in range(0, 4):
+            side.putpixel((x, y), rng.choice(metal))
+        side.putpixel((x, 3), RUBIS["d"])
+    tex["armament_table_side"] = side
+    front = side.copy()
+    gun = ["kkkkkkkkkk", "kkkk.k..k.", "kk........"]  # râtelier : un fusil accroché
+    for dy, row in enumerate(gun):
+        for dx, ch in enumerate(row):
+            if ch == "k":
+                front.putpixel((3 + dx, 7 + dy), hexc("#24272d"))
+    tex["armament_table_front"] = front
+
+    # Table de modification : tapis vert avec outils, côtés en bois
+    mtop = Image.new("RGBA", (16, 16))
+    for y in range(16):
+        for x in range(16):
+            mtop.putpixel((x, y), rng.choice([hexc("#2f5a3a"), hexc("#35663f"), hexc("#2a5034")]))
+    for i in range(16):
+        for p in ((i, 0), (0, i), (i, 15), (15, i)):
+            mtop.putpixel(p, hexc("#3a3f46"))
+    for i in range(3, 13, 3):  # grille de découpe
+        for j in range(1, 15):
+            mtop.putpixel((i, j), hexc("#4f8a5c"))
+            mtop.putpixel((j, i), hexc("#4f8a5c"))
+    for k in range(5):  # clé
+        mtop.putpixel((4 + k, 10 - k), hexc("#9aa3ad"))
+    mtop.putpixel((9, 4), hexc("#9aa3ad"))
+    mtop.putpixel((10, 5), hexc("#9aa3ad"))
+    tex["modification_table_top"] = mtop
+    mside = plank_base(rng, hexc("#4a3218"), hexc("#6b4a24"))
+    for x in range(16):
+        mside.putpixel((x, 0), hexc("#3a3f46"))
+        mside.putpixel((x, 1), hexc("#2f5a3a"))
+    for k in range(6):  # viseur dessiné
+        mside.putpixel((5 + k, 7), hexc("#24272d"))
+        mside.putpixel((5 + k, 10), hexc("#24272d"))
+    for k in range(3):
+        mside.putpixel((5, 8 + k - 1), hexc("#24272d"))
+        mside.putpixel((10, 8 + k - 1), hexc("#24272d"))
+    mside.putpixel((8, 8), hexc("#5fd4ff"))
+    mside.putpixel((7, 9), hexc("#5fd4ff"))
+    tex["modification_table_side"] = mside
+    return tex
+
+
 def main():
     items = {
         "rubis": gem(),
@@ -727,6 +1068,11 @@ def main():
     save(rubis_block(), "block", "rubis_block.png")
 
     save(sniper_scope(), "misc", "sniper_scope.png")
+    save(acog_scope(), "misc", "acog_scope.png")
+    save(red_dot(), "misc", "red_dot.png")
+    save(holo_reticle(), "misc", "holo_reticle.png")
+    for name, img in table_textures().items():
+        save(img, "block", f"{name}.png")
     save(armor_layer(1), "models", "armor", "rubis_layer_1.png")
     save(armor_layer(2), "models", "armor", "rubis_layer_2.png")
     print(f"{len(items) + 5} textures générées dans {os.path.normpath(TEX)}")

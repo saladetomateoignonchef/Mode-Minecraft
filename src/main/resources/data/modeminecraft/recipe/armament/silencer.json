@@ -1,0 +1,18 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "attachments",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 4
+    },
+    {
+      "tag": "minecraft:wool",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:silencer",
+    "count": 1
+  }
+}

@@ -1,6 +1,10 @@
 package fr.modeminecraft.client;
 
 import fr.modeminecraft.ModeMinecraft;
+import fr.modeminecraft.client.screen.ArmamentTableScreen;
+import fr.modeminecraft.client.screen.ModificationTableScreen;
+import fr.modeminecraft.item.gun.GunItem;
+import fr.modeminecraft.registry.ModMenus;
 import fr.modeminecraft.registry.ModEntities;
 import fr.modeminecraft.registry.ModItems;
 import net.minecraft.client.model.HumanoidModel;
@@ -18,6 +22,7 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
@@ -48,10 +53,10 @@ public final class ClientSetup {
     @SubscribeEvent
     public static void registerGuiLayers(RegisterGuiLayersEvent event) {
         event.registerAbove(VanillaGuiLayers.HOTBAR, ModeMinecraft.id("gun_ammo"), GunHudLayer.AMMO);
-        event.registerBelow(VanillaGuiLayers.HOTBAR, ModeMinecraft.id("sniper_scope"), GunHudLayer.SCOPE_OVERLAY);
+        event.registerBelow(VanillaGuiLayers.HOTBAR, ModeMinecraft.id("gun_sight"), GunHudLayer.SIGHT_OVERLAY);
     }
 
-    /** En vue à la 3e personne, le joueur tient ses armes à feu à deux mains, en joue. */
+    /** En vue à la 3e personne, le joueur tient toutes ses armes à feu à deux mains, en joue. */
     @SubscribeEvent
     public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
         event.registerItem(new IClientItemExtensions() {
@@ -59,8 +64,14 @@ public final class ClientSetup {
             public HumanoidModel.ArmPose getArmPose(LivingEntity entity, InteractionHand hand, ItemStack stack) {
                 return HumanoidModel.ArmPose.CROSSBOW_HOLD;
             }
-        }, ModItems.PISTOL.get(), ModItems.ASSAULT_RIFLE.get(), ModItems.SHOTGUN.get(),
-                ModItems.SNIPER_RIFLE.get(), ModItems.ROCKET_LAUNCHER.get());
+        }, ModItems.ITEMS.getEntries().stream().map(h -> h.get())
+                .filter(item -> item instanceof GunItem).toArray(Item[]::new));
+    }
+
+    @SubscribeEvent
+    public static void registerScreens(RegisterMenuScreensEvent event) {
+        event.register(ModMenus.ARMAMENT_TABLE.get(), ArmamentTableScreen::new);
+        event.register(ModMenus.MODIFICATION_TABLE.get(), ModificationTableScreen::new);
     }
 
     /** Permet à l'arc de changer de texture quand on le tend (même logique que l'arc vanilla). */

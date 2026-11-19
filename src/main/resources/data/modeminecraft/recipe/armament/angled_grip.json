@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "attachments",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 2
+    },
+    {
+      "item": "minecraft:leather",
+      "count": 1
+    },
+    {
+      "item": "minecraft:string",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:angled_grip",
+    "count": 1
+  }
+}

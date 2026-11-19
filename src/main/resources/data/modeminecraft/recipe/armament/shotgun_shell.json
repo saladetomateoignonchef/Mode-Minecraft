@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "ammo",
+  "ingredients": [
+    {
+      "item": "minecraft:paper",
+      "count": 2
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 1
+    },
+    {
+      "item": "minecraft:iron_nugget",
+      "count": 4
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:shotgun_shell",
+    "count": 8
+  }
+}

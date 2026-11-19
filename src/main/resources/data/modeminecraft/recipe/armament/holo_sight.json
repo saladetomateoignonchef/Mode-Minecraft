@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "attachments",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 3
+    },
+    {
+      "item": "minecraft:glass_pane",
+      "count": 2
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:holo_sight",
+    "count": 1
+  }
+}

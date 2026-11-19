@@ -48,7 +48,7 @@ public class BulletEntity extends ThrowableItemProjectile {
 
     @Override
     protected Item getDefaultItem() {
-        return ModItems.BULLET.get();
+        return ModItems.AMMO_9MM.get();
     }
 
     @Override

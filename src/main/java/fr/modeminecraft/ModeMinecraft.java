@@ -7,6 +7,8 @@ import fr.modeminecraft.registry.ModCreativeTabs;
 import fr.modeminecraft.registry.ModDataComponents;
 import fr.modeminecraft.registry.ModEntities;
 import fr.modeminecraft.registry.ModItems;
+import fr.modeminecraft.registry.ModMenus;
+import fr.modeminecraft.registry.ModRecipes;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -28,6 +30,9 @@ public class ModeMinecraft {
         ModDataComponents.DATA_COMPONENTS.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);
         ModEntities.ENTITY_TYPES.register(modEventBus);
+        ModMenus.MENUS.register(modEventBus);
+        ModRecipes.TYPES.register(modEventBus);
+        ModRecipes.SERIALIZERS.register(modEventBus);
         ModCreativeTabs.CREATIVE_TABS.register(modEventBus);
 
         LOGGER.info("Mode Minecraft chargé !");

@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "ammo",
+  "ingredients": [
+    {
+      "item": "minecraft:copper_ingot",
+      "count": 1
+    },
+    {
+      "item": "minecraft:iron_nugget",
+      "count": 2
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:ammo_9mm",
+    "count": 16
+  }
+}

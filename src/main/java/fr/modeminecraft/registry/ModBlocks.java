@@ -1,6 +1,10 @@
 package fr.modeminecraft.registry;
 
 import fr.modeminecraft.ModeMinecraft;
+import fr.modeminecraft.block.WorkbenchBlock;
+import fr.modeminecraft.menu.ArmamentTableMenu;
+import fr.modeminecraft.menu.ModificationTableMenu;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -22,6 +26,16 @@ public final class ModBlocks {
 
     public static final DeferredBlock<Block> RUBIS_BLOCK = BLOCKS.register("rubis_block",
             () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.DIAMOND_BLOCK)));
+
+    /** Table d'armement : fabrique armes, munitions et accessoires. */
+    public static final DeferredBlock<Block> ARMAMENT_TABLE = BLOCKS.register("armament_table",
+            () -> new WorkbenchBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SMITHING_TABLE),
+                    Component.translatable("container.modeminecraft.armament_table"), ArmamentTableMenu::new));
+
+    /** Table de modification : accessoires et skins des armes. */
+    public static final DeferredBlock<Block> MODIFICATION_TABLE = BLOCKS.register("modification_table",
+            () -> new WorkbenchBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SMITHING_TABLE),
+                    Component.translatable("container.modeminecraft.modification_table"), ModificationTableMenu::new));
 
     private ModBlocks() {}
 }

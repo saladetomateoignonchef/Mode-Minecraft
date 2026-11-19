@@ -1,8 +1,10 @@
 package fr.modeminecraft.client;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import fr.modeminecraft.ModeMinecraft;
 import fr.modeminecraft.item.gun.GunItem;
-import com.mojang.blaze3d.systems.RenderSystem;
+import fr.modeminecraft.item.gun.ResolvedGun;
+import fr.modeminecraft.item.gun.SightOverlay;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -14,13 +16,11 @@ import net.minecraft.world.item.ItemStack;
 /**
  * Affichage à l'écran :
  * - munitions (chargeur / réserve) à droite de la barre d'inventaire ;
- * - lunette du sniper quand on vise.
+ * - réticule ou lunette quand on vise.
  */
 public final class GunHudLayer {
-    private static final ResourceLocation SCOPE = ModeMinecraft.id("textures/misc/sniper_scope.png");
-
     public static final LayeredDraw.Layer AMMO = GunHudLayer::renderAmmo;
-    public static final LayeredDraw.Layer SCOPE_OVERLAY = GunHudLayer::renderScope;
+    public static final LayeredDraw.Layer SIGHT_OVERLAY = GunHudLayer::renderSight;
 
     private static void renderAmmo(GuiGraphics graphics, DeltaTracker deltaTracker) {
         Minecraft mc = Minecraft.getInstance();
@@ -34,7 +34,7 @@ public final class GunHudLayer {
         }
 
         int ammo = GunItem.getAmmo(stack);
-        int max = gun.stats().magazineSize();
+        int max = gun.resolve(stack).magazineSize();
         String reserve = player.getAbilities().instabuild ? "∞" : Integer.toString(gun.countReserve(player));
         String text = ammo + " / " + max + "  [" + reserve + "]";
 
@@ -45,24 +45,31 @@ public final class GunHudLayer {
         graphics.drawString(mc.font, text, x + 18, y + 4, color, true);
     }
 
-    private static void renderScope(GuiGraphics graphics, DeltaTracker deltaTracker) {
-        Minecraft mc = Minecraft.getInstance();
-        if (!GunClientEvents.isScoping(mc.player)) {
+    private static void renderSight(GuiGraphics graphics, DeltaTracker deltaTracker) {
+        ResolvedGun aim = GunClientEvents.aiming(Minecraft.getInstance().player);
+        if (aim == null || aim.overlay() == SightOverlay.NONE) {
             return;
         }
+        ResourceLocation texture = ModeMinecraft.id(aim.overlay().texture);
         int w = graphics.guiWidth();
         int h = graphics.guiHeight();
-        int size = Math.min(w, h);
-        int x = (w - size) / 2;
-        int y = (h - size) / 2;
-        RenderSystem.enableBlend(); // le centre de la lunette est transparent
-        graphics.blit(SCOPE, x, y, -90, 0.0f, 0.0f, size, size, size, size);
+        RenderSystem.enableBlend(); // les réticules sont transparents
+        if (aim.overlay().isFullScope()) {
+            int size = Math.min(w, h);
+            int x = (w - size) / 2;
+            int y = (h - size) / 2;
+            graphics.blit(texture, x, y, -90, 0.0f, 0.0f, size, size, size, size);
+            // Bandes noires autour de la lunette
+            graphics.fill(0, 0, w, y, -90, 0xFF000000);
+            graphics.fill(0, y + size, w, h, -90, 0xFF000000);
+            graphics.fill(0, y, x, y + size, -90, 0xFF000000);
+            graphics.fill(x + size, y, w, y + size, -90, 0xFF000000);
+        } else {
+            // Viseur point rouge / holographique : petit réticule au centre
+            int size = aim.overlay() == SightOverlay.HOLO ? 48 : 16;
+            graphics.blit(texture, (w - size) / 2, (h - size) / 2, 0, 0.0f, 0.0f, size, size, size, size);
+        }
         RenderSystem.disableBlend();
-        // Bandes noires autour de la lunette
-        graphics.fill(0, 0, w, y, -90, 0xFF000000);
-        graphics.fill(0, y + size, w, h, -90, 0xFF000000);
-        graphics.fill(0, y, x, y + size, -90, 0xFF000000);
-        graphics.fill(x + size, y, w, y + size, -90, 0xFF000000);
     }
 
     private GunHudLayer() {}
