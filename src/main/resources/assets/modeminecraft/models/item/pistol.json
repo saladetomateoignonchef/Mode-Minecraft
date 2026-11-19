@@ -1,6 +1,15 @@
 {
-  "parent": "modeminecraft:item/gun",
-  "textures": {
-    "layer0": "modeminecraft:item/pistol"
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "base": {
+    "parent": "modeminecraft:item/pistol_3d"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "modeminecraft:item/pistol_icon"
+    },
+    "fixed": {
+      "parent": "modeminecraft:item/pistol_icon"
+    }
   }
 }

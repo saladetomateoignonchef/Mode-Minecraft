@@ -1,5 +1,6 @@
 package fr.modeminecraft.client;
 
+import fr.modeminecraft.ModeMinecraft;
 import fr.modeminecraft.item.gun.GunItem;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.DeltaTracker;
@@ -16,7 +17,7 @@ import net.minecraft.world.item.ItemStack;
  * - lunette du sniper quand on vise.
  */
 public final class GunHudLayer {
-    private static final ResourceLocation SCOPE = ResourceLocation.withDefaultNamespace("textures/misc/spyglass_scope.png");
+    private static final ResourceLocation SCOPE = ModeMinecraft.id("textures/misc/sniper_scope.png");
 
     public static final LayeredDraw.Layer AMMO = GunHudLayer::renderAmmo;
     public static final LayeredDraw.Layer SCOPE_OVERLAY = GunHudLayer::renderScope;

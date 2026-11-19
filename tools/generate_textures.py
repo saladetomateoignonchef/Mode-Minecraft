@@ -13,7 +13,7 @@ import math
 import os
 import random
 
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 TEX = os.path.join(ROOT, "src/main/resources/assets/modeminecraft/textures")
@@ -638,6 +638,59 @@ def gun_icon(rows):
     return cv.image()
 
 
+# ---------- Lunette du sniper (512x512, transparente au centre) ----------
+def sniper_scope(n=512):
+    c = n / 2
+    radius = n * 0.44     # rayon de la zone visible
+    feather = n * 0.05    # largeur du bord flou
+    img = Image.new("RGBA", (n, n), (0, 0, 0, 0))
+    px = img.load()
+    for y in range(n):
+        for x in range(n):
+            d = math.hypot(x + 0.5 - c, y + 0.5 - c)
+            t = min(max((d - (radius - feather)) / feather, 0.0), 1.0)
+            t = t * t * (3 - 2 * t)  # transition douce
+            px[x, y] = (0, 0, 0, int(255 * t))
+
+    draw = ImageDraw.Draw(img)
+    black = (0, 0, 0, 255)
+    inner = radius * 0.5   # là où s'arrêtent les barres épaisses
+    thick = n * 0.012
+    thin = 1
+
+    # Barres épaisses : haut, gauche, droite
+    draw.rectangle([c - thick, 0, c + thick, c - inner], fill=black)
+    draw.rectangle([0, c - thick, c - inner, c + thick], fill=black)
+    draw.rectangle([c + inner, c - thick, n, c + thick], fill=black)
+
+    # Réticule fin
+    draw.rectangle([c - inner, c - thin, c + inner, c + thin - 1], fill=black)
+    draw.rectangle([c - thin, c - inner, c + thin - 1, c + inner * 1.3], fill=black)
+
+    # Graduations sur la ligne horizontale
+    step = inner / 10
+    for i in range(1, 10):
+        h = 7 if i % 2 == 0 else 4
+        for sign in (-1, 1):
+            x = c + sign * i * step
+            draw.rectangle([x - 1, c - h, x, c + h], fill=black)
+    for i in range(1, 6):
+        h = 4
+        draw.rectangle([c - h, c - i * step * 2 - 1, c + h, c - i * step * 2], fill=black)
+
+    # Échelle de chute de balle sous le centre, avec les distances
+    font = ImageFont.load_default()
+    for i in range(1, 6):
+        y = c + i * step * 1.25
+        half = (6 - i) * 2.5 + 6
+        draw.rectangle([c - half, y - 1, c + half, y], fill=black)
+        draw.text((c + half + 4, y - 6), str(i * 100), fill=black, font=font)
+    # Chiffres sur la droite de la ligne horizontale
+    for i in (2, 4, 6, 8):
+        draw.text((c + i * step - 3, c - 20), str(i), fill=black, font=font)
+    return img
+
+
 def main():
     items = {
         "rubis": gem(),
@@ -673,6 +726,7 @@ def main():
     save(ore(2, deepslate, streaks=True), "block", "deepslate_rubis_ore.png")
     save(rubis_block(), "block", "rubis_block.png")
 
+    save(sniper_scope(), "misc", "sniper_scope.png")
     save(armor_layer(1), "models", "armor", "rubis_layer_1.png")
     save(armor_layer(2), "models", "armor", "rubis_layer_2.png")
     print(f"{len(items) + 5} textures générées dans {os.path.normpath(TEX)}")

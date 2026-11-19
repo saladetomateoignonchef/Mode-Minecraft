@@ -1,6 +1,15 @@
 {
-  "parent": "modeminecraft:item/gun",
-  "textures": {
-    "layer0": "modeminecraft:item/assault_rifle"
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "base": {
+    "parent": "modeminecraft:item/assault_rifle_3d"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "modeminecraft:item/assault_rifle_icon"
+    },
+    "fixed": {
+      "parent": "modeminecraft:item/assault_rifle_icon"
+    }
   }
 }

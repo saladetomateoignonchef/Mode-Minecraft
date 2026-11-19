@@ -1,6 +1,15 @@
 {
-  "parent": "modeminecraft:item/gun",
-  "textures": {
-    "layer0": "modeminecraft:item/rocket_launcher"
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "base": {
+    "parent": "modeminecraft:item/rocket_launcher_3d"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "modeminecraft:item/rocket_launcher_icon"
+    },
+    "fixed": {
+      "parent": "modeminecraft:item/rocket_launcher_icon"
+    }
   }
 }

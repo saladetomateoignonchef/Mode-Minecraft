@@ -54,7 +54,9 @@ Matériau entre le diamant et la netherite (1800 de durabilité, enchantabilité
 - Le temps de rechargement s'affiche comme une recharge sur l'icône de l'arme.
 - **Tir à la tête = dégâts ×1,5**.
 - Les balles **cassent le verre** (si `mobGriefing` est activé).
-- Recul de la caméra à chaque tir, et pose « en joue » à deux mains en vue à la 3ᵉ personne.
+- **Modèles 3D** en main et au sol (icône 2D dans l'inventaire), recul de la caméra à chaque tir,
+  et pose « en joue » à deux mains en vue à la 3ᵉ personne.
+- **Lunette du sniper** avec réticule gradué et échelle de chute de balle (100 à 500 m).
 - Message de mort personnalisé : « X a été abattu par Y ».
 
 **Crafts :**
@@ -83,7 +85,8 @@ puis utiliser les configurations de lancement générées (Client, Server).
 ### Ajouter une nouvelle arme à feu
 Dans `ModItems.java`, copier par exemple `PISTOL` et changer ses statistiques (`GunStats`) :
 dégâts, nombre de plombs, taille du chargeur, cadence, temps de recharge, vitesse, dispersion, recul, automatique ou non, munitions et son.
-Puis ajouter un modèle (`"parent": "modeminecraft:item/gun"`), une texture, les traductions et une recette.
+Puis ajouter sa forme 3D dans `tools/generate_gun_models.py` (liste de pavés), une texture d'icône,
+les traductions et une recette.
 Enfin, l'ajouter à la liste dans `ClientSetup.registerClientExtensions` pour la pose « en joue ».
 
 ## Organisation du code
@@ -101,7 +104,8 @@ src/main/java/fr/modeminecraft/
 src/main/resources/
 ├── assets/modeminecraft/       # modèles, textures, traductions (en_us, fr_fr)
 └── data/                       # recettes, loot tables, tags, génération du minerai
-tools/generate_textures.py      # génère les textures pixel art (provisoires)
+tools/generate_textures.py      # génère les textures pixel art (provisoires) + la lunette du sniper
+tools/generate_gun_models.py    # génère les modèles 3D des armes à feu
 ```
 
 ### Ajouter une nouvelle arme magique
