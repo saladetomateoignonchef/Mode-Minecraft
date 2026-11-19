@@ -56,8 +56,15 @@ Toutes les armes à feu, munitions et accessoires se fabriquent à la **table d'
   Comme une vraie détente, il faut relâcher le clic entre deux tirs en coup par coup et entre deux rafales.
   Armes automatiques : les 3 modes (sauf le minigun, toujours automatique). M16A4 : coup par coup / rafale.
   Pistolets, snipers, fusils à pompe et lanceurs : coup par coup.
+- **H** : vérifier s'il y a une balle dans la chambre (l'arme pivote, la culasse s'entrouvre).
+- **Double appui sur s'accroupir** : s'allonger / se relever (aussi en sautant), avec ou sans arme.
+  Allongé : recul et dispersion divisés par 2. Maintenir s'accroupir pour viser.
 - **R** : recharger. **S'accroupir** : viser (moins de dispersion, zoom et réticule si un viseur est monté).
 - Les touches B et R se changent dans *Options > Commandes > Mode Minecraft*. Munitions infinies en créatif.
+
+**Réalisme :** balle chambrée (le HUD affiche `chargeur+1`) ; arme neuve ou vidée = le personnage tire la culasse
+(au clic droit, ou automatiquement à la fin d'un rechargement à vide) ; culasse des pistolets bloquée en arrière
+quand ils sont vides ; douilles éjectées (laiton, acier ou cartouche rouge) ; l'arme s'incline pendant le rechargement.
 
 **Mécaniques :** tir à la tête x1,5, les balles cassent le verre, recul de la caméra,
 **culasse animée au tir** (pistolets : toute la culasse recule ; fusils : culasse et levier d'armement ;

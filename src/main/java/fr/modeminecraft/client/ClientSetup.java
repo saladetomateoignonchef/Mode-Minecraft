@@ -1,6 +1,7 @@
 package fr.modeminecraft.client;
 
 import fr.modeminecraft.ModeMinecraft;
+import fr.modeminecraft.client.particle.CasingParticle;
 import fr.modeminecraft.client.screen.ArmamentTableScreen;
 import fr.modeminecraft.client.screen.ModificationTableScreen;
 import fr.modeminecraft.item.gun.GunItem;
@@ -47,9 +48,17 @@ public final class ClientSetup {
     }
 
     @SubscribeEvent
+    public static void registerParticles(net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent event) {
+        event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.CASING_BRASS.get(), CasingParticle.Provider::new);
+        event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.CASING_STEEL.get(), CasingParticle.Provider::new);
+        event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.CASING_SHELL.get(), CasingParticle.Provider::new);
+    }
+
+    @SubscribeEvent
     public static void registerKeys(RegisterKeyMappingsEvent event) {
         event.register(ModKeyMappings.RELOAD);
         event.register(ModKeyMappings.FIRE_MODE);
+        event.register(ModKeyMappings.CHECK_CHAMBER);
     }
 
     @SubscribeEvent
@@ -65,6 +74,15 @@ public final class ClientSetup {
             @Override
             public HumanoidModel.ArmPose getArmPose(LivingEntity entity, InteractionHand hand, ItemStack stack) {
                 return HumanoidModel.ArmPose.CROSSBOW_HOLD;
+            }
+
+            @Override
+            public boolean applyForgeHandTransform(com.mojang.blaze3d.vertex.PoseStack poseStack,
+                                                   net.minecraft.client.player.LocalPlayer player,
+                                                   net.minecraft.world.entity.HumanoidArm arm, ItemStack stack,
+                                                   float partialTick, float equipProcess, float swingProcess) {
+                GunPoseHelper.apply(poseStack, player, arm, stack, partialTick, equipProcess, swingProcess);
+                return true;
             }
         }, ModItems.ITEMS.getEntries().stream().map(h -> h.get())
                 .filter(item -> item instanceof GunItem).toArray(Item[]::new));

@@ -37,7 +37,8 @@ public final class GunHudLayer {
         int ammo = GunItem.getAmmo(stack);
         int max = gun.resolve(stack).magazineSize();
         String reserve = player.getAbilities().instabuild ? "∞" : Integer.toString(gun.countReserve(player));
-        String text = ammo + " / " + max + "  [" + reserve + "]";
+        boolean chambered = gun.stats().chamber() && (GunItem.isChambered(stack) || player.getAbilities().instabuild);
+        String text = ammo + (chambered ? "+1" : "") + " / " + max + "  [" + reserve + "]";
 
         int x = graphics.guiWidth() / 2 + 91 + 8;
         int y = graphics.guiHeight() - 19;

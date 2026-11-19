@@ -4,7 +4,10 @@ import fr.modeminecraft.ModeMinecraft;
 import fr.modeminecraft.item.gun.GunItem;
 import fr.modeminecraft.item.gun.ResolvedGun;
 import fr.modeminecraft.item.gun.SightOverlay;
+import fr.modeminecraft.item.gun.ProneHandler;
+import fr.modeminecraft.network.CheckChamberPayload;
 import fr.modeminecraft.network.FireModePayload;
+import fr.modeminecraft.network.PronePayload;
 import fr.modeminecraft.network.ReloadPayload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
@@ -39,6 +42,45 @@ public final class GunClientEvents {
             if (holdingGun) {
                 PacketDistributor.sendToServer(FireModePayload.INSTANCE);
             }
+        }
+        while (ModKeyMappings.CHECK_CHAMBER.consumeClick()) {
+            if (holdingGun) {
+                PacketDistributor.sendToServer(CheckChamberPayload.INSTANCE);
+            }
+        }
+        handleProne(mc);
+    }
+
+    private static boolean sneakWasDown;
+    private static long lastSneakPress = -100;
+    private static boolean jumpWasDown;
+
+    /** Double appui sur "s'accroupir" = s'allonger / se relever. Sauter = se relever aussi. */
+    private static void handleProne(Minecraft mc) {
+        if (mc.player == null || mc.screen != null) {
+            return;
+        }
+        long now = mc.player.level().getGameTime();
+        boolean sneak = mc.options.keyShift.isDown();
+        if (sneak && !sneakWasDown) {
+            if (now - lastSneakPress <= 7) {
+                toggleProne(mc, !ProneHandler.isProne(mc.player));
+                lastSneakPress = -100;
+            } else {
+                lastSneakPress = now;
+            }
+        }
+        sneakWasDown = sneak;
+        boolean jump = mc.options.keyJump.isDown();
+        if (jump && !jumpWasDown && ProneHandler.isProne(mc.player)) {
+            toggleProne(mc, false);
+        }
+        jumpWasDown = jump;
+    }
+
+    private static void toggleProne(Minecraft mc, boolean prone) {
+        if (ProneHandler.setProne(mc.player, prone)) {
+            PacketDistributor.sendToServer(new PronePayload(prone));
         }
     }
 
@@ -87,7 +129,7 @@ public final class GunClientEvents {
 
     /** Statistiques de l'arme si le joueur est en train de viser en vue à la 1re personne, sinon null. */
     public static @Nullable ResolvedGun aiming(@Nullable Player player) {
-        if (player == null || !player.isCrouching()
+        if (player == null || !GunItem.isAiming(player)
                 || !Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
             return null;
         }

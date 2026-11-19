@@ -52,5 +52,22 @@ public final class GunAnimations {
         };
     }
 
+    /**
+     * Le personnage tire la culasse (après un rechargement à vide, ou si la chambre est vide) :
+     * la pièce mobile part en arrière, reste un instant, puis revient d'un coup.
+     */
+    public static float rackProgress(String style, float t) {
+        return switch (style) {
+            case "pump" -> progress("pump", t + 2);
+            case "bolt" -> progress("bolt", t + 3);
+            default -> t < 0 ? 0 : (t < 3 ? t / 3 : (t < 6 ? 1 : (t < 8 ? 1 - (t - 6) / 2 : 0)));
+        };
+    }
+
+    /** Vérification de la chambre : on entrouvre la culasse (un tiers de sa course). */
+    public static float checkProgress(float t) {
+        return t < 0 ? 0 : (t < 3 ? 0.35f * t / 3 : (t < 8 ? 0.35f : (t < 11 ? 0.35f * (1 - (t - 8) / 3) : 0)));
+    }
+
     private GunAnimations() {}
 }

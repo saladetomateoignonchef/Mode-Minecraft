@@ -34,7 +34,7 @@
   "tooltip.modeminecraft.gun.ammo": "Magazine: %s / %s",
   "tooltip.modeminecraft.gun.damage": "Damage: %s",
   "tooltip.modeminecraft.gun.ammo_type": "Uses: %s",
-  "tooltip.modeminecraft.gun.controls": "Right-click: shoot | B: fire mode | R: reload | Sneak: aim",
+  "tooltip.modeminecraft.gun.controls": "Right-click: shoot | B: fire mode | R: reload | H: check chamber | Sneak: aim",
   "message.modeminecraft.no_ammo": "No ammo: %s needed",
   "key.categories.modeminecraft": "Mode Minecraft",
   "key.modeminecraft.reload": "Reload",
@@ -172,5 +172,12 @@
   "message.modeminecraft.fire_mode": "Fire mode: %s",
   "message.modeminecraft.fire_mode.burst_count": "%s (%s rounds)",
   "message.modeminecraft.fire_mode.single": "This weapon only has one fire mode: %s",
-  "tooltip.modeminecraft.gun.fire_mode": "Fire mode: %s (B to change)"
+  "tooltip.modeminecraft.gun.fire_mode": "Fire mode: %s (B to change)",
+  "key.modeminecraft.check_chamber": "Check Chamber",
+  "message.modeminecraft.chamber.loaded": "Round chambered ✔ | magazine: %s / %s",
+  "message.modeminecraft.chamber.empty": "Chamber empty ✘ (rack the slide) | magazine: %s / %s",
+  "message.modeminecraft.chamber.none": "No chamber | rounds: %s / %s",
+  "message.modeminecraft.prone.no_room": "Not enough room to stand up",
+  "tooltip.modeminecraft.gun.chambered": "Round chambered",
+  "tooltip.modeminecraft.gun.not_chambered": "Chamber empty: right-click to rack"
 }

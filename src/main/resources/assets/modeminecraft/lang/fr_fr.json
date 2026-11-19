@@ -34,7 +34,7 @@
   "tooltip.modeminecraft.gun.ammo": "Chargeur : %s / %s",
   "tooltip.modeminecraft.gun.damage": "Dégâts : %s",
   "tooltip.modeminecraft.gun.ammo_type": "Utilise : %s",
-  "tooltip.modeminecraft.gun.controls": "Clic droit : tirer | B : mode de tir | R : recharger | Accroupi : viser",
+  "tooltip.modeminecraft.gun.controls": "Clic droit : tirer | B : mode de tir | R : recharger | H : vérifier la chambre | Accroupi : viser",
   "message.modeminecraft.no_ammo": "Plus de munitions : il faut des %s",
   "key.categories.modeminecraft": "Mode Minecraft",
   "key.modeminecraft.reload": "Recharger",
@@ -172,5 +172,12 @@
   "message.modeminecraft.fire_mode": "Mode de tir : %s",
   "message.modeminecraft.fire_mode.burst_count": "%s (%s coups)",
   "message.modeminecraft.fire_mode.single": "Cette arme n'a qu'un mode de tir : %s",
-  "tooltip.modeminecraft.gun.fire_mode": "Mode de tir : %s (B pour changer)"
+  "tooltip.modeminecraft.gun.fire_mode": "Mode de tir : %s (B pour changer)",
+  "key.modeminecraft.check_chamber": "Vérifier la chambre",
+  "message.modeminecraft.chamber.loaded": "Balle chambrée ✔ | chargeur : %s / %s",
+  "message.modeminecraft.chamber.empty": "Chambre vide ✘ (tire la culasse) | chargeur : %s / %s",
+  "message.modeminecraft.chamber.none": "Pas de chambre | munitions : %s / %s",
+  "message.modeminecraft.prone.no_room": "Pas assez de place pour se relever",
+  "tooltip.modeminecraft.gun.chambered": "Balle chambrée",
+  "tooltip.modeminecraft.gun.not_chambered": "Chambre vide : clic droit pour tirer la culasse"
 }

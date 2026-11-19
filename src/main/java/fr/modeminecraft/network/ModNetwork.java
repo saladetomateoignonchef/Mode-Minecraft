@@ -12,7 +12,9 @@ public final class ModNetwork {
     public static void register(RegisterPayloadHandlersEvent event) {
         event.registrar("1")
                 .playToServer(ReloadPayload.TYPE, ReloadPayload.STREAM_CODEC, ReloadPayload::handle)
-                .playToServer(FireModePayload.TYPE, FireModePayload.STREAM_CODEC, FireModePayload::handle);
+                .playToServer(FireModePayload.TYPE, FireModePayload.STREAM_CODEC, FireModePayload::handle)
+                .playToServer(CheckChamberPayload.TYPE, CheckChamberPayload.STREAM_CODEC, CheckChamberPayload::handle)
+                .playToServer(PronePayload.TYPE, PronePayload.STREAM_CODEC, PronePayload::handle);
     }
 
     private ModNetwork() {}

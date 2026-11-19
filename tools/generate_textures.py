@@ -869,6 +869,21 @@ def table_textures():
     return tex
 
 
+# ---------- Douilles éjectées (particules 8x8) ----------
+def casing_sprite(body, light, base):
+    """Petite douille vue de côté, en diagonale."""
+    img = Image.new("RGBA", (8, 8), (0, 0, 0, 0))
+    for i in range(5):
+        x, y = 1 + i, 6 - i
+        img.putpixel((x, y), hexc(body))
+        img.putpixel((x + 1, y), hexc(light))
+        if i < 4:
+            img.putpixel((x + 1, y + 1), hexc(body))
+    img.putpixel((1, 7), hexc(base))
+    img.putpixel((0, 6), hexc(base))
+    return img
+
+
 def main():
     items = {
         "rubis": gem(),
@@ -908,6 +923,9 @@ def main():
     save(rubis_block(), "block", "rubis_block.png")
 
     save(sniper_scope(), "misc", "sniper_scope.png")
+    save(casing_sprite("#b8901c", "#f0d870", "#8a6a12"), "particle", "casing_brass.png")
+    save(casing_sprite("#6a6e58", "#a2a68c", "#4a4e3c"), "particle", "casing_steel.png")
+    save(casing_sprite("#9e1c26", "#e04a58", "#d8b040"), "particle", "casing_shell.png")
     save(acog_scope(), "misc", "acog_scope.png")
     save(red_dot(), "misc", "red_dot.png")
     save(holo_reticle(), "misc", "holo_reticle.png")

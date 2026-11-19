@@ -41,7 +41,13 @@ public record GunStats(
         int spinUp,            // ticks de lancement avant de tirer (minigun)
         boolean disposable,    // arme jetable (AT4) : vendue chargée, détruite après le tir
         List<FireMode> fireModes, // modes de tir disponibles (touche B), dans l'ordre
+        Casing casing,         // douille éjectée au tir
+        boolean chamber,       // l'arme a une chambre : +1 balle, et il faut armer la culasse si elle est vide
+        boolean slideLock,     // la culasse reste bloquée en arrière quand l'arme est vide (pistolets)
         Set<AttachmentSlot> slots) { // emplacements d'accessoires disponibles
+
+    /** Douille éjectée au tir. */
+    public enum Casing { NONE, BRASS, STEEL, SHELL }
 
     /** Type de projectile tiré. */
     public enum ProjectileKind { BULLET, ROCKET, GRENADE }
@@ -73,6 +79,8 @@ public record GunStats(
         private ProjectileKind projectile = ProjectileKind.BULLET;
         private SightOverlay scopeOverlay = SightOverlay.NONE;
         private List<FireMode> modes;
+        private Casing casing = Casing.BRASS;
+        private boolean chamber = true, slideLock = false;
         private Supplier<? extends Item> ammo;
         private Supplier<SoundEvent> sound;
         private final Set<AttachmentSlot> slots = EnumSet.noneOf(AttachmentSlot.class);
@@ -103,6 +111,10 @@ public record GunStats(
         public Builder disposable() { disposable = true; return this; }
         /** Force les modes de tir disponibles (sinon : déduits de automatic/burst). */
         public Builder modes(FireMode... m) { modes = List.of(m); return this; }
+        public Builder casing(Casing c) { casing = c; return this; }
+        /** Pas de chambre (revolver, lanceurs...) : on tire directement depuis le chargeur. */
+        public Builder noChamber() { chamber = false; return this; }
+        public Builder slideLock() { slideLock = true; return this; }
         public Builder slots(AttachmentSlot... s) { slots.addAll(Set.of(s)); return this; }
         /** Retire tous les emplacements (puis on peut en rajouter avec slots(...)). */
         public Builder noSlots() { slots.clear(); return this; }
@@ -122,7 +134,8 @@ public record GunStats(
             }
             return new GunStats(damage, pellets, magazine, fireDelay, reload, velocity, spread, aimSpread, recoil,
                     automatic, ammo, sound, volume, pitch, explosionPower, projectile, scopeZoom, scopeOverlay,
-                    burst, burstCooldown, reloadPerRound, pierce, armorPiercing, spinUp, disposable, fireModes, Set.copyOf(slots));
+                    burst, burstCooldown, reloadPerRound, pierce, armorPiercing, spinUp, disposable, fireModes,
+                    projectile == ProjectileKind.BULLET ? casing : Casing.NONE, chamber && !disposable, slideLock, Set.copyOf(slots));
         }
     }
 }

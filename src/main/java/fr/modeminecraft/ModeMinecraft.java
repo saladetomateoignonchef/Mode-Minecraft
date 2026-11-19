@@ -8,6 +8,7 @@ import fr.modeminecraft.registry.ModDataComponents;
 import fr.modeminecraft.registry.ModEntities;
 import fr.modeminecraft.registry.ModItems;
 import fr.modeminecraft.registry.ModMenus;
+import fr.modeminecraft.registry.ModParticles;
 import fr.modeminecraft.registry.ModRecipes;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
@@ -31,6 +32,7 @@ public class ModeMinecraft {
         ModItems.ITEMS.register(modEventBus);
         ModEntities.ENTITY_TYPES.register(modEventBus);
         ModMenus.MENUS.register(modEventBus);
+        ModParticles.PARTICLES.register(modEventBus);
         ModRecipes.TYPES.register(modEventBus);
         ModRecipes.SERIALIZERS.register(modEventBus);
         ModCreativeTabs.CREATIVE_TABS.register(modEventBus);

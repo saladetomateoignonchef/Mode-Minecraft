@@ -4,6 +4,7 @@ import fr.modeminecraft.entity.BulletEntity;
 import fr.modeminecraft.entity.RocketEntity;
 import fr.modeminecraft.registry.ModDataComponents;
 import fr.modeminecraft.registry.ModEntities;
+import fr.modeminecraft.registry.ModParticles;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -37,9 +38,12 @@ import java.util.List;
  * Données stockées dans l'arme (ItemStack) :
  * - munitions dans le chargeur (AMMO) ;
  * - accessoires montés (ATTACHMENTS) -> modifient les statistiques, voir {@link ResolvedGun} ;
- * - skin (SKIN) -> purement visuel.
+ * - skin (SKIN) -> purement visuel ;
+ * - balle dans la chambre (CHAMBERED) : la plupart des armes tirent la balle chambrée, puis la suivante
+ *   monte du chargeur. Chambre vide (arme neuve, chargeur vidé) = il faut tirer la culasse ;
+ * - instants des animations (RACK_AT, CHECK_AT, RELOAD_START, RELOAD_END).
  *
- * Commandes : clic droit = tirer, B = mode de tir, R = recharger, accroupi = viser.
+ * Commandes : clic droit = tirer, B = mode de tir, R = recharger, H = vérifier la chambre, accroupi = viser.
  */
 public class GunItem extends Item {
     protected final GunStats stats;
@@ -64,6 +68,35 @@ public class GunItem extends Item {
 
     public static void setAmmo(ItemStack stack, int ammo) {
         stack.set(ModDataComponents.AMMO.get(), ammo);
+    }
+
+    public static boolean isChambered(ItemStack stack) {
+        return stack.getOrDefault(ModDataComponents.CHAMBERED.get(), false);
+    }
+
+    public static void setChambered(ItemStack stack, boolean chambered) {
+        stack.set(ModDataComponents.CHAMBERED.get(), chambered);
+    }
+
+    /** Balles disponibles : chargeur + chambre. */
+    public int totalRounds(ItemStack stack) {
+        return getAmmo(stack) + (stats.chamber() && isChambered(stack) ? 1 : 0);
+    }
+
+    /** Le joueur peut-il tirer tout de suite ? */
+    public boolean canFire(Player player, ItemStack stack) {
+        if (player.getAbilities().instabuild) {
+            return true;
+        }
+        return stats.chamber() ? isChambered(stack) : getAmmo(stack) > 0;
+    }
+
+    /** Durée (ticks) pour tirer la culasse selon le mécanisme de l'arme. */
+    public int rackTicks() {
+        return switch (stats.casing()) {
+            case SHELL -> 10;          // pompe
+            default -> stats.reloadPerRound() ? 13 : 8;  // verrou / culasse
+        };
     }
 
     public static GunAttachments getAttachments(ItemStack stack) {
@@ -152,9 +185,9 @@ public class GunItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
-        if (getAmmo(stack) <= 0 && !player.getAbilities().instabuild) {
+        if (!canFire(player, stack)) {
             if (!level.isClientSide) {
-                reload(player, stack);
+                rackOrReload(player, stack);
             }
             return InteractionResultHolder.fail(stack);
         }
@@ -204,14 +237,58 @@ public class GunItem extends Item {
             }
             return;
         }
-        if (getAmmo(stack) <= 0 && !player.getAbilities().instabuild) {
+        if (!canFire(player, stack)) {
             player.stopUsingItem();
             if (!level.isClientSide) {
-                reload(player, stack);
+                rackOrReload(player, stack);
             }
             return;
         }
         shoot(level, player, stack);
+    }
+
+    /** Plus de balle chambrée : s'il en reste dans le chargeur on tire la culasse, sinon on recharge. */
+    private void rackOrReload(Player player, ItemStack stack) {
+        if (stats.chamber() && getAmmo(stack) > 0) {
+            rack(player, stack);
+        } else {
+            reload(player, stack);
+        }
+    }
+
+    /** Tirer la culasse : une balle passe du chargeur à la chambre (animation visible). */
+    public void rack(Player player, ItemStack stack) {
+        if (!stats.chamber() || isChambered(stack) || getAmmo(stack) <= 0 || player.getCooldowns().isOnCooldown(this)) {
+            return;
+        }
+        setAmmo(stack, getAmmo(stack) - 1);
+        setChambered(stack, true);
+        stack.set(ModDataComponents.RACK_AT.get(), player.level().getGameTime());
+        player.getCooldowns().addCooldown(this, rackTicks());
+        player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
+                SoundEvents.CROSSBOW_LOADING_MIDDLE.value(), SoundSource.PLAYERS, 1.0f, 1.3f);
+    }
+
+    /** Touche H : on entrouvre la culasse pour voir s'il y a une balle dans la chambre. */
+    public void checkChamber(Player player, ItemStack stack) {
+        if (player.getCooldowns().isOnCooldown(this)) {
+            return;
+        }
+        Component state;
+        if (!stats.chamber()) {
+            state = Component.translatable("message.modeminecraft.chamber.none", getAmmo(stack), resolve(stack).magazineSize());
+        } else if (isChambered(stack) || player.getAbilities().instabuild) {
+            state = Component.translatable("message.modeminecraft.chamber.loaded", getAmmo(stack), resolve(stack).magazineSize())
+                    .withStyle(ChatFormatting.GREEN);
+        } else {
+            state = Component.translatable("message.modeminecraft.chamber.empty", getAmmo(stack), resolve(stack).magazineSize())
+                    .withStyle(ChatFormatting.RED);
+        }
+        player.displayClientMessage(state, true);
+        stack.set(ModDataComponents.CHECK_AT.get(), player.level().getGameTime());
+        player.getCooldowns().addCooldown(this, 12);
+        player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
+                SoundEvents.CHAIN_STEP, SoundSource.PLAYERS, 0.5f, 1.5f);
     }
 
     @Override
@@ -224,20 +301,28 @@ public class GunItem extends Item {
         return UseAnim.NONE;
     }
 
+    /** Le joueur vise-t-il ? (touche accroupir maintenue, debout ou allongé) */
+    public static boolean isAiming(Player player) {
+        return player.isShiftKeyDown();
+    }
+
     protected void shoot(Level level, Player player, ItemStack stack) {
         ResolvedGun gun = resolve(stack);
-        boolean aiming = player.isCrouching();
+        boolean aiming = isAiming(player);
+        // Allongé : l'arme est bien plus stable
+        float stability = ProneHandler.isProne(player) ? 0.5f : 1.0f;
 
         if (level.isClientSide) {
             GunAnimations.recordShot(player); // la culasse recule (animation)
+            ejectCasing(level, player, null);
             // Recul : la caméra remonte un peu (uniquement côté client, le serveur suit)
-            float recoil = aiming ? gun.recoil() * 0.6f : gun.recoil();
+            float recoil = (aiming ? gun.recoil() * 0.6f : gun.recoil()) * stability;
             player.setXRot(Mth.clamp(player.getXRot() - recoil, -90f, 90f));
             player.setYRot(player.getYRot() + (player.getRandom().nextFloat() - 0.5f) * recoil * 0.5f);
             return;
         }
 
-        float spread = aiming ? gun.aimSpread() : gun.spread();
+        float spread = (aiming ? gun.aimSpread() : gun.spread()) * stability;
         for (int i = 0; i < stats.pellets(); i++) {
             Projectile projectile = createProjectile(level, player, gun);
             projectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0f, stats.velocity(), spread);
@@ -245,7 +330,16 @@ public class GunItem extends Item {
         }
 
         if (!player.getAbilities().instabuild) {
-            setAmmo(stack, getAmmo(stack) - 1);
+            if (stats.chamber()) {
+                // La balle chambrée part ; la suivante monte du chargeur (s'il en reste)
+                if (getAmmo(stack) > 0) {
+                    setAmmo(stack, getAmmo(stack) - 1);
+                } else {
+                    setChambered(stack, false);
+                }
+            } else {
+                setAmmo(stack, getAmmo(stack) - 1);
+            }
             if (stats.disposable() && getAmmo(stack) <= 0) {
                 // AT4 : le tube vide est jeté
                 level.playSound(null, player.getX(), player.getY(), player.getZ(),
@@ -268,10 +362,46 @@ public class GunItem extends Item {
             }
         }
 
+        // Douille éjectée, visible par les autres joueurs (le tireur l'a déjà vue côté client)
+        if (level instanceof ServerLevel serverLevel) {
+            ejectCasing(serverLevel, player, serverLevel);
+        }
+
         player.awardStat(Stats.ITEM_USED.get(this));
         if (!gun.silenced()) {
             // Un tir silencieux n'est pas détecté par les capteurs sculk
             level.gameEvent(player, GameEvent.PROJECTILE_SHOOT, player.position());
+        }
+    }
+
+    /**
+     * Éjecte une douille par la fenêtre d'éjection (à droite de l'arme), vers la droite et le haut.
+     * Côté client : particule pour le tireur. Côté serveur : envoyée aux autres joueurs proches.
+     */
+    private void ejectCasing(Level level, Player player, ServerLevel server) {
+        var type = switch (stats.casing()) {
+            case NONE -> null;
+            case BRASS -> ModParticles.CASING_BRASS.get();
+            case STEEL -> ModParticles.CASING_STEEL.get();
+            case SHELL -> ModParticles.CASING_SHELL.get();
+        };
+        if (type == null) {
+            return;
+        }
+        float yaw = (float) Math.toRadians(player.getYRot());
+        Vec3 look = player.getLookAngle();
+        Vec3 right = new Vec3(-Math.cos(yaw), 0, -Math.sin(yaw));
+        Vec3 pos = player.getEyePosition().add(look.scale(0.55)).add(right.scale(0.28)).add(0, -0.18, 0);
+        Vec3 velocity = right.scale(0.12 + level.random.nextFloat() * 0.05).add(0, 0.12 + level.random.nextFloat() * 0.05, 0)
+                .add(look.scale(-0.02)).add(player.getDeltaMovement());
+        if (server == null) {
+            level.addParticle(type, pos.x, pos.y, pos.z, velocity.x, velocity.y, velocity.z);
+        } else {
+            for (var other : server.players()) {
+                if (other != player && other.distanceToSqr(player) < 48 * 48) {
+                    server.sendParticles(other, type, false, pos.x, pos.y, pos.z, 0, velocity.x, velocity.y, velocity.z, 1.0);
+                }
+            }
         }
     }
 
@@ -289,7 +419,11 @@ public class GunItem extends Item {
     public void reload(Player player, ItemStack stack) {
         ResolvedGun gun = resolve(stack);
         int missing = gun.magazineSize() - getAmmo(stack);
-        if (stats.disposable() || missing <= 0 || player.getCooldowns().isOnCooldown(this)) {
+        if (stats.disposable() || player.getCooldowns().isOnCooldown(this)) {
+            return;
+        }
+        if (missing <= 0) {
+            rack(player, stack); // chargeur plein mais chambre vide : on arme
             return;
         }
 
@@ -306,7 +440,18 @@ public class GunItem extends Item {
         // Pas de stopUsingItem() ici : il ne s'exécuterait que côté serveur et désynchroniserait le client.
         // Le cooldown (synchronisé) suffit à suspendre le tir automatique pendant le rechargement.
         // Rechargement balle par balle : la durée dépend du nombre de balles insérées
-        player.getCooldowns().addCooldown(this, stats.reloadPerRound() ? gun.reloadTicks() * taken : gun.reloadTicks());
+        int time = stats.reloadPerRound() ? gun.reloadTicks() * taken : gun.reloadTicks();
+        long now = player.level().getGameTime();
+        if (stats.chamber() && !isChambered(stack)) {
+            // Rechargement à vide : après avoir mis le chargeur, le personnage tire la culasse
+            setAmmo(stack, getAmmo(stack) - 1);
+            setChambered(stack, true);
+            stack.set(ModDataComponents.RACK_AT.get(), now + time);
+            time += rackTicks();
+        }
+        stack.set(ModDataComponents.RELOAD_START.get(), now);
+        stack.set(ModDataComponents.RELOAD_END.get(), now + time);
+        player.getCooldowns().addCooldown(this, time);
         player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
                 SoundEvents.CROSSBOW_LOADING_END, SoundSource.PLAYERS, 1.0f, 0.8f);
     }
@@ -336,7 +481,7 @@ public class GunItem extends Item {
 
     @Override
     public int getBarWidth(ItemStack stack) {
-        return Math.round(13.0f * getAmmo(stack) / resolve(stack).magazineSize());
+        return Math.min(13, Math.round(13.0f * totalRounds(stack) / resolve(stack).magazineSize()));
     }
 
     @Override
@@ -361,6 +506,10 @@ public class GunItem extends Item {
         ResolvedGun gun = resolve(stack);
         tooltip.add(Component.translatable("tooltip.modeminecraft.gun.ammo", getAmmo(stack), gun.magazineSize())
                 .withStyle(ChatFormatting.GOLD));
+        if (stats.chamber()) {
+            tooltip.add(Component.translatable(isChambered(stack) ? "tooltip.modeminecraft.gun.chambered"
+                    : "tooltip.modeminecraft.gun.not_chambered").withStyle(isChambered(stack) ? ChatFormatting.GREEN : ChatFormatting.RED));
+        }
         String damage = stats.projectile() != GunStats.ProjectileKind.BULLET
                 ? Component.translatable("tooltip.modeminecraft.gun.explosive").getString()
                 : (stats.pellets() > 1 ? stats.pellets() + " x " : "") + format(gun.damage());

@@ -14,5 +14,8 @@ public final class ModKeyMappings {
     public static final KeyMapping FIRE_MODE = new KeyMapping("key.modeminecraft.fire_mode",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_B, CATEGORY);
 
+    public static final KeyMapping CHECK_CHAMBER = new KeyMapping("key.modeminecraft.check_chamber",
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_H, CATEGORY);
+
     private ModKeyMappings() {}
 }

@@ -42,5 +42,20 @@ public final class ModDataComponents {
                     .persistent(FireMode.CODEC)
                     .networkSynchronized(FireMode.STREAM_CODEC));
 
+    /** Une balle est-elle dans la chambre ? */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> CHAMBERED =
+            DATA_COMPONENTS.registerComponentType("chambered", b -> b.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
+
+    /** Instants (temps du monde, en ticks) des animations : armement, vérification de chambre, rechargement. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> RACK_AT = timestamp("rack_at");
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> CHECK_AT = timestamp("check_at");
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> RELOAD_START = timestamp("reload_start");
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> RELOAD_END = timestamp("reload_end");
+
+    private static DeferredHolder<DataComponentType<?>, DataComponentType<Long>> timestamp(String name) {
+        // Non sauvegardé sur le disque : ne sert qu'aux animations
+        return DATA_COMPONENTS.registerComponentType(name, b -> b.networkSynchronized(ByteBufCodecs.VAR_LONG));
+    }
+
     private ModDataComponents() {}
 }

@@ -8,7 +8,9 @@ import fr.modeminecraft.item.gun.GunAnimations;
 import fr.modeminecraft.item.gun.GunAttachments;
 import fr.modeminecraft.item.gun.GunItem;
 import fr.modeminecraft.item.gun.GunSkin;
+import fr.modeminecraft.registry.ModDataComponents;
 import fr.modeminecraft.registry.ModItems;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -185,8 +187,22 @@ public final class GunModels {
         if (entity != Minecraft.getInstance().player) {
             GunAnimations.observeAmmo(entity, stack);
         }
-        float t = GunAnimations.ticksSinceShot(entity, partial);
-        return Math.round(GunAnimations.progress(slide.style(), t) * FRAMES);
+        float now = entity.level().getGameTime() + partial;
+        float progress = GunAnimations.progress(slide.style(), GunAnimations.ticksSinceShot(entity, partial));
+        Long rack = stack.get(ModDataComponents.RACK_AT.get());
+        if (rack != null) {
+            progress = Math.max(progress, GunAnimations.rackProgress(slide.style(), now - rack));
+        }
+        Long check = stack.get(ModDataComponents.CHECK_AT.get());
+        if (check != null) {
+            progress = Math.max(progress, GunAnimations.checkProgress(now - check));
+        }
+        // Pistolet vide : la culasse reste bloquée en arrière
+        if (stack.getItem() instanceof GunItem held && held.stats().slideLock() && !GunItem.isChambered(stack)
+                && GunItem.getAmmo(stack) == 0 && !(entity instanceof Player p && p.getAbilities().instabuild)) {
+            progress = 1;
+        }
+        return Math.round(progress * FRAMES);
     }
 
     /** Modèle de l'item : choisit le modèle composé selon l'ItemStack. */
