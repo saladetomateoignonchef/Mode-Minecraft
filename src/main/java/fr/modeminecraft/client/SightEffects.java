@@ -36,7 +36,7 @@ import org.jetbrains.annotations.Nullable;
  */
 @EventBusSubscriber(modid = ModeMinecraft.MODID, value = Dist.CLIENT)
 public final class SightEffects {
-    private static final double LASER_RANGE = 64;
+    public static final double LASER_RANGE = 64;
     private static final double SIGHT_RANGE = 160;
 
     private static int modeIndex;
@@ -127,21 +127,6 @@ public final class SightEffects {
             Vec3 p = end.subtract(look.scale(0.03)); // juste devant la surface touchée
             mc.level.addParticle(ColorParticleOption.create(ModParticles.LASER.get(), 0xFF000000 | rgb), p.x, p.y, p.z, 0, 0, 0);
         }
-        // Départ du faisceau : à peu près au bout de l'arme (main droite)
-        float yaw = (float) Math.toRadians(shooter.getYRot());
-        Vec3 right = new Vec3(-Math.cos(yaw), 0, -Math.sin(yaw));
-        Vec3 up = right.cross(look).normalize();
-        boolean self = shooter == mc.player && mc.options.getCameraType().isFirstPerson();
-        Vec3 start = self ? eye.add(look.scale(0.9)).add(right.scale(0.2)).add(up.scale(-0.16))
-                : eye.add(look.scale(0.9)).add(right.scale(0.36)).add(up.scale(-0.3));
-        double length = start.distanceTo(end);
-        int alpha = self ? 0x50 : 0x90;
-        var beam = ColorParticleOption.create(ModParticles.LASER.get(), alpha << 24 | rgb);
-        int steps = (int) Math.min(320, length / 0.15);
-        for (int i = 1; i < steps; i++) {
-            Vec3 p = start.lerp(end, i / (double) steps);
-            mc.level.addParticle(beam, p.x, p.y, p.z, 0, 0, 0);
-        }
     }
 
     private static void clearPost(Minecraft mc) {
@@ -151,6 +136,11 @@ public final class SightEffects {
         }
         thermal = false;
         rubyTarget = -1;
+    }
+
+    /** Ce que touche le regard de ce joueur (utilisé par le faisceau laser). */
+    public static HitResult pickFor(Player player, double range) {
+        return pick(player, range);
     }
 
     /** Lancer de rayon depuis les yeux du joueur : bloc ou entité touché. */

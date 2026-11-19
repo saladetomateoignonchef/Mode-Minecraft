@@ -152,7 +152,8 @@ def material_pixel(skin, key, x, y, size=CELL, edges=True):
         f *= 0.72  # arêtes plus sombres : chaque pavé ressort mieux
     c = _scale(base, f)
     if key == "s" and not skin.startswith("lens_"):
-        c = c[:3] + (95,)  # vitre transparente : on voit le réticule à travers en visant
+        # Vitre presque invisible (légère teinte, sans reflet) : en visant on voit à travers, comme dans un FPS
+        c = _scale(base, 1.15)[:3] + (34 if not (x == 0 or y == 0 or x == size - 1 or y == size - 1) else 60,)
     return c
 
 

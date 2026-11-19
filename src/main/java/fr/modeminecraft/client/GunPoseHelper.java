@@ -42,7 +42,7 @@ public final class GunPoseHelper {
         if (stack.getItem() instanceof GunItem g && g.stats().pistol()) {
             return 0.62f;
         }
-        return optic ? 0.4f : 0.3f;
+        return optic ? 0.24f : 0.3f; // viseur proche de l'œil : grande fenêtre, comme dans un FPS
     }
     private static final Vector3f RIGHT_SHOULDER = new Vector3f(0.36f, -0.62f, 0.12f);
     private static final Vector3f LEFT_SHOULDER = new Vector3f(-0.34f, -0.62f, 0.05f);
@@ -76,7 +76,9 @@ public final class GunPoseHelper {
         Vector3f ads = mainRight ? adsPosition(gun, stack) : hip;
         Vector3f p = hip.lerp(ads, a, new Vector3f());
         pose.translate(p.x, p.y, p.z);
-        pose.mulPose(Axis.YP.rotationDegrees(-10f * a)); // canon parfaitement dans l'axe
+        // Canon dans l'axe : en visant exactement ; à la hanche, il pointe vers le réticule (à ~10 blocs)
+        pose.mulPose(Axis.YP.rotationDegrees(mainRight ? -10f * a - 6.4f * (1 - a) : 0));
+        pose.mulPose(Axis.XP.rotationDegrees(mainRight ? 3.2f * (1 - a) : 0));
 
         float now = player.level().getGameTime() + partialTick;
         float calm = 1 - 0.7f * a; // en visant, les mouvements sont plus petits
@@ -110,6 +112,12 @@ public final class GunPoseHelper {
 
         if (mainRight && !player.isInvisible()) {
             renderArms(pose, base, player, stack, gun, now, partialTick);
+        }
+        if (mainRight) {
+            Vector3f lens = LaserBeams.lensPoint(gun, stack);
+            if (lens != null) {
+                LaserBeams.drawFirstPerson(player, stack, new Matrix4f(pose.last().pose()).mul(displayMatrix()).transformPosition(lens));
+            }
         }
     }
 
