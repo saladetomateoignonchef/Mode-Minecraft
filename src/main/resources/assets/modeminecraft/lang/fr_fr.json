@@ -403,5 +403,20 @@
   "message.modeminecraft.overheated": "Canon en surchauffe ! Attends ou change de canon (R)",
   "message.modeminecraft.no_spare_barrel": "Il te faut un canon de rechange pour changer le canon",
   "message.modeminecraft.barrel_cooling": "Le canon de rechange refroidit encore (%s s)",
-  "message.modeminecraft.barrel_swapped": "Canon changé"
+  "message.modeminecraft.barrel_swapped": "Canon changé",
+  "subtitles.modeminecraft.shot": "Coup de feu",
+  "subtitles.modeminecraft.shot_suppressed": "Tir silencieux",
+  "subtitles.modeminecraft.shot_distant": "Coups de feu au loin",
+  "subtitles.modeminecraft.shot_rocket": "Roquette tirée",
+  "subtitles.modeminecraft.shot_launcher": "Grenade tirée",
+  "subtitles.modeminecraft.mag_out": "Chargeur retiré",
+  "subtitles.modeminecraft.mag_in": "Chargeur inséré",
+  "subtitles.modeminecraft.rack": "Culasse armée",
+  "subtitles.modeminecraft.bolt": "Verrou manœuvré",
+  "subtitles.modeminecraft.pump": "Pompe actionnée",
+  "subtitles.modeminecraft.shell_insert": "Cartouche insérée",
+  "subtitles.modeminecraft.empty_click": "Arme vide",
+  "subtitles.modeminecraft.casing": "Douille qui tombe",
+  "subtitles.modeminecraft.shell_casing": "Cartouche qui tombe",
+  "subtitles.modeminecraft.hitmarker": "Touché"
 }

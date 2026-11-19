@@ -33,6 +33,7 @@ public class ModeMinecraft {
         ModEntities.ENTITY_TYPES.register(modEventBus);
         ModMenus.MENUS.register(modEventBus);
         ModParticles.PARTICLES.register(modEventBus);
+        fr.modeminecraft.registry.ModSounds.SOUNDS.register(modEventBus);
         ModRecipes.TYPES.register(modEventBus);
         ModRecipes.SERIALIZERS.register(modEventBus);
         ModCreativeTabs.CREATIVE_TABS.register(modEventBus);

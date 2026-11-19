@@ -52,7 +52,8 @@ public final class GunModels {
     private static final Map<Key, BakedModel> CACHE = new HashMap<>();
 
     /** frame = image de l'animation de la pièce mobile (0 = au repos). */
-    private record Key(String gun, GunSkin skin, GunAttachments attachments, boolean loaded, int frame) {}
+    /** magOffset = chargeur décalé vers le bas pendant le rechargement (pixels ; -1 = retiré). */
+    private record Key(String gun, GunSkin skin, GunAttachments attachments, boolean loaded, int frame, int magOffset) {}
 
     /** Nombre d'images de l'animation de recul (plus = plus fluide, mais plus de modèles en cache). */
     private static final int FRAMES = 8;
@@ -127,10 +128,13 @@ public final class GunModels {
 
         // Chargeur : celui monté en accessoire, sinon celui d'origine (RPG-7 : la roquette, si chargée)
         var magazine = key.attachments.get(AttachmentSlot.MAGAZINE);
-        if (magazine.isPresent()) {
-            addPart(extra, magazine.get(), key.gun, AttachmentSlot.MAGAZINE);
+        Transformation magMove = key.magOffset > 0 ? new Transformation(new Matrix4f().translation(0, -key.magOffset / 16f, 0)) : null;
+        if (key.magOffset < 0) {
+            // rechargement : pas de chargeur dans l'arme pour l'instant
+        } else if (magazine.isPresent()) {
+            addPart(extra, magazine.get(), key.gun, AttachmentSlot.MAGAZINE, magMove);
         } else if (key.loaded) {
-            addQuads(extra, models.getModel(ModelResourceLocation.standalone(magModel(key.gun, key.skin))), null);
+            addQuads(extra, models.getModel(ModelResourceLocation.standalone(magModel(key.gun, key.skin))), magMove);
         }
         for (AttachmentSlot slot : new AttachmentSlot[]{AttachmentSlot.SIGHT, AttachmentSlot.MUZZLE, AttachmentSlot.GRIP, AttachmentSlot.SIDE_RAIL}) {
             key.attachments.get(slot).ifPresent(item -> addPart(extra, item, key.gun, slot));
@@ -165,7 +169,14 @@ public final class GunModels {
     }
 
     private static void addPart(List<BakedQuad> out, Item attachment, String gun, AttachmentSlot slot) {
+        addPart(out, attachment, gun, slot, null);
+    }
+
+    private static void addPart(List<BakedQuad> out, Item attachment, String gun, AttachmentSlot slot, @Nullable Transformation extraMove) {
         Vector3f mount = GunMounts.get(gun, slot);
+        if (mount != null && extraMove != null) {
+            mount = new Vector3f(mount).add(extraMove.getTranslation());
+        }
         if (mount != null) {
             BakedModel part = Minecraft.getInstance().getModelManager()
                     .getModel(ModelResourceLocation.standalone(partModel(attachment)));
@@ -182,6 +193,16 @@ public final class GunModels {
         for (BakedQuad quad : quads) {
             out.add(transform == null ? quad : QuadTransformers.applying(transform).process(quad));
         }
+    }
+
+    /** Position du chargeur pendant le rechargement (seulement pour l'arme tenue en main). */
+    private static int magOffset(ItemStack stack, @Nullable LivingEntity entity) {
+        if (entity == null || entity.level() == null || entity.getMainHandItem() != stack) {
+            return 0;
+        }
+        float now = entity.level().getGameTime() + Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true);
+        float off = GunAnimations.reloadMagOffset(stack, now);
+        return Float.isNaN(off) ? -1 : Math.round(off);
     }
 
     /** Image de l'animation de la pièce mobile pour cette arme, tenue par cette entité. */
@@ -236,7 +257,7 @@ public final class GunModels {
                     // Le RPG-7 n'affiche sa roquette que s'il est chargé
                     boolean loaded = !GunMounts.magNeedsAmmo(gunName) || GunItem.getAmmo(stack) > 0;
                     Key key = new Key(gunName, GunItem.getSkin(stack), GunItem.getAttachments(stack), loaded,
-                            animationFrame(gunName, stack, entity));
+                            animationFrame(gunName, stack, entity), magOffset(stack, entity));
                     return CACHE.computeIfAbsent(key, GunModels::compose);
                 }
             };

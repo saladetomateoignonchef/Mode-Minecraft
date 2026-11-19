@@ -150,7 +150,10 @@ def material_pixel(skin, key, x, y, size=CELL, edges=True):
         f = 1.25 if (x + y) % 8 < 3 else (0.8 if (x - y) % 8 < 2 else 1.0)
     if edges and (x == 0 or y == 0 or x == size - 1 or y == size - 1):
         f *= 0.72  # arêtes plus sombres : chaque pavé ressort mieux
-    return _scale(base, f)
+    c = _scale(base, f)
+    if key == "s" and not skin.startswith("lens_"):
+        c = c[:3] + (95,)  # vitre transparente : on voit le réticule à travers en visant
+    return c
 
 
 def palette_image(skin):
@@ -260,6 +263,7 @@ def main():
 
     write(os.path.join(models, "gun_3d.json"), {
         "textures": {"p": f"{MOD}:item/gun_palette_default", "particle": f"{MOD}:item/gun_palette_default"},
+        "render_type": "minecraft:translucent",
         "display": DISPLAY_3D,
     })
     write(os.path.join(models, "parts/part_base.json"), {

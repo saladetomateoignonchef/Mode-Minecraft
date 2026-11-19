@@ -13,9 +13,13 @@ import net.minecraft.core.particles.SimpleParticleType;
  */
 public class CasingParticle extends TextureSheetParticle {
     private final float spin;
+    private final boolean shell;
+    private boolean landed;
 
-    protected CasingParticle(ClientLevel level, double x, double y, double z, double vx, double vy, double vz, SpriteSet sprites) {
+    protected CasingParticle(ClientLevel level, double x, double y, double z, double vx, double vy, double vz, SpriteSet sprites,
+                             boolean shell) {
         super(level, x, y, z);
+        this.shell = shell;
         this.xd = vx;
         this.yd = vy;
         this.zd = vz;
@@ -34,6 +38,13 @@ public class CasingParticle extends TextureSheetParticle {
         double previousYd = yd;
         super.tick();
         oRoll = roll;
+        if (onGround && !landed) {
+            // Tintement de la douille qui touche le sol (cartouche en plastique : bruit sourd)
+            landed = true;
+            level.playLocalSound(x, y, z, (shell ? fr.modeminecraft.registry.ModSounds.SHELL_CASING
+                            : fr.modeminecraft.registry.ModSounds.CASING).get(), net.minecraft.sounds.SoundSource.PLAYERS,
+                    0.35f, 0.9f + random.nextFloat() * 0.2f, false);
+        }
         if (onGround) {
             // Petit rebond, puis la douille glisse et s'arrête
             if (previousYd < -0.08) {
@@ -56,15 +67,21 @@ public class CasingParticle extends TextureSheetParticle {
 
     public static class Provider implements ParticleProvider<SimpleParticleType> {
         private final SpriteSet sprites;
+        private final boolean shell;
 
         public Provider(SpriteSet sprites) {
+            this(sprites, false);
+        }
+
+        public Provider(SpriteSet sprites, boolean shell) {
             this.sprites = sprites;
+            this.shell = shell;
         }
 
         @Override
         public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z,
                                        double vx, double vy, double vz) {
-            return new CasingParticle(level, x, y, z, vx, vy, vz, sprites);
+            return new CasingParticle(level, x, y, z, vx, vy, vz, sprites, shell);
         }
     }
 }

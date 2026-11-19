@@ -58,7 +58,7 @@ public final class ClientSetup {
     public static void registerParticles(net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.CASING_BRASS.get(), CasingParticle.Provider::new);
         event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.CASING_STEEL.get(), CasingParticle.Provider::new);
-        event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.CASING_SHELL.get(), CasingParticle.Provider::new);
+        event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.CASING_SHELL.get(), s -> new CasingParticle.Provider(s, true));
         event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.TRACER.get(),
                 fr.modeminecraft.client.particle.TracerParticle.Provider::new);
         event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.LASER.get(),
@@ -82,6 +82,19 @@ public final class ClientSetup {
     public static void registerGuiLayers(RegisterGuiLayersEvent event) {
         event.registerAbove(VanillaGuiLayers.HOTBAR, ModeMinecraft.id("gun_ammo"), GunHudLayer.AMMO);
         event.registerBelow(VanillaGuiLayers.HOTBAR, ModeMinecraft.id("gun_sight"), GunHudLayer.SIGHT_OVERLAY);
+        event.registerAbove(VanillaGuiLayers.CROSSHAIR, ModeMinecraft.id("hit_marker"), GunFx::renderHitMarker);
+    }
+
+    /** Armes rangées visibles sur les joueurs (dos / hanche). */
+    @SubscribeEvent
+    @SuppressWarnings("unchecked")
+    public static void addLayers(net.neoforged.neoforge.client.event.EntityRenderersEvent.AddLayers event) {
+        for (var skin : event.getSkins()) {
+            var renderer = event.getSkin(skin);
+            if (renderer instanceof net.minecraft.client.renderer.entity.player.PlayerRenderer player) {
+                player.addLayer(new BackGunsLayer(player));
+            }
+        }
     }
 
     /** En vue à la 3e personne, le joueur tient toutes ses armes à feu à deux mains, en joue. */

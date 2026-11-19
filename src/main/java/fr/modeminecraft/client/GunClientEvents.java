@@ -139,7 +139,8 @@ public final class GunClientEvents {
     @SubscribeEvent
     public static void onRenderHand(RenderHandEvent event) {
         ResolvedGun aim = aiming(Minecraft.getInstance().player);
-        if (aim != null && SightEffects.currentMode(aim).overlay().isFullScope()) {
+        if (aim != null && SightEffects.currentMode(aim).overlay().isFullScope()
+                && GunPoseHelper.aimProgress(event.getPartialTick()) > 0.85f) {
             event.setCanceled(true);
         }
     }

@@ -53,6 +53,7 @@ public class BulletEntity extends ThrowableItemProjectile {
     private boolean armorPiercing = false;
     private float penetration = 0;       // "puissance" restante pour traverser des blocs
     private boolean ricocheted = false;
+    private net.minecraft.core.Direction lastFace;
     private final java.util.Set<Integer> alreadyHit = new java.util.HashSet<>();
 
     public BulletEntity(EntityType<? extends BulletEntity> type, Level level) {
@@ -150,10 +151,6 @@ public class BulletEntity extends ThrowableItemProjectile {
         if (headshot) {
             finalDamage *= HEADSHOT_MULTIPLIER;
             level.sendParticles(ParticleTypes.CRIT, target.getX(), target.getEyeY(), target.getZ(), 8, 0.2, 0.2, 0.2, 0.2);
-            if (getOwner() instanceof Player shooter) {
-                level.playSound(null, shooter.getX(), shooter.getY(), shooter.getZ(),
-                        SoundEvents.ARROW_HIT_PLAYER, SoundSource.PLAYERS, 0.6f, 1.6f);
-            }
         }
 
         AmmoType type = ammoType();
@@ -164,6 +161,11 @@ public class BulletEntity extends ThrowableItemProjectile {
                 armorPiercing ? ModDamageTypes.BULLET_AP : ModDamageTypes.BULLET, this, getOwner());
         if (target.hurt(source, finalDamage)) {
             applyTypeEffect(level, target, finalDamage);
+            if (getOwner() instanceof net.minecraft.server.level.ServerPlayer shooter && target instanceof LivingEntity) {
+                int kind = !target.isAlive() ? fr.modeminecraft.network.HitMarkerPayload.KILL
+                        : headshot ? fr.modeminecraft.network.HitMarkerPayload.HEADSHOT : fr.modeminecraft.network.HitMarkerPayload.HIT;
+                net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(shooter, new fr.modeminecraft.network.HitMarkerPayload(kind));
+            }
             // Supprime l'invincibilité temporaire : sinon les plombs du fusil à pompe
             // et les rafales ne toucheraient qu'une fois sur deux.
             target.invulnerableTime = 0;
@@ -244,6 +246,7 @@ public class BulletEntity extends ThrowableItemProjectile {
             }
         }
         Vec3 dir = getDeltaMovement().normalize();
+        lastFace = result.getDirection();
 
         // Verre : il casse et la balle continue
         boolean glass = state.is(Tags.Blocks.GLASS_BLOCKS) || state.is(Tags.Blocks.GLASS_PANES);
@@ -324,8 +327,12 @@ public class BulletEntity extends ThrowableItemProjectile {
         }
     }
 
-    /** Éclats, fumée et bruit à l'impact. */
+    /** Éclats, fumée et bruit à l'impact, et un trou de balle sur la face touchée. */
     private void impact(ServerLevel level, BlockState state, BlockPos pos, Vec3 hit) {
+        if (lastFace != null && state.isSolidRender(level, pos)) {
+            net.neoforged.neoforge.network.PacketDistributor.sendToPlayersNear(level, null, hit.x, hit.y, hit.z, 96,
+                    new fr.modeminecraft.network.ImpactPayload(hit, lastFace));
+        }
         level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, state), hit.x, hit.y, hit.z, 6, 0.05, 0.05, 0.05, 0.1);
         level.sendParticles(ParticleTypes.SMOKE, hit.x, hit.y, hit.z, 2, 0.02, 0.02, 0.02, 0.01);
         level.playSound(null, pos, state.getSoundType(level, pos, this).getHitSound(), SoundSource.BLOCKS, 0.5f, 1.4f);

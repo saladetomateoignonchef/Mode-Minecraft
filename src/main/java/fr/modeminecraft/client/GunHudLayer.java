@@ -77,6 +77,10 @@ public final class GunHudLayer {
         if (overlay.texture == null) {
             return;
         }
+        // Le réticule n'apparaît qu'une fois l'arme épaulée
+        if (GunPoseHelper.aimProgress(deltaTracker.getGameTimeDeltaPartialTick(false)) < 0.85f) {
+            return;
+        }
         ResourceLocation texture = ModeMinecraft.id(overlay.texture);
         int w = graphics.guiWidth();
         int h = graphics.guiHeight();

@@ -97,6 +97,21 @@ message de mort « X a été abattu par Y ».
 - **Surchauffe** (mitrailleuses) : jauge de chaleur ; à 100 l'arme se bloque jusqu'à refroidir. Avec un
   **canon de rechange** dans l'inventaire, **R** change le canon (puis 20 s avant de pouvoir rechanger).
 
+### Visuel et sons
+- **Vraie visée** : en visant, l'arme vient au centre de l'écran et on regarde à travers son viseur 3D
+  (point rouge, holo, hausse) ; les lunettes passent en plein écran une fois l'arme épaulée.
+- **Bras en 1re personne** : main droite sur la poignée, main gauche sous le garde-main (ou sur la poignée avant).
+- **Rechargement animé** : l'ancien chargeur sort, la main va en chercher un autre, le nouveau entre, puis la
+  culasse est armée (visible aussi en 3e personne par les autres joueurs).
+- **Sons propres à chaque famille d'arme** (pistolet, magnum, PM, 5,56, AK, 7,62 OTAN, sniper, .50, pompe,
+  minigun, lance-grenades, roquette), tirs silencieux, **écho lointain** pour les joueurs éloignés, bruits de
+  chargeur, culasse, verrou, pompe, cartouches, et **douilles qui tintent** en touchant le sol.
+  Sons générés par `tools/generate_sounds.py` : on peut remplacer les `.ogg` par ses propres sons.
+- **Flash de bouche** qui éclaire vraiment les alentours la nuit (pas avec un silencieux).
+- **Hit marker** : croix blanche quand une balle touche, jaune à la tête, rouge quand elle tue, avec un petit son.
+- **Impacts** : trous de balle sur les blocs (30 secondes), éclats et étincelles.
+- **Armes rangées visibles** : la 1re arme longue de la barre d'action dans le dos, le 1er pistolet à la hanche.
+
 ### Table d'armement
 Se fabrique à la table de craft : `lingot de fer, poudre à canon, lingot de fer` / `lingot de fer, table de craft, lingot de fer` / `3 planches`.
 Clic droit dessus : choisir un onglet (Armes / Munitions / Accessoires), un objet, puis **Fabriquer**

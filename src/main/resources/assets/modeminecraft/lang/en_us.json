@@ -403,5 +403,20 @@
   "message.modeminecraft.overheated": "Barrel overheated! Wait or change the barrel (R)",
   "message.modeminecraft.no_spare_barrel": "You need a spare barrel to change the barrel",
   "message.modeminecraft.barrel_cooling": "The spare barrel is still cooling (%s s)",
-  "message.modeminecraft.barrel_swapped": "Barrel changed"
+  "message.modeminecraft.barrel_swapped": "Barrel changed",
+  "subtitles.modeminecraft.shot": "Gunshot",
+  "subtitles.modeminecraft.shot_suppressed": "Suppressed shot",
+  "subtitles.modeminecraft.shot_distant": "Distant gunfire",
+  "subtitles.modeminecraft.shot_rocket": "Rocket launched",
+  "subtitles.modeminecraft.shot_launcher": "Grenade launched",
+  "subtitles.modeminecraft.mag_out": "Magazine removed",
+  "subtitles.modeminecraft.mag_in": "Magazine inserted",
+  "subtitles.modeminecraft.rack": "Charging handle pulled",
+  "subtitles.modeminecraft.bolt": "Bolt cycled",
+  "subtitles.modeminecraft.pump": "Shotgun pumped",
+  "subtitles.modeminecraft.shell_insert": "Round loaded",
+  "subtitles.modeminecraft.empty_click": "Empty gun clicks",
+  "subtitles.modeminecraft.casing": "Casing falls",
+  "subtitles.modeminecraft.shell_casing": "Shell falls",
+  "subtitles.modeminecraft.hitmarker": "Hit"
 }

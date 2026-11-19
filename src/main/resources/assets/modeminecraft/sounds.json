@@ -1,0 +1,181 @@
+{
+  "shot.pistol": {
+    "subtitle": "subtitles.modeminecraft.shot",
+    "sounds": [
+      "modeminecraft:shot/pistol_0",
+      "modeminecraft:shot/pistol_1",
+      "modeminecraft:shot/pistol_2"
+    ]
+  },
+  "shot.magnum": {
+    "subtitle": "subtitles.modeminecraft.shot",
+    "sounds": [
+      "modeminecraft:shot/magnum_0",
+      "modeminecraft:shot/magnum_1",
+      "modeminecraft:shot/magnum_2"
+    ]
+  },
+  "shot.smg": {
+    "subtitle": "subtitles.modeminecraft.shot",
+    "sounds": [
+      "modeminecraft:shot/smg_0",
+      "modeminecraft:shot/smg_1",
+      "modeminecraft:shot/smg_2"
+    ]
+  },
+  "shot.rifle": {
+    "subtitle": "subtitles.modeminecraft.shot",
+    "sounds": [
+      "modeminecraft:shot/rifle_0",
+      "modeminecraft:shot/rifle_1",
+      "modeminecraft:shot/rifle_2"
+    ]
+  },
+  "shot.ak": {
+    "subtitle": "subtitles.modeminecraft.shot",
+    "sounds": [
+      "modeminecraft:shot/ak_0",
+      "modeminecraft:shot/ak_1",
+      "modeminecraft:shot/ak_2"
+    ]
+  },
+  "shot.battle": {
+    "subtitle": "subtitles.modeminecraft.shot",
+    "sounds": [
+      "modeminecraft:shot/battle_0",
+      "modeminecraft:shot/battle_1",
+      "modeminecraft:shot/battle_2"
+    ]
+  },
+  "shot.sniper": {
+    "subtitle": "subtitles.modeminecraft.shot",
+    "sounds": [
+      "modeminecraft:shot/sniper_0",
+      "modeminecraft:shot/sniper_1",
+      "modeminecraft:shot/sniper_2"
+    ]
+  },
+  "shot.heavy": {
+    "subtitle": "subtitles.modeminecraft.shot",
+    "sounds": [
+      "modeminecraft:shot/heavy_0",
+      "modeminecraft:shot/heavy_1",
+      "modeminecraft:shot/heavy_2"
+    ]
+  },
+  "shot.shotgun": {
+    "subtitle": "subtitles.modeminecraft.shot",
+    "sounds": [
+      "modeminecraft:shot/shotgun_0",
+      "modeminecraft:shot/shotgun_1",
+      "modeminecraft:shot/shotgun_2"
+    ]
+  },
+  "shot.minigun": {
+    "subtitle": "subtitles.modeminecraft.shot",
+    "sounds": [
+      "modeminecraft:shot/minigun_0",
+      "modeminecraft:shot/minigun_1",
+      "modeminecraft:shot/minigun_2"
+    ]
+  },
+  "shot.suppressed": {
+    "subtitle": "subtitles.modeminecraft.shot_suppressed",
+    "sounds": [
+      "modeminecraft:shot/suppressed_0",
+      "modeminecraft:shot/suppressed_1",
+      "modeminecraft:shot/suppressed_2"
+    ]
+  },
+  "shot.suppressed_heavy": {
+    "subtitle": "subtitles.modeminecraft.shot_suppressed",
+    "sounds": [
+      "modeminecraft:shot/suppressed_heavy_0",
+      "modeminecraft:shot/suppressed_heavy_1",
+      "modeminecraft:shot/suppressed_heavy_2"
+    ]
+  },
+  "shot.distant": {
+    "subtitle": "subtitles.modeminecraft.shot_distant",
+    "sounds": [
+      "modeminecraft:shot/distant_0",
+      "modeminecraft:shot/distant_1"
+    ]
+  },
+  "shot.rocket": {
+    "subtitle": "subtitles.modeminecraft.shot_rocket",
+    "sounds": [
+      "modeminecraft:shot/rocket_0"
+    ]
+  },
+  "shot.launcher": {
+    "subtitle": "subtitles.modeminecraft.shot_launcher",
+    "sounds": [
+      "modeminecraft:shot/launcher_0",
+      "modeminecraft:shot/launcher_1"
+    ]
+  },
+  "gun.mag_out": {
+    "subtitle": "subtitles.modeminecraft.mag_out",
+    "sounds": [
+      "modeminecraft:gun/mag_out_0"
+    ]
+  },
+  "gun.mag_in": {
+    "subtitle": "subtitles.modeminecraft.mag_in",
+    "sounds": [
+      "modeminecraft:gun/mag_in_0",
+      "modeminecraft:gun/mag_in_1"
+    ]
+  },
+  "gun.rack": {
+    "subtitle": "subtitles.modeminecraft.rack",
+    "sounds": [
+      "modeminecraft:gun/rack_0",
+      "modeminecraft:gun/rack_1"
+    ]
+  },
+  "gun.bolt": {
+    "subtitle": "subtitles.modeminecraft.bolt",
+    "sounds": [
+      "modeminecraft:gun/bolt_0"
+    ]
+  },
+  "gun.pump": {
+    "subtitle": "subtitles.modeminecraft.pump",
+    "sounds": [
+      "modeminecraft:gun/pump_0"
+    ]
+  },
+  "gun.shell_insert": {
+    "subtitle": "subtitles.modeminecraft.shell_insert",
+    "sounds": [
+      "modeminecraft:gun/shell_insert_0"
+    ]
+  },
+  "gun.empty_click": {
+    "subtitle": "subtitles.modeminecraft.empty_click",
+    "sounds": [
+      "modeminecraft:gun/empty_click_0"
+    ]
+  },
+  "gun.casing": {
+    "subtitle": "subtitles.modeminecraft.casing",
+    "sounds": [
+      "modeminecraft:gun/casing_0",
+      "modeminecraft:gun/casing_1"
+    ]
+  },
+  "gun.shell_casing": {
+    "subtitle": "subtitles.modeminecraft.shell_casing",
+    "sounds": [
+      "modeminecraft:gun/shell_casing_0"
+    ]
+  },
+  "gun.hitmarker": {
+    "subtitle": "subtitles.modeminecraft.hitmarker",
+    "sounds": [
+      "modeminecraft:gun/hitmarker_0"
+    ]
+  }
+}

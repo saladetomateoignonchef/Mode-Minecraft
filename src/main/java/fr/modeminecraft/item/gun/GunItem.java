@@ -4,6 +4,7 @@ import fr.modeminecraft.entity.BulletEntity;
 import fr.modeminecraft.item.AmmoItem;
 import fr.modeminecraft.entity.RocketEntity;
 import fr.modeminecraft.registry.ModDataComponents;
+import fr.modeminecraft.registry.ModSounds;
 import fr.modeminecraft.registry.ModEntities;
 import fr.modeminecraft.registry.ModItems;
 import fr.modeminecraft.registry.ModParticles;
@@ -95,6 +96,54 @@ public class GunItem extends Item {
             return true;
         }
         return stats.chamber() ? isChambered(stack) : getAmmo(stack) > 0;
+    }
+
+    /** Fusil à verrou (on manœuvre le verrou après chaque tir). */
+    public boolean isBoltAction() {
+        return stats.category() == GunStats.Category.SNIPER && stats.fireDelay() >= 24;
+    }
+
+    /** Bruit de la culasse / du verrou / de la pompe. */
+    public net.minecraft.sounds.SoundEvent actionSound() {
+        if (stats.casing() == GunStats.Casing.SHELL) {
+            return ModSounds.PUMP.get();
+        }
+        return isBoltAction() ? ModSounds.BOLT.get() : ModSounds.RACK.get();
+    }
+
+    /**
+     * Son du tir : entendu de loin (portée = 16 blocs x volume), silencieux si besoin,
+     * et un grondement lointain pour les joueurs encore plus éloignés.
+     */
+    private void playShotSound(Level level, Player player, ResolvedGun gun, AmmoType type, boolean silenced) {
+        float loudness = gun.volume() * type.volumeMul;
+        if (loudness <= 0.001f) {
+            return; // silencieux à écho : aucun bruit
+        }
+        float pitch = stats.pitch() + (level.random.nextFloat() - 0.5f) * 0.06f;
+        net.minecraft.sounds.SoundEvent sound = stats.sound().get();
+        if (silenced && stats.projectile() == GunStats.ProjectileKind.BULLET) {
+            boolean light = stats.pistol() || stats.category() == GunStats.Category.SMG;
+            sound = (light ? ModSounds.SHOT_SUPPRESSED : ModSounds.SHOT_SUPPRESSED_HEAVY).get();
+        }
+        float volume = loudness * 8f; // au-delà de 1, Minecraft augmente la portée (16 blocs par point)
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), sound, SoundSource.PLAYERS, volume, pitch);
+        if (silenced || !(level instanceof ServerLevel server)) {
+            return;
+        }
+        double range = 16 * volume, far = Math.min(320, range * 4);
+        var holder = net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT.wrapAsHolder(ModSounds.SHOT_DISTANT.get());
+        for (var listener : server.players()) {
+            double d = listener.distanceTo(player);
+            if (d > range && d < far) {
+                // Son placé à 6 blocs de l'auditeur, dans la direction du tireur : on sait d'où ça vient
+                Vec3 dir = player.position().subtract(listener.position()).normalize();
+                Vec3 at = listener.getEyePosition().add(dir.scale(6));
+                listener.connection.send(new net.minecraft.network.protocol.game.ClientboundSoundPacket(holder, SoundSource.PLAYERS,
+                        at.x, at.y, at.z, (float) (0.25 + 0.6 * (1 - d / far)), 0.85f + level.random.nextFloat() * 0.2f,
+                        level.random.nextLong()));
+            }
+        }
     }
 
     /** Durée (ticks) pour tirer la culasse selon le mécanisme de l'arme. */
@@ -343,7 +392,7 @@ public class GunItem extends Item {
         stack.set(ModDataComponents.RACK_AT.get(), player.level().getGameTime());
         player.getCooldowns().addCooldown(this, rackTicks());
         player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
-                SoundEvents.CROSSBOW_LOADING_MIDDLE.value(), SoundSource.PLAYERS, 1.0f, 1.3f);
+                actionSound(), SoundSource.PLAYERS, 1.0f, 1.0f);
     }
 
     /** Touche H : on entrouvre la culasse pour voir s'il y a une balle dans la chambre. */
@@ -365,7 +414,7 @@ public class GunItem extends Item {
         stack.set(ModDataComponents.CHECK_AT.get(), player.level().getGameTime());
         player.getCooldowns().addCooldown(this, 12);
         player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
-                SoundEvents.CHAIN_STEP, SoundSource.PLAYERS, 0.5f, 1.5f);
+                actionSound(), SoundSource.PLAYERS, 0.4f, 1.25f);
     }
 
     @Override
@@ -410,6 +459,7 @@ public class GunItem extends Item {
 
         if (level.isClientSide) {
             GunAnimations.recordShot(player); // la culasse recule (animation)
+            fr.modeminecraft.client.GunFx.onLocalShot(player, silenced);
             ejectCasing(level, player, null);
             // Recul : la caméra remonte un peu (uniquement côté client, le serveur suit)
             float recoil = (aiming ? gun.recoil() * 0.6f : gun.recoil()) * stability * type.recoilMul * steadyRecoil;
@@ -454,9 +504,18 @@ public class GunItem extends Item {
             }
         }
 
-        float pitch = stats.pitch() + (silenced ? 0.5f : 0f) + (level.random.nextFloat() - 0.5f) * 0.1f;
-        level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                stats.sound().get(), SoundSource.PLAYERS, gun.volume() * type.volumeMul, pitch);
+        playShotSound(level, player, gun, type, silenced);
+        // Pompe / verrou : le tireur réarme juste après le tir
+        if (stats.casing() == GunStats.Casing.SHELL && stats.fireDelay() >= 12) {
+            DelayedSounds.play(player, ModSounds.PUMP, 0.9f, 1.0f, 4);
+        } else if (isBoltAction()) {
+            DelayedSounds.play(player, ModSounds.BOLT, 0.9f, 1.0f, 5);
+        }
+        // Les joueurs proches voient le flash et la culasse de ce tir
+        if (player instanceof net.minecraft.server.level.ServerPlayer sp) {
+            net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntity(sp,
+                    new fr.modeminecraft.network.ShotFxPayload(player.getId(), silenced));
+        }
 
         // Flash et fumée au bout du canon (pas de flash avec un silencieux)
         if (level instanceof ServerLevel serverLevel) {
@@ -771,7 +830,7 @@ public class GunItem extends Item {
             player.displayClientMessage(Component.translatable("message.modeminecraft.no_ammo",
                     stats.ammo().get().getDescription()).withStyle(ChatFormatting.RED), true);
             player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
-                    SoundEvents.DISPENSER_FAIL, SoundSource.PLAYERS, 0.6f, 1.6f);
+                    ModSounds.EMPTY_CLICK.get(), SoundSource.PLAYERS, 0.8f, 1.0f);
             return;
         }
 
@@ -781,6 +840,7 @@ public class GunItem extends Item {
         // Rechargement balle par balle : la durée dépend du nombre de balles insérées
         int time = stats.reloadPerRound() ? gun.reloadTicks() * taken : gun.reloadTicks();
         long now = player.level().getGameTime();
+        boolean wasChambered = isChambered(stack);
         if (stats.chamber() && !isChambered(stack)) {
             // Rechargement à vide : après avoir mis le chargeur, le personnage tire la culasse
             setAmmo(stack, getAmmo(stack) - 1);
@@ -791,8 +851,19 @@ public class GunItem extends Item {
         stack.set(ModDataComponents.RELOAD_START.get(), now);
         stack.set(ModDataComponents.RELOAD_END.get(), now + time);
         player.getCooldowns().addCooldown(this, time);
-        player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
-                SoundEvents.CROSSBOW_LOADING_END, SoundSource.PLAYERS, 1.0f, 0.8f);
+        // Sons du rechargement : chargeur retiré / mis, ou une cartouche après l'autre, puis la culasse
+        if (stats.reloadPerRound()) {
+            for (int i = 0; i < taken; i++) {
+                DelayedSounds.play(player, ModSounds.SHELL_INSERT, 0.8f, 0.95f + player.getRandom().nextFloat() * 0.1f,
+                        gun.reloadTicks() * i + gun.reloadTicks() / 2);
+            }
+        } else {
+            DelayedSounds.play(player, ModSounds.MAG_OUT, 0.9f, 1.0f, 0);
+            DelayedSounds.play(player, ModSounds.MAG_IN, 1.0f, 1.0f, Math.round((stats.chamber() && !wasChambered ? time - rackTicks() : time) * 0.7f));
+        }
+        if (stats.chamber() && !wasChambered) {
+            DelayedSounds.play(player, this::actionSound, 1.0f, 1.0f, time - rackTicks());
+        }
     }
 
     private int takeAmmo(Player player, int wanted, AmmoType type) {

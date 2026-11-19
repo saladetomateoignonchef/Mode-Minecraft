@@ -69,5 +69,34 @@ public final class GunAnimations {
         return t < 0 ? 0 : (t < 3 ? 0.35f * t / 3 : (t < 8 ? 0.35f : (t < 11 ? 0.35f * (1 - (t - 8) / 3) : 0)));
     }
 
+    /** Le chargeur n'est pas dans l'arme (entre le retrait de l'ancien et l'arrivée du nouveau). */
+    public static final float MAG_HIDDEN = Float.NaN;
+
+    /**
+     * Rechargement : décalage du chargeur vers le bas (en pixels du modèle), ou MAG_HIDDEN.
+     * 0-25 % : l'ancien chargeur sort ; 25-55 % : la main va chercher le nouveau ; 55-85 % : il entre.
+     */
+    public static float reloadMagOffset(ItemStack stack, float now) {
+        if (!(stack.getItem() instanceof GunItem gun) || gun.stats().reloadPerRound()) {
+            return 0;
+        }
+        Long start = stack.get(fr.modeminecraft.registry.ModDataComponents.RELOAD_START.get());
+        Long end = stack.get(fr.modeminecraft.registry.ModDataComponents.RELOAD_END.get());
+        if (start == null || end == null || now < start || now > end) {
+            return 0;
+        }
+        Long rack = stack.get(fr.modeminecraft.registry.ModDataComponents.RACK_AT.get());
+        long magEnd = rack != null && rack > start && rack <= end ? rack : end;
+        float f = (now - start) / Math.max(1, magEnd - start);
+        if (f < 0.25f) {
+            return 12 * f / 0.25f;
+        } else if (f < 0.55f) {
+            return MAG_HIDDEN;
+        } else if (f < 0.85f) {
+            return 12 * (1 - (f - 0.55f) / 0.3f);
+        }
+        return 0;
+    }
+
     private GunAnimations() {}
 }

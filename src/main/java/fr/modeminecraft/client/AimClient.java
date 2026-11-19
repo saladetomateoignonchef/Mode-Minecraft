@@ -95,6 +95,7 @@ public final class AimClient {
         if (player == null || mc.level == null) {
             return;
         }
+        GunPoseHelper.tick(player);
         // Penché : la tête glisse doucement sur le côté (moins si un mur gêne)
         leanPrev = lean;
         double room = leanTarget == 0 ? 1 : LeanHandler.offsetFor(player, leanTarget).length() / LeanHandler.MAX_OFFSET;
