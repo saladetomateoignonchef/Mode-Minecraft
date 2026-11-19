@@ -1,0 +1,17 @@
+package fr.modeminecraft.network;
+
+import fr.modeminecraft.ModeMinecraft;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+
+/** Enregistre les paquets réseau du mod. */
+@EventBusSubscriber(modid = ModeMinecraft.MODID)
+public final class ModNetwork {
+    @SubscribeEvent
+    public static void register(RegisterPayloadHandlersEvent event) {
+        event.registrar("1").playToServer(ReloadPayload.TYPE, ReloadPayload.STREAM_CODEC, ReloadPayload::handle);
+    }
+
+    private ModNetwork() {}
+}

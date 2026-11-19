@@ -1,0 +1,6 @@
+{
+  "parent": "modeminecraft:item/gun",
+  "textures": {
+    "layer0": "modeminecraft:item/sniper_rifle"
+  }
+}

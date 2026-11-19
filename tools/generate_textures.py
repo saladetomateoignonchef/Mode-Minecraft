@@ -468,6 +468,176 @@ def armor_layer(layer):
     return img
 
 
+# ---------- Armes à feu (vue de profil, canon vers la droite) ----------
+GUN_COLORS = {
+    "k": hexc("#2b2f36"), "m": hexc("#4a505a"), "l": hexc("#6f7782"), "h": hexc("#9aa3ad"),
+    "w": hexc("#5a3e1b"), "W": hexc("#8a6233"), "r": RUBIS["m"], "R": RUBIS["l"],
+    "d": hexc("#15171b"), "o": hexc("#15171b"), "s": hexc("#5fd4ff"),
+    "t": hexc("#4b5a2a"), "T": hexc("#6b7d3a"), "u": hexc("#353f1d"),
+    "c": hexc("#b5603a"), "C": hexc("#e08a5a"), "b": hexc("#b8901c"), "B": hexc("#e8cf5a"),
+    "p": hexc("#9e1c26"), "P": hexc("#d8404e"), "g": hexc("#7d838b"), "G": hexc("#b9bec4"),
+    "f": hexc("#3a3f46"),
+}
+GUN_OUTLINE = hexc("#121417")
+
+GUNS = {
+    "pistol": [
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "..hhhhhhhhhhhh..",
+        "..lllllllllllll.",
+        "..mmmmmmmmmmmmm.",
+        "..kkkkkkkkrkkkk.",
+        "..wWWk.do.......",
+        "..wWWk..o.......",
+        "..wWWkooo.......",
+        ".wWWk...........",
+        ".wWWk...........",
+        ".wwkk...........",
+        "................",
+    ],
+    "assault_rifle": [
+        "................",
+        "................",
+        "................",
+        "................",
+        "......kk....k...",
+        ".wWWkhhhhhhhhhh.",
+        ".wWWkllllllllllk",
+        ".wWWkmmmmrmmm...",
+        ".ww.kkd.mmm.....",
+        "....kk...mmm....",
+        "....kk....mm....",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+    ],
+    "shotgun": [
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "w...hhhhhhhhhhhh",
+        "wWWWmmmmmmmmmmmm",
+        "wWWWkkkkwWWWWWk.",
+        "wWW.kd..........",
+        "ww..............",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+    ],
+    "sniper_rifle": [
+        "................",
+        "................",
+        "................",
+        "....shhhhhs.....",
+        ".....kkkkk......",
+        "......k..k......",
+        "wWWWkhhhhhhhhhhh",
+        "wWWWkmmmrmmkkkkk",
+        "wWW.kkdkk.......",
+        "ww...kk.........",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+    ],
+    "rocket_launcher": [
+        "................",
+        "................",
+        "................",
+        "................",
+        "...kk.....kk....",
+        ".rTTTTTTTTTTTTrk",
+        ".rttttttttttttrk",
+        ".ruuuuuuuuuuuurk",
+        "....kd...kk.....",
+        "....kk...kk.....",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+    ],
+    "bullet": [
+        "................",
+        "................",
+        "................",
+        "....c...c...c...",
+        "...cCc.cCc.cCc..",
+        "...bBb.bBb.bBb..",
+        "...bBb.bBb.bBb..",
+        "...bBb.bBb.bBb..",
+        "...bBb.bBb.bBb..",
+        "...bBb.bBb.bBb..",
+        "...bBb.bBb.bBb..",
+        "...bbb.bbb.bbb..",
+        "................",
+        "................",
+        "................",
+        "................",
+    ],
+    "shotgun_shell": [
+        "................",
+        "................",
+        "................",
+        "....ppp..ppp....",
+        "....pPp..pPp....",
+        "....pPp..pPp....",
+        "....pPp..pPp....",
+        "....pPp..pPp....",
+        "....pPp..pPp....",
+        "....bBb..bBb....",
+        "....bBb..bBb....",
+        "...bbbb.bbbb....",
+        "................",
+        "................",
+        "................",
+        "................",
+    ],
+    "rocket": [
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "..ff............",
+        "..fggggggggpp...",
+        "..fGGGGGGGGpPp..",
+        "..fggggggggpp...",
+        "..ff............",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+        "................",
+    ],
+}
+
+
+def gun_icon(rows):
+    assert len(rows) == 16 and all(len(r) == 16 for r in rows), rows
+    cv = Canvas()
+    for y, row in enumerate(rows):
+        for x, ch in enumerate(row):
+            if ch != ".":
+                cv.put(x, y, GUN_COLORS[ch], GUN_OUTLINE)
+    return cv.image()
+
+
 def main():
     items = {
         "rubis": gem(),
@@ -490,6 +660,9 @@ def main():
         items[f"rubis_bow_pulling_{p}"] = bow(p)
     for name, rows in ARMOR_ICONS.items():
         items[name] = ascii_icon(rows, RUBIS)
+
+    for name, rows in GUNS.items():
+        items[name] = gun_icon(rows)
 
     for name, img in items.items():
         save(img, "item", f"{name}.png")

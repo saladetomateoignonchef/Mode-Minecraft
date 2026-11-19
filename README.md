@@ -34,7 +34,36 @@ Matériau entre le diamant et la netherite (1800 de durabilité, enchantabilité
 - **Arc en rubis** : flèches plus puissantes (+1.5 dégâts de base), 768 de durabilité.
 - **Bâton de feu** : clic droit pour lancer une boule de feu.
 
-Toutes les armes sont enchantables comme leurs équivalents vanilla (Tranchant, Aura de feu, Puissance...).
+### Armes à feu
+| Arme | Dégâts | Chargeur | Cadence | Munitions | Particularité |
+|---|---|---|---|---|---|
+| Pistolet | 6 | 12 | 4 tirs/s | Balles | Précis, semi-automatique |
+| Fusil d'assaut | 5 | 30 | 6,7 tirs/s | Balles | **Automatique** : maintenir le clic droit |
+| Fusil à pompe | 8 × 3,5 | 6 | ~1 tir/s | Cartouches | 8 plombs, dévastateur de près |
+| Fusil de sniper | 22 | 5 | 0,7 tir/s | Balles | **Zoom ×5** en s'accroupissant, précision parfaite en visée |
+| Lance-roquettes | explosion | 1 | — | Roquettes | Roquette explosive (casse les blocs si `mobGriefing` est activé) |
+
+**Commandes :**
+- **Clic droit** : tirer (le chargeur vide se recharge automatiquement).
+- **R** : recharger (modifiable dans *Options > Commandes > Mode Minecraft*).
+- **S'accroupir** : viser (moins de dispersion, moins de recul).
+- En **créatif**, les munitions sont infinies.
+
+**Mécaniques :**
+- Le chargeur est stocké dans l'arme : la barre sous l'icône et le HUD (à droite de la barre d'inventaire) affichent `chargeur / max [réserve]`.
+- Le temps de rechargement s'affiche comme une recharge sur l'icône de l'arme.
+- **Tir à la tête = dégâts ×1,5**.
+- Les balles **cassent le verre** (si `mobGriefing` est activé).
+- Recul de la caméra à chaque tir, et pose « en joue » à deux mains en vue à la 3ᵉ personne.
+- Message de mort personnalisé : « X a été abattu par Y ».
+
+**Crafts :**
+- Balles ×12 : lingot de cuivre + poudre à canon + pépite de fer (sans forme)
+- Cartouches ×6 : papier + poudre à canon + 2 pépites de fer (sans forme)
+- Roquettes ×2 : lingot de fer / TNT / poudre à canon (en colonne)
+- Les armes se fabriquent avec des lingots de fer, des planches, de la poudre à canon, et du rubis pour les meilleures (voir `data/modeminecraft/recipe/`).
+
+Toutes les armes de mêlée sont enchantables comme leurs équivalents vanilla (Tranchant, Aura de feu, Puissance...).
 Tous les items sont dans l'onglet créatif **Mode Minecraft**.
 
 ## Développer
@@ -51,6 +80,12 @@ Le `.jar` produit se met dans le dossier `mods/` d'une installation NeoForge 1.2
 Avec IntelliJ IDEA : *Open* → choisir le dossier du projet, attendre l'import Gradle,
 puis utiliser les configurations de lancement générées (Client, Server).
 
+### Ajouter une nouvelle arme à feu
+Dans `ModItems.java`, copier par exemple `PISTOL` et changer ses statistiques (`GunStats`) :
+dégâts, nombre de plombs, taille du chargeur, cadence, temps de recharge, vitesse, dispersion, recul, automatique ou non, munitions et son.
+Puis ajouter un modèle (`"parent": "modeminecraft:item/gun"`), une texture, les traductions et une recette.
+Enfin, l'ajouter à la liste dans `ClientSetup.registerClientExtensions` pour la pose « en joue ».
+
 ## Organisation du code
 
 ```
@@ -58,8 +93,11 @@ src/main/java/fr/modeminecraft/
 ├── ModeMinecraft.java          # point d'entrée du mod
 ├── registry/                   # enregistrement : items, blocs, matériaux, onglet créatif
 ├── item/                       # comportements des armes spéciales
+│   └── gun/                    # armes à feu (GunItem = toute la logique de tir/rechargement)
+├── entity/                     # projectiles : balle, roquette
+├── network/                    # paquet réseau "recharger" (touche R)
 ├── event/                      # événements du jeu (bonus d'armure)
-└── client/                     # code uniquement client (animation de l'arc)
+└── client/                     # code client : touche R, HUD munitions, zoom, rendu des projectiles
 src/main/resources/
 ├── assets/modeminecraft/       # modèles, textures, traductions (en_us, fr_fr)
 └── data/                       # recettes, loot tables, tags, génération du minerai

@@ -7,6 +7,10 @@ import fr.modeminecraft.item.MagicSwordItem;
 import fr.modeminecraft.item.RubisBowItem;
 import fr.modeminecraft.item.ThunderHammerItem;
 import fr.modeminecraft.item.WarHammerItem;
+import fr.modeminecraft.item.gun.GunItem;
+import fr.modeminecraft.item.gun.GunItem.GunStats;
+import fr.modeminecraft.item.gun.RocketLauncherItem;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ArmorItem;
@@ -123,6 +127,40 @@ public final class ModItems {
     public static final DeferredItem<ArmorItem> RUBIS_BOOTS = ITEMS.register("rubis_boots",
             () -> new ArmorItem(ModArmorMaterials.RUBIS, ArmorItem.Type.BOOTS,
                     new Item.Properties().durability(ArmorItem.Type.BOOTS.getDurability(35))));
+
+    // ---------- Armes à feu ----------
+    // Munitions
+    public static final DeferredItem<Item> BULLET = ITEMS.registerSimpleItem("bullet");
+    public static final DeferredItem<Item> SHOTGUN_SHELL = ITEMS.registerSimpleItem("shotgun_shell");
+    public static final DeferredItem<Item> ROCKET = ITEMS.registerSimpleItem("rocket", new Item.Properties().stacksTo(16));
+
+    //                                           dégâts plombs chargeur cadence recharge vitesse dispersion visée recul  auto
+    /** Pistolet : précis, semi-automatique. */
+    public static final DeferredItem<GunItem> PISTOL = ITEMS.register("pistol",
+            () -> new GunItem(new GunStats(6.0f, 1, 12, 5, 30, 4.0f, 1.5f, 0.5f, 2.5f, false,
+                    ModItems.BULLET, SoundEvents.GENERIC_EXPLODE.value(), 0.4f, 1.9f), new Item.Properties()));
+
+    /** Fusil d'assaut : tir automatique en maintenant le clic droit. */
+    public static final DeferredItem<GunItem> ASSAULT_RIFLE = ITEMS.register("assault_rifle",
+            () -> new GunItem(new GunStats(5.0f, 1, 30, 3, 45, 4.5f, 2.5f, 1.0f, 1.2f, true,
+                    ModItems.BULLET, SoundEvents.GENERIC_EXPLODE.value(), 0.35f, 1.7f), new Item.Properties()));
+
+    /** Fusil à pompe : 8 plombs, dévastateur de près. */
+    public static final DeferredItem<GunItem> SHOTGUN = ITEMS.register("shotgun",
+            () -> new GunItem(new GunStats(3.5f, 8, 6, 18, 50, 3.0f, 9.0f, 7.0f, 6.0f, false,
+                    ModItems.SHOTGUN_SHELL, SoundEvents.GENERIC_EXPLODE.value(), 0.7f, 1.2f), new Item.Properties()));
+
+    /** Fusil de sniper : énormes dégâts, zoom en s'accroupissant, parfaitement précis en visée. */
+    public static final DeferredItem<GunItem> SNIPER_RIFLE = ITEMS.register("sniper_rifle",
+            () -> new GunItem(new GunStats(22.0f, 1, 5, 30, 60, 7.0f, 4.0f, 0.0f, 8.0f, false,
+                    ModItems.BULLET, SoundEvents.GENERIC_EXPLODE.value(), 0.9f, 1.4f),
+                    new Item.Properties().rarity(Rarity.RARE)));
+
+    /** Lance-roquettes : 1 roquette explosive par chargeur. */
+    public static final DeferredItem<RocketLauncherItem> ROCKET_LAUNCHER = ITEMS.register("rocket_launcher",
+            () -> new RocketLauncherItem(new GunStats(0.0f, 1, 1, 20, 60, 1.8f, 0.5f, 0.2f, 10.0f, false,
+                    ModItems.ROCKET, SoundEvents.FIREWORK_ROCKET_LAUNCH, 1.5f, 0.6f),
+                    new Item.Properties().rarity(Rarity.EPIC)));
 
     private ModItems() {}
 }
