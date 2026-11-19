@@ -181,7 +181,7 @@ public final class ModItems {
     }
 
     private static GunStats.Builder rifle() {
-        return GunStats.builder().category(GunStats.Category.ASSAULT).automatic().velocity(4.8f).spread(2.2f, 0.8f).recoil(1.2f)
+        return GunStats.builder().category(GunStats.Category.ASSAULT).slideLock().automatic().velocity(4.8f).spread(2.2f, 0.8f).recoil(1.2f)
                 .sound(ModSounds.SHOT_RIFLE, 0.4f, 1.0f).slots(SIGHT, MUZZLE, GRIP, MAG, PGRIP, STOCK, RAIL);
     }
 
@@ -202,141 +202,141 @@ public final class ModItems {
 
     // ================= PISTOLETS =================
     public static final DeferredItem<GunItem> GLOCK17 = gun("glock17", Rarity.COMMON,
-            pistol().slideLock().damage(6).magazine(17).fireDelay(4).reload(28).recoil(2.2f).ammo(ModItems.AMMO_9MM));
+            pistol().slideLock().damage(5).magazine(17).fireDelay(3).reload(28).recoil(1.4f).ammo(ModItems.AMMO_9MM)); // semi rapide, recul très faible
     public static final DeferredItem<GunItem> DESERT_EAGLE = gun("desert_eagle", Rarity.UNCOMMON,
-            pistol().slideLock().damage(13).magazine(7).fireDelay(8).reload(34).recoil(7).spread(2.0f, 0.6f).ammo(ModItems.AMMO_50AE)
+            pistol().slideLock().damage(12).magazine(7).fireDelay(9).reload(34).recoil(8.5f).spread(2.0f, 0.6f).ammo(ModItems.AMMO_50AE)
                     .sound(ModSounds.SHOT_MAGNUM, 0.7f, 1.0f));
     public static final DeferredItem<GunItem> BERETTA_M9 = gun("beretta_m9", Rarity.COMMON,
-            pistol().slideLock().damage(6).magazine(15).fireDelay(4).reload(30).recoil(2.4f).ammo(ModItems.AMMO_9MM));
+            pistol().slideLock().damage(5.5f).magazine(15).fireDelay(4).reload(30).recoil(2.0f).spread(1.1f, 0.4f).ammo(ModItems.AMMO_9MM)); // précis au jugé
     public static final DeferredItem<GunItem> COLT_M1911 = gun("colt_m1911", Rarity.COMMON,
             pistol().slideLock().damage(8.5f).magazine(7).fireDelay(5).reload(30).recoil(3.5f).ammo(ModItems.AMMO_45ACP)
                     .sound(ModSounds.SHOT_PISTOL, 0.5f, 0.9f));
     /** Revolver : rechargement balle par balle. */
     public static final DeferredItem<GunItem> COLT_PYTHON = gun("colt_python", Rarity.UNCOMMON,
-            GunStats.builder().noChamber().casing(GunStats.Casing.NONE).damage(11).magazine(6).fireDelay(7).reloadPerRound(10).velocity(4.5f).spread(1.4f, 0.4f)
+            GunStats.builder().noChamber().casing(GunStats.Casing.NONE).damage(10).magazine(6).fireDelay(7).reloadPerRound(10).velocity(4.5f).spread(1.4f, 0.4f)
                     .recoil(5.5f).ammo(ModItems.AMMO_357).sound(ModSounds.SHOT_MAGNUM, 0.6f, 1.05f).pistolCategory().slots(SIGHT, PGRIP));
     public static final DeferredItem<GunItem> MAKAROV = gun("makarov", Rarity.COMMON,
-            pistol().slideLock().damage(5.5f).magazine(8).fireDelay(4).reload(26).recoil(2).ammo(ModItems.AMMO_9MM));
+            pistol().slideLock().damage(4.5f).magazine(8).fireDelay(4).reload(26).recoil(2).ammo(ModItems.AMMO_9MM)); // arme de début
 
     // ================= PISTOLETS-MITRAILLEURS =================
     public static final DeferredItem<GunItem> MP5 = gun("mp5", Rarity.UNCOMMON,
-            smg().damage(5).magazine(30).fireDelay(2).reload(38).spread(1.8f, 0.6f).ammo(ModItems.AMMO_9MM));
+            smg().damage(4.5f).magazine(30).rpm(800).reload(38).spread(1.6f, 0.6f).ammo(ModItems.AMMO_9MM)); // très précis en mouvement
     public static final DeferredItem<GunItem> UZI = gun("uzi", Rarity.COMMON,
-            smg().damage(4.5f).magazine(32).fireDelay(2).reload(36).spread(3.0f, 1.4f).recoil(1.0f).ammo(ModItems.AMMO_9MM));
+            smg().damage(4).magazine(32).rpm(950).reload(36).spread(3.0f, 1.4f).recoil(1.0f).walkSpeed(1.1f).ammo(ModItems.AMMO_9MM)); // léger : +10 % vitesse
     public static final DeferredItem<GunItem> P90 = gun("p90", Rarity.UNCOMMON,
-            smg().damage(4.5f).magazine(50).fireDelay(2).reload(50).recoil(0.7f).ammo(ModItems.AMMO_57)
+            smg().damage(4).magazine(50).rpm(900).reload(50).recoil(0.7f).ammo(ModItems.AMMO_57)
                     .noSlots().slots(SIGHT, MUZZLE, PGRIP)); // chargeur sur le dessus, bullpup : ni chargeur ni crosse
     /** MP7 : balles perforantes (ignorent l'armure). */
     public static final DeferredItem<GunItem> MP7 = gun("mp7", Rarity.UNCOMMON,
-            smg().damage(4).magazine(40).fireDelay(2).reload(40).spread(2.0f, 0.8f).armorPiercing().ammo(ModItems.AMMO_46));
+            smg().slideLock().damage(4.5f).magazine(40).rpm(950).reload(40).velocity(4.6f).spread(2.0f, 0.8f).armorPiercing().ammo(ModItems.AMMO_46));
     public static final DeferredItem<GunItem> THOMPSON = gun("thompson", Rarity.UNCOMMON,
-            smg().damage(6).magazine(50).fireDelay(2).reload(60).spread(3.0f, 1.5f).recoil(1.4f).ammo(ModItems.AMMO_45ACP)
+            smg().damage(5.5f).magazine(50).rpm(700).reload(60).spread(3.0f, 1.5f).recoil(1.4f).ammo(ModItems.AMMO_45ACP)
                     .sound(ModSounds.SHOT_SMG, 0.45f, 0.85f));
     public static final DeferredItem<GunItem> VECTOR = gun("vector", Rarity.RARE,
-            smg().damage(5.5f).magazine(25).fireDelay(1).reload(40).spread(2.0f, 0.8f).recoil(0.5f).ammo(ModItems.AMMO_45ACP));
+            smg().slideLock().damage(4.2f).magazine(25).rpm(1200).reload(40).spread(2.0f, 0.8f).recoil(0.25f).ammo(ModItems.AMMO_45ACP)); // recul vertical quasi nul
     public static final DeferredItem<GunItem> PPSH41 = gun("ppsh41", Rarity.UNCOMMON,
-            smg().casing(GunStats.Casing.STEEL).damage(4.5f).magazine(71).fireDelay(1).reload(70).spread(3.5f, 1.8f).recoil(1.0f).sound(ModSounds.SHOT_SMG, 0.4f, 1.1f).ammo(ModItems.AMMO_762X25));
+            smg().casing(GunStats.Casing.STEEL).damage(4.5f).magazine(71).rpm(1000).reload(70).spread(3.5f, 1.8f).recoil(1.0f).sound(ModSounds.SHOT_SMG, 0.4f, 1.1f).ammo(ModItems.AMMO_762X25));
 
     // ================= FUSILS D'ASSAUT =================
     public static final DeferredItem<GunItem> AK47 = gun("ak47", Rarity.UNCOMMON,
-            rifle().casing(GunStats.Casing.STEEL).damage(7).magazine(30).fireDelay(3).reload(50).spread(3.0f, 1.2f).recoil(2.0f).ammo(ModItems.AMMO_762)
+            rifle().slideLock(false).casing(GunStats.Casing.STEEL).damage(7.5f).magazine(30).rpm(600).reload(50).spread(3.0f, 1.2f).recoil(2.3f).ammo(ModItems.AMMO_762)
                     .sound(ModSounds.SHOT_AK, 0.45f, 1.0f));
     public static final DeferredItem<GunItem> AK74 = gun("ak74", Rarity.UNCOMMON,
-            rifle().casing(GunStats.Casing.STEEL).damage(6).magazine(30).fireDelay(3).reload(48).spread(2.4f, 0.9f).recoil(1.4f).sound(ModSounds.SHOT_AK, 0.42f, 1.1f).ammo(ModItems.AMMO_545));
+            rifle().slideLock(false).casing(GunStats.Casing.STEEL).damage(6).magazine(30).rpm(650).reload(48).spread(2.4f, 0.9f).recoil(1.4f).sound(ModSounds.SHOT_AK, 0.42f, 1.1f).ammo(ModItems.AMMO_545));
     public static final DeferredItem<GunItem> M4 = gun("m4", Rarity.UNCOMMON,
-            rifle().damage(5.5f).magazine(30).fireDelay(2).reload(40).velocity(5.0f).spread(2.0f, 0.7f).recoil(1.1f)
+            rifle().damage(6).magazine(30).rpm(800).reload(40).velocity(5.0f).spread(2.0f, 0.7f).recoil(0.9f)
                     .ammo(ModItems.AMMO_556).sound(ModSounds.SHOT_RIFLE, 0.38f, 1.0f));
     public static final DeferredItem<GunItem> HK416 = gun("hk416", Rarity.RARE,
-            rifle().damage(5.8f).magazine(30).fireDelay(2).reload(40).velocity(5.0f).spread(1.8f, 0.6f).recoil(1.0f)
+            rifle().damage(6.3f).magazine(30).rpm(850).reload(40).velocity(5.5f).spread(1.6f, 0.5f).recoil(1.0f)
                     .ammo(ModItems.AMMO_556));
     public static final DeferredItem<GunItem> FAMAS = gun("famas", Rarity.UNCOMMON,
-            rifle().damage(4.5f).magazine(25).fireDelay(1).reload(42).velocity(5.0f).spread(2.2f, 0.9f).recoil(0.9f)
+            rifle().modes(FireMode.SEMI, FireMode.BURST).damage(6).magazine(25).rpm(1000).burst(3, 7).reload(42).velocity(5.0f).spread(1.8f, 0.5f).recoil(0.9f)
                     .ammo(ModItems.AMMO_556).sound(ModSounds.SHOT_RIFLE, 0.35f, 1.08f).without(STOCK));
     public static final DeferredItem<GunItem> SCAR_H = gun("scar_h", Rarity.RARE,
-            rifle().damage(8).magazine(20).fireDelay(3).reload(45).spread(2.2f, 0.8f).recoil(2.2f).ammo(ModItems.AMMO_762)
+            rifle().damage(8.5f).magazine(20).rpm(600).reload(45).velocity(5.4f).spread(2.0f, 0.6f).recoil(2.2f).ammo(ModItems.AMMO_762)
                     .sound(ModSounds.SHOT_BATTLE, 0.5f, 1.0f));
     /** G36 : lunette intégrée (pas d'emplacement viseur). */
     public static final DeferredItem<GunItem> G36 = gun("g36", Rarity.UNCOMMON,
-            rifle().damage(5.5f).magazine(30).fireDelay(2).reload(42).spread(2.0f, 0.6f).recoil(1.0f).ammo(ModItems.AMMO_556)
+            rifle().damage(5.8f).magazine(30).rpm(750).reload(42).spread(2.0f, 0.6f).recoil(1.0f).ammo(ModItems.AMMO_556)
                     .scope(0.4f, SightOverlay.SCOPE_X4).noSlots().slots(MUZZLE, GRIP, MAG, PGRIP, STOCK, RAIL));
     /** Steyr AUG : bullpup avec lunette intégrée. */
     public static final DeferredItem<GunItem> AUG = gun("aug", Rarity.UNCOMMON,
-            rifle().damage(5.5f).magazine(30).fireDelay(2).reload(44).spread(2.0f, 0.6f).recoil(1.0f).ammo(ModItems.AMMO_556)
-                    .scope(0.6f, SightOverlay.SCOPE_X4).noSlots().slots(MUZZLE, GRIP, MAG, PGRIP, RAIL)); // bullpup : pas de crosse
+            rifle().damage(6.2f).magazine(30).rpm(700).reload(44).spread(1.8f, 0.5f).recoil(0.75f).ammo(ModItems.AMMO_556)
+                    .scope(0.667f, SightOverlay.SCOPE_X4).noSlots().slots(MUZZLE, GRIP, MAG, PGRIP, RAIL)); // bullpup : pas de crosse
     public static final DeferredItem<GunItem> TAVOR = gun("tavor", Rarity.UNCOMMON,
-            rifle().damage(5.5f).magazine(30).fireDelay(2).reload(40).spread(2.0f, 0.8f).recoil(1.0f).ammo(ModItems.AMMO_556).without(STOCK));
+            rifle().damage(5.8f).magazine(30).rpm(850).reload(40).spread(2.0f, 0.8f).recoil(1.0f).ammo(ModItems.AMMO_556).without(STOCK));
     /** M16A4 : coup par coup ou rafale de 3 (pas d'automatique). */
     public static final DeferredItem<GunItem> M16A4 = gun("m16a4", Rarity.UNCOMMON,
-            rifle().modes(FireMode.SEMI, FireMode.BURST).damage(6.5f).magazine(30).fireDelay(2).burst(3, 8).reload(42).velocity(5.2f).spread(1.6f, 0.5f)
+            rifle().modes(FireMode.SEMI, FireMode.BURST).damage(6.5f).magazine(30).rpm(800).burst(3, 8).reload(42).velocity(5.2f).spread(1.6f, 0.5f)
                     .recoil(1.0f).ammo(ModItems.AMMO_556));
     public static final DeferredItem<GunItem> G3 = gun("g3", Rarity.UNCOMMON,
-            rifle().damage(8.5f).magazine(20).fireDelay(3).reload(48).spread(2.5f, 0.9f).recoil(2.5f).ammo(ModItems.AMMO_762)
+            rifle().damage(8.5f).magazine(20).rpm(550).reload(48).spread(2.5f, 0.9f).recoil(2.5f).ammo(ModItems.AMMO_762)
                     .sound(ModSounds.SHOT_BATTLE, 0.5f, 0.97f));
     /** AN-94 : rafale de 2 coups ultra-rapide (ou coup par coup, ou automatique). */
     public static final DeferredItem<GunItem> AN94 = gun("an94", Rarity.RARE,
-            rifle().casing(GunStats.Casing.STEEL).damage(6).magazine(30).fireDelay(1).burst(2, 6).reload(46).modes(FireMode.SEMI, FireMode.BURST, FireMode.AUTO).spread(1.6f, 0.4f).recoil(0.8f)
+            rifle().slideLock(false).casing(GunStats.Casing.STEEL).damage(6).magazine(30).rpm(600).burst(2, 6).reload(46).modes(FireMode.SEMI, FireMode.BURST, FireMode.AUTO).spread(1.6f, 0.4f).recoil(0.8f)
                     .sound(ModSounds.SHOT_AK, 0.42f, 1.12f).ammo(ModItems.AMMO_545));
 
     // ================= FUSILS DE PRÉCISION =================
     /** Barrett M82 : traverse jusqu'à 3 ennemis. */
     public static final DeferredItem<GunItem> BARRETT_M82 = gun("barrett_m82", Rarity.EPIC,
-            sniper().damage(35).magazine(10).fireDelay(20).reload(80).velocity(8.5f).recoil(12).pierce(3)
+            sniper().slideLock().damage(24).magazine(10).fireDelay(20).reload(80).velocity(8.5f).recoil(12).pierce(3)
                     .scope(0.15f, SightOverlay.SNIPER).ammo(ModItems.AMMO_50BMG).sound(ModSounds.SHOT_HEAVY, 1.2f, 1.0f));
     public static final DeferredItem<GunItem> AWM = gun("awm", Rarity.EPIC,
-            sniper().damage(30).magazine(5).fireDelay(30).reload(70).velocity(8.5f).recoil(9)
+            sniper().damage(20).magazine(5).fireDelay(30).reload(70).velocity(8.5f).recoil(9)
                     .scope(0.15f, SightOverlay.SNIPER).ammo(ModItems.AMMO_338).sound(ModSounds.SHOT_SNIPER, 1.0f, 0.95f));
     public static final DeferredItem<GunItem> DRAGUNOV = gun("dragunov", Rarity.RARE,
-            sniper().casing(GunStats.Casing.STEEL).damage(16).magazine(10).fireDelay(8).reload(55).recoil(5)
+            sniper().casing(GunStats.Casing.STEEL).damage(13).magazine(10).fireDelay(8).reload(55).recoil(5)
                     .scope(0.25f, SightOverlay.SNIPER).sound(ModSounds.SHOT_AK, 0.8f, 0.85f).ammo(ModItems.AMMO_762X54R));
     /** Mosin-Nagant : viseur métallique, rechargement balle par balle. */
     public static final DeferredItem<GunItem> MOSIN_NAGANT = gun("mosin_nagant", Rarity.COMMON,
             sniper().casing(GunStats.Casing.STEEL).damage(18).magazine(5).fireDelay(25).reloadPerRound(12).spread(3.0f, 0.3f).recoil(6)
                     .sound(ModSounds.SHOT_SNIPER, 0.85f, 1.05f).ammo(ModItems.AMMO_762X54R).noSlots().slots(SIGHT, MUZZLE));
     public static final DeferredItem<GunItem> KAR98K = gun("kar98k", Rarity.COMMON,
-            sniper().damage(18).magazine(5).fireDelay(24).reloadPerRound(12).spread(3.0f, 0.3f).recoil(6)
+            sniper().damage(16).magazine(5).fireDelay(24).reloadPerRound(12).spread(3.0f, 0.3f).recoil(6).draw(10)
                     .ammo(ModItems.AMMO_792).noSlots().slots(SIGHT, MUZZLE));
     /** M14 EBR : fusil de tireur d'élite semi-automatique. */
     public static final DeferredItem<GunItem> M14_EBR = gun("m14_ebr", Rarity.RARE,
-            sniper().damage(12).magazine(20).fireDelay(5).reload(50).velocity(6.0f).spread(2.5f, 0.3f).recoil(3.5f)
+            sniper().slideLock().damage(12).magazine(20).fireDelay(5).reload(50).velocity(6.0f).spread(2.5f, 0.3f).recoil(3.5f)
                     .ammo(ModItems.AMMO_762).noSlots().slots(SIGHT, MUZZLE, GRIP, MAG, PGRIP, STOCK));
 
     // ================= FUSILS À POMPE =================
     public static final DeferredItem<GunItem> REMINGTON_870 = gun("remington_870", Rarity.COMMON,
-            shotgun().casing(GunStats.Casing.SHELL).damage(3.5f).pellets(8).magazine(6).fireDelay(18).reloadPerRound(10).recoil(6));
+            shotgun().casing(GunStats.Casing.SHELL).damage(2.5f).pellets(8).magazine(6).fireDelay(18).reloadPerRound(10).spread(5.5f, 4.0f).recoil(6)); // dispersion serrée
     public static final DeferredItem<GunItem> BENELLI_M4 = gun("benelli_m4", Rarity.UNCOMMON,
-            shotgun().casing(GunStats.Casing.SHELL).damage(3.2f).pellets(8).magazine(7).fireDelay(7).reloadPerRound(9).recoil(5));
+            shotgun().casing(GunStats.Casing.SHELL).damage(2.4f).pellets(8).magazine(7).fireDelay(6).reloadPerRound(9).recoil(5)); // semi-auto tactique
     public static final DeferredItem<GunItem> SPAS12 = gun("spas12", Rarity.UNCOMMON,
-            shotgun().casing(GunStats.Casing.SHELL).damage(3.8f).pellets(9).magazine(8).fireDelay(16).reloadPerRound(10).recoil(6.5f));
+            shotgun().casing(GunStats.Casing.SHELL).damage(2.2f).pellets(8).magazine(8).fireDelay(7).reloadPerRound(10).recoil(6.5f)); // semi-automatique
     /** AA-12 : fusil à pompe automatique avec camembert. */
     public static final DeferredItem<GunItem> AA12 = gun("aa12", Rarity.RARE,
-            shotgun().casing(GunStats.Casing.SHELL).damage(3.0f).pellets(7).magazine(20).fireDelay(4).automatic().reload(60).spread(9.0f, 7.0f).recoil(3)
+            shotgun().casing(GunStats.Casing.SHELL).damage(1.8f).pellets(8).magazine(20).rpm(300).automatic().reload(60).spread(9.0f, 7.0f).recoil(2)
                     .noSlots().slots(SIGHT, GRIP, PGRIP, STOCK));
     public static final DeferredItem<GunItem> SAWED_OFF = gun("sawed_off", Rarity.COMMON,
-            shotgun().noChamber().casing(GunStats.Casing.NONE).damage(3.5f).pellets(10).magazine(2).fireDelay(4).reload(40).spread(14.0f, 12.0f).recoil(9)
+            shotgun().noChamber().casing(GunStats.Casing.NONE).damage(2.5f).pellets(8).magazine(2).fireDelay(4).reload(40).spread(14.0f, 12.0f).recoil(9).doubleBarrel()
                     .sound(ModSounds.SHOT_SHOTGUN, 0.9f, 0.9f).noSlots());
 
     // ================= MITRAILLEUSES =================
     public static final DeferredItem<GunItem> M249 = gun("m249", Rarity.RARE,
-            machineGun().damage(5.5f).magazine(100).fireDelay(2).reload(100).recoil(1.0f).sound(ModSounds.SHOT_RIFLE, 0.5f, 0.95f).ammo(ModItems.AMMO_556));
+            machineGun().damage(6).magazine(100).rpm(850).reload(100).recoil(1.0f).walkSpeed(0.85f).sound(ModSounds.SHOT_RIFLE, 0.5f, 0.95f).ammo(ModItems.AMMO_556));
     public static final DeferredItem<GunItem> PKM = gun("pkm", Rarity.RARE,
-            machineGun().casing(GunStats.Casing.STEEL).damage(7.5f).magazine(100).fireDelay(3).reload(110).recoil(1.6f).sound(ModSounds.SHOT_AK, 0.55f, 0.9f).ammo(ModItems.AMMO_762X54R));
+            machineGun().casing(GunStats.Casing.STEEL).damage(7.5f).magazine(100).rpm(650).reload(110).walkSpeed(0.85f).recoil(1.6f).sound(ModSounds.SHOT_AK, 0.55f, 0.9f).ammo(ModItems.AMMO_762X54R));
     public static final DeferredItem<GunItem> M60 = gun("m60", Rarity.RARE,
-            machineGun().damage(8).magazine(100).fireDelay(3).reload(120).spread(3.5f, 1.6f).recoil(2.2f).ammo(ModItems.AMMO_762));
+            machineGun().damage(8).magazine(100).rpm(550).reload(120).walkSpeed(0.85f).spread(3.5f, 1.6f).recoil(2.2f).ammo(ModItems.AMMO_762));
     /** Minigun : temps de lancement d'une seconde, puis 20 balles par seconde. */
     public static final DeferredItem<GunItem> MINIGUN = gun("minigun", Rarity.EPIC,
-            machineGun().noChamber().damage(5).magazine(200).fireDelay(1).spinUp(20).reload(160).spread(4.0f, 3.0f).recoil(0.4f)
+            machineGun().noChamber().damage(5).magazine(250).rpm(2000).spinUp(12).reload(160).walkSpeed(0.75f).noSprint().spread(4.0f, 3.0f).recoil(0.4f)
                     .sound(ModSounds.SHOT_MINIGUN, 0.6f, 1.0f).ammo(ModItems.AMMO_762).draw(25).heat(0.6f).noSlots());
 
     // ================= LANCEURS =================
     public static final DeferredItem<GunItem> RPG7 = gun("rpg7", Rarity.EPIC, GunStats.builder().noChamber()
-            .magazine(1).fireDelay(20).reload(70).velocity(2.2f).spread(0.6f, 0.15f).recoil(10).rocket(4.0f)
+            .magazine(1).fireDelay(20).reload(70).velocity(2.2f).spread(0.6f, 0.15f).recoil(10).rocket(4.5f)
             .ammo(ModItems.RPG_ROCKET).sound(ModSounds.SHOT_ROCKET, 1.6f, 1.0f).draw(16).slots(SIGHT));
     /** M32 MGL : lance-grenades à barillet de 6, rechargement grenade par grenade. */
     public static final DeferredItem<GunItem> M32_MGL = gun("m32_mgl", Rarity.EPIC, GunStats.builder().noChamber()
             .magazine(6).fireDelay(10).reloadPerRound(14).velocity(1.6f).spread(1.0f, 0.4f).recoil(5).grenade(2.2f)
             .ammo(ModItems.GRENADE_40MM).sound(ModSounds.SHOT_LAUNCHER, 1.0f, 1.0f).slots(SIGHT));
     public static final DeferredItem<GunItem> M79 = gun("m79", Rarity.RARE, GunStats.builder().noChamber()
-            .magazine(1).fireDelay(10).reload(35).velocity(1.6f).spread(1.0f, 0.4f).recoil(6).grenade(2.5f)
+            .magazine(1).fireDelay(10).reload(35).velocity(1.6f).spread(1.0f, 0.4f).recoil(6).grenade(2.0f)
             .ammo(ModItems.GRENADE_40MM).sound(ModSounds.SHOT_LAUNCHER, 1.0f, 0.95f));
     /** AT4 : lance-roquettes jetable, vendu chargé. */
     public static final DeferredItem<GunItem> AT4 = gun("at4", Rarity.EPIC, GunStats.builder().noChamber()
@@ -349,15 +349,15 @@ public final class ModItems {
     public static final DeferredItem<AttachmentItem> HOLO_SIGHT = attachment("holo_sight",
             AttachmentItem.Stats.of(AttachmentSlot.SIGHT).sight(0.75f, SightOverlay.HOLO).aimSpread(0.6f));
     public static final DeferredItem<AttachmentItem> ACOG_SCOPE = attachment("acog_scope",
-            AttachmentItem.Stats.of(AttachmentSlot.SIGHT).sight(0.25f, SightOverlay.SCOPE_X4).aimSpread(0.4f));
+            AttachmentItem.Stats.of(AttachmentSlot.SIGHT).sight(0.333f, SightOverlay.SCOPE_X4).aimSpread(0.45f)); // ACOG x3
     public static final DeferredItem<AttachmentItem> SILENCER = attachment("silencer",
             AttachmentItem.Stats.of(AttachmentSlot.MUZZLE).silencer().damage(0.9f));
     public static final DeferredItem<AttachmentItem> COMPENSATOR = attachment("compensator",
             AttachmentItem.Stats.of(AttachmentSlot.MUZZLE).recoil(0.6f));
     public static final DeferredItem<AttachmentItem> VERTICAL_GRIP = attachment("vertical_grip",
-            AttachmentItem.Stats.of(AttachmentSlot.GRIP).recoil(0.65f));
+            AttachmentItem.Stats.of(AttachmentSlot.GRIP).recoil(0.85f)); // -15 % de recul
     public static final DeferredItem<AttachmentItem> ANGLED_GRIP = attachment("angled_grip",
-            AttachmentItem.Stats.of(AttachmentSlot.GRIP).spread(0.7f).aimSpread(0.8f));
+            AttachmentItem.Stats.of(AttachmentSlot.GRIP).aimSpeed(1.25f)); // +25 % de vitesse de visée
     public static final DeferredItem<AttachmentItem> MAGAZINE_24 = attachment("magazine_24",
             AttachmentItem.Stats.of(AttachmentSlot.MAGAZINE).magazine(24));
     public static final DeferredItem<AttachmentItem> MAGAZINE_36 = attachment("magazine_36",
@@ -486,6 +486,16 @@ public final class ModItems {
     public static final DeferredItem<AttachmentItem> ZHUKOV_STOCK = attachment("zhukov_stock", st().recoil(0.8f));
     public static final DeferredItem<AttachmentItem> SCAR_FOLDING_STOCK = attachment("scar_folding_stock", st().recoil(0.85f).reload(0.95f));
     public static final DeferredItem<AttachmentItem> RUBY_STOCK = attachment("ruby_stock", st().recoil(0.65f).spread(0.85f));
+
+    // ---------- Accessoires du cahier des charges ----------
+    public static final DeferredItem<AttachmentItem> MUZZLE_BRAKE = attachment("muzzle_brake",
+            AttachmentItem.Stats.of(AttachmentSlot.MUZZLE).recoil(0.8f).volume(1.15f)); // -20 % de recul (plus bruyant)
+    public static final DeferredItem<AttachmentItem> FLASH_HIDER = attachment("flash_hider",
+            AttachmentItem.Stats.of(AttachmentSlot.MUZZLE).special(AttachmentItem.Special.NO_FLASH));
+    public static final DeferredItem<AttachmentItem> EXTENDED_MAG = attachment("extended_mag",
+            AttachmentItem.Stats.of(AttachmentSlot.MAGAZINE).magazineMul(1.35f).reload(1.1f)); // +35 % de balles
+    public static final DeferredItem<AttachmentItem> FAST_MAG = attachment("fast_mag",
+            AttachmentItem.Stats.of(AttachmentSlot.MAGAZINE).reload(0.8f)); // rechargement +25 % plus rapide
 
     // ---------- Lance-grenades sous le canon (seulement sur les armes qui l'acceptent en vrai) ----------
     public static final DeferredItem<AttachmentItem> M320 = attachment("m320", launcher().guns("m4", "m16a4", "hk416"));

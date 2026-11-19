@@ -50,21 +50,34 @@ Toutes les armes à feu, munitions et accessoires se fabriquent à la **table d'
 **17 munitions réalistes :** 9 mm, .45 ACP, .50 AE, .357 Magnum, 5,7 mm, 4,6 mm, 7,62×25, 5,45 mm, 5,56 mm,
 7,62 mm, 7,62×54R, 7,92 mm, .338 Lapua, .50 BMG, cartouches calibre 12, grenades 40 mm, roquettes RPG.
 
-**Commandes :**
-- **Clic droit** : tirer (rechargement automatique si le chargeur est vide).
+**Commandes (façon FPS) :**
+- **Clic gauche** : tirer (maintenir pour le tir continu ; rechargement automatique si le chargeur est vide).
+  Avec une arme en main, le clic gauche ne casse pas de bloc.
+- **Clic droit maintenu** : viser (l'arme s'aligne au centre de l'écran en ~0,2 s, léger zoom). Un simple clic droit
+  sur une porte, une table... fonctionne toujours. Fusil à canon scié : le clic droit tire les **deux canons** d'un coup.
+- **Shift** (en visant à la lunette) : stabiliser / retenir son souffle.
 - **B** : changer de mode de tir — **coup par coup → rafale → automatique** (selon les modes de l'arme).
   Comme une vraie détente, il faut relâcher le clic entre deux tirs en coup par coup et entre deux rafales.
-  Armes automatiques : les 3 modes (sauf le minigun, toujours automatique). M16A4 : coup par coup / rafale.
-  Pistolets, snipers, fusils à pompe et lanceurs : coup par coup.
-- **H** : vérifier s'il y a une balle dans la chambre (l'arme pivote, la culasse s'entrouvre).
-- **Double appui sur s'accroupir** : s'allonger / se relever (aussi en sautant), avec ou sans arme.
-  Allongé : recul et dispersion divisés par 2. Maintenir s'accroupir pour viser.
-- **R** : recharger. **S'accroupir** : viser (moins de dispersion, zoom et réticule si un viseur est monté).
-- Les touches (R recharger, B mode de tir, H vérifier la chambre, G type de munition, T laser, V tir sous le canon, A / E se pencher, Alt retenir son souffle) se changent dans *Options > Commandes > Mode Minecraft*. Munitions infinies en créatif.
+  Cadences réelles en coups par minute (M4 800 CPM, Vector 1200, minigun 2000 après 0,6 s de lancement...).
+- **H** : inspecter l'arme (on la tourne pour l'admirer) et vérifier la balle dans la chambre.
+- **R** : recharger. Cartouche par cartouche (pompes, revolvers, fusils à verrou) : **tirer interrompt le rechargement**
+  (les cartouches déjà mises restent).
+- **C** : coup de crosse (ou de baïonnette).
+- **Double appui sur s'accroupir** (sans viser) : s'allonger / se relever (aussi en sautant), avec ou sans arme.
+  Allongé : recul et dispersion divisés par 2.
+- Toutes les touches (R, B, H, G type de munition, T laser, V tir sous le canon, C crosse, A / E se pencher,
+  Shift stabiliser) se changent dans *Options > Commandes > Mode Minecraft*. Munitions infinies en créatif.
+
+**Dégâts (cahier des charges) :** tête x2 (x2,5 au fusil de précision, avec un « ding » métallique), torse x1,
+bras et jambes x0,75 ; chaque calibre ignore une partie de l'armure (9 mm 10 %, 5,56 30 %, 7,62 45 %, .338 60 %,
+.50 BMG 70 %, munitions perforantes +50 %) ; les gros calibres traversent un ennemi pour toucher celui de derrière,
+et toutes les balles traversent vitres, feuilles, laine et bois fin (-30 % de dégâts par paroi) selon leur puissance.
+Uzi : +10 % de vitesse de marche ; M249 et mitrailleuses : -15 % ; minigun : -25 % et pas de sprint.
 
 **Réalisme :** balle chambrée (le HUD affiche `chargeur+1`) ; arme neuve ou vidée = le personnage tire la culasse
-(au clic droit, ou automatiquement à la fin d'un rechargement à vide) ; culasse des pistolets bloquée en arrière
-quand ils sont vides ; douilles éjectées (laiton, acier ou cartouche rouge) ; l'arme s'incline pendant le rechargement.
+(au clic droit, ou automatiquement à la fin d'un rechargement à vide) ; culasse bloquée en arrière quand
+l'arme est vide (pistolets, fusils type AR, SCAR, Barrett...) ; flash 3D au bout du canon ; douilles 3D éjectées
+(laiton, acier ou cartouche rouge) ; l'arme s'incline pendant le rechargement.
 
 **Munitions spéciales** (table d'armement, onglet *Spéciales* : 16 munitions normales + un ingrédient,
 touche **G** pour changer le type chargé ; les balles chargées sont rendues) :
@@ -90,9 +103,9 @@ message de mort « X a été abattu par Y ».
   (sniper > fusil > pistolet, munitions perforantes x2), en perdant des dégâts. Pas la pierre.
 - **Ricochets** : une balle qui touche la pierre ou le métal très en biais peut rebondir (étincelles).
 - **Respiration** : avec une lunette, la visée bouge légèrement (moins allongé ou avec un bipied).
-  **Alt gauche** = retenir son souffle 5 secondes ; après, la visée tremble plus le temps de reprendre son souffle.
+  **Shift** = retenir son souffle 5 secondes ; après, la visée tremble plus le temps de reprendre son souffle.
 - **Bruit** : un tir non silencieux attire les monstres proches (rayon selon le bruit de l'arme).
-- **Se pencher** : en visant, **A / E** (AZERTY) penchent à gauche / à droite pour tirer depuis un coin de mur.
+- **Se pencher** : en visant (clic droit), **A / E** (AZERTY) penchent à gauche / à droite pour tirer depuis un coin de mur.
   Hors visée, A et E gardent leur rôle (jeter / inventaire).
 - **Surchauffe** (mitrailleuses) : jauge de chaleur ; à 100 l'arme se bloque jusqu'à refroidir. Avec un
   **canon de rechange** dans l'inventaire, **R** change le canon (puis 20 s avant de pouvoir rechanger).
@@ -124,14 +137,14 @@ Poser l'arme au centre, puis les accessoires autour. Les statistiques finales s'
 et les flèches changent le **skin** : Défaut, Désert, Camouflage forêt, Camouflage arctique, Or, Rubis.
 
 La table a **7 emplacements** : viseur, bouche, poignée avant, chargeur, poignée pistolet, crosse et rail latéral (laser, fusils d'assaut).
-**134 accessoires** au total ; l'infobulle de chacun donne ses effets exacts.
+**138 accessoires** au total ; l'infobulle de chacun donne ses effets exacts.
 
 | Emplacement | Accessoires | Effets principaux |
 |---|---|---|
-| Viseur (27) | **lunettes de sniper Leupold x6, Schmidt & Bender x12, Nightforce x20, S&B PM II 5-25x (fusils de précision uniquement)**, point rouge, holographique, Kobra, RMR, réflexe mini, hausse ghost ring, prisme x2, ACOG x4, PSO-1, chasse x4, ELCAN (x1/x4), x4 + viseur à 45° (x4/x1), holo + loupe x3 (x1,3/x3), **lunette variable 1-6x**, x6, x8, x12, télémétrique, numérique, rubis, **thermique**, **vision nocturne**, laser PEQ-15 | zoom, réticule propre à chaque viseur, précision en visée |
-| Bouche (28) | compensateur, silencieux générique + 26 silencieux réels selon le calibre : Omega 9K, Osprey 45, Gemtech GM-9, B&T Impuls-IIA (9 mm / .45) ; Dead Air Wolfman, Hybrid 46, Rugged Obsidian 45, AAC Ti-RANT 45 (PM) ; SureFire SOCOM556, Huxwrx Flow, B&T Rotex-V, Dead Air Sandman-S (5,56) ; PBS-1, PBS-4, TGP-A (AK), Rugged Surge 7.62 ; SureFire SOCOM762, AAC SDN-6, Omega 300, Thunder Beast Ultra 9 (précision) ; **intégral MP5SD** (PM), **bouteille** (casse après 40 tirs), **rubis** (+5 % dégâts), **écho** (aucun bruit), **obsidienne**, OSS Helix 6 | tir discret, chaque silencieux a ses bonus |
-| Poignée avant (22) | verticale, inclinée, courte, Magpul AFG/RVG/MVG, BCM KAG, Tango Down, butée de main, bois, pliante, carbone, caoutchouc, rubis, lampe, laser, lampe + laser, Grip-Pod, bipied Harris, **baïonnette**, lance-grenades **M203** (M4, M16A4, HK416, Tavor), **M320** (M4, M16A4, HK416), **GP-25** (AK-47, AK-74, AN-94), **AG36** (G36), **FN EGLM** (SCAR-H), **HK79** (G3), fusil à pompe **M26 MASS** (M4, M16A4, HK416) | recul, dispersion, stabilité allongé, gadgets |
-| Chargeur (3) | 24 coups, 36 coups, camembert | capacité |
+| Viseur (27) | **lunettes de sniper Leupold x6, Schmidt & Bender x12, Nightforce x20, S&B PM II 5-25x (fusils de précision uniquement)**, point rouge, holographique, Kobra, RMR, réflexe mini, hausse ghost ring, prisme x2, ACOG x3, PSO-1, chasse x4, ELCAN (x1/x4), x4 + viseur à 45° (x4/x1), holo + loupe x3 (x1,3/x3), **lunette variable 1-6x**, x6, x8, x12, télémétrique, numérique, rubis, **thermique**, **vision nocturne**, laser PEQ-15 | zoom, réticule propre à chaque viseur, précision en visée |
+| Bouche (30) | compensateur, **frein de bouche** (-20 % de recul), **cache-flamme** (pas de flash), silencieux générique + 26 silencieux réels selon le calibre : Omega 9K, Osprey 45, Gemtech GM-9, B&T Impuls-IIA (9 mm / .45) ; Dead Air Wolfman, Hybrid 46, Rugged Obsidian 45, AAC Ti-RANT 45 (PM) ; SureFire SOCOM556, Huxwrx Flow, B&T Rotex-V, Dead Air Sandman-S (5,56) ; PBS-1, PBS-4, TGP-A (AK), Rugged Surge 7.62 ; SureFire SOCOM762, AAC SDN-6, Omega 300, Thunder Beast Ultra 9 (précision) ; **intégral MP5SD** (PM), **bouteille** (casse après 40 tirs), **rubis** (+5 % dégâts), **écho** (aucun bruit), **obsidienne**, OSS Helix 6 | tir discret, chaque silencieux a ses bonus |
+| Poignée avant (22) | verticale (-15 % de recul), inclinée (+25 % de vitesse de visée), courte, Magpul AFG/RVG/MVG, BCM KAG, Tango Down, butée de main, bois, pliante, carbone, caoutchouc, rubis, lampe, laser, lampe + laser, Grip-Pod, bipied Harris, **baïonnette**, lance-grenades **M203** (M4, M16A4, HK416, Tavor), **M320** (M4, M16A4, HK416), **GP-25** (AK-47, AK-74, AN-94), **AG36** (G36), **FN EGLM** (SCAR-H), **HK79** (G3), fusil à pompe **M26 MASS** (M4, M16A4, HK416) | recul, dispersion, stabilité allongé, gadgets |
+| Chargeur (5) | 24 coups, 36 coups, camembert, **chargeur étendu** (+35 %), **chargeur rapide** (rechargement +25 % plus rapide) | capacité, vitesse de rechargement |
 | Poignée pistolet (20) | Magpul MOE/K2/MIAD, Hogue, BCM Gunfighter, Tango Down, ergonomique, noyer, nacrée, or, rubis, squelette, compacte, compétition, granitée, repose-pouce, Crimson Trace, rangement, empreintes, gel | recul, vitesse de visée, rechargement, sortie de l'arme |
 | Rail latéral (9) | lasers rouge, vert, bleu, violet, jaune, orange, cyan, blanc, **arc-en-ciel** (fusils d'assaut uniquement) | laser visible, dispersion sans viser réduite |
 | Crosse (20) | A2, CTR, Magpul PRS, squelette, pliante, filaire, bois, appui-joue, trou de pouce, **sans crosse**, attelle de pistolet (pistolets uniquement), tube tampon, Limbsaver, Knoxx, carbone, monopode, Accuracy International, Zhukov, SCAR, rubis | recul, mobilité, précision |

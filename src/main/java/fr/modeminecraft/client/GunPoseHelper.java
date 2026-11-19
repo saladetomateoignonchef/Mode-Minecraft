@@ -102,12 +102,19 @@ public final class GunPoseHelper {
             pose.mulPose(Axis.XP.rotationDegrees(-6 * tilt));
         }
 
-        // --- Vérification de la chambre : l'arme pivote vers soi ---
+        // --- Inspection (touche H) : on tourne l'arme pour l'admirer, d'un côté puis de l'autre ---
         Long check = stack.get(ModDataComponents.CHECK_AT.get());
-        if (check != null && now >= check && now <= check + 12) {
-            float t = Math.min(1, Math.min((now - check) / 3f, (check + 12 - now) / 3f));
-            pose.mulPose(Axis.ZP.rotationDegrees(side * 35 * t));
-            pose.mulPose(Axis.YP.rotationDegrees(side * -15 * t));
+        int len = GunItem.INSPECT_TICKS;
+        if (check != null && now >= check && now <= check + len) {
+            float t = (now - check) / len;
+            float in = smooth(Math.min(1, t / 0.18f)), out = smooth(Math.min(1, (1 - t) / 0.18f));
+            float w = Math.min(in, out);
+            float swap = smooth(Mth.clamp((t - 0.45f) / 0.2f, 0, 1)); // passe d'un côté à l'autre
+            float yaw = Mth.lerp(swap, 55, -35), roll = Mth.lerp(swap, 30, -20);
+            pose.translate(-side * 0.12f * w, 0.06f * w, 0.12f * w);
+            pose.mulPose(Axis.YP.rotationDegrees(side * yaw * w));
+            pose.mulPose(Axis.ZP.rotationDegrees(side * roll * w));
+            pose.mulPose(Axis.XP.rotationDegrees(-8 * w));
         }
 
         if (mainRight && !player.isInvisible()) {

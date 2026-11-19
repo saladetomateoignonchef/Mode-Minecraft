@@ -54,6 +54,9 @@ public record ResolvedGun(
             if (s.magazineSize > 0) {
                 magazine = s.magazineSize;
             }
+            if (s.magazineMul != 1) {
+                magazine = Math.round(base.magazineSize() * s.magazineMul);
+            }
             if (!s.modes.isEmpty()) {
                 modes = s.modes;
             }

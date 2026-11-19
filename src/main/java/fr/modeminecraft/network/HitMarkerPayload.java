@@ -7,7 +7,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-/** Serveur -> tireur : sa balle a touché (0), touché à la tête (1) ou tué (2). */
+/** Serveur -> tireur : sa balle a touché (0) ou tué (2), avec le bit 1 si c'était à la tête. */
 public record HitMarkerPayload(int kind) implements CustomPacketPayload {
     public static final int HIT = 0, HEADSHOT = 1, KILL = 2;
     public static final Type<HitMarkerPayload> TYPE = new Type<>(ModeMinecraft.id("hit_marker"));

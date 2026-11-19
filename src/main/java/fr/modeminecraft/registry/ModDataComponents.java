@@ -77,6 +77,11 @@ public final class ModDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> CHECK_AT = timestamp("check_at");
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> RELOAD_START = timestamp("reload_start");
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> RELOAD_END = timestamp("reload_end");
+    /** Rechargement cartouche par cartouche : munitions avant / après (pour pouvoir l'interrompre). */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> RELOAD_FROM =
+            DATA_COMPONENTS.registerComponentType("reload_from", b -> b.networkSynchronized(ByteBufCodecs.VAR_INT));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> RELOAD_TARGET =
+            DATA_COMPONENTS.registerComponentType("reload_target", b -> b.networkSynchronized(ByteBufCodecs.VAR_INT));
 
     private static DeferredHolder<DataComponentType<?>, DataComponentType<Long>> timestamp(String name) {
         // Non sauvegardé sur le disque : ne sert qu'aux animations

@@ -60,12 +60,67 @@ public final class GunClientEvents {
                 PacketDistributor.sendToServer(UnderbarrelPayload.INSTANCE);
             }
         }
+        while (ModKeyMappings.MELEE.consumeClick()) {
+            if (holdingGun) {
+                PacketDistributor.sendToServer(fr.modeminecraft.network.MeleePayload.INSTANCE);
+            }
+        }
         while (ModKeyMappings.CHECK_CHAMBER.consumeClick()) {
             if (holdingGun) {
                 PacketDistributor.sendToServer(CheckChamberPayload.INSTANCE);
             }
         }
         handleProne(mc);
+    }
+
+    private static boolean triggerSent, aimSent, useWasDown;
+    private static long usePressTick = -1;
+
+    /**
+     * Avant que Minecraft ne traite les clics : avec une arme, clic gauche = détente, clic droit = viser.
+     */
+    @SubscribeEvent
+    public static void onTickPre(ClientTickEvent.Pre event) {
+        Minecraft mc = Minecraft.getInstance();
+        Player player = mc.player;
+        if (player == null) {
+            return;
+        }
+        boolean gun = player.getMainHandItem().getItem() instanceof GunItem && mc.screen == null
+                && !player.isSpectator() && mc.mouseHandler.isMouseGrabbed();
+        boolean trigger = gun && mc.options.keyAttack.isDown();
+        boolean aim = gun && mc.options.keyUse.isDown();
+        boolean use = mc.options.keyUse.isDown();
+        if (use && !useWasDown) {
+            usePressTick = player.level().getGameTime();
+        }
+        useWasDown = use;
+        if (trigger != triggerSent || aim != aimSent) {
+            triggerSent = trigger;
+            aimSent = aim;
+            fr.modeminecraft.item.gun.TriggerHandler.setTrigger(player, trigger);
+            fr.modeminecraft.item.gun.TriggerHandler.setAiming(player, aim);
+            PacketDistributor.sendToServer(new fr.modeminecraft.network.TriggerPayload(trigger, aim));
+        }
+    }
+
+    /**
+     * Arme en main : le clic gauche ne casse pas de bloc et ne frappe pas (il tire) ;
+     * le clic droit ne garde que son 1er appui (ouvrir une porte, une table...), sans répétition.
+     */
+    @SubscribeEvent
+    public static void onClickInput(net.neoforged.neoforge.client.event.InputEvent.InteractionKeyMappingTriggered event) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null || !(mc.player.getMainHandItem().getItem() instanceof GunItem)) {
+            return;
+        }
+        if (event.isAttack()) {
+            event.setCanceled(true);
+            event.setSwingHand(false);
+        } else if (event.isUseItem() && mc.player.level().getGameTime() != usePressTick) {
+            event.setCanceled(true);
+            event.setSwingHand(false);
+        }
     }
 
     private static boolean sneakWasDown;
@@ -78,7 +133,8 @@ public final class GunClientEvents {
             return;
         }
         long now = mc.player.level().getGameTime();
-        boolean sneak = mc.options.keyShift.isDown();
+        boolean sneak = mc.options.keyShift.isDown() && !GunItem.isAiming(mc.player); // en visant, Shift stabilise
+
         if (sneak && !sneakWasDown) {
             if (now - lastSneakPress <= 7) {
                 toggleProne(mc, !ProneHandler.isProne(mc.player));
@@ -109,15 +165,13 @@ public final class GunClientEvents {
     @SubscribeEvent
     public static void onMovementInput(MovementInputUpdateEvent event) {
         Player player = event.getEntity();
-        if (player.isUsingItem() && !player.isPassenger() && player.getUseItem().getItem() instanceof GunItem) {
-            event.getInput().leftImpulse *= 5.0f;
-            event.getInput().forwardImpulse *= 5.0f;
-        }
-        // Mobilité en visant (crosses légères, sans crosse...)
-        ResolvedGun aim = aiming(player);
-        if (aim != null && aim.mobility() != 1.0f) {
-            event.getInput().leftImpulse *= aim.mobility();
-            event.getInput().forwardImpulse *= aim.mobility();
+        // En visant on marche plus lentement (x0,65), selon la mobilité des accessoires (crosses légères...)
+        ResolvedGun aim = player.getMainHandItem().getItem() instanceof GunItem g && GunItem.isAiming(player)
+                ? g.resolve(player.getMainHandItem()) : null;
+        if (aim != null) {
+            float mul = 0.65f * aim.mobility();
+            event.getInput().leftImpulse *= mul;
+            event.getInput().forwardImpulse *= mul;
         }
     }
 

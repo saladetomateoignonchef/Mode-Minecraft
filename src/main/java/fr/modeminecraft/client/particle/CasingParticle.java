@@ -60,6 +60,41 @@ public class CasingParticle extends TextureSheetParticle {
         }
     }
 
+    /** Douille en 3D : un petit pavé allongé (laiton / acier / cartouche) qui tourne sur lui-même. */
+    @Override
+    public void render(com.mojang.blaze3d.vertex.VertexConsumer buffer, net.minecraft.client.Camera camera, float partialTicks) {
+        var cam = camera.getPosition();
+        float px = (float) (net.minecraft.util.Mth.lerp(partialTicks, xo, x) - cam.x());
+        float py = (float) (net.minecraft.util.Mth.lerp(partialTicks, yo, y) - cam.y()) + (shell ? 0.02f : 0.008f);
+        float pz = (float) (net.minecraft.util.Mth.lerp(partialTicks, zo, z) - cam.z());
+        float angle = net.minecraft.util.Mth.lerp(partialTicks, oRoll, roll);
+        // Couchée au sol (axe horizontal), elle tourne autour de l'axe vertical en roulant
+        org.joml.Quaternionf q = new org.joml.Quaternionf().rotateY(angle).rotateZ(onGround ? 0 : angle * 1.7f);
+        float len = shell ? 0.045f : 0.028f, rad = shell ? 0.013f : 0.0065f;
+        float u0 = getU0(), u1 = getU1(), v0 = getV0(), v1 = getV1();
+        int light = getLightColor(partialTicks);
+        float[][] faces = {
+                {1, 0, 0}, {-1, 0, 0}, {0, 1, 0}, {0, -1, 0}, {0, 0, 1}, {0, 0, -1}};
+        float[] size = {len, rad, rad};
+        for (float[] n : faces) {
+            // Les 4 coins de la face, dans le repère de la douille
+            int axis = n[0] != 0 ? 0 : n[1] != 0 ? 1 : 2;
+            int a1 = (axis + 1) % 3, a2 = (axis + 2) % 3;
+            float shade = axis == 1 ? (n[1] > 0 ? 1.0f : 0.55f) : (axis == 0 ? 0.8f : 0.7f);
+            float[][] corners = {{-1, -1}, {1, -1}, {1, 1}, {-1, 1}};
+            float[][] uv = {{u0, v1}, {u1, v1}, {u1, v0}, {u0, v0}};
+            for (int k = 0; k < 4; k++) {
+                float[] c = new float[3];
+                c[axis] = n[axis] * size[axis];
+                c[a1] = corners[k][0] * size[a1];
+                c[a2] = corners[k][1] * size[a2] * Math.signum(n[axis]);
+                org.joml.Vector3f v = q.transform(new org.joml.Vector3f(c[0], c[1], c[2]));
+                buffer.addVertex(px + v.x, py + v.y, pz + v.z).setUv(uv[k][0], uv[k][1])
+                        .setColor(rCol * shade, gCol * shade, bCol * shade, alpha).setLight(light);
+            }
+        }
+    }
+
     @Override
     public ParticleRenderType getRenderType() {
         return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;

@@ -218,7 +218,9 @@ public final class GunModels {
         float partial = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true);
         if (slide.style().equals("spin")) {
             // Les canons tournent tant que le joueur tient le clic (lancement + tir)
-            if (!entity.isUsingItem() || entity.getUseItem() != stack) {
+            boolean firing = entity instanceof Player pl && (fr.modeminecraft.item.gun.TriggerHandler.isTriggerDown(pl)
+                    || GunAnimations.ticksSinceShot(entity, partial) < 6);
+            if (!firing) {
                 return 0;
             }
             return (int) ((entity.level().getGameTime() + partial) * 3) % FRAMES;

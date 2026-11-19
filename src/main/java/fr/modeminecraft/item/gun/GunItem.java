@@ -98,6 +98,16 @@ public class GunItem extends Item {
         return stats.chamber() ? isChambered(stack) : getAmmo(stack) > 0;
     }
 
+    /** Part de l'armure ignorée selon le calibre (9 mm faible, 7,62 et .50 BMG de 40 à 70 %). */
+    private static final java.util.Map<String, Float> ARMOR_PEN = java.util.Map.ofEntries(
+            java.util.Map.entry("ammo_9mm", 0.1f), java.util.Map.entry("ammo_45acp", 0.1f), java.util.Map.entry("ammo_357", 0.2f),
+            java.util.Map.entry("ammo_50ae", 0.25f), java.util.Map.entry("ammo_57", 0.5f), java.util.Map.entry("ammo_46", 0.5f),
+            java.util.Map.entry("ammo_762x25", 0.2f), java.util.Map.entry("ammo_545", 0.3f), java.util.Map.entry("ammo_556", 0.3f),
+            java.util.Map.entry("ammo_762", 0.45f), java.util.Map.entry("ammo_762x54r", 0.5f), java.util.Map.entry("ammo_792", 0.5f),
+            java.util.Map.entry("ammo_338", 0.6f), java.util.Map.entry("ammo_50bmg", 0.7f), java.util.Map.entry("shotgun_shell", 0.0f));
+    /** Gros calibres : la balle traverse un ennemi pour toucher celui de derrière. */
+    private static final java.util.Set<String> BIG_CALIBERS = java.util.Set.of("ammo_762", "ammo_762x54r", "ammo_792", "ammo_338", "ammo_50bmg");
+
     /** Fusil à verrou (on manœuvre le verrou après chaque tir). */
     public boolean isBoltAction() {
         return stats.category() == GunStats.Category.SNIPER && stats.fireDelay() >= 24;
@@ -274,7 +284,7 @@ public class GunItem extends Item {
             return false;
         }
         // Un chargeur doit contenir plus de balles que celui d'origine
-        return attachment.slot() != AttachmentSlot.MAGAZINE
+        return attachment.slot() != AttachmentSlot.MAGAZINE || attachment.stats().magazineSize() == 0
                 || attachment.stats().magazineSize() > stats.magazineSize();
     }
 
@@ -299,78 +309,127 @@ public class GunItem extends Item {
     // ------------------------------------------------------------------
     // Tir
     // ------------------------------------------------------------------
+    /** Le clic droit sert à viser (voir TriggerHandler) : il ne fait rien d'autre avec une arme en main. */
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
-
-        if (!canFire(player, stack)) {
-            if (!level.isClientSide) {
-                if (isOverheated(stack, level)) {
-                    overheatMessage(player);
-                } else {
-                    rackOrReload(player, stack);
-                }
-            }
-            return InteractionResultHolder.fail(stack);
-        }
-
-        // On "utilise" l'arme tant que le clic est maintenu : comme une vraie détente,
-        // il faut relâcher le clic pour tirer à nouveau en coup par coup ou en rafale.
-        player.startUsingItem(hand);
-        if (stats.spinUp() == 0) {
-            // La première balle part tout de suite (les suivantes dans onUseTick)
-            shoot(level, player, stack);
-            if (getFireMode(stack) == FireMode.SEMI) {
-                player.getCooldowns().addCooldown(this, Math.max(stats.fireDelay(), 3));
-            }
-        }
-        // "consume" = pas d'animation de coup de poing
-        return InteractionResultHolder.consume(stack);
+        return InteractionResultHolder.fail(player.getItemInHand(hand));
     }
 
-    @Override
-    public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int remainingUseDuration) {
-        if (!(entity instanceof Player player) || player.getCooldowns().isOnCooldown(this)) {
+    /**
+     * Appelé à chaque tick tant que la détente (clic gauche) est maintenue, côté client et côté serveur.
+     * - au premier tick : 1re balle (ou armement / rechargement si l'arme est vide) ;
+     * - ensuite : tir continu à la cadence de l'arme (rafale limitée, coup par coup = une balle par appui) ;
+     * - minigun : rotation des canons avant le premier tir.
+     */
+    public void triggerTick(Level level, Player player, ItemStack stack, TriggerHandler.Trigger trigger) {
+        if (trigger.locked) {
             return;
         }
-        int ticksUsed = getUseDuration(stack, entity) - remainingUseDuration;
-        if (stats.spinUp() > 0) {
-            // Minigun : les canons tournent d'abord sans tirer
-            if (ticksUsed < stats.spinUp()) {
-                if (ticksUsed % 4 == 0) {
-                    level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.MINECART_RIDING,
-                            SoundSource.PLAYERS, 0.4f, 0.8f + 1.2f * ticksUsed / stats.spinUp());
-                }
-                return;
-            }
-            ticksUsed -= stats.spinUp();
-        }
-        if (ticksUsed % stats.fireDelay() != 0) {
+        if (trigger.held() == 0 && interruptReload(player, stack)) {
+            trigger.lock();
             return;
         }
         FireMode mode = getFireMode(stack);
-        int shotIndex = ticksUsed / stats.fireDelay();
-        if (mode == FireMode.SEMI || (shotIndex == 0 && stats.spinUp() == 0)) {
-            return; // coup par coup : une seule balle par appui ; la 1re balle est tirée dans use()
+        int t = trigger.held() - stats.spinUp();
+        if (player.getCooldowns().isOnCooldown(this)) {
+            if (trigger.held() == 0 || mode == FireMode.SEMI) {
+                trigger.lock(); // appui pendant un délai (rechargement...) : il faudra réappuyer
+            } else {
+                trigger.shots = expectedShots(t); // pas de rattrapage après un délai
+            }
+            return;
         }
-        if (mode == FireMode.BURST && shotIndex >= stats.burstSize()) {
-            if (shotIndex == stats.burstSize()) {
+        if (stats.spinUp() > 0 && t < 0) {
+            // Minigun : les canons tournent d'abord sans tirer
+            if (trigger.held() % 4 == 0 && !level.isClientSide) {
+                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.MINECART_RIDING,
+                        SoundSource.PLAYERS, 0.4f, 0.8f + 1.2f * trigger.held() / stats.spinUp());
+            }
+            return;
+        }
+        int due = expectedShots(t) - trigger.shots;
+        for (int i = 0; i < due; i++) {
+            if (mode == FireMode.BURST && trigger.shots >= stats.burstSize()) {
                 player.getCooldowns().addCooldown(this, stats.burstPause()); // pause après la rafale
+                trigger.lock();
+                return;
             }
-            return;
-        }
-        if (!canFire(player, stack)) {
-            player.stopUsingItem();
-            if (!level.isClientSide) {
-                if (isOverheated(stack, level)) {
-                    overheatMessage(player);
-                } else {
-                    rackOrReload(player, stack);
+            if (!canFire(player, stack)) {
+                if (!level.isClientSide) {
+                    if (isOverheated(stack, level)) {
+                        overheatMessage(player);
+                    } else if (trigger.shots == 0) {
+                        rackOrReload(player, stack);
+                    } else {
+                        level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                                ModSounds.EMPTY_CLICK.get(), SoundSource.PLAYERS, 0.8f, 1.0f);
+                    }
                 }
+                trigger.lock();
+                return;
             }
+            shoot(level, player, stack);
+            trigger.shots++;
+            if (mode == FireMode.SEMI) {
+                player.getCooldowns().addCooldown(this, Math.max(stats.fireDelay(), 3));
+                trigger.lock();
+                return;
+            }
+        }
+    }
+
+    /** Fusil à deux canons : les deux coups partent ensemble (16 plombs, recul énorme). */
+    public void fireBothBarrels(Level level, Player player, ItemStack stack) {
+        if (player.getCooldowns().isOnCooldown(this)) {
             return;
         }
-        shoot(level, player, stack);
+        for (int i = 0; i < 2 && canFire(player, stack); i++) {
+            shoot(level, player, stack);
+        }
+        player.getCooldowns().addCooldown(this, 10);
+    }
+
+    /** Nombre de balles qui devraient être parties t ticks après le début du tir. */
+    private int expectedShots(int t) {
+        return t < 0 ? 0 : (int) Math.floor(t / stats.shotInterval()) + 1;
+    }
+
+    /** Rechargement cartouche par cartouche : tirer l'interrompt (les cartouches déjà mises restent). */
+    private boolean interruptReload(Player player, ItemStack stack) {
+        if (!stats.reloadPerRound()) {
+            return false;
+        }
+        Long start = stack.get(ModDataComponents.RELOAD_START.get());
+        Long end = stack.get(ModDataComponents.RELOAD_END.get());
+        long now = player.level().getGameTime();
+        if (start == null || end == null || now >= end - 1 || now < start) {
+            return false;
+        }
+        int per = Math.max(1, resolve(stack).reloadTicks());
+        int target = stack.getOrDefault(ModDataComponents.RELOAD_TARGET.get(), getAmmo(stack));
+        int before = stack.getOrDefault(ModDataComponents.RELOAD_FROM.get(), getAmmo(stack));
+        int inserted = (int) Math.max(0, Math.min(target - before, (now - start) / per));
+        if (!player.level().isClientSide) {
+            // Si ce rechargement devait aussi armer (arme vide), une des cartouches insérées part dans la chambre
+            Long rack = stack.get(ModDataComponents.RACK_AT.get());
+            boolean racks = rack != null && rack >= start;
+            int loaded = before + inserted;
+            int now_ammo = getAmmo(stack) + (racks ? 1 : 0); // ce que le rechargement complet aurait donné
+            int extra = now_ammo - loaded;
+            if (extra > 0 && !player.getAbilities().instabuild) {
+                giveBack(player, extra, getLoadedType(stack)); // les cartouches pas encore mises sont rendues
+            }
+            if (racks) {
+                setChambered(stack, loaded > 0);
+                setAmmo(stack, Math.max(0, loaded - 1));
+                stack.remove(ModDataComponents.RACK_AT.get());
+            } else {
+                setAmmo(stack, loaded);
+            }
+            stack.set(ModDataComponents.RELOAD_END.get(), now);
+        }
+        player.getCooldowns().removeCooldown(this);
+        return true;
     }
 
     /** Plus de balle chambrée : s'il en reste dans le chargeur on tire la culasse, sinon on recharge. */
@@ -395,7 +454,10 @@ public class GunItem extends Item {
                 actionSound(), SoundSource.PLAYERS, 1.0f, 1.0f);
     }
 
-    /** Touche H : on entrouvre la culasse pour voir s'il y a une balle dans la chambre. */
+    /** Durée de l'inspection de l'arme (touche H). */
+    public static final int INSPECT_TICKS = 40;
+
+    /** Touche H : inspection de l'arme (on la tourne pour l'admirer) et vérification de la chambre. */
     public void checkChamber(Player player, ItemStack stack) {
         if (player.getCooldowns().isOnCooldown(this)) {
             return;
@@ -412,19 +474,9 @@ public class GunItem extends Item {
         }
         player.displayClientMessage(state, true);
         stack.set(ModDataComponents.CHECK_AT.get(), player.level().getGameTime());
-        player.getCooldowns().addCooldown(this, 12);
+        player.getCooldowns().addCooldown(this, INSPECT_TICKS);
         player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
                 actionSound(), SoundSource.PLAYERS, 0.4f, 1.25f);
-    }
-
-    @Override
-    public int getUseDuration(ItemStack stack, LivingEntity entity) {
-        return 72000;
-    }
-
-    @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.NONE;
     }
 
     /** Le joueur se déplace-t-il ? (la précision baisse en marchant) */
@@ -441,9 +493,9 @@ public class GunItem extends Item {
         return ProneHandler.isProne(player) || isAiming(player) && !isMoving(player);
     }
 
-    /** Le joueur vise-t-il ? (touche accroupir maintenue, debout ou allongé) */
+    /** Le joueur vise-t-il ? (clic droit maintenu, debout ou allongé) */
     public static boolean isAiming(Player player) {
-        return player.isShiftKeyDown();
+        return TriggerHandler.isAiming(player);
     }
 
     protected void shoot(Level level, Player player, ItemStack stack) {
@@ -459,7 +511,7 @@ public class GunItem extends Item {
 
         if (level.isClientSide) {
             GunAnimations.recordShot(player); // la culasse recule (animation)
-            fr.modeminecraft.client.GunFx.onLocalShot(player, silenced);
+            fr.modeminecraft.client.GunFx.onLocalShot(player, silenced || gun.has(AttachmentItem.Special.NO_FLASH));
             ejectCasing(level, player, null);
             // Recul : la caméra remonte un peu (uniquement côté client, le serveur suit)
             float recoil = (aiming ? gun.recoil() * 0.6f : gun.recoil()) * stability * type.recoilMul * steadyRecoil;
@@ -514,7 +566,7 @@ public class GunItem extends Item {
         // Les joueurs proches voient le flash et la culasse de ce tir
         if (player instanceof net.minecraft.server.level.ServerPlayer sp) {
             net.neoforged.neoforge.network.PacketDistributor.sendToPlayersTrackingEntity(sp,
-                    new fr.modeminecraft.network.ShotFxPayload(player.getId(), silenced));
+                    new fr.modeminecraft.network.ShotFxPayload(player.getId(), silenced || gun.has(AttachmentItem.Special.NO_FLASH)));
         }
 
         // Flash et fumée au bout du canon (pas de flash avec un silencieux)
@@ -522,9 +574,7 @@ public class GunItem extends Item {
             Vec3 look = player.getLookAngle();
             Vec3 muzzle = player.getEyePosition().add(look.scale(1.2)).add(0, -0.15, 0);
             serverLevel.sendParticles(ParticleTypes.SMOKE, muzzle.x, muzzle.y, muzzle.z, 3, 0.03, 0.03, 0.03, 0.01);
-            if (!silenced) {
-                serverLevel.sendParticles(ParticleTypes.FLAME, muzzle.x, muzzle.y, muzzle.z, 1, 0, 0, 0, 0);
-            }
+            // (le flash 3D est affiché par les clients : GunFx)
         }
 
         // Douille éjectée, visible par les autres joueurs (le tireur l'a déjà vue côté client)
@@ -577,9 +627,18 @@ public class GunItem extends Item {
         return switch (stats.projectile()) {
             case ROCKET -> new RocketEntity(ModEntities.ROCKET.get(), level, player, stats.explosionPower());
             case GRENADE -> new RocketEntity(ModEntities.GRENADE.get(), level, player, stats.explosionPower());
-            case BULLET -> new BulletEntity(level, player, damage,
-                    stats.pierce() + (type == AmmoType.ARMOR_PIERCING ? 1 : 0),
-                    stats.armorPiercing() || type == AmmoType.ARMOR_PIERCING, type);
+            case BULLET -> {
+                String caliber = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stats.ammo().get()).getPath();
+                boolean big = BIG_CALIBERS.contains(caliber);
+                var bullet = new BulletEntity(level, player, damage,
+                        stats.pierce() + (type == AmmoType.ARMOR_PIERCING ? 1 : 0) + (big ? 1 : 0),
+                        type == AmmoType.ARMOR_PIERCING, type);
+                float pen = ARMOR_PEN.getOrDefault(caliber, 0.1f) + (type == AmmoType.ARMOR_PIERCING ? 0.5f : 0)
+                        + (stats.armorPiercing() ? 0.3f : 0);
+                bullet.setArmorPenetration(pen);
+                bullet.setHeadshotMultiplier(stats.category() == GunStats.Category.SNIPER ? 2.5f : 2.0f);
+                yield bullet;
+            }
         };
     }
 
@@ -675,6 +734,30 @@ public class GunItem extends Item {
                 monster.setTarget(player);
             }
         }
+    }
+
+    /** Touche C : coup de crosse (3 dégâts) ou de baïonnette (+6), sur l'ennemi visé à moins de 3 blocs. */
+    public void melee(Player player, ItemStack stack) {
+        if (player.getCooldowns().isOnCooldown(this)) {
+            return;
+        }
+        player.swing(InteractionHand.MAIN_HAND, true);
+        player.getCooldowns().addCooldown(this, 14);
+        Vec3 eye = player.getEyePosition();
+        Vec3 end = eye.add(player.getLookAngle().scale(3.0));
+        var hit = net.minecraft.world.entity.projectile.ProjectileUtil.getEntityHitResult(player, eye, end,
+                player.getBoundingBox().expandTowards(player.getLookAngle().scale(3.0)).inflate(1), e -> e.isPickable() && e != player, 9.0);
+        if (hit == null) {
+            return;
+        }
+        boolean bayonet = resolve(stack).has(AttachmentItem.Special.BAYONET);
+        float damage = 3.0f; // les +6 de la baïonnette sont ajoutés par GunEvents
+        hit.getEntity().hurt(player.damageSources().playerAttack(player), damage);
+        if (hit.getEntity() instanceof LivingEntity living) {
+            living.knockback(bayonet ? 0.3 : 0.6, player.getX() - living.getX(), player.getZ() - living.getZ());
+        }
+        player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
+                bayonet ? SoundEvents.PLAYER_ATTACK_SWEEP : SoundEvents.PLAYER_ATTACK_KNOCKBACK, SoundSource.PLAYERS, 0.8f, 1.0f);
     }
 
     /** Silencieux artisanal : il s'use à chaque tir et finit par casser. */
@@ -834,7 +917,9 @@ public class GunItem extends Item {
             return;
         }
 
+        stack.set(ModDataComponents.RELOAD_FROM.get(), getAmmo(stack));
         setAmmo(stack, getAmmo(stack) + taken);
+        stack.set(ModDataComponents.RELOAD_TARGET.get(), getAmmo(stack));
         // Pas de stopUsingItem() ici : il ne s'exécuterait que côté serveur et désynchroniserait le client.
         // Le cooldown (synchronisé) suffit à suspendre le tir automatique pendant le rechargement.
         // Rechargement balle par balle : la durée dépend du nombre de balles insérées

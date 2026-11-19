@@ -35,7 +35,10 @@ public final class ModKeyMappings {
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_E, CATEGORY);
 
     public static final KeyMapping HOLD_BREATH = new KeyMapping("key.modeminecraft.hold_breath",
-            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, CATEGORY);
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_SHIFT, CATEGORY);
+
+    public static final KeyMapping MELEE = new KeyMapping("key.modeminecraft.melee",
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_C, CATEGORY);
 
     private ModKeyMappings() {}
 }

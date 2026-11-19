@@ -29,6 +29,7 @@ public final class GunEvents {
 
     @SubscribeEvent
     public static void onPlayerTick(PlayerTickEvent.Post event) {
+        applyWalkSpeed(event.getEntity());
         Player player = event.getEntity();
         if (player.level().isClientSide) {
             return;
@@ -62,6 +63,31 @@ public final class GunEvents {
     }
 
     /** Baïonnette : coup de corps à corps renforcé. */
+    private static final net.minecraft.resources.ResourceLocation WALK_ID = ModeMinecraft.id("gun_walk_speed");
+
+    /** Uzi +10 %, M249 -15 %, minigun : impossible de sprinter... */
+    private static void applyWalkSpeed(Player player) {
+        ItemStack held = player.getMainHandItem();
+        GunStats stats = held.getItem() instanceof GunItem gun ? gun.stats() : null;
+        var attr = player.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED);
+        if (attr == null) {
+            return;
+        }
+        float mul = stats == null ? 1 : stats.walkSpeed();
+        var current = attr.getModifier(WALK_ID);
+        if (mul == 1) {
+            if (current != null) {
+                attr.removeModifier(WALK_ID);
+            }
+        } else if (current == null || current.amount() != mul - 1) {
+            attr.addOrUpdateTransientModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(WALK_ID, mul - 1,
+                    net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+        }
+        if (stats != null && stats.noSprint() && player.isSprinting()) {
+            player.setSprinting(false);
+        }
+    }
+
     @SubscribeEvent
     public static void onDamage(LivingIncomingDamageEvent event) {
         if (event.getSource().getDirectEntity() instanceof Player player

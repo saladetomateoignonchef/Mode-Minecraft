@@ -43,7 +43,8 @@ public class AttachmentItem extends Item {
         UNDERBARREL_GRENADE, // tir secondaire (touche V) : grenade 40 mm
         UNDERBARREL_SHOTGUN, // tir secondaire (touche V) : coup de calibre 12
         BAYONET,             // +6 dégâts au corps à corps
-        ECHO                 // silencieux à écho : aucun bruit du tout
+        ECHO,                // silencieux à écho : aucun bruit du tout
+        NO_FLASH             // cache-flamme : pas de flash au tir
     }
 
     /** Sur quelles armes l'accessoire se monte. */
@@ -110,6 +111,7 @@ public class AttachmentItem extends Item {
         if (stats.magazineSize > 0) {
             line(tooltip, "magazine", stats.magazineSize);
         }
+        percent(tooltip, "magazine_mul", stats.magazineMul, true);
         if (!stats.modes.isEmpty()) {
             List<String> zooms = new ArrayList<>();
             for (SightMode m : stats.modes) {
@@ -174,6 +176,7 @@ public class AttachmentItem extends Item {
         float steadySpreadMul = 1;  // dispersion quand on est stable
         float drawMul = 1;          // délai pour sortir l'arme
         int magazineSize = 0;       // 0 = ne change pas la capacité
+        float magazineMul = 1;      // chargeur étendu : capacité x1,35
         List<SightMode> modes = List.of(); // réglages du viseur (plusieurs = molette pour changer)
         boolean silenced = false, cosmetic = false;
         Compat compat = Compat.ANY;
@@ -203,6 +206,7 @@ public class AttachmentItem extends Item {
         public Stats steady(float recoil, float spread) { steadyRecoilMul = recoil; steadySpreadMul = spread; return this; }
         public Stats draw(float mul) { drawMul = mul; return this; }
         public Stats magazine(int size) { magazineSize = size; return this; }
+        public Stats magazineMul(float mul) { magazineMul = mul; return this; }
         /** Viseur à un seul réglage. */
         public Stats sight(float zoom, SightOverlay overlay) { modes = List.of(new SightMode(zoom, overlay)); return this; }
         /** Viseur à plusieurs réglages (molette pendant la visée). */

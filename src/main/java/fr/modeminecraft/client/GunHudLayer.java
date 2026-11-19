@@ -35,6 +35,15 @@ public final class GunHudLayer {
         }
 
         int ammo = GunItem.getAmmo(stack);
+        // Rechargement cartouche par cartouche : on voit les cartouches entrer une à une
+        Long rStart = stack.get(fr.modeminecraft.registry.ModDataComponents.RELOAD_START.get());
+        Long rEnd = stack.get(fr.modeminecraft.registry.ModDataComponents.RELOAD_END.get());
+        Integer rFrom = stack.get(fr.modeminecraft.registry.ModDataComponents.RELOAD_FROM.get());
+        long now = player.level().getGameTime();
+        if (gun.stats().reloadPerRound() && rStart != null && rEnd != null && rFrom != null && now >= rStart && now < rEnd) {
+            int per = Math.max(1, gun.resolve(stack).reloadTicks());
+            ammo = Math.min(ammo, rFrom + (int) ((now - rStart) / per));
+        }
         int max = gun.resolve(stack).magazineSize();
         String reserve = player.getAbilities().instabuild ? "∞" : Integer.toString(gun.countReserve(player, stack));
         boolean chambered = gun.stats().chamber() && (GunItem.isChambered(stack) || player.getAbilities().instabuild);

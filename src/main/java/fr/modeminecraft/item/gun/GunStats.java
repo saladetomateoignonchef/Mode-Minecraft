@@ -48,6 +48,10 @@ public record GunStats(
         Category category,     // famille d'arme (compatibilité des accessoires)
         int drawTicks,         // délai pour sortir l'arme (ticks)
         float heatPerShot,     // chaleur nette ajoutée par tir en continu (mitrailleuses ; 100 = surchauffe)
+        float rpm,             // cadence en tir continu (coups par minute) ; 0 = d'après fireDelay
+        float walkSpeed,       // vitesse de marche quand on tient l'arme (1 = normale, 1.1 = +10 %)
+        boolean noSprint,      // impossible de sprinter avec (minigun)
+        boolean doubleBarrel,  // fusil à deux canons : clic droit = les deux canons d'un coup
         Set<AttachmentSlot> slots) { // emplacements d'accessoires disponibles
 
     /** Douille éjectée au tir. */
@@ -62,6 +66,11 @@ public record GunStats(
     /** Mode de tir d'une arme neuve : le plus "rapide" disponible. */
     public FireMode defaultMode() {
         return fireModes.get(fireModes.size() - 1);
+    }
+
+    /** Ticks entre deux balles en tir continu (peut être fractionnaire : 2000 CPM = 0,6 tick). */
+    public float shotInterval() {
+        return rpm > 0 ? 1200f / rpm : fireDelay;
     }
 
     /** Nombre de balles d'une rafale (3 si l'arme n'a pas de rafale spéciale). */
@@ -90,6 +99,8 @@ public record GunStats(
         private boolean chamber = true, slideLock = false, pistol = false;
         private int drawTicks = 10;
         private float heatPerShot = 0;
+        private float rpm = 0, walkSpeed = 1;
+        private boolean noSprint, doubleBarrel;
         private Category category = Category.LAUNCHER;
         private Supplier<? extends Item> ammo;
         private Supplier<SoundEvent> sound;
@@ -125,12 +136,18 @@ public record GunStats(
         /** Pas de chambre (revolver, lanceurs...) : on tire directement depuis le chargeur. */
         public Builder noChamber() { chamber = false; return this; }
         public Builder slideLock() { slideLock = true; return this; }
+        public Builder slideLock(boolean v) { slideLock = v; return this; }
         /** Arme de poing : sortie rapide, accepte les accessoires pour pistolets. */
         public Builder pistolCategory() { pistol = true; drawTicks = 5; category = Category.PISTOL; return this; }
         public Builder category(Category c) { category = c; return this; }
         public Builder draw(int ticks) { drawTicks = ticks; return this; }
         /** Le canon chauffe : chaleur par tir (100 = surchauffe). */
         public Builder heat(float perShot) { heatPerShot = perShot; return this; }
+        /** Cadence de tir continu, en coups par minute (ex. 800 CPM). 20 ticks = 1 s, donc 1200 CPM = 1 balle par tick. */
+        public Builder rpm(float cpm) { rpm = cpm; return this; }
+        public Builder walkSpeed(float mul) { walkSpeed = mul; return this; }
+        public Builder noSprint() { noSprint = true; return this; }
+        public Builder doubleBarrel() { doubleBarrel = true; return this; }
         public Builder slots(AttachmentSlot... s) { slots.addAll(Set.of(s)); return this; }
         /** Retire certains emplacements (ex. pas de crosse sur un bullpup). */
         public Builder without(AttachmentSlot... s) { slots.removeAll(Set.of(s)); return this; }
@@ -153,7 +170,7 @@ public record GunStats(
             return new GunStats(damage, pellets, magazine, fireDelay, reload, velocity, spread, aimSpread, recoil,
                     automatic, ammo, sound, volume, pitch, explosionPower, projectile, scopeZoom, scopeOverlay,
                     burst, burstCooldown, reloadPerRound, pierce, armorPiercing, spinUp, disposable, fireModes,
-                    projectile == ProjectileKind.BULLET ? casing : Casing.NONE, chamber && !disposable, slideLock, pistol, category, drawTicks, heatPerShot,
+                    projectile == ProjectileKind.BULLET ? casing : Casing.NONE, chamber && !disposable, slideLock, pistol, category, drawTicks, heatPerShot, rpm, walkSpeed, noSprint, doubleBarrel,
                     Set.copyOf(slots));
         }
     }

@@ -61,6 +61,8 @@ public final class ClientSetup {
         event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.CASING_SHELL.get(), s -> new CasingParticle.Provider(s, true));
         event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.TRACER.get(),
                 fr.modeminecraft.client.particle.TracerParticle.Provider::new);
+        event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.MUZZLE_FLASH.get(),
+                fr.modeminecraft.client.particle.MuzzleFlashParticle.Provider::new);
         event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.LASER.get(),
                 fr.modeminecraft.client.particle.LaserParticle.Provider::new);
     }
@@ -76,6 +78,7 @@ public final class ClientSetup {
         event.register(ModKeyMappings.LEAN_LEFT);
         event.register(ModKeyMappings.LEAN_RIGHT);
         event.register(ModKeyMappings.HOLD_BREATH);
+        event.register(ModKeyMappings.MELEE);
     }
 
     @SubscribeEvent

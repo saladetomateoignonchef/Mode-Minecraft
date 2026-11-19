@@ -177,5 +177,11 @@
     "sounds": [
       "modeminecraft:gun/hitmarker_0"
     ]
+  },
+  "gun.headshot": {
+    "subtitle": "subtitles.modeminecraft.headshot",
+    "sounds": [
+      "modeminecraft:gun/headshot_0"
+    ]
   }
 }

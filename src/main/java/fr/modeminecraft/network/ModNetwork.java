@@ -19,6 +19,8 @@ public final class ModNetwork {
                 .playToServer(UnderbarrelPayload.TYPE, UnderbarrelPayload.STREAM_CODEC, UnderbarrelPayload::handle)
                 .playToServer(LaserPayload.TYPE, LaserPayload.STREAM_CODEC, LaserPayload::handle)
                 .playToServer(LeanPayload.TYPE, LeanPayload.STREAM_CODEC, LeanPayload::handle)
+                .playToServer(TriggerPayload.TYPE, TriggerPayload.STREAM_CODEC, TriggerPayload::handle)
+                .playToServer(MeleePayload.TYPE, MeleePayload.STREAM_CODEC, MeleePayload::handle)
                 .playToClient(LeanSyncPayload.TYPE, LeanSyncPayload.STREAM_CODEC, LeanSyncPayload::handle)
                 .playToClient(ShotFxPayload.TYPE, ShotFxPayload.STREAM_CODEC, ShotFxPayload::handle)
                 .playToClient(HitMarkerPayload.TYPE, HitMarkerPayload.STREAM_CODEC, HitMarkerPayload::handle)

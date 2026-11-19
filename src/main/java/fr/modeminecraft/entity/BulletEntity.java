@@ -39,9 +39,18 @@ import net.neoforged.neoforge.common.Tags;
  */
 public class BulletEntity extends ThrowableItemProjectile {
     private static final int MAX_LIFE_TICKS = 60;
-    private static final float HEADSHOT_MULTIPLIER = 2.0f;
+    private float headshotMultiplier = 2.0f;   // x2,5 pour les fusils de précision
+    private float armorPenetration = 0;        // part de l'armure ignorée (selon le calibre)
     private static final float LEGS_MULTIPLIER = 0.75f;
     private static final double GRAVITY = 0.0025;
+
+    public void setHeadshotMultiplier(float mul) {
+        headshotMultiplier = mul;
+    }
+
+    public void setArmorPenetration(float fraction) {
+        armorPenetration = Math.max(0, Math.min(1, fraction));
+    }
 
     /** Type de munition, synchronisé avec le client (pour la traînée des traçantes). */
     private static final net.minecraft.network.syncher.EntityDataAccessor<Integer> TYPE =
@@ -65,6 +74,7 @@ public class BulletEntity extends ThrowableItemProjectile {
         this.damage = damage;
         this.pierceLeft = pierce;
         this.armorPiercing = armorPiercing;
+        this.armorPenetration = armorPiercing ? 1 : 0;
         this.penetration = damage * 0.4f * (armorPiercing ? 2 : 1);
         this.entityData.set(TYPE, type.ordinal());
     }
@@ -144,12 +154,19 @@ public class BulletEntity extends ThrowableItemProjectile {
         double hitY = target.getBoundingBox().clip(start, end).map(h -> h.y).orElse(target.getY() + target.getBbHeight() / 2);
         boolean headshot = target instanceof LivingEntity living && hitY >= living.getEyeY() - 0.25;
         boolean legs = target instanceof LivingEntity && !headshot && hitY < target.getY() + target.getBbHeight() * 0.35;
+        // Bras : touché sur le côté du corps (loin du centre, perpendiculairement au regard de la cible)
+        if (target instanceof LivingEntity living && !headshot && !legs) {
+            Vec3 hitPoint = target.getBoundingBox().clip(start, end).orElse(target.position());
+            float yaw = (float) Math.toRadians(living.yBodyRot);
+            double side = (hitPoint.x - target.getX()) * -Math.cos(yaw) + (hitPoint.z - target.getZ()) * -Math.sin(yaw);
+            legs = Math.abs(side) > target.getBbWidth() * 0.34; // les membres comptent pareil : x0,75
+        }
         if (legs) {
             finalDamage *= LEGS_MULTIPLIER;
             ((LivingEntity) target).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 1), getOwner());
         }
         if (headshot) {
-            finalDamage *= HEADSHOT_MULTIPLIER;
+            finalDamage *= headshotMultiplier;
             level.sendParticles(ParticleTypes.CRIT, target.getX(), target.getEyeY(), target.getZ(), 8, 0.2, 0.2, 0.2, 0.2);
         }
 
@@ -157,13 +174,19 @@ public class BulletEntity extends ThrowableItemProjectile {
         if (type == AmmoType.HOLLOW_POINT && target instanceof LivingEntity living) {
             finalDamage *= living.getArmorValue() > 0 ? 0.6f : 1.35f; // très efficace sans armure
         }
-        DamageSource source = level.damageSources().source(
-                armorPiercing ? ModDamageTypes.BULLET_AP : ModDamageTypes.BULLET, this, getOwner());
+        // Perforation d'armure : on calcule nous-mêmes l'armure restante, selon le calibre
+        DamageSource source = level.damageSources().source(ModDamageTypes.BULLET_AP, this, getOwner());
+        if (target instanceof LivingEntity living && armorPenetration < 1) {
+            float armor = living.getArmorValue() * (1 - armorPenetration);
+            float toughness = (float) living.getAttributeValue(net.minecraft.world.entity.ai.attributes.Attributes.ARMOR_TOUGHNESS)
+                    * (1 - armorPenetration);
+            finalDamage = net.minecraft.world.damagesource.CombatRules.getDamageAfterAbsorb(living, finalDamage, source, armor, toughness);
+        }
         if (target.hurt(source, finalDamage)) {
             applyTypeEffect(level, target, finalDamage);
             if (getOwner() instanceof net.minecraft.server.level.ServerPlayer shooter && target instanceof LivingEntity) {
-                int kind = !target.isAlive() ? fr.modeminecraft.network.HitMarkerPayload.KILL
-                        : headshot ? fr.modeminecraft.network.HitMarkerPayload.HEADSHOT : fr.modeminecraft.network.HitMarkerPayload.HIT;
+                int kind = (!target.isAlive() ? fr.modeminecraft.network.HitMarkerPayload.KILL : fr.modeminecraft.network.HitMarkerPayload.HIT)
+                        | (headshot ? fr.modeminecraft.network.HitMarkerPayload.HEADSHOT : 0);
                 net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(shooter, new fr.modeminecraft.network.HitMarkerPayload(kind));
             }
             // Supprime l'invincibilité temporaire : sinon les plombs du fusil à pompe
@@ -260,7 +283,7 @@ public class BulletEntity extends ThrowableItemProjectile {
         if (cost > 0 && penetration >= cost) {
             penetration -= cost;
             impact(level, state, pos, hit);
-            passThrough(pos, hit, dir, 0.75f);
+            passThrough(pos, hit, dir, 0.7f); // -30 % de dégâts par paroi traversée
             return;
         }
         // Ricochet : sur un bloc dur, quand la balle arrive très en biais

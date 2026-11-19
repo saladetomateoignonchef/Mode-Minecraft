@@ -135,6 +135,11 @@ def mechanical(name, seed):
     elif name == "hitmarker":
         t = t_axis(0.08)
         x = np.sin(2 * np.pi * 2800 * t) * env(t, 0.0005, 0.012) + band(noise(len(t), rng), lo=3000) * env(t, 0.0002, 0.003) * 0.5
+    elif name == "headshot":
+        # "Ding" métallique : partiels inharmoniques qui résonnent
+        t = t_axis(0.6)
+        x = sum(np.sin(2 * np.pi * f * t) * w * env(t, 0.0005, d) for f, w, d in
+                [(2650, 1.0, 0.25), (5310, 0.5, 0.15), (7120, 0.3, 0.1), (3980, 0.4, 0.2)])
     elif name == "casing":
         t = t_axis(0.7)
         x = np.zeros(len(t))
@@ -235,7 +240,7 @@ def main():
     write_ogg(os.path.join(sounds_dir, "shot", "launcher_0.ogg"), launcher(seed + 3))
     write_ogg(os.path.join(sounds_dir, "shot", "launcher_1.ogg"), launcher(seed + 4))
     add("shot.launcher", ["shot/launcher_0", "shot/launcher_1"], "shot_launcher")
-    for name in ["mag_out", "mag_in", "rack", "bolt", "pump", "shell_insert", "empty_click", "casing", "shell_casing", "hitmarker"]:
+    for name in ["mag_out", "mag_in", "rack", "bolt", "pump", "shell_insert", "empty_click", "casing", "shell_casing", "hitmarker", "headshot"]:
         files = []
         for v in range(2 if name in ("casing", "mag_in", "rack") else 1):
             write_ogg(os.path.join(sounds_dir, "gun", f"{name}_{v}.ogg"), mechanical(name, seed))

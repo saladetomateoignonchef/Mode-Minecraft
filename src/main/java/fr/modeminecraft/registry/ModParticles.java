@@ -23,6 +23,10 @@ public final class ModParticles {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> TRACER =
             PARTICLES.register("tracer", () -> new SimpleParticleType(true));
 
+    /** Flash de bouche (étoile lumineuse au bout du canon). */
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> MUZZLE_FLASH =
+            PARTICLES.register("muzzle_flash", () -> new SimpleParticleType(true));
+
     /** Laser : point (alpha 255) ou faisceau (alpha plus faible), de la couleur donnée. */
     public static final DeferredHolder<ParticleType<?>, ParticleType<net.minecraft.core.particles.ColorParticleOption>> LASER =
             PARTICLES.register("laser", () -> new ParticleType<net.minecraft.core.particles.ColorParticleOption>(true) {

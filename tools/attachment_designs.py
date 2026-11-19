@@ -338,3 +338,18 @@ ACCESSORIES.update({
     "nightforce_x20": big_scope(15.0, 1.05, 3.4, ring="m"),
     "sb_pm2_5_25": big_scope(14.0, 1.0, 3.0, ring="l") + [zc(-4.6, 0.6, -4.0, 3.2, 1.6, "m")],
 })
+
+# ---------- Accessoires du cahier des charges ----------
+ACCESSORIES.update({
+    # Frein de bouche : bloc percé de larges évents sur les côtés
+    "muzzle_brake": [zc(0, -0.7, 2.4, 0.7, 0.75, "k"), zc(2.4, -0.45, 2.5, 0.45, 0.5, "d")]
+                    + [box([0.5 + i * 0.6, -0.4, -0.8], [0.8 + i * 0.6, 0.4, 0.8], "d") for i in range(3)],
+    # Cache-flamme : tube fendu (dents à l'avant)
+    "flash_hider": [zc(0, -0.5, 1.4, 0.5, 0.5, "k")]
+                   + [zc(1.4, y0, 2.6, y0 + 0.25, 0.5, "k") for y0 in (-0.5, 0.25)]
+                   + [box([1.4, -0.25, z0], [2.6, 0.25, z0 + 0.25], "k") for z0 in (-0.5, 0.25)],
+    # Chargeur étendu (+35 %) : plus long, bande de couleur
+    "extended_mag": [zc(-1, -8, 1, 0, 0.6, "m"), zc(-1.05, -8.3, 1.05, -8, 0.65, "k"), zc(-1.02, -6.4, 1.02, -6.1, 0.62, "r")],
+    # Chargeur rapide : chargeur standard + languette de traction (type Magpul)
+    "fast_mag": [zc(-1, -5, 1, 0, 0.6, "k"), zc(-1.05, -5.3, 1.05, -5, 0.65, "d"), zc(-0.5, -6.3, 0.5, -5.3, 0.25, "T")],
+})
