@@ -92,7 +92,7 @@ public class GunItem extends Item {
         if (isOverheated(stack, player.level())) {
             return false;
         }
-        if (player.getAbilities().instabuild) {
+        if (player.getAbilities().instabuild || stats.special() == GunStats.Special.NO_AMMO) {
             return true;
         }
         return stats.chamber() ? isChambered(stack) : getAmmo(stack) > 0;
@@ -330,6 +330,22 @@ public class GunItem extends Item {
             return;
         }
         FireMode mode = getFireMode(stack);
+        if (stats.chargeTicks() > 0 && !player.getCooldowns().isOnCooldown(this)) {
+            // Railgun : il faut garder la détente le temps de la charge, puis le rayon part tout seul
+            if (trigger.held() == 0 && !level.isClientSide) {
+                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.BEACON_ACTIVATE,
+                        SoundSource.PLAYERS, 1.0f, 1.6f);
+            }
+            if (trigger.held() < stats.chargeTicks()) {
+                return;
+            }
+            if (canFire(player, stack)) {
+                shoot(level, player, stack);
+                player.getCooldowns().addCooldown(this, stats.fireDelay());
+            }
+            trigger.lock();
+            return;
+        }
         int t = trigger.held() - stats.spinUp();
         if (player.getCooldowns().isOnCooldown(this)) {
             if (trigger.held() == 0 || mode == FireMode.SEMI) {
@@ -371,7 +387,8 @@ public class GunItem extends Item {
             shoot(level, player, stack);
             trigger.shots++;
             if (mode == FireMode.SEMI) {
-                player.getCooldowns().addCooldown(this, Math.max(stats.fireDelay(), 3));
+                boolean fanning = stats.special() == GunStats.Special.FANNING && TriggerHandler.isRightHeld(player);
+                player.getCooldowns().addCooldown(this, fanning ? 3 : Math.max(stats.fireDelay(), 3));
                 trigger.lock();
                 return;
             }
@@ -387,6 +404,51 @@ public class GunItem extends Item {
             shoot(level, player, stack);
         }
         player.getCooldowns().addCooldown(this, 10);
+    }
+
+    /** Taser : électrodes jusqu'à 8 blocs, la cible est paralysée 4 secondes (non létal). */
+    private void taserShot(ServerLevel level, Player player) {
+        Vec3 eye = player.getEyePosition(), dir = player.getLookAngle();
+        Vec3 end = eye.add(dir.scale(8));
+        var block = level.clip(new net.minecraft.world.level.ClipContext(eye, end, net.minecraft.world.level.ClipContext.Block.COLLIDER,
+                net.minecraft.world.level.ClipContext.Fluid.NONE, player));
+        Vec3 limit = block.getLocation();
+        var hit = net.minecraft.world.entity.projectile.ProjectileUtil.getEntityHitResult(player, eye, limit,
+                player.getBoundingBox().expandTowards(dir.scale(8)).inflate(1), e -> e.isPickable() && e != player, eye.distanceToSqr(limit));
+        Vec3 to = hit != null ? hit.getLocation() : limit;
+        for (int i = 0; i <= 16; i++) {
+            Vec3 q = eye.add(0, -0.2, 0).lerp(to, i / 16.0);
+            level.sendParticles(ParticleTypes.ELECTRIC_SPARK, q.x, q.y, q.z, 1, 0.02, 0.02, 0.02, 0);
+        }
+        if (hit != null && hit.getEntity() instanceof LivingEntity living) {
+            living.addEffect(new net.minecraft.world.effect.MobEffectInstance(fr.modeminecraft.registry.ModEffects.STUNNED, 80, 0), player);
+            living.hurt(player.damageSources().playerAttack(player), 1.0f);
+            level.playSound(null, living.getX(), living.getY(), living.getZ(), SoundEvents.BEE_LOOP_AGGRESSIVE, SoundSource.PLAYERS, 1.0f, 2.0f);
+        }
+    }
+
+    /** Railgun en rubis : un rayon rouge qui traverse tout en ligne droite (blocs exceptés) jusqu'à 160 blocs. */
+    private void railShot(ServerLevel level, Player player, float damage) {
+        Vec3 eye = player.getEyePosition(), dir = player.getLookAngle();
+        Vec3 end = eye.add(dir.scale(160));
+        var block = level.clip(new net.minecraft.world.level.ClipContext(eye, end, net.minecraft.world.level.ClipContext.Block.COLLIDER,
+                net.minecraft.world.level.ClipContext.Fluid.NONE, player));
+        Vec3 limit = block.getLocation();
+        var box = player.getBoundingBox().expandTowards(limit.subtract(eye)).inflate(1);
+        var source = level.damageSources().source(fr.modeminecraft.registry.ModDamageTypes.BULLET_AP, player, player);
+        for (var e : level.getEntities(player, box, e -> e instanceof LivingEntity && e.isAlive())) {
+            if (e.getBoundingBox().inflate(0.3).clip(eye, limit).isPresent()) {
+                e.hurt(source, damage);
+                e.invulnerableTime = 0;
+            }
+        }
+        var red = new net.minecraft.core.particles.DustParticleOptions(new org.joml.Vector3f(1f, 0.1f, 0.2f), 1.4f);
+        double len = eye.distanceTo(limit);
+        for (double t = 1; t < len; t += 0.4) {
+            Vec3 q = eye.add(dir.scale(t)).add(0, -0.15, 0);
+            level.sendParticles(red, q.x, q.y, q.z, 1, 0, 0, 0, 0);
+        }
+        level.sendParticles(ParticleTypes.END_ROD, limit.x, limit.y, limit.z, 12, 0.1, 0.1, 0.1, 0.1);
     }
 
     /** Nombre de balles qui devraient être parties t ticks après le début du tir. */
@@ -502,8 +564,9 @@ public class GunItem extends Item {
         ResolvedGun gun = resolve(stack);
         AmmoType type = getLoadedType(stack);
         boolean shells = stats.ammo().get() instanceof AmmoItem a && a.isShotgunShell();
-        boolean silenced = gun.silenced() || type == AmmoType.SUBSONIC;
+        boolean silenced = gun.silenced() || type == AmmoType.SUBSONIC || stats.special() == GunStats.Special.INTEGRATED_SILENCER;
         boolean aiming = isAiming(player);
+        boolean fanning = stats.special() == GunStats.Special.FANNING && TriggerHandler.isRightHeld(player);
         // Allongé : l'arme est bien plus stable ; stable (bipied, monopode...) : bonus des accessoires
         float stability = ProneHandler.isProne(player) ? 0.5f : 1.0f;
         boolean steady = isSteady(player);
@@ -524,8 +587,18 @@ public class GunItem extends Item {
         float spread = (aiming ? gun.aimSpread() : gun.spread()) * stability * type.spreadMul * steadySpread
                 * (isMoving(player) ? gun.movingPenalty() : 1)
                 * (1 + Math.max(0, heat - 60) / 40f); // canon trop chaud : moins précis
+        if (fanning) {
+            spread *= 2.5f; // tir au chien frappé : rapide mais imprécis
+        }
         Vec3 lean = LeanHandler.offset(player);
         int pellets = shells ? type.pellets(stats.pellets()) : stats.pellets();
+        if (stats.projectile() == GunStats.ProjectileKind.TASER) {
+            taserShot((ServerLevel) level, player);
+            pellets = 0;
+        } else if (stats.projectile() == GunStats.ProjectileKind.RAIL) {
+            railShot((ServerLevel) level, player, gun.damage());
+            pellets = 0;
+        }
         float damage = shells ? type.pelletDamage(gun.damage(), stats.pellets()) : gun.damage() * type.damageMul;
         for (int i = 0; i < pellets; i++) {
             Projectile projectile = createProjectile(level, player, gun, type, damage);
@@ -537,7 +610,7 @@ public class GunItem extends Item {
             level.addFreshEntity(projectile);
         }
 
-        if (!player.getAbilities().instabuild) {
+        if (!player.getAbilities().instabuild && stats.special() != GunStats.Special.NO_AMMO) {
             if (stats.chamber()) {
                 // La balle chambrée part ; la suivante monte du chargeur (s'il en reste)
                 if (getAmmo(stack) > 0) {
@@ -557,6 +630,16 @@ public class GunItem extends Item {
         }
 
         playShotSound(level, player, gun, type, silenced);
+        if (stats.special() == GunStats.Special.EN_BLOC && getAmmo(stack) == 0 && !isChambered(stack)
+                && !player.getAbilities().instabuild) {
+            // M1 Garand : le clip vide est éjecté avec son fameux « ping »
+            DelayedSounds.play(player, ModSounds.GARAND_PING, 1.0f, 1.0f, 2);
+        }
+        if (stats.special() == GunStats.Special.BLACK_POWDER && level instanceof ServerLevel sl) {
+            Vec3 m = player.getEyePosition().add(player.getLookAngle().scale(1.4));
+            sl.sendParticles(ParticleTypes.CLOUD, m.x, m.y, m.z, 18, 0.35, 0.25, 0.35, 0.02);
+            sl.sendParticles(ParticleTypes.LARGE_SMOKE, m.x, m.y, m.z, 12, 0.3, 0.2, 0.3, 0.01);
+        }
         // Pompe / verrou : le tireur réarme juste après le tir
         if (stats.casing() == GunStats.Casing.SHELL && stats.fireDelay() >= 12) {
             DelayedSounds.play(player, ModSounds.PUMP, 0.9f, 1.0f, 4);
@@ -625,7 +708,20 @@ public class GunItem extends Item {
 
     protected Projectile createProjectile(Level level, Player player, ResolvedGun gun, AmmoType type, float damage) {
         return switch (stats.projectile()) {
-            case ROCKET -> new RocketEntity(ModEntities.ROCKET.get(), level, player, stats.explosionPower());
+            case ROCKET -> {
+                var r = new RocketEntity(ModEntities.ROCKET.get(), level, player, stats.explosionPower());
+                r.setDirectDamage(stats.directDamage());
+                yield r;
+            }
+            case MISSILE -> {
+                var m = new RocketEntity(ModEntities.MISSILE.get(), level, player, stats.explosionPower());
+                m.setItem(new ItemStack(stats.ammo().get()));
+                m.guide(LockOnHandler.target(player), stats.special() == GunStats.Special.LOCK_ON_TOP_ATTACK);
+                yield m;
+            }
+            case BOLT -> new fr.modeminecraft.entity.BoltEntity(level, player, damage / 2.0, type);
+            case PLASMA -> new fr.modeminecraft.entity.PlasmaEntity(level, player, damage);
+            case TASER, RAIL -> throw new IllegalStateException("arme sans projectile");
             case GRENADE -> new RocketEntity(ModEntities.GRENADE.get(), level, player, stats.explosionPower());
             case BULLET -> {
                 String caliber = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stats.ammo().get()).getPath();
@@ -637,6 +733,7 @@ public class GunItem extends Item {
                         + (stats.armorPiercing() ? 0.3f : 0);
                 bullet.setArmorPenetration(pen);
                 bullet.setHeadshotMultiplier(stats.category() == GunStats.Category.SNIPER ? 2.5f : 2.0f);
+                bullet.setBallistics(stats.falloff(), stats.noDropBlocks(), stats.bulletLife());
                 yield bullet;
             }
         };
@@ -884,6 +981,14 @@ public class GunItem extends Item {
     // Rechargement (appelé côté serveur : touche R ou chargeur vide)
     // ------------------------------------------------------------------
     public void reload(Player player, ItemStack stack) {
+        if (stats.special() == GunStats.Special.NO_AMMO) {
+            return;
+        }
+        if (stats.special() == GunStats.Special.EN_BLOC && (getAmmo(stack) > 0 || isChambered(stack))
+                && !player.getAbilities().instabuild) {
+            player.displayClientMessage(Component.translatable("message.modeminecraft.en_bloc").withStyle(ChatFormatting.GRAY), true);
+            return;
+        }
         if (stats.heatPerShot() > 0 && heat(stack, player.level()) > 50 && !player.getCooldowns().isOnCooldown(this)
                 && swapBarrel(player, stack)) {
             return;

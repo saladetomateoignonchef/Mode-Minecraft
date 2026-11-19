@@ -140,6 +140,16 @@ def mechanical(name, seed):
         t = t_axis(0.6)
         x = sum(np.sin(2 * np.pi * f * t) * w * env(t, 0.0005, d) for f, w, d in
                 [(2650, 1.0, 0.25), (5310, 0.5, 0.15), (7120, 0.3, 0.1), (3980, 0.4, 0.2)])
+    elif name == "garand_ping":
+        t = t_axis(0.9)
+        x = sum(np.sin(2 * np.pi * f * t) * w * env(t, 0.0004, d) for f, w, d in
+                [(3420, 1.0, 0.35), (6870, 0.45, 0.2), (9100, 0.25, 0.12), (1710, 0.3, 0.3)])
+        x += click(rng, t, 0.0, 2500, 0.004, 0.6)
+    elif name in ("lock_search", "lock_tone"):
+        f = 1000 if name == "lock_search" else 1700
+        t = t_axis(0.12)
+        x = np.sign(np.sin(2 * np.pi * f * t)) * 0.4 * np.clip(t / 0.005, 0, 1) * np.clip((0.12 - t) / 0.01, 0, 1)
+        x = band(x, hi=6000)
     elif name == "casing":
         t = t_axis(0.7)
         x = np.zeros(len(t))
@@ -240,7 +250,7 @@ def main():
     write_ogg(os.path.join(sounds_dir, "shot", "launcher_0.ogg"), launcher(seed + 3))
     write_ogg(os.path.join(sounds_dir, "shot", "launcher_1.ogg"), launcher(seed + 4))
     add("shot.launcher", ["shot/launcher_0", "shot/launcher_1"], "shot_launcher")
-    for name in ["mag_out", "mag_in", "rack", "bolt", "pump", "shell_insert", "empty_click", "casing", "shell_casing", "hitmarker", "headshot"]:
+    for name in ["mag_out", "mag_in", "rack", "bolt", "pump", "shell_insert", "empty_click", "casing", "shell_casing", "hitmarker", "headshot", "garand_ping", "lock_search", "lock_tone"]:
         files = []
         for v in range(2 if name in ("casing", "mag_in", "rack") else 1):
             write_ogg(os.path.join(sounds_dir, "gun", f"{name}_{v}.ogg"), mechanical(name, seed))

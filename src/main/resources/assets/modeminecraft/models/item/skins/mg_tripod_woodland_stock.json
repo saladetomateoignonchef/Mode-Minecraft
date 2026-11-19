@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/mg_tripod_stock",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_woodland",
+    "particle": "modeminecraft:item/gun_palette_woodland"
+  }
+}

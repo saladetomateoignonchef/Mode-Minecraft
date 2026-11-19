@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "weapons",
+  "ingredients": [
+    {
+      "item": "modeminecraft:rubis",
+      "count": 8
+    },
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 10
+    },
+    {
+      "item": "minecraft:redstone_block",
+      "count": 2
+    },
+    {
+      "item": "minecraft:gold_ingot",
+      "count": 4
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:ruby_railgun",
+    "count": 1
+  }
+}

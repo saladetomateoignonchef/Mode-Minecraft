@@ -31,6 +31,7 @@ public class ModeMinecraft {
         ModDataComponents.DATA_COMPONENTS.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);
         ModEntities.ENTITY_TYPES.register(modEventBus);
+        fr.modeminecraft.registry.ModEffects.EFFECTS.register(modEventBus);
         ModMenus.MENUS.register(modEventBus);
         ModParticles.PARTICLES.register(modEventBus);
         fr.modeminecraft.registry.ModSounds.SOUNDS.register(modEventBus);

@@ -43,6 +43,50 @@
       "travel": 1.5
     }
   },
+  "ak12": {
+    "mounts": {
+      "stock": [
+        3,
+        7.75,
+        8
+      ],
+      "muzzle": [
+        19.35,
+        7.8,
+        8
+      ],
+      "sight": [
+        8.75,
+        9.45,
+        8
+      ],
+      "pistol_grip": [
+        4.8,
+        6.5,
+        8
+      ],
+      "grip": [
+        12.5,
+        6.6,
+        8
+      ],
+      "magazine": [
+        9.0,
+        6.5,
+        8
+      ],
+      "side_rail": [
+        12.0,
+        7.6,
+        7.15
+      ]
+    },
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.6
+    }
+  },
   "ak47": {
     "mounts": {
       "stock": [
@@ -121,6 +165,50 @@
       ],
       "side_rail": [
         12.0,
+        7.6,
+        7.15
+      ]
+    },
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.6
+    }
+  },
+  "ak74u": {
+    "mounts": {
+      "stock": [
+        3,
+        7.75,
+        8
+      ],
+      "muzzle": [
+        16.55,
+        7.8,
+        8
+      ],
+      "sight": [
+        6.75,
+        9.0,
+        8
+      ],
+      "pistol_grip": [
+        4.8,
+        6.5,
+        8
+      ],
+      "grip": [
+        11.5,
+        6.6,
+        8
+      ],
+      "magazine": [
+        9.0,
+        6.5,
+        8
+      ],
+      "side_rail": [
+        11.0,
         7.6,
         7.15
       ]
@@ -395,6 +483,50 @@
       "travel": 2.3760000000000003
     }
   },
+  "cheytac_m200": {
+    "mounts": {
+      "stock": [
+        3,
+        7.7,
+        8
+      ],
+      "muzzle": [
+        28.55,
+        8.3,
+        8
+      ],
+      "sight": [
+        8.0,
+        9.85,
+        8
+      ],
+      "pistol_grip": [
+        4.8,
+        6.0,
+        8
+      ],
+      "grip": [
+        11.75,
+        6.6,
+        8
+      ],
+      "magazine": [
+        8.5,
+        6.0,
+        8
+      ],
+      "side_rail": [
+        11.25,
+        7.6,
+        7.15
+      ]
+    },
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "bolt",
+      "travel": 2.6
+    }
+  },
   "colt_m1911": {
     "mounts": {
       "muzzle": [
@@ -448,6 +580,60 @@
       ]
     },
     "mag_needs_ammo": false
+  },
+  "colt_saa": {
+    "mounts": {
+      "pistol_grip": [
+        3.75,
+        7,
+        8
+      ],
+      "sight": [
+        10.25,
+        10.2,
+        8
+      ],
+      "muzzle": [
+        15.55,
+        9.2,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "cz75_auto": {
+    "mounts": {
+      "muzzle": [
+        14.65,
+        9.2,
+        8
+      ],
+      "pistol_grip": [
+        4.5,
+        7.0,
+        8
+      ],
+      "sight": [
+        8.0,
+        10.8,
+        8
+      ],
+      "stock": [
+        3.0,
+        7.5,
+        8
+      ],
+      "magazine": [
+        2.585,
+        2.38,
+        8
+      ]
+    },
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 2.2
+    }
   },
   "desert_eagle": {
     "mounts": {
@@ -527,6 +713,16 @@
       "travel": 1.6
     }
   },
+  "dshk": {
+    "mounts": {
+      "muzzle": [
+        24.05,
+        8.6,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
   "famas": {
     "mounts": {
       "muzzle": [
@@ -564,6 +760,99 @@
     "slide": {
       "style": "fast",
       "travel": 1.4
+    }
+  },
+  "five_seven": {
+    "mounts": {
+      "muzzle": [
+        13.85,
+        9.15,
+        8
+      ],
+      "pistol_grip": [
+        4.5,
+        7.0,
+        8
+      ],
+      "sight": [
+        8.4,
+        10.7,
+        8
+      ],
+      "stock": [
+        3.0,
+        7.5,
+        8
+      ],
+      "magazine": [
+        2.585,
+        2.38,
+        8
+      ]
+    },
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 2.3760000000000003
+    }
+  },
+  "flintlock": {
+    "mounts": {
+      "pistol_grip": [
+        3.6,
+        6.8,
+        8
+      ],
+      "muzzle": [
+        17.05,
+        8.8,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "fn_fal": {
+    "mounts": {
+      "stock": [
+        3,
+        7.9,
+        8
+      ],
+      "muzzle": [
+        21.65,
+        8.2,
+        8
+      ],
+      "sight": [
+        7.0,
+        11.1,
+        8
+      ],
+      "pistol_grip": [
+        4.8,
+        6.4,
+        8
+      ],
+      "grip": [
+        13.25,
+        6.9,
+        8
+      ],
+      "magazine": [
+        8.8,
+        6.4,
+        8
+      ],
+      "side_rail": [
+        12.75,
+        7.9,
+        7.15
+      ]
+    },
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.6
     }
   },
   "g3": {
@@ -654,7 +943,85 @@
       "travel": 1.6
     }
   },
+  "galil_ace": {
+    "mounts": {
+      "stock": [
+        3,
+        7.9,
+        8
+      ],
+      "muzzle": [
+        19.85,
+        8.0,
+        8
+      ],
+      "sight": [
+        9.0,
+        9.85,
+        8
+      ],
+      "pistol_grip": [
+        4.8,
+        6.4,
+        8
+      ],
+      "grip": [
+        12.75,
+        6.8,
+        8
+      ],
+      "magazine": [
+        9.0,
+        6.4,
+        8
+      ],
+      "side_rail": [
+        12.25,
+        7.8,
+        7.15
+      ]
+    },
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.6
+    }
+  },
   "glock17": {
+    "mounts": {
+      "muzzle": [
+        13.05,
+        9.2,
+        8
+      ],
+      "pistol_grip": [
+        4.5,
+        7.0,
+        8
+      ],
+      "sight": [
+        8.0,
+        10.8,
+        8
+      ],
+      "stock": [
+        3.0,
+        7.5,
+        8
+      ],
+      "magazine": [
+        2.585,
+        2.38,
+        8
+      ]
+    },
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 2.2
+    }
+  },
+  "glock18": {
     "mounts": {
       "muzzle": [
         13.05,
@@ -732,6 +1099,26 @@
       "travel": 1.6
     }
   },
+  "javelin": {
+    "mounts": {
+      "pistol_grip": [
+        5.3,
+        6.4,
+        8
+      ],
+      "sight": [
+        5,
+        9.6,
+        8
+      ],
+      "muzzle": [
+        17.35,
+        8.0,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
   "kar98k": {
     "mounts": {
       "muzzle": [
@@ -759,6 +1146,39 @@
     "slide": {
       "style": "bolt",
       "travel": 2.6
+    }
+  },
+  "luger_p08": {
+    "mounts": {
+      "pistol_grip": [
+        3.6,
+        7.0,
+        8
+      ],
+      "sight": [
+        8,
+        9.6,
+        8
+      ],
+      "muzzle": [
+        16.55,
+        8.7,
+        8
+      ],
+      "magazine": [
+        1.5,
+        3.0,
+        8
+      ]
+    },
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "toggle",
+      "travel": 55,
+      "pivot": [
+        3.6,
+        9.6
+      ]
     }
   },
   "m14_ebr": {
@@ -849,6 +1269,84 @@
       "travel": 1.6
     }
   },
+  "m1_garand": {
+    "mounts": {
+      "stock": [
+        3,
+        7.8,
+        8
+      ],
+      "muzzle": [
+        21.55,
+        8.0,
+        8
+      ],
+      "sight": [
+        6.75,
+        9.0,
+        8
+      ],
+      "pistol_grip": [
+        4.8,
+        6.6,
+        8
+      ],
+      "grip": [
+        13.0,
+        6.8,
+        8
+      ],
+      "side_rail": [
+        12.5,
+        7.8,
+        7.15
+      ]
+    },
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.6
+    }
+  },
+  "m24": {
+    "mounts": {
+      "stock": [
+        3,
+        7.6,
+        8
+      ],
+      "muzzle": [
+        24.05,
+        8.0,
+        8
+      ],
+      "sight": [
+        6.75,
+        9.45,
+        8
+      ],
+      "pistol_grip": [
+        4.8,
+        6.2,
+        8
+      ],
+      "grip": [
+        10.5,
+        6.6,
+        8
+      ],
+      "side_rail": [
+        10.0,
+        7.6,
+        7.15
+      ]
+    },
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "bolt",
+      "travel": 2.6
+    }
+  },
   "m249": {
     "mounts": {
       "stock": [
@@ -892,6 +1390,16 @@
       "style": "fast",
       "travel": 1.6
     }
+  },
+  "m2_browning": {
+    "mounts": {
+      "muzzle": [
+        25.05,
+        8.6,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
   },
   "m32_mgl": {
     "mounts": {
@@ -1016,6 +1524,26 @@
       "travel": 1.6
     }
   },
+  "m72_law": {
+    "mounts": {
+      "pistol_grip": [
+        5.3,
+        7.0,
+        8
+      ],
+      "sight": [
+        5,
+        9.0,
+        8
+      ],
+      "muzzle": [
+        14.35,
+        8.0,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
   "m79": {
     "mounts": {
       "muzzle": [
@@ -1030,6 +1558,40 @@
       ]
     },
     "mag_needs_ammo": false
+  },
+  "mac10": {
+    "mounts": {
+      "muzzle": [
+        12.25,
+        8.6,
+        8
+      ],
+      "pistol_grip": [
+        5.0,
+        6.6,
+        8
+      ],
+      "stock": [
+        3,
+        8.1,
+        8
+      ],
+      "sight": [
+        6.5,
+        9.6,
+        8
+      ],
+      "magazine": [
+        5.2,
+        2.4,
+        8
+      ]
+    },
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.4
+    }
   },
   "makarov": {
     "mounts": {
@@ -1064,6 +1626,30 @@
       "style": "fast",
       "travel": 1.98
     }
+  },
+  "mateba_unica": {
+    "mounts": {
+      "pistol_grip": [
+        3.75,
+        7,
+        8
+      ],
+      "sight": [
+        10.0,
+        10.3,
+        8
+      ],
+      "muzzle": [
+        15.55,
+        7.6,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "mg_tripod": {
+    "mounts": {},
+    "mag_needs_ammo": false
   },
   "minigun": {
     "mounts": {
@@ -1119,6 +1705,45 @@
     "mag_needs_ammo": false,
     "slide": {
       "style": "bolt",
+      "travel": 2.6
+    }
+  },
+  "mossberg_590": {
+    "mounts": {
+      "stock": [
+        3.0,
+        8.5,
+        8
+      ],
+      "muzzle": [
+        20.05,
+        9.4,
+        8
+      ],
+      "pistol_grip": [
+        4.3,
+        7.0,
+        8
+      ],
+      "sight": [
+        5.5,
+        10.0,
+        8
+      ],
+      "grip": [
+        12.0,
+        6.9,
+        8
+      ],
+      "side_rail": [
+        11.5,
+        7.9,
+        7.15
+      ]
+    },
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "pump",
       "travel": 2.6
     }
   },
@@ -1240,6 +1865,26 @@
     },
     "mag_needs_ammo": false
   },
+  "panzerfaust3": {
+    "mounts": {
+      "pistol_grip": [
+        5.3,
+        6.9,
+        8
+      ],
+      "sight": [
+        5,
+        9.1,
+        8
+      ],
+      "muzzle": [
+        9.35,
+        8.0,
+        8
+      ]
+    },
+    "mag_needs_ammo": true
+  },
   "pkm": {
     "mounts": {
       "stock": [
@@ -1275,6 +1920,75 @@
       "side_rail": [
         12.0,
         8.6,
+        7.15
+      ]
+    },
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.6
+    }
+  },
+  "plasma_rifle": {
+    "mounts": {
+      "stock": [
+        3,
+        7.8,
+        8
+      ],
+      "pistol_grip": [
+        4.8,
+        6.0,
+        8
+      ],
+      "sight": [
+        8,
+        10.8,
+        8
+      ],
+      "muzzle": [
+        18.05,
+        8.0,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "pp19_bizon": {
+    "mounts": {
+      "stock": [
+        3,
+        7.8,
+        8
+      ],
+      "muzzle": [
+        17.35,
+        7.8,
+        8
+      ],
+      "sight": [
+        6.75,
+        9.0,
+        8
+      ],
+      "pistol_grip": [
+        4.8,
+        6.6,
+        8
+      ],
+      "grip": [
+        12.5,
+        6.8,
+        8
+      ],
+      "magazine": [
+        12.5,
+        6.8,
+        8
+      ],
+      "side_rail": [
+        12.0,
+        7.8,
         7.15
       ]
     },
@@ -1327,6 +2041,26 @@
       "style": "fast",
       "travel": 1.6
     }
+  },
+  "raging_bull": {
+    "mounts": {
+      "pistol_grip": [
+        3.75,
+        7,
+        8
+      ],
+      "sight": [
+        10.75,
+        10.4,
+        8
+      ],
+      "muzzle": [
+        16.55,
+        9.2,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
   },
   "remington_870": {
     "mounts": {
@@ -1381,6 +2115,31 @@
       ]
     },
     "mag_needs_ammo": true
+  },
+  "ruby_railgun": {
+    "mounts": {
+      "stock": [
+        3,
+        8.0,
+        8
+      ],
+      "pistol_grip": [
+        5.1,
+        6.4,
+        8
+      ],
+      "sight": [
+        7,
+        10.4,
+        8
+      ],
+      "muzzle": [
+        24.1,
+        8.2,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
   },
   "sawed_off": {
     "mounts": {
@@ -1446,6 +2205,84 @@
       "travel": 1.6
     }
   },
+  "scorpion_evo": {
+    "mounts": {
+      "stock": [
+        3,
+        7.9,
+        8
+      ],
+      "muzzle": [
+        15.85,
+        8.0,
+        8
+      ],
+      "sight": [
+        8.0,
+        9.85,
+        8
+      ],
+      "pistol_grip": [
+        4.8,
+        6.4,
+        8
+      ],
+      "grip": [
+        11.75,
+        6.9,
+        8
+      ],
+      "magazine": [
+        9.0,
+        6.4,
+        8
+      ],
+      "side_rail": [
+        11.25,
+        7.9,
+        7.15
+      ]
+    },
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.6
+    }
+  },
+  "sig_p226": {
+    "mounts": {
+      "muzzle": [
+        13.65,
+        9.3,
+        8
+      ],
+      "pistol_grip": [
+        4.5,
+        7.0,
+        8
+      ],
+      "sight": [
+        8.3,
+        11.0,
+        8
+      ],
+      "stock": [
+        3.0,
+        7.5,
+        8
+      ],
+      "magazine": [
+        2.585,
+        2.38,
+        8
+      ]
+    },
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 2.332
+    }
+  },
   "spas12": {
     "mounts": {
       "stock": [
@@ -1484,6 +2321,139 @@
       "style": "pump",
       "travel": 2.6
     }
+  },
+  "stinger": {
+    "mounts": {
+      "pistol_grip": [
+        5.3,
+        6.8,
+        8
+      ],
+      "sight": [
+        5,
+        9.2,
+        8
+      ],
+      "muzzle": [
+        16.35,
+        8.0,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "sw_model_500": {
+    "mounts": {
+      "pistol_grip": [
+        3.75,
+        7,
+        8
+      ],
+      "sight": [
+        11.15,
+        10.6,
+        8
+      ],
+      "muzzle": [
+        17.55,
+        9.2,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "tactical_crossbow": {
+    "mounts": {
+      "stock": [
+        3,
+        7.8,
+        8
+      ],
+      "pistol_grip": [
+        4.8,
+        6.6,
+        8
+      ],
+      "sight": [
+        8,
+        8.9,
+        8
+      ],
+      "grip": [
+        11,
+        6.6,
+        8
+      ],
+      "muzzle": [
+        14.05,
+        8.0,
+        8
+      ],
+      "side_rail": [
+        10.5,
+        7.6,
+        7.15
+      ]
+    },
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 0.0
+    }
+  },
+  "taser": {
+    "mounts": {
+      "muzzle": [
+        12.05,
+        9.4,
+        8
+      ],
+      "pistol_grip": [
+        4.5,
+        7.0,
+        8
+      ],
+      "sight": [
+        7.5,
+        11.2,
+        8
+      ],
+      "stock": [
+        3.0,
+        7.5,
+        8
+      ],
+      "magazine": [
+        2.585,
+        2.38,
+        8
+      ]
+    },
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.98
+    }
+  },
+  "taurus_judge": {
+    "mounts": {
+      "pistol_grip": [
+        3.75,
+        7,
+        8
+      ],
+      "sight": [
+        9.25,
+        10.7,
+        8
+      ],
+      "muzzle": [
+        14.05,
+        9.2,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
   },
   "tavor": {
     "mounts": {
@@ -1566,6 +2536,84 @@
     "slide": {
       "style": "fast",
       "travel": 1.6
+    }
+  },
+  "ump45": {
+    "mounts": {
+      "stock": [
+        3,
+        7.9,
+        8
+      ],
+      "muzzle": [
+        14.85,
+        8.0,
+        8
+      ],
+      "sight": [
+        7.0,
+        9.85,
+        8
+      ],
+      "pistol_grip": [
+        4.8,
+        6.4,
+        8
+      ],
+      "grip": [
+        11.5,
+        6.9,
+        8
+      ],
+      "magazine": [
+        9.0,
+        6.4,
+        8
+      ],
+      "side_rail": [
+        11.0,
+        7.9,
+        7.15
+      ]
+    },
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.6
+    }
+  },
+  "usp_s": {
+    "mounts": {
+      "muzzle": [
+        19.55,
+        9.2,
+        8
+      ],
+      "pistol_grip": [
+        4.5,
+        7.0,
+        8
+      ],
+      "sight": [
+        8.3,
+        10.8,
+        8
+      ],
+      "stock": [
+        3.0,
+        7.5,
+        8
+      ],
+      "magazine": [
+        2.585,
+        2.38,
+        8
+      ]
+    },
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 2.332
     }
   },
   "uzi": {

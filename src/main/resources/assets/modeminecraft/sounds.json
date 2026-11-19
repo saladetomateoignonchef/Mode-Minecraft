@@ -183,5 +183,23 @@
     "sounds": [
       "modeminecraft:gun/headshot_0"
     ]
+  },
+  "gun.garand_ping": {
+    "subtitle": "subtitles.modeminecraft.garand_ping",
+    "sounds": [
+      "modeminecraft:gun/garand_ping_0"
+    ]
+  },
+  "gun.lock_search": {
+    "subtitle": "subtitles.modeminecraft.lock_search",
+    "sounds": [
+      "modeminecraft:gun/lock_search_0"
+    ]
+  },
+  "gun.lock_tone": {
+    "subtitle": "subtitles.modeminecraft.lock_tone",
+    "sounds": [
+      "modeminecraft:gun/lock_tone_0"
+    ]
   }
 }

@@ -53,7 +53,7 @@ public final class GunModels {
 
     /** frame = image de l'animation de la pièce mobile (0 = au repos). */
     /** magOffset = chargeur décalé vers le bas pendant le rechargement (pixels ; -1 = retiré). */
-    private record Key(String gun, GunSkin skin, GunAttachments attachments, boolean loaded, int frame, int magOffset) {}
+    private record Key(String gun, GunSkin skin, GunAttachments attachments, boolean loaded, int frame, int magOffset, int ammoVisual) {}
 
     /** Nombre d'images de l'animation de recul (plus = plus fluide, mais plus de modèles en cache). */
     private static final int FRAMES = 8;
@@ -99,6 +99,9 @@ public final class GunModels {
                 event.register(ModelResourceLocation.standalone(defaultPartModel(name(gun), skin, "stock")));
             }
         }
+        event.register(fr.modeminecraft.client.MountedGunRenderer.TRIPOD);
+        event.register(ModelResourceLocation.standalone(ModeMinecraft.id("item/parts/p90_round")));
+        event.register(ModelResourceLocation.standalone(ModeMinecraft.id("item/parts/belt_link")));
         ModItems.ITEMS.getEntries().stream().map(h -> h.get()).filter(i -> i instanceof AttachmentItem)
                 .forEach(i -> event.register(ModelResourceLocation.standalone(partModel(i))));
     }
@@ -139,6 +142,21 @@ public final class GunModels {
         for (AttachmentSlot slot : new AttachmentSlot[]{AttachmentSlot.SIGHT, AttachmentSlot.MUZZLE, AttachmentSlot.GRIP, AttachmentSlot.SIDE_RAIL}) {
             key.attachments.get(slot).ifPresent(item -> addPart(extra, item, key.gun, slot));
         }
+        // P90 : les cartouches se voient à travers le chargeur et diminuent au fil des tirs
+        if (key.gun.equals("p90") && magazine.isEmpty()) {
+            BakedModel round = models.getModel(ModelResourceLocation.standalone(ModeMinecraft.id("item/parts/p90_round")));
+            for (int i = 0; i < Math.min(10, key.ammoVisual); i++) {
+                addQuads(extra, round, new Transformation(new Matrix4f().translation((0.4f + i * 1.0f) / 16f, 9.45f / 16f, 0.5f)));
+            }
+        }
+        // M249 : bande de munitions qui avance d'un cran à chaque tir
+        if (key.gun.equals("m249") && key.loaded) {
+            BakedModel link = models.getModel(ModelResourceLocation.standalone(ModeMinecraft.id("item/parts/belt_link")));
+            for (int i = 0; i < 4; i++) {
+                float y = 6.4f + i * 0.7f + key.ammoVisual * 0.35f;
+                addQuads(extra, link, new Transformation(new Matrix4f().translation(10.2f / 16f, y / 16f, 6.75f / 16f)));
+            }
+        }
         // Poignée pistolet et crosse : celles montées en accessoire, sinon celles d'origine
         String[][] replaceable = {{"PISTOL_GRIP", "grip"}, {"STOCK", "stock"}};
         for (String[] r : replaceable) {
@@ -154,7 +172,12 @@ public final class GunModels {
         GunMounts.Slide slide = GunMounts.slide(key.gun);
         if (slide != null) {
             Matrix4f m = new Matrix4f();
-            if (slide.style().equals("spin")) {
+            if (slide.style().equals("toggle")) {
+                // Luger P08 : la genouillère se replie vers le haut autour de son axe arrière
+                float angle = (float) Math.toRadians(slide.travel() * key.frame / FRAMES);
+                m.translation(slide.pivotY() / 16f, slide.pivotZ() / 16f, 0).rotateZ(angle)
+                        .translate(-slide.pivotY() / 16f, -slide.pivotZ() / 16f, 0);
+            } else if (slide.style().equals("spin")) {
                 // Minigun : rotation des canons autour de leur axe (60° = symétrie des 6 canons)
                 float angle = (float) Math.toRadians(60.0 * key.frame / FRAMES);
                 m.translation(0, slide.pivotY() / 16f, slide.pivotZ() / 16f).rotateX(angle)
@@ -193,6 +216,15 @@ public final class GunModels {
         for (BakedQuad quad : quads) {
             out.add(transform == null ? quad : QuadTransformers.applying(transform).process(quad));
         }
+    }
+
+    /** P90 : nombre de rangées de cartouches visibles dans le chargeur transparent ; M249 : position de la bande. */
+    private static int ammoVisual(String gun, ItemStack stack) {
+        return switch (gun) {
+            case "p90" -> (int) Math.ceil(GunItem.getAmmo(stack) / 5.0);
+            case "m249" -> GunItem.getAmmo(stack) % 2;
+            default -> 0;
+        };
     }
 
     /** Position du chargeur pendant le rechargement (seulement pour l'arme tenue en main). */
@@ -259,7 +291,7 @@ public final class GunModels {
                     // Le RPG-7 n'affiche sa roquette que s'il est chargé
                     boolean loaded = !GunMounts.magNeedsAmmo(gunName) || GunItem.getAmmo(stack) > 0;
                     Key key = new Key(gunName, GunItem.getSkin(stack), GunItem.getAttachments(stack), loaded,
-                            animationFrame(gunName, stack, entity), magOffset(stack, entity));
+                            animationFrame(gunName, stack, entity), magOffset(stack, entity), ammoVisual(gunName, stack));
                     return CACHE.computeIfAbsent(key, GunModels::compose);
                 }
             };

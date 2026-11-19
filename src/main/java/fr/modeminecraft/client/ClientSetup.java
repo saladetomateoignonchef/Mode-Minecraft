@@ -52,6 +52,10 @@ public final class ClientSetup {
         event.registerEntityRenderer(ModEntities.BULLET.get(), ctx -> new ThrownItemRenderer<>(ctx, 0.5f, true));
         event.registerEntityRenderer(ModEntities.ROCKET.get(), ctx -> new ThrownItemRenderer<>(ctx, 1.25f, true));
         event.registerEntityRenderer(ModEntities.GRENADE.get(), ctx -> new ThrownItemRenderer<>(ctx, 0.8f, false));
+        event.registerEntityRenderer(ModEntities.MISSILE.get(), ctx -> new ThrownItemRenderer<>(ctx, 1.4f, true));
+        event.registerEntityRenderer(ModEntities.PLASMA.get(), ctx -> new ThrownItemRenderer<>(ctx, 0.9f, true));
+        event.registerEntityRenderer(ModEntities.BOLT.get(), BoltRenderer::new);
+        event.registerEntityRenderer(ModEntities.MOUNTED_GUN.get(), MountedGunRenderer::new);
     }
 
     @SubscribeEvent
@@ -86,6 +90,8 @@ public final class ClientSetup {
         event.registerAbove(VanillaGuiLayers.HOTBAR, ModeMinecraft.id("gun_ammo"), GunHudLayer.AMMO);
         event.registerBelow(VanillaGuiLayers.HOTBAR, ModeMinecraft.id("gun_sight"), GunHudLayer.SIGHT_OVERLAY);
         event.registerAbove(VanillaGuiLayers.CROSSHAIR, ModeMinecraft.id("hit_marker"), GunFx::renderHitMarker);
+        event.registerAbove(VanillaGuiLayers.CROSSHAIR, ModeMinecraft.id("lock_on"), LockOnClient::render);
+        event.registerAbove(VanillaGuiLayers.HOTBAR, ModeMinecraft.id("mounted_gun"), GunHudLayer::renderMounted);
     }
 
     /** Armes rangées visibles sur les joueurs (dos / hanche). */

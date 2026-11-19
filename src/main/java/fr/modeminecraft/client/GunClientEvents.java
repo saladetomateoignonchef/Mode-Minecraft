@@ -86,7 +86,8 @@ public final class GunClientEvents {
         if (player == null) {
             return;
         }
-        boolean gun = player.getMainHandItem().getItem() instanceof GunItem && mc.screen == null
+        boolean mounted = player.getVehicle() instanceof fr.modeminecraft.entity.MountedGunEntity;
+        boolean gun = (player.getMainHandItem().getItem() instanceof GunItem || mounted) && mc.screen == null
                 && !player.isSpectator() && mc.mouseHandler.isMouseGrabbed();
         boolean trigger = gun && mc.options.keyAttack.isDown();
         boolean aim = gun && mc.options.keyUse.isDown();
@@ -111,7 +112,8 @@ public final class GunClientEvents {
     @SubscribeEvent
     public static void onClickInput(net.neoforged.neoforge.client.event.InputEvent.InteractionKeyMappingTriggered event) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null || !(mc.player.getMainHandItem().getItem() instanceof GunItem)) {
+        boolean mounted = mc.player != null && mc.player.getVehicle() instanceof fr.modeminecraft.entity.MountedGunEntity;
+        if (mc.player == null || !(mc.player.getMainHandItem().getItem() instanceof GunItem) && !mounted) {
             return;
         }
         if (event.isAttack()) {
@@ -192,6 +194,11 @@ public final class GunClientEvents {
     /** On cache la main et l'arme quand on regarde dans une lunette. */
     @SubscribeEvent
     public static void onRenderHand(RenderHandEvent event) {
+        if (Minecraft.getInstance().player != null
+                && Minecraft.getInstance().player.getVehicle() instanceof fr.modeminecraft.entity.MountedGunEntity) {
+            event.setCanceled(true); // sur une mitrailleuse posée : les mains sont sur les poignées
+            return;
+        }
         ResolvedGun aim = aiming(Minecraft.getInstance().player);
         if (aim != null && SightEffects.currentMode(aim).overlay().isFullScope()
                 && GunPoseHelper.aimProgress(event.getPartialTick()) > 0.85f) {

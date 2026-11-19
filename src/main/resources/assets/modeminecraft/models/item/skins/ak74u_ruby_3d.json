@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/ak74u_3d",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_ruby",
+    "particle": "modeminecraft:item/gun_palette_ruby"
+  }
+}

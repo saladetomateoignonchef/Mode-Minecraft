@@ -52,7 +52,8 @@ INGREDIENTS = {
 }
 
 BULLETS = ["ammo_9mm", "ammo_45acp", "ammo_50ae", "ammo_357", "ammo_57", "ammo_46", "ammo_762x25", "ammo_545",
-           "ammo_556", "ammo_762", "ammo_762x54r", "ammo_792", "ammo_338", "ammo_50bmg"]
+           "ammo_556", "ammo_762", "ammo_762x54r", "ammo_792", "ammo_338", "ammo_50bmg",
+           "ammo_45colt", "ammo_500sw", "ammo_44mag", "ammo_408"]
 SHELLS = ["shotgun_shell"]
 
 

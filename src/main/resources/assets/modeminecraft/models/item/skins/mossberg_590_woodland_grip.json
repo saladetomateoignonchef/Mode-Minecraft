@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/mossberg_590_grip",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_woodland",
+    "particle": "modeminecraft:item/gun_palette_woodland"
+  }
+}

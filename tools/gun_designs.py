@@ -824,4 +824,351 @@ def design_rpg7():
     return g
 
 
+
+# =====================================================================
+# Phase 8 : armes du cahier des charges
+# =====================================================================
+def revolver(frame_c="G", grip_c="W", cyl=(5, 8.5), cyl_r=1.3, barrel_end=16.0, bore=9.2, br=0.55, bottom=False,
+             comp=False, hammer=True):
+    """Revolver : carcasse, barillet, canon (en bas du barillet pour le Mateba)."""
+    g = Gun()
+    g.zb(3, 7, cyl[1] + 0.5, 10, 0.8, frame_c)
+    cy = 9.0
+    g.zb(cyl[0], cy - cyl_r, cyl[1], cy + cyl_r, cyl_r, frame_c)
+    for y in (cy - cyl_r * 0.6, cy, cy + cyl_r * 0.6):
+        g.zb(cyl[0] + 0.2, y - 0.07, cyl[1] - 0.2, y + 0.07, cyl_r + 0.05, "k")
+    by = 7.6 if bottom else bore
+    g.zb(cyl[1] + 0.5, by - br, barrel_end, by + br, br, frame_c)
+    if not bottom:
+        g.zb(cyl[1] + 0.5, by + br, barrel_end, by + br + 0.4, 0.35, frame_c)
+    if comp:
+        g.zb(barrel_end - 1.6, by - br - 0.15, barrel_end, by + br + 0.15, br + 0.15, "k")
+        for i in range(3):
+            g.zb(barrel_end - 1.4 + i * 0.5, by + br + 0.15, barrel_end - 1.2 + i * 0.5, by + br + 0.2, 0.3, "d")
+    g.zb(barrel_end - 0.05, by - br * 0.5, barrel_end + 0.05, by + br * 0.5, br * 0.5, "d")
+    if hammer:
+        g.zb(2.6, 10, 3.6, 11, 0.3, "k")
+    g.post(barrel_end - 0.8, by + br + (0 if bottom else 0.4), 0.5)
+    g.grip(2.5, 7, grip_c, length=4.5, w=2.5)
+    g.trigger(5.5, 7)
+    g.mount("sight", (cyl[0] + barrel_end) / 2, cy + cyl_r)
+    g.mount("muzzle", barrel_end + 0.05, by)
+    return g
+
+
+def design_sig_p226():
+    return pistol(slide_c="k", frame_c="k", grip_c="k", x1=13.6, sy1=10.6)
+
+
+def design_usp_s():
+    g = pistol(slide_c="k", frame_c="k", grip_c="k", x1=13.6)
+    g.zb(13.6, 8.25, 19.5, 10.15, 0.95, "k")          # silencieux intégré
+    g.zb(19.45, 8.8, 19.55, 9.6, 0.5, "d")
+    g.mount("muzzle", 19.55, 9.2)
+    return g
+
+
+def design_five_seven():
+    return pistol(slide_c="k", frame_c="T", grip_c="T", x1=13.8, sy1=10.3)
+
+
+def design_cz75_auto():
+    g = pistol(slide_c="G", frame_c="k", grip_c="k", x1=13.0)
+    g.zb(13.0, 8.3, 14.6, 10.0, 0.85, "k")            # compensateur
+    g.zb(13.4, 10.0, 14.2, 10.05, 0.4, "d")
+    g.mount("muzzle", 14.65, 9.2)
+    return g
+
+
+def design_luger_p08():
+    g = Gun()
+    g.zb(3, 7.0, 9, 8.6, 0.85, "G")                   # carcasse
+    g.zb(9, 8.2, 16.5, 9.2, 0.45, "G")                # canon fin
+    g.zb(16.45, 8.5, 16.55, 8.9, 0.25, "d")
+    g.zb(7, 8.6, 9.5, 9.6, 0.7, "G")
+    # Genouillère : elle se replie vers le HAUT au tir
+    with g.moving("toggle", travel=55, pivot=[3.6, 9.6]):
+        g.zb(3.6, 8.6, 5.6, 9.6, 0.6, "l")
+        g.zb(5.6, 8.6, 7.0, 9.6, 0.6, "l")
+        g.zb(5.2, 9.6, 6.0, 10.0, 0.75, "k")          # boutons de préhension
+    g.post(16, 9.2, 0.4)
+    g.grip(2.4, 7.0, "W", length=4.8, w=2.4, angle=-22.5)
+    g.trigger(5, 7.0)
+    g.mount("sight", 8, 9.6)
+    g.mount("muzzle", 16.55, 8.7)
+    g.magazine("grip", 0, 0, 0, None, grip_bottom=(1.5, 3.0))
+    return g
+
+
+def design_flintlock():
+    g = Gun()
+    g.zb(2.5, 6.8, 8, 9.2, 0.85, "W")                 # fût en bois
+    g.zb(8, 8.2, 17, 9.4, 0.6, "G")                   # long canon
+    g.zb(16.9, 8.4, 17.05, 9.2, 0.4, "d")
+    g.zb(8, 7.4, 15, 8.2, 0.55, "W")
+    g.zb(4.5, 9.2, 6.5, 9.8, 0.9, "k")                # platine à silex
+    g.zb(4.2, 9.8, 5.0, 11.0, 0.35, "k")              # chien
+    g.zb(4.3, 10.6, 5.0, 11.0, 0.4, "l")              # silex
+    g.grip(2.3, 6.8, "W", length=4.5, w=2.6, angle=-22.5)
+    g.zb(0.4, 2.6, 2.0, 3.4, 1.0, "g")                # pommeau en laiton
+    g.trigger(5, 6.8)
+    g.mount("muzzle", 17.05, 8.8)
+    return g
+
+
+def design_sw_model_500():
+    return revolver(frame_c="l", grip_c="d", cyl=(4.8, 9.4), cyl_r=1.6, barrel_end=17.5, br=0.7, comp=True)
+
+
+def design_colt_saa():
+    return revolver(frame_c="G", grip_c="W", cyl=(5, 8.2), cyl_r=1.2, barrel_end=15.5, br=0.45)
+
+
+def design_mateba_unica():
+    return revolver(frame_c="k", grip_c="W", cyl=(4.5, 8.5), cyl_r=1.3, barrel_end=15.5, br=0.5, bottom=True)
+
+
+def design_raging_bull():
+    return revolver(frame_c="l", grip_c="d", cyl=(5, 8.8), cyl_r=1.4, barrel_end=16.5, br=0.6, comp=True)
+
+
+def design_taurus_judge():
+    return revolver(frame_c="k", grip_c="d", cyl=(4.5, 10.5), cyl_r=1.7, barrel_end=14.0, br=0.75)
+
+
+def design_ump45():
+    return rifle(stock="folded", stock_c="k", rear=-1, x0=3, x1=10.5, x2=12.5, x3=14.8, rc="k", hc="k",
+                 hy0=6.9, hy1=8.9, bore=8.0, mag=("straight", 9.0, 3.8, "k"), muzzle=None, rail=True, fsight=False)
+
+
+def design_pp19_bizon():
+    g = rifle(stock="folded", stock_c="k", rear=-1, x0=3, x1=10.5, x2=14.5, x3=16.5, rc="m", ry0=6.6, ry1=9.0,
+              hc="k", hy0=6.8, hy1=8.4, bore=7.8, grip_c="k", mag=None, muzzle="brake", rail=False, gas=True, rsight=True)
+    g.zb(9.5, 5.0, 16, 6.8, 0.95, "k", mag=True)      # chargeur hélicoïdal de 64 sous le garde-main
+    for i in range(6):
+        g.zb(10 + i * 1.0, 4.95, 10.3 + i * 1.0, 6.85, 1.0, "m", mag=True)
+    g.mount("magazine", 12.5, 6.8)
+    return g
+
+
+def design_mac10():
+    g = Gun()
+    g.zb(3, 6.6, 10, 9.6, 1.0, "k")                   # boîtier carré
+    g.barrel(10, 12.2, 8.6, 0.45)
+    g.zb(11, 8.0, 12.2, 9.2, 0.55, "m")               # filetage
+    g.grip(4.0, 6.6, "k", length=4.2, w=2.0, angle=0)  # chargeur dans la poignée
+    g.zb(4.2, 2.0, 6.2, 2.4, 0.7, "k", mag=True)
+    g.trigger(6.4, 6.6)
+    g.bolt(5, 9.6, 9.9, 0.6, travel=1.4)
+    g.stock("tube", -1, 3, 6.6, 9.6, "k", 8.3)
+    g.zb(7, 7.0, 8, 7.6, 1.05, "r")
+    g.mount("sight", 6.5, 9.6)
+    g.mount("magazine", 5.2, 2.4)
+    return g
+
+
+def design_scorpion_evo():
+    return rifle(stock="folded", stock_c="k", rear=-1, x0=3, x1=10.5, x2=13, x3=15.2, rc="k", hc="k",
+                 hy0=6.9, hy1=9.0, bore=8.0, mag=("curved", 9.0, 3.6, "k"), muzzle="flash", rail="long", fsight=False)
+
+
+def design_ak74u():
+    return rifle(stock="folded", stock_c="m", rear=-1, x0=3, x1=10.5, x2=12.5, x3=15, rc="m", ry0=6.5, ry1=9.0,
+                 hc="w", hy0=6.6, hy1=8.4, bore=7.8, grip_c="w", mag=("curved", 9.0, 4.4, "W"), muzzle="big",
+                 rail=False, gas=True, rsight=True)
+
+
+def design_galil_ace():
+    return rifle(stock="tube", stock_c="k", rear=-3.5, x0=3, x1=10.5, x2=15, x3=19, rc="k", hc="k", hy0=6.8,
+                 hy1=9.3, bore=8.0, rail="long", mag=("curved", 9.0, 4.4, "k"), muzzle="brake", fsight=False, gas=True)
+
+
+def design_fn_fal():
+    return rifle(stock="fixed", stock_c="k", rear=-4, x0=3, x1=11, x2=15.5, x3=21, rc="k", hc="k", hy0=6.9,
+                 hy1=9.0, bore=8.2, rail=False, carry=1.2, mag=("straight", 8.8, 3.2, "k"), muzzle="flash",
+                 fsight=True, rsight=True)
+
+
+def design_ak12():
+    return rifle(stock="tube", stock_c="k", rear=-3.5, x0=3, x1=10.5, x2=14.5, x3=18.5, rc="k", ry0=6.5, ry1=9.0,
+                 hc="k", hy0=6.6, hy1=8.8, bore=7.8, grip_c="k", mag=("curved", 9.0, 4.4, "k"), muzzle="brake",
+                 rail="long", gas=True)
+
+
+def design_m1_garand():
+    return rifle(stock="wood", stock_c="W", rear=-4, x0=3, x1=10.5, x2=15.5, x3=21.5, rc="G", ry0=6.6, ry1=9.0,
+                 hc="W", hy0=6.8, hy1=8.6, bore=8.0, grip_c="W", mag=None, muzzle=None, rail=False,
+                 fsight=True, rsight=True, gas=True)
+
+
+def design_mossberg_590():
+    return shotgun(stock="polymer", stock_c="k", pump_c="k", rc="k", x3=20, shield=True)
+
+
+def design_m24():
+    return rifle(stock="fixed", stock_c="t", rear=-4, x0=3, x1=10, x2=11, x3=24, rc="k", ry0=6.2, ry1=9.0,
+                 hc="t", hy0=6.6, hy1=8.6, bore=8.0, br=0.45, grip_c="t", mag=None, muzzle=None, fsight=False,
+                 rail=True, scope=(2.0, 10.0), action="bolt")
+
+
+def design_cheytac_m200():
+    return rifle(stock="skeleton", stock_c="k", rear=-4.5, x0=3, x1=10.5, x2=13, x3=27, rc="k", ry0=6.0, ry1=9.4,
+                 hc="k", hy0=6.6, hy1=9.4, bore=8.3, br=0.55, mag=("straight", 8.5, 2.2, "k"), muzzle="big",
+                 fsight=False, rail="long", bipod=True, scope=(2.0, 11.0), action="bolt")
+
+
+def tube_launcher(length, c="t", r=1.3, front=None, sight=True, rear_c="u"):
+    g = Gun()
+    g.zb(-5, 8.0 - r, length, 8.0 + r, r, c)
+    g.zb(-5.3, 8.0 - r - 0.2, -4.2, 8.0 + r + 0.2, r + 0.2, rear_c)
+    g.zb(length - 1, 8.0 - r - 0.2, length + 0.3, 8.0 + r + 0.2, r + 0.2, rear_c)
+    g.zb(length + 0.25, 8.0 - r * 0.7, length + 0.35, 8.0 + r * 0.7, r * 0.7, "d")
+    g.grip(4.5, 8.0 - r, "k", length=3.0)
+    g.zb(8.5, 8.0 - r - 2.6, 9.8, 8.0 - r, 0.65, "k")
+    if sight:
+        g.zb(4, 8.0 + r, 6, 8.0 + r + 1.2, 0.5, "k")
+    g.mount("sight", 5, 8.0 + r)
+    g.mount("muzzle", length + 0.35, 8.0)
+    return g
+
+
+def design_m72_law():
+    return tube_launcher(14, c="t", r=1.0)
+
+
+def design_panzerfaust3():
+    g = tube_launcher(9, c="T", r=1.1)
+    g.zb(9.3, 6.2, 13.5, 9.8, 1.8, "T", mag=True)     # grosse ogive (visible si chargé)
+    g.zb(13.5, 7.0, 15.5, 9.0, 1.0, "u", mag=True)
+    g.zb(15.5, 7.8, 17.5, 8.2, 0.2, "k", mag=True)    # sonde de distance
+    g.flags["mag_needs_ammo"] = True
+    return g
+
+
+def design_stinger():
+    g = tube_launcher(16, c="t", r=1.2)
+    g.zb(6, 9.2, 8, 12, 0.3, "k")                     # antenne IFF / viseur
+    g.zb(5, 12, 9, 12.3, 1.6, "k")
+    g.zb(10, 5.4, 12, 6.8, 1.3, "u")                  # batterie
+    return g
+
+
+def design_javelin():
+    g = tube_launcher(17, c="t", r=1.6)
+    g.zb(1.5, 9.6, 7, 12.6, 1.4, "k")                 # CLU (unité de tir)
+    g.zb(6.9, 10.4, 7.1, 11.8, 0.9, "s")
+    g.zb(1.4, 10.6, 1.6, 11.6, 0.6, "d")
+    return g
+
+
+def design_glock18():
+    g = pistol(slide_c="k", frame_c="k", grip_c="k", x1=13.0)
+    g.zb(1.6, -0.5, 3.6, 1.0, 0.6, "k", mag=True)     # chargeur long de 33
+    return g
+
+
+def design_tactical_crossbow():
+    g = Gun()
+    g.stock("polymer", -3, 3, 6.6, 9.0, "k", 8.0)
+    g.zb(3, 6.6, 14, 8.6, 0.8, "k")                   # fût
+    g.zb(4, 8.6, 13, 8.9, 0.4, "m")                   # rail du carreau
+    g.add([12.5, 7.6, 2.5], [14, 8.4, 13.5], "k")     # arc (branches)
+    g.add([12.0, 7.8, 2.2], [12.5, 8.2, 3.0], "m")
+    g.add([12.0, 7.8, 13.0], [12.5, 8.2, 13.8], "m")
+    g.add([7.0, 8.6, 2.4], [12.2, 8.75, 2.6], "l")    # corde tendue
+    g.add([7.0, 8.6, 13.4], [12.2, 8.75, 13.6], "l")
+    g.zb(7.0, 8.55, 7.4, 8.8, 5.5, "l")
+    with g.moving("fast", travel=0.0):
+        g.zb(5, 8.9, 13.5, 9.1, 0.15, "W")            # carreau engagé
+    g.grip(4, 6.6, "k", length=3.4)
+    g.trigger(5.8, 6.6)
+    g.mount("sight", 8, 8.9)
+    g.mount("grip", 11, 6.6)
+    g.mount("muzzle", 14.05, 8.0)
+    return g
+
+
+def design_taser():
+    g = pistol(slide_c="T", frame_c="k", grip_c="k", x1=12.0, sy1=10.8, accent=False)
+    g.zb(10.5, 8.2, 12.05, 10.6, 1.0, "k")            # cartouche
+    g.zb(12.0, 8.8, 12.1, 9.2, 0.25, "s")
+    g.zb(12.0, 9.6, 12.1, 10.0, 0.25, "s")
+    return g
+
+
+def design_ruby_railgun():
+    g = Gun()
+    g.stock("skeleton", -3, 3, 6.4, 9.6, "k", 8.2)
+    g.zb(3, 6.4, 11, 9.8, 1.0, "k")
+    g.zb(4, 9.8, 10, 10.4, 0.8, "r")                  # cellule de rubis
+    for y in (7.2, 9.2):                              # deux rails
+        g.zb(11, y - 0.35, 24, y + 0.35, 0.45, "G")
+    for i in range(5):                                # bobines
+        g.zb(12 + i * 2.4, 6.4, 12.8 + i * 2.4, 10.0, 0.9, "r" if i % 2 else "g")
+    g.zb(23.9, 7.6, 24.1, 8.8, 0.3, "r")
+    g.grip(4.3, 6.4, "k")
+    g.trigger(6, 6.4)
+    g.mount("sight", 7, 10.4)
+    g.mount("muzzle", 24.1, 8.2)
+    return g
+
+
+def design_plasma_rifle():
+    g = Gun()
+    g.stock("polymer", -3, 3, 6.0, 9.6, "m", 8.0)
+    g.zb(3, 6.0, 13, 10.0, 1.2, "m")
+    g.zb(5, 10.0, 11, 10.8, 0.9, "k")
+    g.zb(6, 6.6, 10, 9.4, 1.25, "e")                  # chambre d'énergie
+    for i in range(3):
+        g.zb(6.4 + i * 1.3, 6.8, 7.0 + i * 1.3, 9.2, 1.3, "s")
+    g.zb(13, 7.0, 17.5, 9.0, 0.9, "k")
+    g.zb(17.5, 7.3, 18.0, 8.7, 0.7, "e")
+    g.grip(4.0, 6.0, "k")
+    g.trigger(5.7, 6.0)
+    g.mount("sight", 8, 10.8)
+    g.mount("muzzle", 18.05, 8.0)
+    return g
+
+
+def heavy_mg(c="k", barrel_end=24.0, jacket=False):
+    """Mitrailleuse lourde posée (sans trépied : il est dessiné à part). Pivot au point (8, 8, 8)."""
+    g = Gun()
+    g.zb(1, 6.4, 9, 10.4, 1.4, c)                     # boîtier
+    g.zb(0, 7.0, 1, 9.8, 1.0, "k")
+    g.zb(-1.5, 7.4, 0, 8.0, 0.25, "k")                # poignées doubles
+    g.zb(-1.5, 9.0, 0, 9.6, 0.25, "k")
+    g.zb(-2.0, 7.4, -1.5, 9.6, 1.0, "k")
+    g.barrel(9, barrel_end, 8.6, 0.55, "k")
+    if jacket:
+        g.zb(9, 7.8, 14, 9.4, 0.85, "m")
+        for i in range(4):
+            g.zb(9.5 + i * 1.2, 9.35, 10.0 + i * 1.2, 9.45, 0.6, "d")
+    g.zb(barrel_end - 2, 8.0, barrel_end - 0.5, 9.2, 0.75, "k")
+    g.zb(3, 4.4, 7, 6.4, 1.6, "T")                    # caisse de munitions
+    g.zb(4, 10.4, 6, 11.6, 0.5, "k")                  # hausse
+    return g
+
+
+def design_m2_browning():
+    return heavy_mg("k", 25, jacket=True)
+
+
+def design_dshk():
+    g = heavy_mg("m", 24, jacket=False)
+    for i in range(4):
+        g.zb(10 + i * 1.6, 7.6, 10.6 + i * 1.6, 9.6, 1.0, "k")   # ailettes de refroidissement
+    g.zb(20, 7.6, 21.5, 9.6, 1.2, "k")                # frein de bouche
+    return g
+
+
+def design_mg_tripod():
+    """Trépied des mitrailleuses posées (dessiné sans rotation)."""
+    g = Gun()
+    g.zb(6.5, 4.0, 9.5, 6.4, 1.2, "k")                # tête pivotante
+    g.add([7.5, -8.0, 7.6], [8.5, 4.0, 8.4], "m", rot=("z", 22.5, [8, 4, 8]))
+    g.add([7.6, -8.0, 7.5], [8.4, 4.0, 8.5], "m", rot=("x", 22.5, [8, 4, 8]))
+    g.add([7.6, -8.0, 7.5], [8.4, 4.0, 8.5], "m", rot=("x", -22.5, [8, 4, 8]))
+    return g
+
+
 GUNS = {name[len("design_"):]: fn for name, fn in globals().items() if name.startswith("design_")}

@@ -150,7 +150,10 @@ public final class GunPoseHelper {
         boolean optic = mounted.isPresent();
         Float h = optic ? GunMounts.opticHeight(BuiltInRegistries.ITEM.getKey(mounted.get()).getPath()) : null;
         // L'œil pile au centre de la vitre du viseur (ou juste au-dessus du rail pour les organes de visée)
-        Vector3f eyePoint = new Vector3f(sight).add(0, (h != null ? h : optic ? 1.3f : 0.55f) / 16f, 0);
+        boolean launcher = stack.getItem() instanceof GunItem g && g.stats().category() == fr.modeminecraft.item.gun.GunStats.Category.LAUNCHER;
+        // Lance-roquettes : l'œil au-dessus du tube, contre le viseur (le tube ne cache pas la vue)
+        float above = h != null ? h : optic ? 1.3f : launcher ? 3.8f : 0.55f;
+        Vector3f eyePoint = new Vector3f(sight).add(0, above / 16f, 0);
         // Position du point de visée après la transformation d'affichage, puis la rotation de -10°
         Vector3f q = displayMatrix().transformPosition(eyePoint, new Vector3f());
         new Matrix4f().rotate(Axis.YP.rotationDegrees(-10f)).transformPosition(q);
@@ -195,6 +198,13 @@ public final class GunPoseHelper {
         Vector3f grip = GunMounts.get(gun, AttachmentSlot.PISTOL_GRIP);
         if (right) {
             return grip == null ? null : new Vector3f(grip).add(-0.7f / 16f, -1.6f / 16f, 0);
+        }
+        // Colt SAA (fanning) : la main gauche frappe le chien à chaque coup
+        var player = Minecraft.getInstance().player;
+        if (stack.getItem() instanceof GunItem g && g.stats().special() == fr.modeminecraft.item.gun.GunStats.Special.FANNING
+                && player != null && fr.modeminecraft.item.gun.TriggerHandler.isRightHeld(player) && grip != null) {
+            float t = Math.min(1, GunAnimations.ticksSinceShot(player, 0) / 3f);
+            return new Vector3f(grip).add((-1.2f - 1.5f * (1 - t)) / 16f, (3.2f + 0.6f * t) / 16f, 0);
         }
         // Rechargement : la main gauche suit le chargeur (et va en chercher un autre en bas)
         float off = GunAnimations.reloadMagOffset(stack, now);

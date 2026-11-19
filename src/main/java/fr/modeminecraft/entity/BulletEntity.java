@@ -48,6 +48,22 @@ public class BulletEntity extends ThrowableItemProjectile {
         headshotMultiplier = mul;
     }
 
+    private float falloff = 0;          // perte de dégâts par bloc parcouru
+    private float noDropBlocks = 0;     // pas de chute de balle sur cette distance
+    private int lifeTicks = MAX_LIFE_TICKS;
+    private Vec3 origin;
+
+    /** Balistique propre à l'arme (voir GunStats). */
+    public void setBallistics(float falloffPerBlock, float noDropBlocks, int lifeTicks) {
+        this.falloff = falloffPerBlock;
+        this.noDropBlocks = noDropBlocks;
+        this.lifeTicks = lifeTicks;
+    }
+
+    private double travelled() {
+        return origin == null ? 0 : origin.distanceTo(position());
+    }
+
     public void setArmorPenetration(float fraction) {
         armorPenetration = Math.max(0, Math.min(1, fraction));
     }
@@ -103,12 +119,18 @@ public class BulletEntity extends ThrowableItemProjectile {
 
     @Override
     protected double getDefaultGravity() {
-        return ammoType() == AmmoType.DRAGON_BREATH ? 0.0 : GRAVITY; // la balle retombe un peu
+        if (ammoType() == AmmoType.DRAGON_BREATH || travelled() < noDropBlocks) {
+            return 0.0; // M24 : trajectoire tendue sur 100 blocs
+        }
+        return GRAVITY; // la balle retombe un peu
     }
 
     @Override
     public void tick() {
         Vec3 before = position();
+        if (origin == null) {
+            origin = position();
+        }
         if (!isInWater()) {
             // Le vent pousse la balle sur le côté (même calcul côté client et serveur)
             Vec3 wind = fr.modeminecraft.item.gun.Wind.get(level()).scale(fr.modeminecraft.item.gun.Wind.ACCEL_PER_MS);
@@ -133,7 +155,7 @@ public class BulletEntity extends ThrowableItemProjectile {
                             p.x, p.y, p.z, 0, 0, 0);
                 }
             }
-        } else if (tickCount > (type == AmmoType.DRAGON_BREATH ? 8 : MAX_LIFE_TICKS)
+        } else if (tickCount > (type == AmmoType.DRAGON_BREATH ? 8 : lifeTicks)
                 || getY() > level().getMaxBuildHeight() + 64) {
             discard(); // le souffle du dragon porte très peu loin
         }
@@ -146,7 +168,7 @@ public class BulletEntity extends ThrowableItemProjectile {
             return;
         }
         Entity target = result.getEntity();
-        float finalDamage = damage;
+        float finalDamage = damage * (float) Math.max(0.35, 1 - falloff * travelled()); // perte avec la distance
 
         // Zone touchée : on regarde à quelle hauteur la balle traverse la hitbox de la cible
         Vec3 start = position();

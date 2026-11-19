@@ -1,0 +1,21 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "special_ammo",
+  "ingredients": [
+    {
+      "item": "modeminecraft:crossbow_bolt",
+      "count": 8
+    },
+    {
+      "item": "minecraft:tnt",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:crossbow_bolt",
+    "count": 8,
+    "components": {
+      "modeminecraft:ammo_type": "he"
+    }
+  }
+}

@@ -357,3 +357,9 @@ ACCESSORIES.update({
     # Chargeur rapide : chargeur standard + languette de traction (type Magpul)
     "fast_mag": [zc(-1, -5, 1, 0, 0.6, "k"), zc(-1.05, -5.3, 1.05, -5, 0.65, "d"), zc(-0.5, -6.3, 0.5, -5.3, 0.25, "T")],
 })
+
+# Pièces internes (pas des accessoires) : cartouches du chargeur transparent du P90, maillons de la bande de la M249
+ACCESSORIES.update({
+    "p90_round": [zc(-0.45, -0.18, 0.45, 0.18, 0.18, "g"), zc(0.45, -0.1, 0.6, 0.1, 0.1, "m")],
+    "belt_link": [box([-0.35, -0.6, -0.15], [0.35, 0.6, 0.15], "g"), box([-0.4, -0.15, -0.2], [0.4, 0.15, 0.2], "k")],
+})

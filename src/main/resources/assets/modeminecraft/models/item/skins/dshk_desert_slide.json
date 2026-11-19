@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/dshk_slide",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_desert",
+    "particle": "modeminecraft:item/gun_palette_desert"
+  }
+}

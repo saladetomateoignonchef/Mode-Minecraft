@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "modeminecraft:item/ammo_500sw",
+    "layer1": "modeminecraft:item/ammo_badge/ruby"
+  }
+}

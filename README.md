@@ -34,7 +34,7 @@ Matériau entre le diamant et la netherite (1800 de durabilité, enchantabilité
 - **Arc en rubis** : flèches plus puissantes (+1.5 dégâts de base), 768 de durabilité.
 - **Bâton de feu** : clic droit pour lancer une boule de feu.
 
-### Armes à feu (44 armes réelles)
+### Armes à feu (77 armes + 2 mitrailleuses à poser)
 Toutes les armes à feu, munitions et accessoires se fabriquent à la **table d'armement**.
 
 | Catégorie | Armes (calibre) |
@@ -94,6 +94,22 @@ minigun : les canons tournent),
 modèles 3D texturés en main (métal brossé, bois veiné, camouflages), icônes 32x32 dans l'inventaire,
 pose « en joue » à la 3e personne,
 message de mort « X a été abattu par Y ».
+
+### Armes du cahier des charges (phase 8 : 33 nouvelles armes)
+| Famille | Armes | Particularités |
+|---|---|---|
+| Pistolets | SIG P226, USP-S .45, FN Five-seveN, CZ-75 Auto, Luger P08, Glock 18, pistolet à silex | USP-S : silencieux intégré ; CZ-75 Auto et Glock 18 : automatiques ; Luger : la **genouillère se replie vers le haut** au tir ; silex : 1 coup, gros nuage de fumée, très puissant à bout portant |
+| Revolvers | S&W Model 500, Colt Single Action Army, Mateba Unica 6, Taurus Raging Bull, Taurus Judge | Colt SAA : **fanning** (clic droit maintenu + clics gauches : la main gauche frappe le chien, 6 balles en ~1 s) ; Mateba : canon bas, recul -40 % ; Judge : tire des cartouches de calibre 12 |
+| PM | UMP-45, PP-19 Bizon (chargeur hélicoïdal de 64), MAC-10, Scorpion EVO 3 | |
+| Fusils | AK-74U (compact, portée réduite), Galil ACE, FN FAL, AK-12, M1 Garand | Garand : ne se recharge qu'à vide, le clip s'éjecte avec son « ping » |
+| Pompe / précision | Mossberg 590, M24 SWS (pas de chute de balle sur 100 blocs), CheyTac M200 (.408, très longue portée) | |
+| Lanceurs | M72 LAW (jetable), Panzerfaust 3 (50 dégâts directs, ignore 90 % de l'armure), **FIM-92 Stinger**, **FGM-148 Javelin** | Missiles à **tête chercheuse** : en visant, carré jaune + bip lent pendant la recherche (cône de 12°, 150 blocs, vue dégagée), carré rouge + bip continu une fois verrouillé (1,75 s) ; le missile corrige sa trajectoire de 6° par tick ; le Javelin monte d'abord à 55° puis plonge sur la cible |
+| Spéciales | Arbalète tactique, taser, railgun en rubis, fusil à plasma | Arbalète : silencieuse, carreaux normaux / explosifs / incendiaires, **récupérables** ; taser : paralyse 4 s (non létal, empêche les Creepers d'exploser) ; railgun : 2 s de charge puis un rayon rouge qui traverse tous les ennemis alignés ; plasma : boules d'énergie qui brûlent, **sans munitions** mais il surchauffe |
+| Mitrailleuses posées | **M2 Browning**, **DShK** | On ne peut pas les tenir : on les pose au sol (clic droit sur un bloc), clic droit pour s'installer derrière, clic gauche pour tirer (bande de 100 balles de .50 BMG), Shift pour descendre, frapper la mitrailleuse pour la reprendre |
+
+Nouvelles munitions : .45 Colt, .500 S&W, .44 Magnum, .408 CheyTac, balles de plomb, carreaux, cartouches de taser,
+cellules de rubis, ogives de Panzerfaust, missiles Stinger et Javelin. Le P90 a un chargeur transparent où l'on voit
+les cartouches diminuer, la M249 une bande de munitions qui avance à chaque tir.
 
 ### Réalisme du tir
 - **Zones** : tir à la tête = dégâts x2, aux jambes = x0,75 et la cible est ralentie.

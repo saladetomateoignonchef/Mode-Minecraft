@@ -38,6 +38,9 @@ public final class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> SHELL_CASING = register("gun.shell_casing");
     public static final DeferredHolder<SoundEvent, SoundEvent> HITMARKER = register("gun.hitmarker");
     public static final DeferredHolder<SoundEvent, SoundEvent> HEADSHOT = register("gun.headshot");
+    public static final DeferredHolder<SoundEvent, SoundEvent> GARAND_PING = register("gun.garand_ping");
+    public static final DeferredHolder<SoundEvent, SoundEvent> LOCK_SEARCH = register("gun.lock_search");
+    public static final DeferredHolder<SoundEvent, SoundEvent> LOCK_TONE = register("gun.lock_tone");
 
     private static DeferredHolder<SoundEvent, SoundEvent> register(String name) {
         return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(ModeMinecraft.id(name)));

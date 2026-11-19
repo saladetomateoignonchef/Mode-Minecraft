@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/colt_saa_3d",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_arctic",
+    "particle": "modeminecraft:item/gun_palette_arctic"
+  }
+}

@@ -91,8 +91,14 @@ public final class TriggerHandler {
         }
     }
 
+    /** Clic droit maintenu (même avec une arme qui ne vise pas : fanning du Colt SAA). */
+    public static boolean isRightHeld(Player player) {
+        return (player.level().isClientSide ? AIM_CLIENT : AIM_SERVER).contains(player.getUUID());
+    }
+
     public static boolean isAiming(Player player) {
-        if (player.getMainHandItem().getItem() instanceof GunItem gun && gun.stats().doubleBarrel()) {
+        if (player.getMainHandItem().getItem() instanceof GunItem gun
+                && (gun.stats().doubleBarrel() || gun.stats().special() == GunStats.Special.FANNING)) {
             return false;
         }
         return (player.level().isClientSide ? AIM_CLIENT : AIM_SERVER).contains(player.getUUID());

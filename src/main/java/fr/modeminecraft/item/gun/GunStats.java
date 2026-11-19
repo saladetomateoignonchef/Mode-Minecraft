@@ -52,16 +52,34 @@ public record GunStats(
         float walkSpeed,       // vitesse de marche quand on tient l'arme (1 = normale, 1.1 = +10 %)
         boolean noSprint,      // impossible de sprinter avec (minigun)
         boolean doubleBarrel,  // fusil à deux canons : clic droit = les deux canons d'un coup
+        Special special,       // mécanique particulière de l'arme (voir Special)
+        float falloff,         // perte de dégâts par bloc parcouru (silex, AK-74U...)
+        float noDropBlocks,    // pas de chute de balle sur cette distance (M24 : 100 blocs)
+        int bulletLife,        // durée de vie des balles (ticks) : portée max = vitesse x durée
+        int chargeTicks,       // railgun : temps de charge avant le tir
+        float directDamage,    // roquettes : dégâts directs à l'impact (Panzerfaust)
         Set<AttachmentSlot> slots) { // emplacements d'accessoires disponibles
 
     /** Douille éjectée au tir. */
     public enum Casing { NONE, BRASS, STEEL, SHELL }
 
+    /** Mécaniques particulières. */
+    public enum Special {
+        NONE,
+        INTEGRATED_SILENCER, // USP-S : toujours silencieux
+        FANNING,             // Colt SAA : clic droit maintenu + clics gauches = on frappe le chien (6 balles en 1 s)
+        EN_BLOC,             // M1 Garand : on ne recharge qu'à vide, le clip s'éjecte avec un « ping »
+        NO_AMMO,             // fusil à plasma : pas de munitions, il surchauffe
+        LOCK_ON,             // Stinger : missile à tête chercheuse (verrouillage)
+        LOCK_ON_TOP_ATTACK,  // Javelin : tête chercheuse + attaque par le dessus
+        BLACK_POWDER         // pistolet à silex : gros nuage de fumée
+    }
+
     /** Famille d'arme. */
     public enum Category { PISTOL, SMG, ASSAULT, SNIPER, SHOTGUN, MACHINE_GUN, LAUNCHER }
 
     /** Type de projectile tiré. */
-    public enum ProjectileKind { BULLET, ROCKET, GRENADE }
+    public enum ProjectileKind { BULLET, ROCKET, GRENADE, MISSILE, BOLT, TASER, RAIL, PLASMA }
 
     /** Mode de tir d'une arme neuve : le plus "rapide" disponible. */
     public FireMode defaultMode() {
@@ -101,6 +119,9 @@ public record GunStats(
         private float heatPerShot = 0;
         private float rpm = 0, walkSpeed = 1;
         private boolean noSprint, doubleBarrel;
+        private Special special = Special.NONE;
+        private float falloff = 0, noDropBlocks = 0, directDamage = 0;
+        private int bulletLife = 60, chargeTicks = 0;
         private Category category = Category.LAUNCHER;
         private Supplier<? extends Item> ammo;
         private Supplier<SoundEvent> sound;
@@ -148,6 +169,15 @@ public record GunStats(
         public Builder walkSpeed(float mul) { walkSpeed = mul; return this; }
         public Builder noSprint() { noSprint = true; return this; }
         public Builder doubleBarrel() { doubleBarrel = true; return this; }
+        public Builder special(Special s) { special = s; return this; }
+        public Builder falloff(float perBlock) { falloff = perBlock; return this; }
+        public Builder noDrop(float blocks) { noDropBlocks = blocks; return this; }
+        public Builder bulletLife(int ticks) { bulletLife = ticks; return this; }
+        public Builder charge(int ticks) { chargeTicks = ticks; return this; }
+        public Builder projectile(ProjectileKind k) { projectile = k; return this; }
+        /** Missile guidé : puissance d'explosion + dégâts directs. */
+        public Builder missile(float power) { projectile = ProjectileKind.MISSILE; explosionPower = power; return this; }
+        public Builder directDamage(float d) { directDamage = d; return this; }
         public Builder slots(AttachmentSlot... s) { slots.addAll(Set.of(s)); return this; }
         /** Retire certains emplacements (ex. pas de crosse sur un bullpup). */
         public Builder without(AttachmentSlot... s) { slots.removeAll(Set.of(s)); return this; }
@@ -171,6 +201,7 @@ public record GunStats(
                     automatic, ammo, sound, volume, pitch, explosionPower, projectile, scopeZoom, scopeOverlay,
                     burst, burstCooldown, reloadPerRound, pierce, armorPiercing, spinUp, disposable, fireModes,
                     projectile == ProjectileKind.BULLET ? casing : Casing.NONE, chamber && !disposable, slideLock, pistol, category, drawTicks, heatPerShot, rpm, walkSpeed, noSprint, doubleBarrel,
+                    special, falloff, noDropBlocks, bulletLife, chargeTicks, directDamage,
                     Set.copyOf(slots));
         }
     }

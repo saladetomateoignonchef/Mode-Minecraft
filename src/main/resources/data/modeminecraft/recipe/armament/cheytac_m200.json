@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "weapons",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 24
+    },
+    {
+      "item": "minecraft:spyglass",
+      "count": 1
+    },
+    {
+      "item": "minecraft:diamond",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:cheytac_m200",
+    "count": 1
+  }
+}
