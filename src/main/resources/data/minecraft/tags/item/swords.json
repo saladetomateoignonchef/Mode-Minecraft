@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "modeminecraft:rubis_sword",
+    "modeminecraft:rubis_dagger",
+    "modeminecraft:rubis_war_hammer",
+    "modeminecraft:flame_sword",
+    "modeminecraft:frost_sword",
+    "modeminecraft:venom_dagger",
+    "modeminecraft:ender_blade",
+    "modeminecraft:thunder_hammer"
+  ]
+}

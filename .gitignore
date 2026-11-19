@@ -1,0 +1,25 @@
+# Gradle
+.gradle/
+build/
+out/
+bin/
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.classpath
+.project
+.settings/
+
+# Lancement du jeu en dev
+run/
+runs/
+logs/
+
+# Divers
+.DS_Store
+Thumbs.db
+__pycache__/

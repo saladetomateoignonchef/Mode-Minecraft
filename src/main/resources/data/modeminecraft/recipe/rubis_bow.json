@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    " RS",
+    "R S",
+    " RS"
+  ],
+  "key": {
+    "R": {
+      "item": "modeminecraft:rubis"
+    },
+    "S": {
+      "item": "minecraft:string"
+    }
+  },
+  "result": {
+    "id": "modeminecraft:rubis_bow",
+    "count": 1
+  }
+}

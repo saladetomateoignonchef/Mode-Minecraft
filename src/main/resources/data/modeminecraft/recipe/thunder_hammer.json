@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "modeminecraft:rubis_war_hammer"
+    },
+    {
+      "item": "minecraft:lightning_rod"
+    },
+    {
+      "item": "minecraft:diamond_block"
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:thunder_hammer",
+    "count": 1
+  }
+}

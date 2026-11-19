@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "modeminecraft:rubis_dagger"
+    },
+    {
+      "item": "minecraft:spider_eye"
+    },
+    {
+      "item": "minecraft:fermented_spider_eye"
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:venom_dagger",
+    "count": 1
+  }
+}

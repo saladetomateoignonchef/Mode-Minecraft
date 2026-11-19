@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "ingredient": {
+    "item": "modeminecraft:deepslate_rubis_ore"
+  },
+  "result": {
+    "id": "modeminecraft:rubis"
+  },
+  "experience": 1.0,
+  "cookingtime": 200
+}

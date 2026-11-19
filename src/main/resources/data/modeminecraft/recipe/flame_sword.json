@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "modeminecraft:rubis_sword"
+    },
+    {
+      "item": "minecraft:blaze_rod"
+    },
+    {
+      "item": "minecraft:fire_charge"
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:flame_sword",
+    "count": 1
+  }
+}

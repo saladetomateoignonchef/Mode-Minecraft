@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "modeminecraft:rubis_ore",
+    "modeminecraft:deepslate_rubis_ore",
+    "modeminecraft:rubis_block"
+  ]
+}
