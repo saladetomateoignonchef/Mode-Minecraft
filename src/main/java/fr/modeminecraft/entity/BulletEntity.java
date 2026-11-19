@@ -47,6 +47,28 @@ public class BulletEntity extends ThrowableItemProjectile {
     /** Arme qui a tiré cette balle (pour ses statistiques), ou vide. */
     private net.minecraft.world.item.ItemStack weapon = net.minecraft.world.item.ItemStack.EMPTY;
 
+    /** Mitrailleuses lourdes : brise les blocs fragiles (vitres, feuilles, lanternes, trappes en bois...). */
+    private boolean breaksFragile;
+    /** Recul supplémentaire infligé à la cible (M2 : fort recul). */
+    private float knockback;
+    /** Obus explosif (Flakvierling 20 mm) : micro-explosion de cette puissance à l'impact. */
+    private float impactExplosion;
+
+    public void setHeavy(boolean breaksFragile, float knockback, float impactExplosion) {
+        this.breaksFragile = breaksFragile;
+        this.knockback = knockback;
+        this.impactExplosion = impactExplosion;
+    }
+
+    private static boolean isFragile(BlockState state) {
+        return state.is(net.minecraft.tags.BlockTags.LEAVES) || state.is(Tags.Blocks.GLASS_BLOCKS) || state.is(Tags.Blocks.GLASS_PANES)
+                || state.is(net.minecraft.world.level.block.Blocks.LANTERN) || state.is(net.minecraft.world.level.block.Blocks.SOUL_LANTERN)
+                || state.is(net.minecraft.tags.BlockTags.WOODEN_TRAPDOORS) || state.is(net.minecraft.tags.BlockTags.FLOWER_POTS)
+                || state.is(net.minecraft.tags.BlockTags.WOODEN_BUTTONS) || state.is(net.minecraft.tags.BlockTags.WOODEN_PRESSURE_PLATES)
+                || state.is(net.minecraft.world.level.block.Blocks.TORCH) || state.is(net.minecraft.world.level.block.Blocks.WALL_TORCH)
+                || state.is(Tags.Blocks.FENCES_WOODEN) || state.is(net.minecraft.world.level.block.Blocks.SCAFFOLDING);
+    }
+
     public void setWeapon(net.minecraft.world.item.ItemStack stack) {
         weapon = stack;
     }
@@ -217,6 +239,11 @@ public class BulletEntity extends ThrowableItemProjectile {
         }
         if (target.hurt(source, finalDamage)) {
             applyTypeEffect(level, target, finalDamage);
+            if (knockback > 0 && target instanceof LivingEntity living) {
+                Vec3 push = getDeltaMovement().normalize().scale(knockback);
+                living.push(push.x, 0.15 * knockback, push.z);
+                living.hurtMarked = true;
+            }
             if (getOwner() instanceof net.minecraft.server.level.ServerPlayer shooter && target instanceof LivingEntity) {
                 int kind = (!target.isAlive() ? fr.modeminecraft.network.HitMarkerPayload.KILL : fr.modeminecraft.network.HitMarkerPayload.HIT)
                         | (headshot ? fr.modeminecraft.network.HitMarkerPayload.HEADSHOT : 0);
@@ -228,6 +255,11 @@ public class BulletEntity extends ThrowableItemProjectile {
             // Supprime l'invincibilité temporaire : sinon les plombs du fusil à pompe
             // et les rafales ne toucheraient qu'une fois sur deux.
             target.invulnerableTime = 0;
+        }
+        if (impactExplosion > 0) {
+            level.explode(this, getX(), getY(), getZ(), impactExplosion, Level.ExplosionInteraction.NONE);
+            discard();
+            return;
         }
         if (pierceLeft > 0) {
             // Balle perforante (Barrett) : elle continue sa route
@@ -292,6 +324,16 @@ public class BulletEntity extends ThrowableItemProjectile {
         BlockState state = level.getBlockState(pos);
         Vec3 hit = result.getLocation();
         AmmoType type = ammoType();
+        if (impactExplosion > 0) {
+            level.explode(this, hit.x, hit.y, hit.z, impactExplosion, Level.ExplosionInteraction.NONE);
+            discard();
+            return;
+        }
+        if (breaksFragile && isFragile(state) && level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
+            level.destroyBlock(pos, false, getOwner());
+            passThrough(pos, hit, getDeltaMovement().normalize(), 0.95f);
+            return;
+        }
         if (type == AmmoType.EXPLOSIVE) {
             level.explode(this, hit.x, hit.y, hit.z, 1.2f, Level.ExplosionInteraction.NONE);
             discard();

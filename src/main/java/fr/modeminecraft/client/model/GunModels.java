@@ -99,7 +99,12 @@ public final class GunModels {
                 event.register(ModelResourceLocation.standalone(defaultPartModel(name(gun), skin, "stock")));
             }
         }
-        event.register(fr.modeminecraft.client.MountedGunRenderer.TRIPOD);
+        for (var kind : fr.modeminecraft.entity.MountedGunEntity.Kind.values()) {   // tourelles, en pièces
+            var geo = kind.geo();
+            if (geo != null) {
+                geo.parts().forEach(p -> event.register(fr.modeminecraft.client.MountedGunRenderer.part(kind.id, p)));
+            }
+        }
         event.register(ModelResourceLocation.standalone(ModeMinecraft.id("item/parts/p90_round")));
         event.register(ModelResourceLocation.standalone(ModeMinecraft.id("item/parts/belt_link")));
         ModItems.ITEMS.getEntries().stream().map(h -> h.get()).filter(i -> i instanceof AttachmentItem)

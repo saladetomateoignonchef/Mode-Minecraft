@@ -1,7 +1,0 @@
-{
-  "parent": "modeminecraft:item/dshk_stock",
-  "textures": {
-    "p": "modeminecraft:item/gun_palette_urban",
-    "particle": "modeminecraft:item/gun_palette_urban"
-  }
-}

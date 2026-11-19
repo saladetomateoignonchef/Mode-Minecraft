@@ -88,6 +88,10 @@ public final class ModDataComponents {
             DATA_COMPONENTS.registerComponentType("progress", b -> b.persistent(fr.modeminecraft.item.gun.GunProgress.CODEC)
                     .networkSynchronized(fr.modeminecraft.item.gun.GunProgress.STREAM_CODEC));
 
+    /** Munitions restantes d'une tourelle démontée. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> TURRET_AMMO =
+            DATA_COMPONENTS.registerComponentType("turret_ammo", b -> b.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT));
+
     private static DeferredHolder<DataComponentType<?>, DataComponentType<Long>> timestamp(String name) {
         // Non sauvegardé sur le disque : ne sert qu'aux animations
         return DATA_COMPONENTS.registerComponentType(name, b -> b.networkSynchronized(ByteBufCodecs.VAR_LONG));

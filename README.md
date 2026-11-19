@@ -68,7 +68,7 @@ Toutes se fabriquent à la table d'armement (onglet Armes).
 - **Arc en rubis** : flèches plus puissantes (+1.5 dégâts de base), 768 de durabilité.
 - **Bâton de feu** : clic droit pour lancer une boule de feu.
 
-### Armes à feu (77 armes + 2 mitrailleuses à poser)
+### Armes à feu (77 armes + 6 tourelles à poser)
 Toutes les armes à feu, munitions et accessoires se fabriquent à la **table d'armement**.
 
 | Catégorie | Armes (calibre) |
@@ -139,7 +139,7 @@ message de mort « X a été abattu par Y ».
 | Pompe / précision | Mossberg 590, M24 SWS (pas de chute de balle sur 100 blocs), CheyTac M200 (.408, très longue portée) | |
 | Lanceurs | M72 LAW (jetable), Panzerfaust 3 (50 dégâts directs, ignore 90 % de l'armure), **FIM-92 Stinger**, **FGM-148 Javelin** | Missiles à **tête chercheuse** : en visant, carré jaune + bip lent pendant la recherche (cône de 12°, 150 blocs, vue dégagée), carré rouge + bip continu une fois verrouillé (1,75 s) ; le missile corrige sa trajectoire de 6° par tick ; le Javelin monte d'abord à 55° puis plonge sur la cible |
 | Spéciales | Arbalète tactique, taser, railgun en rubis, fusil à plasma | Arbalète : silencieuse, carreaux normaux / explosifs / incendiaires, **récupérables** ; taser : paralyse 4 s (non létal, empêche les Creepers d'exploser) ; railgun : 2 s de charge puis un rayon rouge qui traverse tous les ennemis alignés ; plasma : boules d'énergie qui brûlent, **sans munitions** mais il surchauffe |
-| Mitrailleuses posées | **M2 Browning**, **DShK** | On ne peut pas les tenir : on les pose au sol (clic droit sur un bloc), clic droit pour s'installer derrière, clic gauche pour tirer (bande de 100 balles de .50 BMG), Shift pour descendre, frapper la mitrailleuse pour la reprendre |
+| Mitrailleuses posées | **M2 Browning**, **DShK** | voir *Tourelles et mitrailleuses lourdes montables* |
 
 Nouvelles munitions : .45 Colt, .500 S&W, .44 Magnum, .408 CheyTac, balles de plomb, carreaux, cartouches de taser,
 cellules de rubis, ogives de Panzerfaust, missiles Stinger et Javelin. Le P90 a un chargeur transparent où l'on voit
@@ -201,6 +201,30 @@ On relâche pour lancer ; si on la garde trop longtemps, elle explose dans la ma
 - **Mine Claymore** : à poser face à l'ennemi ; elle projette 40 éclats dans un cône quand une créature passe devant (jamais pour son poseur).
 - **Mortier** : clic droit avec un obus = tir en cloche ; clic droit = angle +5° (45 à 85°) ; Shift + clic droit = tourner de 15°.
 - Les explosifs posés explosent en chaîne s'ils sont pris dans une explosion. On les ramasse en les frappant.
+
+### Tourelles et mitrailleuses lourdes montables (6)
+On ne peut pas les tenir à la main : ce sont des entités fixes qu'on déploie.
+
+| Tourelle | Munitions | Caractéristiques | Viseur fixe WWII |
+|---|---|---|---|
+| **Browning M2HB** (.50) | caisse de 100 balles .50 BMG | 550 coups/min, 14 PV, ignore 65 % de l'armure, brise les blocs fragiles, fort recul | hausse rabattable à anneau |
+| **MG-42** (trépied Lafette) | caisse de 250 cartouches 7,92 mm | 1200 coups/min, 6,5 PV ; **surchauffe** après 80 balles sans relâcher (3,5 s bloquée, fumée, canon rouge) | grand **Kreiskorn** en toile d'araignée + mire auxiliaire à gauche |
+| **Vickers / Maxim M1910** | bande en toile de 250 .303 British | 600 coups/min, 7,5 PV, refroidie à l'eau (jamais de surchauffe, vapeur blanche), **bouclier** qui arrête les tirs de face | cran de mire + guidon à lame |
+| **Flakvierling 20 mm** | 4 chargeurs de 20 obus (80) | 4 canons en alternance, 400 coups/min, 16 PV + micro-explosion de 1,5 bloc, 360° et jusqu'à +75° | grand viseur circulaire à croisillons doubles |
+| **Mk 19** | caisse de 32 grenades de 40 mm | 250 coups/min, grenades en cloche (60 blocs) qui explosent à l'impact (3,5 blocs) | hausse graduée en échelle |
+| **DShK** (bonus) | caisse .50 BMG (100) | 600 coups/min, 13 PV | viseur antiaérien à anneaux |
+
+- **Pose** : clic droit sur le dessus d'un bloc solide ; la tourelle est orientée comme ton regard et le trépied se déploie (0,8 s, bruit métallique).
+- **Munitions obligatoires** : vide à la pose. Clic droit avec la caisse compatible : le capot s'ouvre et la bande est engagée (1,5 s).
+  La caisse est sur le flanc gauche et la bande de cartouches en laiton défile pendant le tir ; caisse vide = plus de bande et clic à vide.
+- **Monter** : clic droit (main nue ou autre objet) ; **Shift** pour descendre. Clic gauche = tir, **clic droit = visée** : l'œil se place
+  dans l'axe des anneaux, zoom mécanique x1,3 au plus, la mire tremble pendant les longues rafales. Aucun viseur moderne ne s'y monte.
+- **Angles** : trépieds 90° de chaque côté, de -25° à +45° ; Flakvierling 360°, jusqu'à +75°.
+- Les deux bras du tireur tiennent les poignées arrière et suivent le recul (1re et 3e personne).
+- **HUD** (en bas à droite) : caisse de munitions, compteur exact (`84 / 250`) et thermomètre de surchauffe.
+- **Démontage** : Shift + clic droit avec la **clé à molette**, ou Shift + clic droit maintenu 1,5 s à main nue.
+  Les munitions restantes sont gardées dans l'objet.
+- Fabrication : tourelles et caisses à la table d'armement (lingots et blocs de fer, redstone, pistons...) ; clé à molette aussi à l'établi.
 
 ### Gameplay et progression
 - **Niveaux des armes (1 à 5)** : chaque arme garde ses statistiques (éliminations, tirs à la tête, tirs, ratio)
@@ -318,6 +342,7 @@ tools/generate_gun_models.py    # génère modèles 3D, icônes, skins, accessoi
 tools/generate_ammo.py          # munitions spéciales : pastilles, modèles, recettes
 tools/generate_melee.py         # icônes des 20 armes blanches
 tools/generate_explosives.py    # modèles 3D des grenades et explosifs
+tools/generate_turrets.py       # tourelles en pièces (trépied, arme, capot, bande, viseurs WWII) + turrets.json
 ```
 
 ### Ajouter une nouvelle arme magique

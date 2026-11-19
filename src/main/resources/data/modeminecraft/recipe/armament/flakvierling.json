@@ -1,0 +1,30 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "weapons",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_block",
+      "count": 6
+    },
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 16
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 8
+    },
+    {
+      "item": "minecraft:piston",
+      "count": 4
+    },
+    {
+      "item": "minecraft:tnt",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:flakvierling",
+    "count": 1
+  }
+}

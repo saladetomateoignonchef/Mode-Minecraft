@@ -1,7 +1,0 @@
-{
-  "parent": "modeminecraft:item/m2_browning_stock",
-  "textures": {
-    "p": "modeminecraft:item/gun_palette_ruby",
-    "particle": "modeminecraft:item/gun_palette_ruby"
-  }
-}

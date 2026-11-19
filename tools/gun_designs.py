@@ -1130,45 +1130,7 @@ def design_plasma_rifle():
     return g
 
 
-def heavy_mg(c="k", barrel_end=24.0, jacket=False):
-    """Mitrailleuse lourde posée (sans trépied : il est dessiné à part). Pivot au point (8, 8, 8)."""
-    g = Gun()
-    g.zb(1, 6.4, 9, 10.4, 1.4, c)                     # boîtier
-    g.zb(0, 7.0, 1, 9.8, 1.0, "k")
-    g.zb(-1.5, 7.4, 0, 8.0, 0.25, "k")                # poignées doubles
-    g.zb(-1.5, 9.0, 0, 9.6, 0.25, "k")
-    g.zb(-2.0, 7.4, -1.5, 9.6, 1.0, "k")
-    g.barrel(9, barrel_end, 8.6, 0.55, "k")
-    if jacket:
-        g.zb(9, 7.8, 14, 9.4, 0.85, "m")
-        for i in range(4):
-            g.zb(9.5 + i * 1.2, 9.35, 10.0 + i * 1.2, 9.45, 0.6, "d")
-    g.zb(barrel_end - 2, 8.0, barrel_end - 0.5, 9.2, 0.75, "k")
-    g.zb(3, 4.4, 7, 6.4, 1.6, "T")                    # caisse de munitions
-    g.zb(4, 10.4, 6, 11.6, 0.5, "k")                  # hausse
-    return g
-
-
-def design_m2_browning():
-    return heavy_mg("k", 25, jacket=True)
-
-
-def design_dshk():
-    g = heavy_mg("m", 24, jacket=False)
-    for i in range(4):
-        g.zb(10 + i * 1.6, 7.6, 10.6 + i * 1.6, 9.6, 1.0, "k")   # ailettes de refroidissement
-    g.zb(20, 7.6, 21.5, 9.6, 1.2, "k")                # frein de bouche
-    return g
-
-
-def design_mg_tripod():
-    """Trépied des mitrailleuses posées (dessiné sans rotation)."""
-    g = Gun()
-    g.zb(6.5, 4.0, 9.5, 6.4, 1.2, "k")                # tête pivotante
-    g.add([7.5, -8.0, 7.6], [8.5, 4.0, 8.4], "m", rot=("z", 22.5, [8, 4, 8]))
-    g.add([7.6, -8.0, 7.5], [8.4, 4.0, 8.5], "m", rot=("x", 22.5, [8, 4, 8]))
-    g.add([7.6, -8.0, 7.5], [8.4, 4.0, 8.5], "m", rot=("x", -22.5, [8, 4, 8]))
-    return g
+# Mitrailleuses lourdes posées : voir tools/generate_turrets.py
 
 
 GUNS = {name[len("design_"):]: fn for name, fn in globals().items() if name.startswith("design_")}

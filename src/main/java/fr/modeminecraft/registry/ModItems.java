@@ -458,10 +458,30 @@ public final class ModItems {
                     .automatic().rpm(400).damage(7).magazine(1).velocity(3.0f).spread(1.5f, 0.6f).recoil(0.8f).heat(2.2f)
                     .special(GunStats.Special.NO_AMMO).ammo(ModItems.PLASMA_BALL).sound(ModSounds.SHOT_SUPPRESSED_HEAVY, 0.5f, 1.8f).slots(SIGHT, RAIL));
     // ---- Mitrailleuses lourdes à poser ----
-    public static final DeferredItem<Item> M2_BROWNING = ITEMS.register("m2_browning",
-            () -> new fr.modeminecraft.item.MountedGunItem(fr.modeminecraft.entity.MountedGunEntity.Kind.M2, new Item.Properties().rarity(Rarity.EPIC)));
-    public static final DeferredItem<Item> DSHK = ITEMS.register("dshk",
-            () -> new fr.modeminecraft.item.MountedGunItem(fr.modeminecraft.entity.MountedGunEntity.Kind.DSHK, new Item.Properties().rarity(Rarity.EPIC)));
+    // Tourelles et mitrailleuses lourdes montables (cahier des charges "tourelles")
+    public static final DeferredItem<Item> M2_BROWNING = turret("m2_browning", fr.modeminecraft.entity.MountedGunEntity.Kind.M2);
+    public static final DeferredItem<Item> DSHK = turret("dshk", fr.modeminecraft.entity.MountedGunEntity.Kind.DSHK);
+    public static final DeferredItem<Item> MG42 = turret("mg42", fr.modeminecraft.entity.MountedGunEntity.Kind.MG42);
+    public static final DeferredItem<Item> VICKERS = turret("vickers", fr.modeminecraft.entity.MountedGunEntity.Kind.VICKERS);
+    public static final DeferredItem<Item> FLAKVIERLING = turret("flakvierling", fr.modeminecraft.entity.MountedGunEntity.Kind.FLAK);
+    public static final DeferredItem<Item> MK19 = turret("mk19", fr.modeminecraft.entity.MountedGunEntity.Kind.MK19);
+    public static final DeferredItem<Item> AMMO_BOX_50 = ITEMS.register("ammo_box_50", () -> new fr.modeminecraft.item.TurretAmmoItem(new Item.Properties()));
+    public static final DeferredItem<Item> AMMO_BOX_792 = ITEMS.register("ammo_box_792", () -> new fr.modeminecraft.item.TurretAmmoItem(new Item.Properties()));
+    public static final DeferredItem<Item> AMMO_BELT_303 = ITEMS.register("ammo_belt_303", () -> new fr.modeminecraft.item.TurretAmmoItem(new Item.Properties()));
+    public static final DeferredItem<Item> FLAK_MAGAZINE_20MM = ITEMS.register("flak_magazine_20mm", () -> new fr.modeminecraft.item.TurretAmmoItem(new Item.Properties()));
+    public static final DeferredItem<Item> AMMO_BOX_40MM = ITEMS.register("ammo_box_40mm", () -> new fr.modeminecraft.item.TurretAmmoItem(new Item.Properties()));
+    /** Clé à molette : Shift + clic droit sur une tourelle pour la démonter. */
+    public static final DeferredItem<Item> WRENCH = ITEMS.register("wrench", () -> new Item(new Item.Properties().stacksTo(1)) {
+        @Override
+        public void appendHoverText(net.minecraft.world.item.ItemStack stack, TooltipContext context, java.util.List<net.minecraft.network.chat.Component> tooltip,
+                                    net.minecraft.world.item.TooltipFlag flag) {
+            tooltip.add(net.minecraft.network.chat.Component.translatable("tooltip.modeminecraft.wrench").withStyle(net.minecraft.ChatFormatting.GRAY));
+        }
+    });
+
+    private static DeferredItem<Item> turret(String name, fr.modeminecraft.entity.MountedGunEntity.Kind kind) {
+        return ITEMS.register(name, () -> new fr.modeminecraft.item.MountedGunItem(kind, new Item.Properties().rarity(Rarity.EPIC)));
+    }
 
     // ================= ARMES BLANCHES (cahier des charges) =================
     private static DeferredItem<fr.modeminecraft.item.melee.MeleeWeaponItem> melee(String name, Rarity rarity, float damage, float speed,

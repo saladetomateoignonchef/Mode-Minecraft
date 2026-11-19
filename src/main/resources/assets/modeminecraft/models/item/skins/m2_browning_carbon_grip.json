@@ -1,7 +1,0 @@
-{
-  "parent": "modeminecraft:item/m2_browning_grip",
-  "textures": {
-    "p": "modeminecraft:item/gun_palette_carbon",
-    "particle": "modeminecraft:item/gun_palette_carbon"
-  }
-}

@@ -1,7 +1,0 @@
-{
-  "parent": "modeminecraft:item/mg_tripod_slide",
-  "textures": {
-    "p": "modeminecraft:item/gun_palette_ruby",
-    "particle": "modeminecraft:item/gun_palette_ruby"
-  }
-}

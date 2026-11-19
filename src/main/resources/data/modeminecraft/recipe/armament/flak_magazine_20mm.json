@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "ammo",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 2
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 6
+    },
+    {
+      "item": "minecraft:tnt",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:flak_magazine_20mm",
+    "count": 1
+  }
+}

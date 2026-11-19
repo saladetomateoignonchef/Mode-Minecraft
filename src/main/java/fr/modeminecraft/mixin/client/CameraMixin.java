@@ -17,10 +17,22 @@ public abstract class CameraMixin {
     @Shadow
     protected abstract void move(float zoom, float dy, float dx);
 
+    @Shadow
+    protected abstract void setPosition(net.minecraft.world.phys.Vec3 pos);
+
+    @Shadow
+    public abstract net.minecraft.world.phys.Vec3 getPosition();
+
     @Inject(method = "setup", at = @At("TAIL"))
     private void modeminecraft$lean(BlockGetter level, Entity entity, boolean detached, boolean mirrored, float partialTick,
                                     CallbackInfo ci) {
         if (!detached && entity == Minecraft.getInstance().player) {
+            // Tourelle : en visée, l'œil vient dans l'axe des anneaux du viseur (et la mire tremble au tir)
+            var turret = fr.modeminecraft.client.TurretClient.cameraPosition(getPosition(), partialTick);
+            if (turret != null) {
+                setPosition(turret);
+                return;
+            }
             float lean = AimClient.lean(partialTick);
             if (lean != 0) {
                 // dx positif = vers la gauche de la caméra

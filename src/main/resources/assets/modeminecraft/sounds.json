@@ -231,5 +231,23 @@
     "sounds": [
       "modeminecraft:gun/flash_ring_0"
     ]
+  },
+  "gun.turret_deploy": {
+    "subtitle": "subtitles.modeminecraft.turret_deploy",
+    "sounds": [
+      "modeminecraft:gun/turret_deploy_0"
+    ]
+  },
+  "gun.turret_reload": {
+    "subtitle": "subtitles.modeminecraft.turret_reload",
+    "sounds": [
+      "modeminecraft:gun/turret_reload_0"
+    ]
+  },
+  "gun.dry_fire": {
+    "subtitle": "subtitles.modeminecraft.dry_fire",
+    "sounds": [
+      "modeminecraft:gun/dry_fire_0"
+    ]
   }
 }

@@ -91,13 +91,7 @@ public final class GunHudLayer {
 
     /** Mitrailleuse posée : bande de munitions et chaleur. */
     public static void renderMounted(GuiGraphics graphics, DeltaTracker deltaTracker) {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null || !(mc.player.getVehicle() instanceof fr.modeminecraft.entity.MountedGunEntity gun) || mc.options.hideGui) {
-            return;
-        }
-        int x = graphics.guiWidth() / 2 + 99, y = graphics.guiHeight() - 15;
-        graphics.drawString(mc.font, Component.translatable("hud.modeminecraft.belt", gun.belt(),
-                fr.modeminecraft.entity.MountedGunEntity.BELT_SIZE), x, y, 0xFFFFFF, true);
+        TurretClient.renderHud(graphics, deltaTracker);
     }
 
     private static void renderSight(GuiGraphics graphics, DeltaTracker deltaTracker) {

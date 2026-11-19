@@ -1,0 +1,1 @@
+{"parent":"modeminecraft:turret/part_base","elements":[{"from":[-1.6,10.2,6.6],"to":[8.4,10.8,9.4],"faces":{"north":{"uv":[4,0,8,4],"texture":"#p"},"east":{"uv":[4,0,8,4],"texture":"#p"},"south":{"uv":[4,0,8,4],"texture":"#p"},"west":{"uv":[4,0,8,4],"texture":"#p"},"up":{"uv":[4,0,8,4],"texture":"#p"},"down":{"uv":[4,0,8,4],"texture":"#p"}}}]}

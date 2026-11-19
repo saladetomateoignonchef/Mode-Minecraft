@@ -34,6 +34,9 @@ public final class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> PUMP = register("gun.pump");
     public static final DeferredHolder<SoundEvent, SoundEvent> SHELL_INSERT = register("gun.shell_insert");
     public static final DeferredHolder<SoundEvent, SoundEvent> EMPTY_CLICK = register("gun.empty_click");
+    public static final DeferredHolder<SoundEvent, SoundEvent> TURRET_DEPLOY = register("gun.turret_deploy");
+    public static final DeferredHolder<SoundEvent, SoundEvent> TURRET_RELOAD = register("gun.turret_reload");
+    public static final DeferredHolder<SoundEvent, SoundEvent> TURRET_DRY_FIRE = register("gun.dry_fire");
     public static final DeferredHolder<SoundEvent, SoundEvent> CASING = register("gun.casing");
     public static final DeferredHolder<SoundEvent, SoundEvent> SHELL_CASING = register("gun.shell_casing");
     public static final DeferredHolder<SoundEvent, SoundEvent> HITMARKER = register("gun.hitmarker");

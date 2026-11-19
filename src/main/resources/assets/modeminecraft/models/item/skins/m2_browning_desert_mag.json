@@ -1,7 +1,0 @@
-{
-  "parent": "modeminecraft:item/m2_browning_mag",
-  "textures": {
-    "p": "modeminecraft:item/gun_palette_desert",
-    "particle": "modeminecraft:item/gun_palette_desert"
-  }
-}

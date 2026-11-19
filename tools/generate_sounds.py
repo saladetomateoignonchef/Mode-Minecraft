@@ -150,6 +150,23 @@ def mechanical(name, seed):
         t = t_axis(0.12)
         x = np.sign(np.sin(2 * np.pi * f * t)) * 0.4 * np.clip(t / 0.005, 0, 1) * np.clip((0.12 - t) / 0.01, 0, 1)
         x = band(x, hi=6000)
+    elif name == "turret_deploy":
+        # trépied qui s'ouvre puis se verrouille au sol : chocs métalliques lourds
+        t = t_axis(0.95)
+        x = scrape(rng, t, 0.0, 0.35, 0.25, 800, 4000)
+        for at, f, a in [(0.05, 900, 0.6), (0.35, 700, 0.8), (0.62, 500, 1.0), (0.7, 1400, 0.5)]:
+            x = x + click(rng, t, at, f, 0.05, a, 150, 3000)
+        x = x + np.sin(2 * np.pi * 95 * t) * env(t - 0.62, 0.002, 0.12) * (t > 0.62) * 0.7
+    elif name == "turret_reload":
+        # capot qui s'ouvre, bande engagée (cliquetis), capot claqué
+        t = t_axis(1.5)
+        x = click(rng, t, 0.02, 1800, 0.03, 0.8, 300, 5000) + scrape(rng, t, 0.05, 0.12, 0.2, 2000, 7000)
+        for i in range(10):
+            x = x + click(rng, t, 0.3 + i * 0.07 + rng.uniform(-0.01, 0.01), 3500, 0.008, 0.45, 1500, 9000)
+        x = x + click(rng, t, 1.2, 1100, 0.06, 1.0, 150, 4000) + click(rng, t, 1.32, 2600, 0.02, 0.6, 800, 8000)
+    elif name == "dry_fire":
+        t = t_axis(0.25)
+        x = click(rng, t, 0.0, 2600, 0.012, 1.0, 600, 8000) + click(rng, t, 0.05, 1600, 0.02, 0.5, 300, 4000)
     elif name == "grenade_pin":
         t = t_axis(0.5)
         x = click(rng, t, 0.0, 3200, 0.006, 1.0) + scrape(rng, t, 0.03, 0.08, 0.3, 3000, 9000) \
@@ -268,7 +285,7 @@ def main():
     write_ogg(os.path.join(sounds_dir, "shot", "launcher_1.ogg"), launcher(seed + 4))
     add("shot.launcher", ["shot/launcher_0", "shot/launcher_1"], "shot_launcher")
     for name in ["mag_out", "mag_in", "rack", "bolt", "pump", "shell_insert", "empty_click", "casing", "shell_casing", "hitmarker", "headshot", "garand_ping", "lock_search", "lock_tone",
-                 "grenade_pin", "grenade_bounce", "grenade_beep", "sonar", "flash_ring"]:
+                 "grenade_pin", "grenade_bounce", "grenade_beep", "sonar", "flash_ring", "turret_deploy", "turret_reload", "dry_fire"]:
         files = []
         for v in range(2 if name in ("casing", "mag_in", "rack") else 1):
             write_ogg(os.path.join(sounds_dir, "gun", f"{name}_{v}.ogg"), mechanical(name, seed))
