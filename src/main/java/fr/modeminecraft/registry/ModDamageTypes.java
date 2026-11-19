@@ -13,5 +13,9 @@ public final class ModDamageTypes {
     public static final ResourceKey<DamageType> BULLET =
             ResourceKey.create(Registries.DAMAGE_TYPE, ModeMinecraft.id("bullet"));
 
+    /** Balle perforante (MP7) : ignore l'armure. */
+    public static final ResourceKey<DamageType> BULLET_AP =
+            ResourceKey.create(Registries.DAMAGE_TYPE, ModeMinecraft.id("bullet_ap"));
+
     private ModDamageTypes() {}
 }

@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "weapons",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 4
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 1
+    },
+    {
+      "item": "minecraft:black_dye",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:glock17",
+    "count": 1
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/uzi_mag",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_gold",
+    "particle": "modeminecraft:item/gun_palette_gold"
+  }
+}

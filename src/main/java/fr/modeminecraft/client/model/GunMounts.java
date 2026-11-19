@@ -1,46 +1,81 @@
 package fr.modeminecraft.client.model;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import fr.modeminecraft.ModeMinecraft;
 import fr.modeminecraft.item.gun.AttachmentSlot;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
 import org.joml.Vector3f;
 
+import java.io.Reader;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Points de fixation des accessoires sur chaque arme, en coordonnées de modèle (comme dans Blockbench :
- * le canon pointe vers +X, l'arme est centrée sur Z = 8). Ils correspondent aux modèles de
- * tools/generate_gun_models.py : si tu modifies la forme d'une arme, ajuste ses points ici.
+ * Points de fixation des accessoires sur chaque arme, en coordonnées de modèle
+ * (canon vers +X, arme centrée sur Z = 8).
+ *
+ * Ils sont calculés par tools/generate_gun_models.py à partir des formes de tools/gun_designs.py
+ * et écrits dans assets/modeminecraft/gun_mounts.json, lu ici au chargement des ressources.
  */
 public final class GunMounts {
-    private static final Map<String, Map<AttachmentSlot, Vector3f>> MOUNTS = Map.of(
-            "pistol", mounts(v(8, 11, 8), v(14.1f, 9.25f, 8), null, v(2.8f, 2.4f, 8)),
-            "assault_rifle", mounts(v(6.5f, 10, 8), v(18.55f, 8, 8), v(12, 6.8f, 8), v(8.5f, 6.5f, 8)),
-            "ak47", mounts(v(6.5f, 9.6f, 8), v(19.35f, 7.8f, 8), v(12.5f, 6.6f, 8), v(9, 6.5f, 8)),
-            "m4", mounts(v(7, 10, 8), v(20.05f, 8.2f, 8), v(12.5f, 7, 8), v(8.5f, 6.3f, 8)),
-            "famas", mounts(v(6, 12.3f, 8), v(18.45f, 7.8f, 8), v(12, 6.5f, 8), v(3.9f, 5.5f, 8)),
-            "shotgun", mounts(v(5.5f, 10, 8), v(19.05f, 9.4f, 8), v(12, 6.8f, 8), null),
-            "sniper_rifle", mounts(null, v(22.55f, 7.8f, 8), v(15, 7.3f, 8), null),
-            "rocket_launcher", mounts(null, null, null, null),
-            "rpg7", mounts(v(6.5f, 8.9f, 8), null, null, null));
+    private static final ResourceLocation FILE = ModeMinecraft.id("gun_mounts.json");
+    private static Map<String, Entry> data;
+
+    private record Entry(Map<AttachmentSlot, Vector3f> mounts, boolean magNeedsAmmo) {}
 
     /** Position (en unités de bloc) où placer l'accessoire, ou null si l'arme n'a pas ce point. */
     public static Vector3f get(String gun, AttachmentSlot slot) {
-        Map<AttachmentSlot, Vector3f> m = MOUNTS.get(gun);
-        Vector3f p = m == null ? null : m.get(slot);
+        Entry e = data().get(gun);
+        Vector3f p = e == null ? null : e.mounts.get(slot);
         return p == null ? null : new Vector3f(p).div(16f);
     }
 
-    private static Vector3f v(float x, float y, float z) {
-        return new Vector3f(x, y, z);
+    /** Le chargeur d'origine n'est affiché que si l'arme est chargée (roquette du RPG-7). */
+    public static boolean magNeedsAmmo(String gun) {
+        Entry e = data().get(gun);
+        return e != null && e.magNeedsAmmo;
     }
 
-    private static Map<AttachmentSlot, Vector3f> mounts(Vector3f sight, Vector3f muzzle, Vector3f grip, Vector3f magazine) {
-        Map<AttachmentSlot, Vector3f> m = new EnumMap<>(AttachmentSlot.class);
-        if (sight != null) m.put(AttachmentSlot.SIGHT, sight);
-        if (muzzle != null) m.put(AttachmentSlot.MUZZLE, muzzle);
-        if (grip != null) m.put(AttachmentSlot.GRIP, grip);
-        if (magazine != null) m.put(AttachmentSlot.MAGAZINE, magazine);
-        return m;
+    /** À appeler quand les ressources sont rechargées (F3 + T). */
+    static void clear() {
+        data = null;
+    }
+
+    private static Map<String, Entry> data() {
+        if (data == null) {
+            data = load();
+        }
+        return data;
+    }
+
+    private static Map<String, Entry> load() {
+        Map<String, Entry> result = new HashMap<>();
+        var resource = Minecraft.getInstance().getResourceManager().getResource(FILE);
+        if (resource.isEmpty()) {
+            ModeMinecraft.LOGGER.error("Fichier {} introuvable", FILE);
+            return result;
+        }
+        try (Reader reader = resource.get().openAsReader()) {
+            JsonObject root = JsonParser.parseReader(reader).getAsJsonObject();
+            for (var gun : root.entrySet()) {
+                JsonObject obj = gun.getValue().getAsJsonObject();
+                Map<AttachmentSlot, Vector3f> mounts = new EnumMap<>(AttachmentSlot.class);
+                for (var m : obj.getAsJsonObject("mounts").entrySet()) {
+                    var pos = m.getValue().getAsJsonArray();
+                    AttachmentSlot slot = AttachmentSlot.valueOf(m.getKey().toUpperCase());
+                    mounts.put(slot, new Vector3f(pos.get(0).getAsFloat(), pos.get(1).getAsFloat(), pos.get(2).getAsFloat()));
+                }
+                JsonElement flag = obj.get("mag_needs_ammo");
+                result.put(gun.getKey(), new Entry(mounts, flag != null && flag.getAsBoolean()));
+            }
+        } catch (Exception e) {
+            ModeMinecraft.LOGGER.error("Impossible de lire {}", FILE, e);
+        }
+        return result;
     }
 
     private GunMounts() {}

@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "ammo",
+  "ingredients": [
+    {
+      "item": "minecraft:copper_ingot",
+      "count": 3
+    },
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 2
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 4
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:ammo_50bmg",
+    "count": 8
+  }
+}

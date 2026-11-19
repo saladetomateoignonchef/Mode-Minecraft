@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/aa12_mag",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_woodland",
+    "particle": "modeminecraft:item/gun_palette_woodland"
+  }
+}

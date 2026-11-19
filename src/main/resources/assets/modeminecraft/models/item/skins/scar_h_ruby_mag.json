@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/scar_h_mag",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_ruby",
+    "particle": "modeminecraft:item/gun_palette_ruby"
+  }
+}

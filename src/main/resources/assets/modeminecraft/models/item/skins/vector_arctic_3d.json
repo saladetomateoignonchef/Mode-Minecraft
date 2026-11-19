@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/vector_3d",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_arctic",
+    "particle": "modeminecraft:item/gun_palette_arctic"
+  }
+}

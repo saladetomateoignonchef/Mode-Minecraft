@@ -3,6 +3,7 @@ package fr.modeminecraft.item.gun;
 import fr.modeminecraft.entity.BulletEntity;
 import fr.modeminecraft.entity.RocketEntity;
 import fr.modeminecraft.registry.ModDataComponents;
+import fr.modeminecraft.registry.ModEntities;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -56,7 +57,9 @@ public class GunItem extends Item {
     // Données de l'arme
     // ------------------------------------------------------------------
     public static int getAmmo(ItemStack stack) {
-        return stack.getOrDefault(ModDataComponents.AMMO.get(), 0);
+        // Une arme jetable (AT4) est vendue chargée
+        int empty = stack.getItem() instanceof GunItem gun && gun.stats.disposable() ? gun.stats.magazineSize() : 0;
+        return stack.getOrDefault(ModDataComponents.AMMO.get(), empty);
     }
 
     public static void setAmmo(ItemStack stack, int ammo) {
@@ -129,8 +132,8 @@ public class GunItem extends Item {
             return InteractionResultHolder.fail(stack);
         }
 
-        if (stats.automatic()) {
-            // Le tir se fait dans onUseTick tant que le clic droit est maintenu
+        if (stats.usesHold()) {
+            // Automatique, rafale ou minigun : le tir se fait dans onUseTick
             player.startUsingItem(hand);
         } else {
             shoot(level, player, stack);
@@ -146,7 +149,24 @@ public class GunItem extends Item {
             return;
         }
         int ticksUsed = getUseDuration(stack, entity) - remainingUseDuration;
+        if (stats.spinUp() > 0) {
+            // Minigun : les canons tournent d'abord sans tirer
+            if (ticksUsed < stats.spinUp()) {
+                if (ticksUsed % 4 == 0) {
+                    level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.MINECART_RIDING,
+                            SoundSource.PLAYERS, 0.4f, 0.8f + 1.2f * ticksUsed / stats.spinUp());
+                }
+                return;
+            }
+            ticksUsed -= stats.spinUp();
+        }
         if (ticksUsed % stats.fireDelay() != 0) {
+            return;
+        }
+        if (stats.burst() > 0 && ticksUsed / stats.fireDelay() >= stats.burst()) {
+            // Fin de la rafale : pause avant la suivante
+            player.stopUsingItem();
+            player.getCooldowns().addCooldown(this, stats.burstCooldown());
             return;
         }
         if (getAmmo(stack) <= 0 && !player.getAbilities().instabuild) {
@@ -190,6 +210,12 @@ public class GunItem extends Item {
 
         if (!player.getAbilities().instabuild) {
             setAmmo(stack, getAmmo(stack) - 1);
+            if (stats.disposable() && getAmmo(stack) <= 0) {
+                // AT4 : le tube vide est jeté
+                level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                        SoundEvents.ITEM_BREAK, SoundSource.PLAYERS, 0.8f, 0.8f);
+                stack.shrink(1);
+            }
         }
 
         float pitch = stats.pitch() + (gun.silenced() ? 0.5f : 0f) + (level.random.nextFloat() - 0.5f) * 0.1f;
@@ -214,10 +240,11 @@ public class GunItem extends Item {
     }
 
     protected Projectile createProjectile(Level level, Player player, ResolvedGun gun) {
-        if (stats.explosionPower() > 0) {
-            return new RocketEntity(level, player, stats.explosionPower());
-        }
-        return new BulletEntity(level, player, gun.damage());
+        return switch (stats.projectile()) {
+            case ROCKET -> new RocketEntity(ModEntities.ROCKET.get(), level, player, stats.explosionPower());
+            case GRENADE -> new RocketEntity(ModEntities.GRENADE.get(), level, player, stats.explosionPower());
+            case BULLET -> new BulletEntity(level, player, gun.damage(), stats.pierce(), stats.armorPiercing());
+        };
     }
 
     // ------------------------------------------------------------------
@@ -226,7 +253,7 @@ public class GunItem extends Item {
     public void reload(Player player, ItemStack stack) {
         ResolvedGun gun = resolve(stack);
         int missing = gun.magazineSize() - getAmmo(stack);
-        if (missing <= 0 || player.getCooldowns().isOnCooldown(this)) {
+        if (stats.disposable() || missing <= 0 || player.getCooldowns().isOnCooldown(this)) {
             return;
         }
 
@@ -242,7 +269,8 @@ public class GunItem extends Item {
         setAmmo(stack, getAmmo(stack) + taken);
         // Pas de stopUsingItem() ici : il ne s'exécuterait que côté serveur et désynchroniserait le client.
         // Le cooldown (synchronisé) suffit à suspendre le tir automatique pendant le rechargement.
-        player.getCooldowns().addCooldown(this, gun.reloadTicks());
+        // Rechargement balle par balle : la durée dépend du nombre de balles insérées
+        player.getCooldowns().addCooldown(this, stats.reloadPerRound() ? gun.reloadTicks() * taken : gun.reloadTicks());
         player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
                 SoundEvents.CROSSBOW_LOADING_END, SoundSource.PLAYERS, 1.0f, 0.8f);
     }
@@ -297,7 +325,7 @@ public class GunItem extends Item {
         ResolvedGun gun = resolve(stack);
         tooltip.add(Component.translatable("tooltip.modeminecraft.gun.ammo", getAmmo(stack), gun.magazineSize())
                 .withStyle(ChatFormatting.GOLD));
-        String damage = stats.explosionPower() > 0
+        String damage = stats.projectile() != GunStats.ProjectileKind.BULLET
                 ? Component.translatable("tooltip.modeminecraft.gun.explosive").getString()
                 : (stats.pellets() > 1 ? stats.pellets() + " x " : "") + format(gun.damage());
         tooltip.add(Component.translatable("tooltip.modeminecraft.gun.damage", damage).withStyle(ChatFormatting.GRAY));
@@ -314,7 +342,19 @@ public class GunItem extends Item {
             tooltip.add(Component.translatable("tooltip.modeminecraft.gun.skin", Component.translatable(skin.translationKey()))
                     .withStyle(ChatFormatting.LIGHT_PURPLE));
         }
-        tooltip.add(Component.translatable(stats.automatic()
+        if (stats.burst() > 0) {
+            tooltip.add(Component.translatable("tooltip.modeminecraft.gun.burst", stats.burst()).withStyle(ChatFormatting.BLUE));
+        }
+        if (stats.pierce() > 0) {
+            tooltip.add(Component.translatable("tooltip.modeminecraft.gun.pierce", stats.pierce()).withStyle(ChatFormatting.BLUE));
+        }
+        if (stats.armorPiercing()) {
+            tooltip.add(Component.translatable("tooltip.modeminecraft.gun.armor_piercing").withStyle(ChatFormatting.BLUE));
+        }
+        if (stats.disposable()) {
+            tooltip.add(Component.translatable("tooltip.modeminecraft.gun.disposable").withStyle(ChatFormatting.BLUE));
+        }
+        tooltip.add(Component.translatable(stats.usesHold() && stats.burst() == 0
                 ? "tooltip.modeminecraft.gun.controls_auto"
                 : "tooltip.modeminecraft.gun.controls").withStyle(ChatFormatting.DARK_GRAY));
     }

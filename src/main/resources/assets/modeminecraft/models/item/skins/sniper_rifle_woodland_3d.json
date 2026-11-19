@@ -1,7 +1,0 @@
-{
-  "parent": "modeminecraft:item/sniper_rifle_3d",
-  "textures": {
-    "p": "modeminecraft:item/gun_palette_woodland",
-    "particle": "modeminecraft:item/gun_palette_woodland"
-  }
-}

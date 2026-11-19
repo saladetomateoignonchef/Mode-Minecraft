@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "weapons",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 6
+    },
+    {
+      "item": "minecraft:green_dye",
+      "count": 1
+    },
+    {
+      "item": "minecraft:tnt",
+      "count": 2
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 3
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:at4",
+    "count": 1
+  }
+}

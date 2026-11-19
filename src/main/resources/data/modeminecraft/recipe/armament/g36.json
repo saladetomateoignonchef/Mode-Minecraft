@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "weapons",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 9
+    },
+    {
+      "item": "minecraft:copper_ingot",
+      "count": 2
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 3
+    },
+    {
+      "item": "minecraft:spyglass",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:g36",
+    "count": 1
+  }
+}

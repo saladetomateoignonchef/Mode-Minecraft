@@ -1,7 +1,0 @@
-{
-  "parent": "modeminecraft:item/pistol_3d",
-  "textures": {
-    "p": "modeminecraft:item/gun_palette_ruby",
-    "particle": "modeminecraft:item/gun_palette_ruby"
-  }
-}

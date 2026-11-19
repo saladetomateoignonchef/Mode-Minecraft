@@ -36,14 +36,25 @@ public class BulletEntity extends ThrowableItemProjectile {
     private static final float HEADSHOT_MULTIPLIER = 1.5f;
 
     private float damage = 5.0f;
+    private int pierceLeft = 0;          // ennemis encore traversables
+    private boolean armorPiercing = false;
+    private final java.util.Set<Integer> alreadyHit = new java.util.HashSet<>();
 
     public BulletEntity(EntityType<? extends BulletEntity> type, Level level) {
         super(type, level);
     }
 
-    public BulletEntity(Level level, LivingEntity shooter, float damage) {
+    public BulletEntity(Level level, LivingEntity shooter, float damage, int pierce, boolean armorPiercing) {
         super(ModEntities.BULLET.get(), shooter, level);
         this.damage = damage;
+        this.pierceLeft = pierce;
+        this.armorPiercing = armorPiercing;
+    }
+
+    /** Une balle perforante ne touche pas deux fois le même ennemi. */
+    @Override
+    protected boolean canHitEntity(Entity target) {
+        return super.canHitEntity(target) && !alreadyHit.contains(target.getId());
     }
 
     @Override
@@ -88,13 +99,21 @@ public class BulletEntity extends ThrowableItemProjectile {
             }
         }
 
-        DamageSource source = level.damageSources().source(ModDamageTypes.BULLET, this, getOwner());
+        DamageSource source = level.damageSources().source(
+                armorPiercing ? ModDamageTypes.BULLET_AP : ModDamageTypes.BULLET, this, getOwner());
         if (target.hurt(source, finalDamage)) {
             // Supprime l'invincibilité temporaire : sinon les plombs du fusil à pompe
-            // et les rafales du fusil d'assaut ne toucheraient qu'une fois sur deux.
+            // et les rafales ne toucheraient qu'une fois sur deux.
             target.invulnerableTime = 0;
         }
-        discard();
+        if (pierceLeft > 0) {
+            // Balle perforante (Barrett) : elle continue sa route
+            pierceLeft--;
+            alreadyHit.add(target.getId());
+            damage *= 0.8f;
+        } else {
+            discard();
+        }
     }
 
     @Override
@@ -123,11 +142,15 @@ public class BulletEntity extends ThrowableItemProjectile {
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         tag.putFloat("Damage", damage);
+        tag.putInt("Pierce", pierceLeft);
+        tag.putBoolean("ArmorPiercing", armorPiercing);
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         damage = tag.getFloat("Damage");
+        pierceLeft = tag.getInt("Pierce");
+        armorPiercing = tag.getBoolean("ArmorPiercing");
     }
 }

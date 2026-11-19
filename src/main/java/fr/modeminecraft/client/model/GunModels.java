@@ -98,6 +98,7 @@ public final class GunModels {
     @SubscribeEvent
     public static void onBakingCompleted(ModelEvent.BakingCompleted event) {
         CACHE.clear();
+        GunMounts.clear();
     }
 
     private static BakedModel compose(Key key) {
@@ -149,7 +150,7 @@ public final class GunModels {
                 public BakedModel resolve(BakedModel model, ItemStack stack, @Nullable ClientLevel level,
                                           @Nullable LivingEntity entity, int seed) {
                     // Le RPG-7 n'affiche sa roquette que s'il est chargé
-                    boolean loaded = !gunName.equals("rpg7") || GunItem.getAmmo(stack) > 0;
+                    boolean loaded = !GunMounts.magNeedsAmmo(gunName) || GunItem.getAmmo(stack) > 0;
                     Key key = new Key(gunName, GunItem.getSkin(stack), GunItem.getAttachments(stack), loaded);
                     return CACHE.computeIfAbsent(key, GunModels::compose);
                 }

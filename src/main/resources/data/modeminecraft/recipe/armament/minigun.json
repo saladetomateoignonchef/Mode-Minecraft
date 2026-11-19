@@ -1,0 +1,30 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "weapons",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_block",
+      "count": 4
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 8
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 8
+    },
+    {
+      "item": "minecraft:piston",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:rubis",
+      "count": 5
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:minigun",
+    "count": 1
+  }
+}

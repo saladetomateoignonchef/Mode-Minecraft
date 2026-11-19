@@ -34,20 +34,21 @@ Matériau entre le diamant et la netherite (1800 de durabilité, enchantabilité
 - **Arc en rubis** : flèches plus puissantes (+1.5 dégâts de base), 768 de durabilité.
 - **Bâton de feu** : clic droit pour lancer une boule de feu.
 
-### Armes à feu
+### Armes à feu (44 armes réelles)
 Toutes les armes à feu, munitions et accessoires se fabriquent à la **table d'armement**.
 
-| Arme | Calibre | Dégâts | Chargeur | Cadence | Particularité |
-|---|---|---|---|---|---|
-| Pistolet | 9 mm | 6 | 12 | 240 cps/min | Précis, semi-automatique |
-| Fusil d'assaut | 5,56 mm | 5 | 30 | 400 cps/min | Automatique |
-| **AK-47** | 7,62 mm | 7 | 30 | 400 cps/min | Automatique, gros dégâts, beaucoup de recul |
-| **M4** | 5,56 mm | 5,5 | 30 | 600 cps/min | Automatique, précis |
-| **FAMAS** | 5,56 mm | 4,5 | 25 | 1200 cps/min | Automatique, cadence énorme |
-| Fusil à pompe | calibre 12 | 8 × 3,5 | 6 | 67 cps/min | 8 plombs |
-| Fusil de sniper | 7,62 mm | 22 | 5 | 40 cps/min | Lunette x5 intégrée |
-| Lance-roquettes | roquette RPG | explosion 3 | 1 | — | |
-| **RPG-7** | roquette RPG | explosion 4 | 1 | — | La roquette est visible sur l'arme quand elle est chargée |
+| Catégorie | Armes (calibre) |
+|---|---|
+| Pistolets | Glock 17 (9 mm), Desert Eagle (.50 AE), Beretta M9 (9 mm), Colt M1911 (.45 ACP), Colt Python (.357, recharge balle par balle), Makarov PM (9 mm) |
+| Pistolets-mitrailleurs | MP5 (9 mm), UZI (9 mm), FN P90 (5,7 mm, chargeur de 50), MP7 (4,6 mm, **perce l'armure**), Thompson M1928 (.45, camembert), Kriss Vector (.45, cadence énorme), PPSh-41 (7,62×25, camembert de 71) |
+| Fusils d'assaut | AK-47 (7,62), AK-74 (5,45), M4 (5,56), HK416 (5,56), FAMAS (5,56, 1200 cps/min), FN SCAR-H (7,62), HK G36 (5,56, lunette intégrée), Steyr AUG (5,56, bullpup + lunette), Tavor TAR-21 (5,56), M16A4 (5,56, **rafale de 3**), HK G3 (7,62), AN-94 (5,45, **rafale de 2**) |
+| Fusils de précision | Barrett M82 (.50 BMG, **traverse 3 ennemis**), AWM (.338), Dragunov SVD (7,62×54R), Mosin-Nagant (7,62×54R), Kar98k (7,92), M14 EBR (7,62) |
+| Fusils à pompe (calibre 12) | Remington 870, Benelli M4 (semi-auto), SPAS-12, AA-12 (**automatique**), fusil à canon scié (2 coups) |
+| Mitrailleuses | M249 (5,56), PKM (7,62×54R), M60 (7,62), Minigun M134 (7,62, **1 s de lancement puis 20 balles/s**) |
+| Lanceurs | RPG-7 (roquette RPG), M32 MGL (grenades 40 mm, barillet de 6), M79 (grenade 40 mm), AT4 (**jetable**, vendu chargé) |
+
+**17 munitions réalistes :** 9 mm, .45 ACP, .50 AE, .357 Magnum, 5,7 mm, 4,6 mm, 7,62×25, 5,45 mm, 5,56 mm,
+7,62 mm, 7,62×54R, 7,92 mm, .338 Lapua, .50 BMG, cartouches calibre 12, grenades 40 mm, roquettes RPG.
 
 **Commandes :** clic droit = tirer (rechargement automatique si le chargeur est vide), **R** = recharger,
 **s'accroupir** = viser (moins de dispersion, zoom et réticule si un viseur est monté). Munitions infinies en créatif.
@@ -103,11 +104,12 @@ puis utiliser les configurations de lancement générées (Client, Server).
 
 ### Ajouter une nouvelle arme à feu
 1. `ModItems.java` : copier par exemple `AK47` et changer ses statistiques avec le builder `GunStats`
-   (dégâts, chargeur, cadence, recharge, dispersion, recul, automatique, munitions, emplacements d'accessoires...).
-2. `tools/generate_textures.py` : ajouter son icône 2D (grille de lettres dans `GUNS`).
-3. `tools/generate_gun_models.py` : ajouter sa forme 3D (liste de pavés + chargeur séparé), puis relancer les deux scripts.
-4. `client/model/GunMounts.java` : indiquer où se fixent les accessoires.
-5. Traductions (`lang/*.json`) et recette dans `data/modeminecraft/recipe/armament/`.
+   (dégâts, chargeur, cadence, recharge, dispersion, recul, automatique, rafale, perforation, munitions, emplacements...).
+2. `tools/gun_designs.py` : ajouter une fonction `design_<nom>()` (souvent un simple appel à `rifle(...)`, `pistol(...)`,
+   `bullpup(...)` ou `shotgun(...)` avec d'autres longueurs et couleurs).
+3. Relancer `python3 tools/generate_gun_models.py` : modèle 3D, icône 2D (calculée depuis le modèle),
+   skins et points de fixation des accessoires sont générés automatiquement.
+4. Traductions (`lang/*.json`) et recette dans `data/modeminecraft/recipe/armament/`.
 
 ### Ajouter un skin
 Ajouter une valeur dans `GunSkin.java` et sa palette dans `SKINS` de `tools/generate_gun_models.py`,
@@ -133,7 +135,8 @@ src/main/resources/
 ├── assets/modeminecraft/       # modèles, textures, traductions (en_us, fr_fr)
 └── data/                       # recettes, loot tables, tags, génération du minerai
 tools/generate_textures.py      # génère les textures pixel art (provisoires) + la lunette du sniper
-tools/generate_gun_models.py    # génère les modèles 3D des armes, accessoires et skins
+tools/gun_designs.py            # formes 3D des 44 armes (constructeurs paramétrés)
+tools/generate_gun_models.py    # génère modèles 3D, icônes, skins, accessoires et gun_mounts.json
 ```
 
 ### Ajouter une nouvelle arme magique

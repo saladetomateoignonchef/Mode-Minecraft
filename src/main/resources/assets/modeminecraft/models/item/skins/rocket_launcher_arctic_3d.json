@@ -1,7 +1,0 @@
-{
-  "parent": "modeminecraft:item/rocket_launcher_3d",
-  "textures": {
-    "p": "modeminecraft:item/gun_palette_arctic",
-    "particle": "modeminecraft:item/gun_palette_arctic"
-  }
-}

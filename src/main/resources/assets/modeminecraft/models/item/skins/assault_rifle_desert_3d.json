@@ -1,7 +1,0 @@
-{
-  "parent": "modeminecraft:item/assault_rifle_3d",
-  "textures": {
-    "p": "modeminecraft:item/gun_palette_desert",
-    "particle": "modeminecraft:item/gun_palette_desert"
-  }
-}

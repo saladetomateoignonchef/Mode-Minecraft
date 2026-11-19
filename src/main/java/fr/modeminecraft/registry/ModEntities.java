@@ -27,5 +27,12 @@ public final class ModEntities {
                     .updateInterval(2)
                     .build("rocket"));
 
+    public static final DeferredHolder<EntityType<?>, EntityType<RocketEntity>> GRENADE = ENTITY_TYPES.register("grenade",
+            () -> EntityType.Builder.<RocketEntity>of(RocketEntity::new, MobCategory.MISC)
+                    .sized(0.25f, 0.25f)
+                    .clientTrackingRange(8)
+                    .updateInterval(2)
+                    .build("grenade"));
+
     private ModEntities() {}
 }

@@ -28,9 +28,26 @@ public record GunStats(
         boolean automatic,     // tir continu en maintenant le clic droit
         Supplier<? extends Item> ammo,
         Supplier<SoundEvent> sound, float volume, float pitch,
-        float explosionPower,  // > 0 pour les lance-roquettes
-        float scopeZoom,       // zoom intégré quand on vise (1 = aucun ; 0.2 = x5 pour le sniper)
+        float explosionPower,  // puissance d'explosion (roquettes, grenades)
+        ProjectileKind projectile, // balle, roquette ou grenade
+        float scopeZoom,       // zoom intégré quand on vise (1 = aucun ; 0.2 = x5)
+        SightOverlay scopeOverlay, // réticule de la lunette intégrée
+        int burst,             // > 0 : nombre de balles par rafale (M16A4 = 3)
+        int burstCooldown,     // pause après une rafale
+        boolean reloadPerRound,// rechargement balle par balle (reloadTicks = durée PAR balle)
+        int pierce,            // nombre d'ennemis traversés par une balle
+        boolean armorPiercing, // ignore l'armure
+        int spinUp,            // ticks de lancement avant de tirer (minigun)
+        boolean disposable,    // arme jetable (AT4) : vendue chargée, détruite après le tir
         Set<AttachmentSlot> slots) { // emplacements d'accessoires disponibles
+
+    /** Type de projectile tiré. */
+    public enum ProjectileKind { BULLET, ROCKET, GRENADE }
+
+    /** Mode de tir, pour l'affichage. */
+    public boolean usesHold() {
+        return automatic || burst > 0 || spinUp > 0;
+    }
 
     public static Builder builder() {
         return new Builder();
@@ -40,7 +57,10 @@ public record GunStats(
         private float damage = 5, spread = 2, aimSpread = 1, recoil = 2, velocity = 4, volume = 0.5f, pitch = 1.5f;
         private float explosionPower = 0, scopeZoom = 1;
         private int pellets = 1, magazine = 10, fireDelay = 5, reload = 40;
-        private boolean automatic;
+        private int burst = 0, burstCooldown = 0, pierce = 0, spinUp = 0;
+        private boolean automatic, reloadPerRound, armorPiercing, disposable;
+        private ProjectileKind projectile = ProjectileKind.BULLET;
+        private SightOverlay scopeOverlay = SightOverlay.NONE;
         private Supplier<? extends Item> ammo;
         private Supplier<SoundEvent> sound;
         private final Set<AttachmentSlot> slots = EnumSet.noneOf(AttachmentSlot.class);
@@ -56,13 +76,27 @@ public record GunStats(
         public Builder automatic() { automatic = true; return this; }
         public Builder ammo(Supplier<? extends Item> item) { ammo = item; return this; }
         public Builder sound(Supplier<SoundEvent> s, float vol, float pit) { sound = s; volume = vol; pitch = pit; return this; }
-        public Builder explosion(float power) { explosionPower = power; return this; }
-        public Builder scope(float zoom) { scopeZoom = zoom; return this; }
+        public Builder rocket(float power) { projectile = ProjectileKind.ROCKET; explosionPower = power; return this; }
+        public Builder grenade(float power) { projectile = ProjectileKind.GRENADE; explosionPower = power; return this; }
+        /** Lunette ou viseur intégré : zoom (0.2 = x5) et réticule affiché quand on vise. */
+        public Builder scope(float zoom, SightOverlay overlay) { scopeZoom = zoom; scopeOverlay = overlay; return this; }
+        /** Rafale de n balles par appui, puis pause de cooldown ticks. */
+        public Builder burst(int n, int cooldown) { burst = n; burstCooldown = cooldown; return this; }
+        /** Rechargement balle par balle : ticksPerRound par balle. */
+        public Builder reloadPerRound(int ticksPerRound) { reloadPerRound = true; reload = ticksPerRound; return this; }
+        public Builder pierce(int entities) { pierce = entities; return this; }
+        public Builder armorPiercing() { armorPiercing = true; return this; }
+        /** Canons rotatifs : délai avant le premier tir. */
+        public Builder spinUp(int ticks) { spinUp = ticks; automatic = true; return this; }
+        public Builder disposable() { disposable = true; return this; }
         public Builder slots(AttachmentSlot... s) { slots.addAll(Set.of(s)); return this; }
+        /** Retire tous les emplacements (puis on peut en rajouter avec slots(...)). */
+        public Builder noSlots() { slots.clear(); return this; }
 
         public GunStats build() {
             return new GunStats(damage, pellets, magazine, fireDelay, reload, velocity, spread, aimSpread, recoil,
-                    automatic, ammo, sound, volume, pitch, explosionPower, scopeZoom, Set.copyOf(slots));
+                    automatic, ammo, sound, volume, pitch, explosionPower, projectile, scopeZoom, scopeOverlay,
+                    burst, burstCooldown, reloadPerRound, pierce, armorPiercing, spinUp, disposable, Set.copyOf(slots));
         }
     }
 }

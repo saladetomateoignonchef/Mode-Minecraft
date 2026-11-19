@@ -1,0 +1,30 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "weapons",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 14
+    },
+    {
+      "tag": "minecraft:planks",
+      "count": 3
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 5
+    },
+    {
+      "item": "minecraft:copper_ingot",
+      "count": 3
+    },
+    {
+      "item": "modeminecraft:rubis",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:pkm",
+    "count": 1
+  }
+}

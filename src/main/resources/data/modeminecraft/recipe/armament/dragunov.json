@@ -1,0 +1,30 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "weapons",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 10
+    },
+    {
+      "tag": "minecraft:planks",
+      "count": 3
+    },
+    {
+      "item": "minecraft:spyglass",
+      "count": 1
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 4
+    },
+    {
+      "item": "modeminecraft:rubis",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:dragunov",
+    "count": 1
+  }
+}

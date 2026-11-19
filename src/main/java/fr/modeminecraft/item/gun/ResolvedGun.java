@@ -16,7 +16,7 @@ public record ResolvedGun(
         int magazine = base.magazineSize();
         boolean silenced = false;
         float zoom = base.scopeZoom();
-        SightOverlay overlay = base.scopeZoom() < 1 ? SightOverlay.SNIPER : SightOverlay.NONE;
+        SightOverlay overlay = base.scopeOverlay();
 
         for (var item : attachments.parts().values()) {
             if (!(item instanceof AttachmentItem attachment)) {

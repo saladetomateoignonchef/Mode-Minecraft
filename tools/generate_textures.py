@@ -481,233 +481,11 @@ GUN_COLORS = {
 GUN_OUTLINE = hexc("#121417")
 
 GUNS = {
-    "pistol": [
-        "................",
-        "................",
-        "................",
-        "................",
-        "................",
-        "..hhhhhhhhhhhh..",
-        "..lllllllllllll.",
-        "..mmmmmmmmmmmmm.",
-        "..kkkkkkkkrkkkk.",
-        "..wWWk.do.......",
-        "..wWWk..o.......",
-        "..wWWkooo.......",
-        ".wWWk...........",
-        ".wWWk...........",
-        ".wwkk...........",
-        "................",
-    ],
-    "assault_rifle": [
-        "................",
-        "................",
-        "................",
-        "................",
-        "......kk....k...",
-        ".wWWkhhhhhhhhhh.",
-        ".wWWkllllllllllk",
-        ".wWWkmmmmrmmm...",
-        ".ww.kkd.mmm.....",
-        "....kk...mmm....",
-        "....kk....mm....",
-        "................",
-        "................",
-        "................",
-        "................",
-        "................",
-    ],
-    "shotgun": [
-        "................",
-        "................",
-        "................",
-        "................",
-        "................",
-        "w...hhhhhhhhhhhh",
-        "wWWWmmmmmmmmmmmm",
-        "wWWWkkkkwWWWWWk.",
-        "wWW.kd..........",
-        "ww..............",
-        "................",
-        "................",
-        "................",
-        "................",
-        "................",
-        "................",
-    ],
-    "sniper_rifle": [
-        "................",
-        "................",
-        "................",
-        "....shhhhhs.....",
-        ".....kkkkk......",
-        "......k..k......",
-        "wWWWkhhhhhhhhhhh",
-        "wWWWkmmmrmmkkkkk",
-        "wWW.kkdkk.......",
-        "ww...kk.........",
-        "................",
-        "................",
-        "................",
-        "................",
-        "................",
-        "................",
-    ],
-    "rocket_launcher": [
-        "................",
-        "................",
-        "................",
-        "................",
-        "...kk.....kk....",
-        ".rTTTTTTTTTTTTrk",
-        ".rttttttttttttrk",
-        ".ruuuuuuuuuuuurk",
-        "....kd...kk.....",
-        "....kk...kk.....",
-        "................",
-        "................",
-        "................",
-        "................",
-        "................",
-        "................",
-    ],
-    "bullet": [
-        "................",
-        "................",
-        "................",
-        "....c...c...c...",
-        "...cCc.cCc.cCc..",
-        "...bBb.bBb.bBb..",
-        "...bBb.bBb.bBb..",
-        "...bBb.bBb.bBb..",
-        "...bBb.bBb.bBb..",
-        "...bBb.bBb.bBb..",
-        "...bBb.bBb.bBb..",
-        "...bbb.bbb.bbb..",
-        "................",
-        "................",
-        "................",
-        "................",
-    ],
-    "shotgun_shell": [
-        "................",
-        "................",
-        "................",
-        "....ppp..ppp....",
-        "....pPp..pPp....",
-        "....pPp..pPp....",
-        "....pPp..pPp....",
-        "....pPp..pPp....",
-        "....pPp..pPp....",
-        "....bBb..bBb....",
-        "....bBb..bBb....",
-        "...bbbb.bbbb....",
-        "................",
-        "................",
-        "................",
-        "................",
-    ],
-    "rocket": [
-        "................",
-        "................",
-        "................",
-        "................",
-        "................",
-        "..ff............",
-        "..fggggggggpp...",
-        "..fGGGGGGGGpPp..",
-        "..fggggggggpp...",
-        "..ff............",
-        "................",
-        "................",
-        "................",
-        "................",
-        "................",
-        "................",
-    ],
 }
 
-# Anciennes munitions génériques remplacées par les calibres
-del GUNS["bullet"], GUNS["rocket"]
 
 # Lignes plus courtes que 16 caractères : complétées automatiquement par des "."
-GUNS.update({
-    "ak47": [
-        "", "", "", "", "",
-        "..........k",
-        "wWWkmmmmmWWWkkkk",
-        "wWWWkmmmmWWWk",
-        "wW...kd.mm",
-        "w....kk..mm",
-        "......k...mm",
-        "...........m",
-    ],
-    "m4": [
-        "", "", "", "",
-        "...kkkkkkkk",
-        "kkkkmmmmmmkkk.k",
-        "kkk.mmmmmmkkkkkk",
-        "kk...kd.mm",
-        "k....kk.mm",
-        ".....k..mm",
-    ],
-    "famas": [
-        "", "", "",
-        "..kkkkkkkkkk",
-        "..k........k",
-        "kkkkkkkkkkkkk",
-        "kmmmmmmmmmmmkkkk",
-        "kkkkkkkkkkkkk",
-        "...mm..kkdk",
-        "...mm..kk.k",
-        "...mm...kkk",
-    ],
-    "rpg7": [
-        "", "", "", "", "",
-        "............TT",
-        "...k.......TTTT",
-        "kkmmmWWWWmmtTTTT",
-        "kkmmmWWWWmmtTTTT",
-        "....kd..k..TTTT",
-        "....kk..k...TT",
-    ],
-    "ammo_9mm": [
-        "", "", "", "", "",
-        "....c...c...c",
-        "...cCc.cCc.cCc",
-        "...bBb.bBb.bBb",
-        "...bBb.bBb.bBb",
-        "...bBb.bBb.bBb",
-        "...bbb.bbb.bbb",
-    ],
-    "ammo_556": [
-        "",
-        "....n...n...n",
-        "....c...c...c",
-        "...cCc.cCc.cCc",
-        "....b...b...b",
-        "...bBb.bBb.bBb",
-        "...bBb.bBb.bBb",
-        "...bBb.bBb.bBb",
-        "...bBb.bBb.bBb",
-        "...bBb.bBb.bBb",
-        "...bBb.bBb.bBb",
-        "...bbb.bbb.bbb",
-    ],
-    "ammo_762": [
-        "",
-        "....c...c...c",
-        "...cCc.cCc.cCc",
-        "...cCc.cCc.cCc",
-        "....e...e...e",
-        "...eEe.eEe.eEe",
-        "...eEe.eEe.eEe",
-        "...eEe.eEe.eEe",
-        "...eEe.eEe.eEe",
-        "...eEe.eEe.eEe",
-        "...eEe.eEe.eEe",
-        "...eee.eee.eee",
-    ],
+GUNS.update({  # icônes dessinées à la main (les armes, elles, sont générées depuis leur modèle 3D)
     "rpg_rocket": [
         "", "", "", "", "",
         ".........TTT",
@@ -823,6 +601,65 @@ GUNS.update({
         "....kkkkkk",
     ],
 })
+
+
+# ---------- Munitions : cartouches dessinées selon le calibre ----------
+# (douille, douille claire, pointe, pointe claire, longueur de la douille, longueur de la pointe, largeur)
+CARTRIDGES = {
+    "ammo_9mm": ("#b8901c", "#e8cf5a", "#b5603a", "#e08a5a", 4, 2, 3),
+    "ammo_45acp": ("#b8901c", "#e8cf5a", "#9a9aa0", "#c8c8d0", 4, 2, 3),
+    "ammo_50ae": ("#9aa3ad", "#d0d6dc", "#b5603a", "#e08a5a", 5, 3, 3),
+    "ammo_357": ("#b8901c", "#e8cf5a", "#7d838b", "#b9bec4", 6, 2, 3),
+    "ammo_57": ("#b8901c", "#e8cf5a", "#2b2f36", "#4a505a", 6, 3, 2),
+    "ammo_46": ("#b8901c", "#e8cf5a", "#3a3f46", "#6f7782", 5, 3, 2),
+    "ammo_762x25": ("#b8901c", "#e8cf5a", "#b5603a", "#e08a5a", 5, 2, 2),
+    "ammo_545": ("#5a5e4a", "#8a8e72", "#b5603a", "#e08a5a", 7, 3, 2),
+    "ammo_556": ("#b8901c", "#e8cf5a", "#3f8a3a", "#6fc060", 7, 3, 2),
+    "ammo_762": ("#6a6e58", "#989c82", "#b5603a", "#e08a5a", 7, 3, 3),
+    "ammo_762x54r": ("#b8901c", "#e8cf5a", "#c8223b", "#ef4f69", 8, 3, 3),
+    "ammo_792": ("#b8901c", "#e8cf5a", "#7d838b", "#b9bec4", 8, 3, 3),
+    "ammo_338": ("#b8901c", "#e8cf5a", "#2b2f36", "#5a5e66", 9, 3, 3),
+    "ammo_50bmg": ("#b8901c", "#e8cf5a", "#2b2f36", "#4a505a", 9, 4, 4),
+    "shotgun_shell": ("#9e1c26", "#d8404e", "#b8901c", "#e8cf5a", 7, 0, 4),
+}
+
+
+def cartridge_icon(case, case_l, tip, tip_l, case_len, tip_len, width):
+    """Trois cartouches debout, côte à côte (une seule si elles sont très grosses)."""
+    cv = Canvas()
+    count = 3 if width <= 3 else 2
+    total = count * width + (count - 1)
+    x_start = (16 - total) // 2
+    bottom = 13
+    for i in range(count):
+        x0 = x_start + i * (width + 1)
+        for x in range(x0, x0 + width):
+            light = x == x0 + width // 2
+            for y in range(bottom - case_len, bottom):
+                cv.put(x, y, hexc(case_l if light else case), GUN_OUTLINE)
+            for k in range(tip_len):  # pointe qui s'affine
+                y = bottom - case_len - 1 - k
+                inset = (k * width) // (tip_len + 1)
+                if x0 + inset <= x < x0 + width - inset or (width == 2 and k < tip_len - 1):
+                    cv.put(x, y, hexc(tip_l if light else tip), GUN_OUTLINE)
+        if tip_len == 0:  # cartouche de fusil à pompe : culot en laiton
+            for x in range(x0, x0 + width):
+                cv.put(x, bottom - 1, hexc("#e8cf5a" if x == x0 + width // 2 else "#b8901c"), GUN_OUTLINE)
+                cv.put(x, bottom - 2, hexc("#b8901c"), GUN_OUTLINE)
+    return cv.image()
+
+
+GRENADE_40MM = [
+    "", "", "", "",
+    "......TTTT",
+    ".....TTTTTT",
+    ".....TTTTTT",
+    ".....bBBBbb",
+    ".....bBBBbb",
+    ".....bBBBbb",
+    ".....bBBBbb",
+    "....bbbbbbbb",
+]
 
 
 def gun_icon(rows):
@@ -1057,6 +894,9 @@ def main():
 
     for name, rows in GUNS.items():
         items[name] = gun_icon(rows)
+    for name, spec in CARTRIDGES.items():
+        items[name] = cartridge_icon(*spec)
+    items["grenade_40mm"] = gun_icon(GRENADE_40MM)
 
     for name, img in items.items():
         save(img, "item", f"{name}.png")

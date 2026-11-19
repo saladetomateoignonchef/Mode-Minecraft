@@ -13,7 +13,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * Roquette : laisse une traînée de fumée et explose au premier contact.
+ * Roquette (ou grenade 40 mm) : laisse une traînée de fumée et explose au premier contact.
  * Les dégâts aux blocs suivent la règle mobGriefing (comme un creeper).
  */
 public class RocketEntity extends ThrowableItemProjectile {
@@ -25,19 +25,24 @@ public class RocketEntity extends ThrowableItemProjectile {
         super(type, level);
     }
 
-    public RocketEntity(Level level, LivingEntity shooter, float explosionPower) {
-        super(ModEntities.ROCKET.get(), shooter, level);
+    public RocketEntity(EntityType<? extends RocketEntity> type, Level level, LivingEntity shooter, float explosionPower) {
+        super(type, shooter, level);
         this.explosionPower = explosionPower;
+    }
+
+    /** Grenade 40 mm : tir en cloche, petite traînée. Roquette : presque droite, grosse traînée. */
+    private boolean isGrenade() {
+        return getType() == ModEntities.GRENADE.get();
     }
 
     @Override
     protected Item getDefaultItem() {
-        return ModItems.RPG_ROCKET.get();
+        return isGrenade() ? ModItems.GRENADE_40MM.get() : ModItems.RPG_ROCKET.get();
     }
 
     @Override
     protected double getDefaultGravity() {
-        return 0.005;
+        return isGrenade() ? 0.04 : 0.005;
     }
 
     @Override
@@ -45,8 +50,12 @@ public class RocketEntity extends ThrowableItemProjectile {
         super.tick();
         if (level().isClientSide) {
             Vec3 back = position().subtract(getDeltaMovement().scale(0.5));
-            level().addParticle(ParticleTypes.LARGE_SMOKE, back.x, back.y, back.z, 0, 0.02, 0);
-            level().addParticle(ParticleTypes.FLAME, back.x, back.y, back.z, 0, 0, 0);
+            if (isGrenade()) {
+                level().addParticle(ParticleTypes.SMOKE, back.x, back.y, back.z, 0, 0, 0);
+            } else {
+                level().addParticle(ParticleTypes.LARGE_SMOKE, back.x, back.y, back.z, 0, 0.02, 0);
+                level().addParticle(ParticleTypes.FLAME, back.x, back.y, back.z, 0, 0, 0);
+            }
         } else if (tickCount > MAX_LIFE_TICKS) {
             explode();
         }

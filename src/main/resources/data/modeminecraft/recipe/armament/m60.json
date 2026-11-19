@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "weapons",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 15
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 5
+    },
+    {
+      "item": "minecraft:copper_ingot",
+      "count": 3
+    },
+    {
+      "item": "modeminecraft:rubis",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:m60",
+    "count": 1
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "weapons",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_block",
+      "count": 2
+    },
+    {
+      "item": "minecraft:spyglass",
+      "count": 1
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 6
+    },
+    {
+      "item": "modeminecraft:rubis",
+      "count": 3
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:barrett_m82",
+    "count": 1
+  }
+}

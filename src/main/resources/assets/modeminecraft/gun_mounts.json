@@ -1,0 +1,977 @@
+{
+  "aa12": {
+    "mounts": {
+      "muzzle": [
+        18.05,
+        8.8,
+        8
+      ],
+      "magazine": [
+        9.5,
+        6.6,
+        8
+      ],
+      "sight": [
+        8,
+        11.5,
+        8
+      ],
+      "grip": [
+        12,
+        6.6,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "ak47": {
+    "mounts": {
+      "muzzle": [
+        19.35,
+        7.8,
+        8
+      ],
+      "sight": [
+        6.5,
+        9.6,
+        8
+      ],
+      "grip": [
+        12.5,
+        6.6,
+        8
+      ],
+      "magazine": [
+        9,
+        6.5,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "ak74": {
+    "mounts": {
+      "muzzle": [
+        19.35,
+        7.8,
+        8
+      ],
+      "sight": [
+        6.75,
+        9.0,
+        8
+      ],
+      "grip": [
+        12.5,
+        6.6,
+        8
+      ],
+      "magazine": [
+        9.0,
+        6.5,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "an94": {
+    "mounts": {
+      "muzzle": [
+        19.85,
+        7.8,
+        8
+      ],
+      "sight": [
+        7.0,
+        9.45,
+        8
+      ],
+      "grip": [
+        12.5,
+        6.6,
+        8
+      ],
+      "magazine": [
+        9.4,
+        6.5,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "at4": {
+    "mounts": {
+      "muzzle": [
+        18.35,
+        8.1,
+        8
+      ],
+      "sight": [
+        7,
+        9.6,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "aug": {
+    "mounts": {
+      "muzzle": [
+        18.65,
+        7.8,
+        8
+      ],
+      "sight": [
+        4.5,
+        9.0,
+        8
+      ],
+      "magazine": [
+        3.8,
+        5.8,
+        8
+      ],
+      "grip": [
+        12.0,
+        7.0,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "awm": {
+    "mounts": {
+      "muzzle": [
+        25.85,
+        8.0,
+        8
+      ],
+      "sight": [
+        6.75,
+        9.45,
+        8
+      ],
+      "grip": [
+        10.5,
+        6.6,
+        8
+      ],
+      "magazine": [
+        8.5,
+        6.2,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "barrett_m82": {
+    "mounts": {
+      "muzzle": [
+        26.55,
+        8.4,
+        8
+      ],
+      "sight": [
+        7.25,
+        10.05,
+        8
+      ],
+      "grip": [
+        12.0,
+        6.6,
+        8
+      ],
+      "magazine": [
+        9.0,
+        6.0,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "benelli_m4": {
+    "mounts": {
+      "muzzle": [
+        19.55,
+        9.4,
+        8
+      ],
+      "sight": [
+        5.5,
+        10.0,
+        8
+      ],
+      "grip": [
+        12,
+        6.9,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "beretta_m9": {
+    "mounts": {
+      "muzzle": [
+        13.85,
+        9.2,
+        8
+      ],
+      "sight": [
+        8.4,
+        10.8,
+        8
+      ],
+      "magazine": [
+        2.585,
+        2.38,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "colt_m1911": {
+    "mounts": {
+      "muzzle": [
+        13.55,
+        9.1,
+        8
+      ],
+      "sight": [
+        8.25,
+        10.6,
+        8
+      ],
+      "magazine": [
+        2.585,
+        2.38,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "colt_python": {
+    "mounts": {
+      "sight": [
+        10.5,
+        10.3,
+        8
+      ],
+      "muzzle": [
+        16.05,
+        9.2,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "desert_eagle": {
+    "mounts": {
+      "muzzle": [
+        14.55,
+        9.5,
+        8
+      ],
+      "sight": [
+        8.75,
+        11.4,
+        8
+      ],
+      "magazine": [
+        2.508,
+        2.195,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "dragunov": {
+    "mounts": {
+      "muzzle": [
+        24.65,
+        7.9,
+        8
+      ],
+      "sight": [
+        6.75,
+        9.0,
+        8
+      ],
+      "grip": [
+        12.75,
+        6.6,
+        8
+      ],
+      "magazine": [
+        9.0,
+        6.5,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "famas": {
+    "mounts": {
+      "muzzle": [
+        18.65,
+        7.8,
+        8
+      ],
+      "magazine": [
+        3.9,
+        5.5,
+        8
+      ],
+      "sight": [
+        6,
+        12.0,
+        8
+      ],
+      "grip": [
+        12,
+        6.5,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "g3": {
+    "mounts": {
+      "muzzle": [
+        21.65,
+        8.2,
+        8
+      ],
+      "sight": [
+        7.0,
+        9.4,
+        8
+      ],
+      "grip": [
+        13.0,
+        6.9,
+        8
+      ],
+      "magazine": [
+        8.8,
+        6.4,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "g36": {
+    "mounts": {
+      "muzzle": [
+        19.15,
+        8.0,
+        8
+      ],
+      "sight": [
+        6.75,
+        11.7,
+        8
+      ],
+      "grip": [
+        12.5,
+        6.8,
+        8
+      ],
+      "magazine": [
+        8.8,
+        6.4,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "glock17": {
+    "mounts": {
+      "muzzle": [
+        13.05,
+        9.2,
+        8
+      ],
+      "sight": [
+        8.0,
+        10.8,
+        8
+      ],
+      "magazine": [
+        2.585,
+        2.38,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "hk416": {
+    "mounts": {
+      "muzzle": [
+        20.15,
+        8.2,
+        8
+      ],
+      "sight": [
+        9.25,
+        9.85,
+        8
+      ],
+      "grip": [
+        12.75,
+        6.8,
+        8
+      ],
+      "magazine": [
+        8.5,
+        6.4,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "kar98k": {
+    "mounts": {
+      "muzzle": [
+        23.55,
+        8.4,
+        8
+      ],
+      "sight": [
+        6.5,
+        9.0,
+        8
+      ],
+      "grip": [
+        15,
+        6.6,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "m14_ebr": {
+    "mounts": {
+      "muzzle": [
+        21.85,
+        8.2,
+        8
+      ],
+      "sight": [
+        9.5,
+        9.85,
+        8
+      ],
+      "grip": [
+        13.5,
+        6.6,
+        8
+      ],
+      "magazine": [
+        9.0,
+        6.4,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "m16a4": {
+    "mounts": {
+      "muzzle": [
+        22.15,
+        8.2,
+        8
+      ],
+      "sight": [
+        6.75,
+        9.85,
+        8
+      ],
+      "grip": [
+        12.75,
+        6.9,
+        8
+      ],
+      "magazine": [
+        8.5,
+        6.4,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "m249": {
+    "mounts": {
+      "muzzle": [
+        21.65,
+        8.0,
+        8
+      ],
+      "sight": [
+        7.5,
+        11.9,
+        8
+      ],
+      "grip": [
+        13.75,
+        6.6,
+        8
+      ],
+      "magazine": [
+        8.5,
+        6.2,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "m32_mgl": {
+    "mounts": {
+      "muzzle": [
+        17.05,
+        8.6,
+        8
+      ],
+      "sight": [
+        10.5,
+        11.45,
+        8
+      ],
+      "grip": [
+        14.5,
+        7.5,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "m4": {
+    "mounts": {
+      "muzzle": [
+        20.15,
+        8.2,
+        8
+      ],
+      "sight": [
+        6.75,
+        9.85,
+        8
+      ],
+      "grip": [
+        12.5,
+        7.0,
+        8
+      ],
+      "magazine": [
+        8.5,
+        6.4,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "m60": {
+    "mounts": {
+      "muzzle": [
+        23.15,
+        8.0,
+        8
+      ],
+      "sight": [
+        7.5,
+        11.3,
+        8
+      ],
+      "grip": [
+        14.0,
+        6.6,
+        8
+      ],
+      "magazine": [
+        8.0,
+        6.2,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "m79": {
+    "mounts": {
+      "muzzle": [
+        15.55,
+        8.8,
+        8
+      ],
+      "sight": [
+        9,
+        10.2,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "makarov": {
+    "mounts": {
+      "muzzle": [
+        12.05,
+        9.05,
+        8
+      ],
+      "sight": [
+        7.5,
+        10.5,
+        8
+      ],
+      "magazine": [
+        2.815,
+        2.934,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "minigun": {
+    "mounts": {
+      "muzzle": [
+        21.05,
+        8.3,
+        8
+      ],
+      "sight": [
+        4,
+        13.2,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "mosin_nagant": {
+    "mounts": {
+      "muzzle": [
+        24.05,
+        8.4,
+        8
+      ],
+      "sight": [
+        6.5,
+        9.0,
+        8
+      ],
+      "grip": [
+        15,
+        6.6,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "mp5": {
+    "mounts": {
+      "muzzle": [
+        15.55,
+        7.9,
+        8
+      ],
+      "sight": [
+        7.0,
+        9.4,
+        8
+      ],
+      "grip": [
+        12.5,
+        6.9,
+        8
+      ],
+      "magazine": [
+        9.0,
+        6.4,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "mp7": {
+    "mounts": {
+      "sight": [
+        7.0,
+        9.85,
+        8
+      ],
+      "muzzle": [
+        13.55,
+        8.2,
+        8
+      ],
+      "grip": [
+        9.5,
+        6.6,
+        8
+      ],
+      "magazine": [
+        5.8,
+        2.4,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "p90": {
+    "mounts": {
+      "muzzle": [
+        15.15,
+        7.8,
+        8
+      ],
+      "sight": [
+        9.5,
+        9.9,
+        8
+      ],
+      "grip": [
+        12.25,
+        6.8,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "pkm": {
+    "mounts": {
+      "muzzle": [
+        22.65,
+        8.2,
+        8
+      ],
+      "sight": [
+        7.5,
+        9.4,
+        8
+      ],
+      "grip": [
+        12.5,
+        7.6,
+        8
+      ],
+      "magazine": [
+        8.0,
+        6.2,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "ppsh41": {
+    "mounts": {
+      "muzzle": [
+        18.05,
+        8.6,
+        8
+      ],
+      "sight": [
+        6.25,
+        9.0,
+        8
+      ],
+      "grip": [
+        9.75,
+        6.5,
+        8
+      ],
+      "magazine": [
+        9.0,
+        6.0,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "remington_870": {
+    "mounts": {
+      "muzzle": [
+        19.55,
+        9.4,
+        8
+      ],
+      "sight": [
+        5.5,
+        10.0,
+        8
+      ],
+      "grip": [
+        12.0,
+        6.9,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "rpg7": {
+    "mounts": {
+      "sight": [
+        6.5,
+        8.9,
+        8
+      ]
+    },
+    "mag_needs_ammo": true
+  },
+  "sawed_off": {
+    "mounts": {
+      "muzzle": [
+        12.55,
+        8.75,
+        8
+      ],
+      "sight": [
+        9,
+        9.4,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "scar_h": {
+    "mounts": {
+      "muzzle": [
+        20.35,
+        8.2,
+        8
+      ],
+      "sight": [
+        9.0,
+        9.85,
+        8
+      ],
+      "grip": [
+        12.75,
+        7.0,
+        8
+      ],
+      "magazine": [
+        8.5,
+        6.4,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "spas12": {
+    "mounts": {
+      "muzzle": [
+        18.55,
+        9.4,
+        8
+      ],
+      "sight": [
+        5.5,
+        10.0,
+        8
+      ],
+      "grip": [
+        12.0,
+        6.9,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "tavor": {
+    "mounts": {
+      "muzzle": [
+        18.65,
+        7.8,
+        8
+      ],
+      "sight": [
+        6.25,
+        9.85,
+        8
+      ],
+      "magazine": [
+        3.8,
+        5.6,
+        8
+      ],
+      "grip": [
+        13.0,
+        6.8,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "thompson": {
+    "mounts": {
+      "muzzle": [
+        17.95,
+        8.4,
+        8
+      ],
+      "sight": [
+        6.75,
+        9.4,
+        8
+      ],
+      "grip": [
+        11.5,
+        5.5,
+        8
+      ],
+      "magazine": [
+        8.5,
+        6.4,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "uzi": {
+    "mounts": {
+      "muzzle": [
+        14.55,
+        8.0,
+        8
+      ],
+      "sight": [
+        7,
+        9.9,
+        8
+      ],
+      "grip": [
+        11,
+        6.5,
+        8
+      ],
+      "magazine": [
+        7.2,
+        2.0,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
+  "vector": {
+    "mounts": {
+      "sight": [
+        6.5,
+        10.05,
+        8
+      ],
+      "muzzle": [
+        14.05,
+        8.6,
+        8
+      ],
+      "magazine": [
+        9.5,
+        4.5,
+        8
+      ],
+      "grip": [
+        12.5,
+        7.8,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  }
+}

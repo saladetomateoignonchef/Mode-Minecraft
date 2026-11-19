@@ -1,0 +1,73 @@
+{
+  "parent": "modeminecraft:item/parts/part_base",
+  "elements": [
+    {
+      "from": [
+        -0.5,
+        9.0,
+        7.25
+      ],
+      "to": [
+        10.5,
+        9.9,
+        8.75
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            12,
+            4,
+            16,
+            8
+          ],
+          "texture": "#p"
+        },
+        "east": {
+          "uv": [
+            12,
+            4,
+            16,
+            8
+          ],
+          "texture": "#p"
+        },
+        "south": {
+          "uv": [
+            12,
+            4,
+            16,
+            8
+          ],
+          "texture": "#p"
+        },
+        "west": {
+          "uv": [
+            12,
+            4,
+            16,
+            8
+          ],
+          "texture": "#p"
+        },
+        "up": {
+          "uv": [
+            12,
+            4,
+            16,
+            8
+          ],
+          "texture": "#p"
+        },
+        "down": {
+          "uv": [
+            12,
+            4,
+            16,
+            8
+          ],
+          "texture": "#p"
+        }
+      }
+    }
+  ]
+}
