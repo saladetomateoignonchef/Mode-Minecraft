@@ -1,6 +1,7 @@
 package fr.modeminecraft.client;
 
 import fr.modeminecraft.item.gun.GunItem;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -53,7 +54,9 @@ public final class GunHudLayer {
         int size = Math.min(w, h);
         int x = (w - size) / 2;
         int y = (h - size) / 2;
+        RenderSystem.enableBlend(); // le centre de la lunette est transparent
         graphics.blit(SCOPE, x, y, -90, 0.0f, 0.0f, size, size, size, size);
+        RenderSystem.disableBlend();
         // Bandes noires autour de la lunette
         graphics.fill(0, 0, w, y, -90, 0xFF000000);
         graphics.fill(0, y + size, w, h, -90, 0xFF000000);
