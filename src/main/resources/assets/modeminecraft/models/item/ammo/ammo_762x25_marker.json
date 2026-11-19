@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "modeminecraft:item/ammo_762x25",
+    "layer1": "modeminecraft:item/ammo_badge/marker"
+  }
+}

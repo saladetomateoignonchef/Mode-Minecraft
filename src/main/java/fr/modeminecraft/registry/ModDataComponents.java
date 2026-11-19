@@ -2,6 +2,7 @@ package fr.modeminecraft.registry;
 
 import com.mojang.serialization.Codec;
 import fr.modeminecraft.ModeMinecraft;
+import fr.modeminecraft.item.gun.AmmoType;
 import fr.modeminecraft.item.gun.FireMode;
 import fr.modeminecraft.item.gun.GunAttachments;
 import fr.modeminecraft.item.gun.GunSkin;
@@ -41,6 +42,10 @@ public final class ModDataComponents {
             DATA_COMPONENTS.registerComponentType("fire_mode", builder -> builder
                     .persistent(FireMode.CODEC)
                     .networkSynchronized(FireMode.STREAM_CODEC));
+
+    /** Type d'une munition (sur les piles de munitions) ou des balles chargées (sur les armes). */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<AmmoType>> AMMO_TYPE =
+            DATA_COMPONENTS.registerComponentType("ammo_type", b -> b.persistent(AmmoType.CODEC).networkSynchronized(AmmoType.STREAM_CODEC));
 
     /** Une balle est-elle dans la chambre ? */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> CHAMBERED =

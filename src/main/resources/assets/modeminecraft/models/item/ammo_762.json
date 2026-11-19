@@ -2,5 +2,79 @@
   "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "modeminecraft:item/ammo_762"
-  }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "modeminecraft:ammo_type": 0.01
+      },
+      "model": "modeminecraft:item/ammo/ammo_762_ap"
+    },
+    {
+      "predicate": {
+        "modeminecraft:ammo_type": 0.02
+      },
+      "model": "modeminecraft:item/ammo/ammo_762_he"
+    },
+    {
+      "predicate": {
+        "modeminecraft:ammo_type": 0.03
+      },
+      "model": "modeminecraft:item/ammo/ammo_762_tracer"
+    },
+    {
+      "predicate": {
+        "modeminecraft:ammo_type": 0.04
+      },
+      "model": "modeminecraft:item/ammo/ammo_762_incendiary"
+    },
+    {
+      "predicate": {
+        "modeminecraft:ammo_type": 0.05
+      },
+      "model": "modeminecraft:item/ammo/ammo_762_hollow_point"
+    },
+    {
+      "predicate": {
+        "modeminecraft:ammo_type": 0.06
+      },
+      "model": "modeminecraft:item/ammo/ammo_762_subsonic"
+    },
+    {
+      "predicate": {
+        "modeminecraft:ammo_type": 0.07
+      },
+      "model": "modeminecraft:item/ammo/ammo_762_rubber"
+    },
+    {
+      "predicate": {
+        "modeminecraft:ammo_type": 0.08
+      },
+      "model": "modeminecraft:item/ammo/ammo_762_marker"
+    },
+    {
+      "predicate": {
+        "modeminecraft:ammo_type": 0.09
+      },
+      "model": "modeminecraft:item/ammo/ammo_762_venom"
+    },
+    {
+      "predicate": {
+        "modeminecraft:ammo_type": 0.1
+      },
+      "model": "modeminecraft:item/ammo/ammo_762_cryo"
+    },
+    {
+      "predicate": {
+        "modeminecraft:ammo_type": 0.11
+      },
+      "model": "modeminecraft:item/ammo/ammo_762_electric"
+    },
+    {
+      "predicate": {
+        "modeminecraft:ammo_type": 0.12
+      },
+      "model": "modeminecraft:item/ammo/ammo_762_ruby"
+    }
+  ]
 }

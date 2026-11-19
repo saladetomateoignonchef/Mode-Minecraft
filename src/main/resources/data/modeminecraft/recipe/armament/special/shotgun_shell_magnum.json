@@ -1,0 +1,21 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "special_ammo",
+  "ingredients": [
+    {
+      "item": "modeminecraft:shotgun_shell",
+      "count": 16
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:shotgun_shell",
+    "count": 16,
+    "components": {
+      "modeminecraft:ammo_type": "magnum"
+    }
+  }
+}

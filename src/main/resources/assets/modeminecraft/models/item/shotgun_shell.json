@@ -2,5 +2,31 @@
   "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "modeminecraft:item/shotgun_shell"
-  }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "modeminecraft:ammo_type": 0.13
+      },
+      "model": "modeminecraft:item/ammo/shotgun_shell_slug"
+    },
+    {
+      "predicate": {
+        "modeminecraft:ammo_type": 0.14
+      },
+      "model": "modeminecraft:item/ammo/shotgun_shell_flechette"
+    },
+    {
+      "predicate": {
+        "modeminecraft:ammo_type": 0.15
+      },
+      "model": "modeminecraft:item/ammo/shotgun_shell_dragon_breath"
+    },
+    {
+      "predicate": {
+        "modeminecraft:ammo_type": 0.16
+      },
+      "model": "modeminecraft:item/ammo/shotgun_shell_magnum"
+    }
+  ]
 }

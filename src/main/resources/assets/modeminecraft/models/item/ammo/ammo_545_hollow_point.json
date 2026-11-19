@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "modeminecraft:item/ammo_545",
+    "layer1": "modeminecraft:item/ammo_badge/hollow_point"
+  }
+}

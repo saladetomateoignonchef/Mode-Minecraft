@@ -1,0 +1,21 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "special_ammo",
+  "ingredients": [
+    {
+      "item": "modeminecraft:ammo_556",
+      "count": 16
+    },
+    {
+      "item": "modeminecraft:rubis",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:ammo_556",
+    "count": 16,
+    "components": {
+      "modeminecraft:ammo_type": "ruby"
+    }
+  }
+}

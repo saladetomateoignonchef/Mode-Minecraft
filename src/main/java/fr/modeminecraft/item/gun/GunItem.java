@@ -1,6 +1,7 @@
 package fr.modeminecraft.item.gun;
 
 import fr.modeminecraft.entity.BulletEntity;
+import fr.modeminecraft.item.AmmoItem;
 import fr.modeminecraft.entity.RocketEntity;
 import fr.modeminecraft.registry.ModDataComponents;
 import fr.modeminecraft.registry.ModEntities;
@@ -43,7 +44,8 @@ import java.util.List;
  *   monte du chargeur. Chambre vide (arme neuve, chargeur vidé) = il faut tirer la culasse ;
  * - instants des animations (RACK_AT, CHECK_AT, RELOAD_START, RELOAD_END).
  *
- * Commandes : clic droit = tirer, B = mode de tir, R = recharger, H = vérifier la chambre, accroupi = viser.
+ * Commandes : clic droit = tirer, B = mode de tir, R = recharger, T = type de munition, H = vérifier la chambre,
+ * accroupi = viser.
  */
 public class GunItem extends Item {
     protected final GunStats stats;
@@ -97,6 +99,61 @@ public class GunItem extends Item {
             case SHELL -> 10;          // pompe
             default -> stats.reloadPerRound() ? 13 : 8;  // verrou / culasse
         };
+    }
+
+    /** Type des balles chargées dans l'arme (traçantes, perforantes...). */
+    public static AmmoType getLoadedType(ItemStack stack) {
+        return stack.getOrDefault(ModDataComponents.AMMO_TYPE.get(), AmmoType.STANDARD);
+    }
+
+    public static void setLoadedType(ItemStack stack, AmmoType type) {
+        if (type == AmmoType.STANDARD) {
+            stack.remove(ModDataComponents.AMMO_TYPE.get());
+        } else {
+            stack.set(ModDataComponents.AMMO_TYPE.get(), type);
+        }
+    }
+
+    private boolean isAmmo(ItemStack s, AmmoType type) {
+        return s.is(stats.ammo().get()) && AmmoItem.getType(s) == type;
+    }
+
+    /** Rend des balles au joueur (en gardant leur type). */
+    public void giveBack(Player player, int count, AmmoType type) {
+        if (count > 0) {
+            player.getInventory().placeItemBackInInventory(AmmoItem.of(stats.ammo().get(), type, count));
+        }
+    }
+
+    /**
+     * Touche T : passer au type de munition suivant parmi ceux que le joueur possède.
+     * Les balles chargées (chargeur + chambre) sont rendues, puis l'arme est rechargée avec le nouveau type.
+     */
+    public void cycleAmmoType(Player player, ItemStack stack) {
+        if (player.getCooldowns().isOnCooldown(this) || stats.disposable()) {
+            return;
+        }
+        AmmoType current = getLoadedType(stack);
+        List<AmmoType> available = new java.util.ArrayList<>();
+        for (AmmoType type : AmmoType.values()) {
+            if (type != current && countReserve(player, type) > 0) {
+                available.add(type);
+            }
+        }
+        if (available.isEmpty()) {
+            player.displayClientMessage(Component.translatable("message.modeminecraft.ammo_type.none")
+                    .withStyle(ChatFormatting.GRAY), true);
+            return;
+        }
+        // Le type suivant dans l'ordre de la liste (on boucle)
+        AmmoType next = available.stream().filter(t -> t.ordinal() > current.ordinal()).findFirst().orElse(available.get(0));
+        giveBack(player, getAmmo(stack) + (stats.chamber() && isChambered(stack) ? 1 : 0), current);
+        setAmmo(stack, 0);
+        setChambered(stack, false);
+        setLoadedType(stack, next);
+        player.displayClientMessage(Component.translatable("message.modeminecraft.ammo_type",
+                Component.translatable(next.translationKey())).withStyle(ChatFormatting.YELLOW), true);
+        reload(player, stack);
     }
 
     public static GunAttachments getAttachments(ItemStack stack) {
@@ -165,17 +222,22 @@ public class GunItem extends Item {
                 || attachment.stats().magazineSize() > stats.magazineSize();
     }
 
-    /** Nombre de munitions de ce type dans l'inventaire du joueur (réserve). */
-    public int countReserve(Player player) {
+    /** Munitions de ce calibre et de ce type dans l'inventaire du joueur (réserve). */
+    public int countReserve(Player player, AmmoType type) {
         Inventory inv = player.getInventory();
         int total = 0;
         for (int i = 0; i < inv.getContainerSize(); i++) {
             ItemStack s = inv.getItem(i);
-            if (s.is(stats.ammo().get())) {
+            if (isAmmo(s, type)) {
                 total += s.getCount();
             }
         }
         return total;
+    }
+
+    /** Réserve du type actuellement chargé dans l'arme. */
+    public int countReserve(Player player, ItemStack gun) {
+        return countReserve(player, getLoadedType(gun));
     }
 
     // ------------------------------------------------------------------
@@ -308,6 +370,9 @@ public class GunItem extends Item {
 
     protected void shoot(Level level, Player player, ItemStack stack) {
         ResolvedGun gun = resolve(stack);
+        AmmoType type = getLoadedType(stack);
+        boolean shells = stats.ammo().get() instanceof AmmoItem a && a.isShotgunShell();
+        boolean silenced = gun.silenced() || type == AmmoType.SUBSONIC;
         boolean aiming = isAiming(player);
         // Allongé : l'arme est bien plus stable
         float stability = ProneHandler.isProne(player) ? 0.5f : 1.0f;
@@ -316,16 +381,19 @@ public class GunItem extends Item {
             GunAnimations.recordShot(player); // la culasse recule (animation)
             ejectCasing(level, player, null);
             // Recul : la caméra remonte un peu (uniquement côté client, le serveur suit)
-            float recoil = (aiming ? gun.recoil() * 0.6f : gun.recoil()) * stability;
+            float recoil = (aiming ? gun.recoil() * 0.6f : gun.recoil()) * stability * type.recoilMul;
             player.setXRot(Mth.clamp(player.getXRot() - recoil, -90f, 90f));
             player.setYRot(player.getYRot() + (player.getRandom().nextFloat() - 0.5f) * recoil * 0.5f);
             return;
         }
 
-        float spread = (aiming ? gun.aimSpread() : gun.spread()) * stability;
-        for (int i = 0; i < stats.pellets(); i++) {
-            Projectile projectile = createProjectile(level, player, gun);
-            projectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0f, stats.velocity(), spread);
+        float spread = (aiming ? gun.aimSpread() : gun.spread()) * stability * type.spreadMul;
+        int pellets = shells ? type.pellets(stats.pellets()) : stats.pellets();
+        float damage = shells ? type.pelletDamage(gun.damage(), stats.pellets()) : gun.damage() * type.damageMul;
+        for (int i = 0; i < pellets; i++) {
+            Projectile projectile = createProjectile(level, player, gun, type, damage);
+            projectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0f,
+                    stats.velocity() * type.velocityMul, spread);
             level.addFreshEntity(projectile);
         }
 
@@ -348,16 +416,16 @@ public class GunItem extends Item {
             }
         }
 
-        float pitch = stats.pitch() + (gun.silenced() ? 0.5f : 0f) + (level.random.nextFloat() - 0.5f) * 0.1f;
+        float pitch = stats.pitch() + (silenced ? 0.5f : 0f) + (level.random.nextFloat() - 0.5f) * 0.1f;
         level.playSound(null, player.getX(), player.getY(), player.getZ(),
-                stats.sound().get(), SoundSource.PLAYERS, gun.volume(), pitch);
+                stats.sound().get(), SoundSource.PLAYERS, gun.volume() * type.volumeMul, pitch);
 
         // Flash et fumée au bout du canon (pas de flash avec un silencieux)
         if (level instanceof ServerLevel serverLevel) {
             Vec3 look = player.getLookAngle();
             Vec3 muzzle = player.getEyePosition().add(look.scale(1.2)).add(0, -0.15, 0);
             serverLevel.sendParticles(ParticleTypes.SMOKE, muzzle.x, muzzle.y, muzzle.z, 3, 0.03, 0.03, 0.03, 0.01);
-            if (!gun.silenced()) {
+            if (!silenced) {
                 serverLevel.sendParticles(ParticleTypes.FLAME, muzzle.x, muzzle.y, muzzle.z, 1, 0, 0, 0, 0);
             }
         }
@@ -368,7 +436,7 @@ public class GunItem extends Item {
         }
 
         player.awardStat(Stats.ITEM_USED.get(this));
-        if (!gun.silenced()) {
+        if (!silenced) {
             // Un tir silencieux n'est pas détecté par les capteurs sculk
             level.gameEvent(player, GameEvent.PROJECTILE_SHOOT, player.position());
         }
@@ -405,11 +473,13 @@ public class GunItem extends Item {
         }
     }
 
-    protected Projectile createProjectile(Level level, Player player, ResolvedGun gun) {
+    protected Projectile createProjectile(Level level, Player player, ResolvedGun gun, AmmoType type, float damage) {
         return switch (stats.projectile()) {
             case ROCKET -> new RocketEntity(ModEntities.ROCKET.get(), level, player, stats.explosionPower());
             case GRENADE -> new RocketEntity(ModEntities.GRENADE.get(), level, player, stats.explosionPower());
-            case BULLET -> new BulletEntity(level, player, gun.damage(), stats.pierce(), stats.armorPiercing());
+            case BULLET -> new BulletEntity(level, player, damage,
+                    stats.pierce() + (type == AmmoType.ARMOR_PIERCING ? 1 : 0),
+                    stats.armorPiercing() || type == AmmoType.ARMOR_PIERCING, type);
         };
     }
 
@@ -427,7 +497,17 @@ public class GunItem extends Item {
             return;
         }
 
-        int taken = player.getAbilities().instabuild ? missing : takeAmmo(player, missing);
+        // Arme vide et plus de balles du type chargé : on prend n'importe quel type disponible
+        if (!player.getAbilities().instabuild && getAmmo(stack) == 0 && !isChambered(stack)
+                && countReserve(player, getLoadedType(stack)) == 0) {
+            for (AmmoType type : AmmoType.values()) {
+                if (countReserve(player, type) > 0) {
+                    setLoadedType(stack, type);
+                    break;
+                }
+            }
+        }
+        int taken = player.getAbilities().instabuild ? missing : takeAmmo(player, missing, getLoadedType(stack));
         if (taken == 0) {
             player.displayClientMessage(Component.translatable("message.modeminecraft.no_ammo",
                     stats.ammo().get().getDescription()).withStyle(ChatFormatting.RED), true);
@@ -456,12 +536,12 @@ public class GunItem extends Item {
                 SoundEvents.CROSSBOW_LOADING_END, SoundSource.PLAYERS, 1.0f, 0.8f);
     }
 
-    private int takeAmmo(Player player, int wanted) {
+    private int takeAmmo(Player player, int wanted, AmmoType type) {
         Inventory inv = player.getInventory();
         int taken = 0;
         for (int i = 0; i < inv.getContainerSize() && taken < wanted; i++) {
             ItemStack s = inv.getItem(i);
-            if (s.is(stats.ammo().get())) {
+            if (isAmmo(s, type)) {
                 int n = Math.min(s.getCount(), wanted - taken);
                 s.shrink(n);
                 taken += n;
@@ -516,6 +596,10 @@ public class GunItem extends Item {
         tooltip.add(Component.translatable("tooltip.modeminecraft.gun.damage", damage).withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.translatable("tooltip.modeminecraft.gun.ammo_type", stats.ammo().get().getDescription())
                 .withStyle(ChatFormatting.GRAY));
+        if (getLoadedType(stack) != AmmoType.STANDARD) {
+            tooltip.add(Component.translatable("tooltip.modeminecraft.gun.loaded_type",
+                    Component.translatable(getLoadedType(stack).translationKey())).withStyle(ChatFormatting.BLUE));
+        }
 
         GunAttachments attachments = getAttachments(stack);
         for (AttachmentSlot slot : AttachmentSlot.values()) {

@@ -36,7 +36,7 @@ public final class GunHudLayer {
 
         int ammo = GunItem.getAmmo(stack);
         int max = gun.resolve(stack).magazineSize();
-        String reserve = player.getAbilities().instabuild ? "∞" : Integer.toString(gun.countReserve(player));
+        String reserve = player.getAbilities().instabuild ? "∞" : Integer.toString(gun.countReserve(player, stack));
         boolean chambered = gun.stats().chamber() && (GunItem.isChambered(stack) || player.getAbilities().instabuild);
         String text = ammo + (chambered ? "+1" : "") + " / " + max + "  [" + reserve + "]";
 
@@ -48,6 +48,11 @@ public final class GunHudLayer {
         // Mode de tir, juste au-dessus des munitions
         Component mode = Component.translatable(gun.getFireMode(stack).shortKey());
         graphics.drawString(mc.font, mode, x + 18, y - 6, 0xFFD84A, true);
+        var type = GunItem.getLoadedType(stack);
+        if (type != fr.modeminecraft.item.gun.AmmoType.STANDARD) {
+            graphics.drawString(mc.font, Component.translatable(type.translationKey()),
+                    x + 22 + mc.font.width(mode), y - 6, type.color, true);
+        }
     }
 
     private static void renderSight(GuiGraphics graphics, DeltaTracker deltaTracker) {

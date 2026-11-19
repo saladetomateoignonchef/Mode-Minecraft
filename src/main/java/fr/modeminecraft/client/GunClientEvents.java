@@ -5,6 +5,7 @@ import fr.modeminecraft.item.gun.GunItem;
 import fr.modeminecraft.item.gun.ResolvedGun;
 import fr.modeminecraft.item.gun.SightOverlay;
 import fr.modeminecraft.item.gun.ProneHandler;
+import fr.modeminecraft.network.AmmoTypePayload;
 import fr.modeminecraft.network.CheckChamberPayload;
 import fr.modeminecraft.network.FireModePayload;
 import fr.modeminecraft.network.PronePayload;
@@ -41,6 +42,11 @@ public final class GunClientEvents {
         while (ModKeyMappings.FIRE_MODE.consumeClick()) {
             if (holdingGun) {
                 PacketDistributor.sendToServer(FireModePayload.INSTANCE);
+            }
+        }
+        while (ModKeyMappings.AMMO_TYPE.consumeClick()) {
+            if (holdingGun) {
+                PacketDistributor.sendToServer(AmmoTypePayload.INSTANCE);
             }
         }
         while (ModKeyMappings.CHECK_CHAMBER.consumeClick()) {

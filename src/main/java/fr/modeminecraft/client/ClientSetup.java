@@ -36,7 +36,14 @@ public final class ClientSetup {
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> registerBowProperties(ModItems.RUBIS_BOW.get()));
+        event.enqueueWork(() -> {
+            registerBowProperties(ModItems.RUBIS_BOW.get());
+            // Munitions spéciales : le modèle affiche une marque de couleur selon le type
+            ModItems.ITEMS.getEntries().stream().map(h -> h.get())
+                    .filter(i -> i instanceof fr.modeminecraft.item.AmmoItem)
+                    .forEach(i -> ItemProperties.register(i, ModeMinecraft.id("ammo_type"), (stack, level, entity, seed) ->
+                            fr.modeminecraft.item.AmmoItem.getType(stack).ordinal() / 100f + 0.001f));
+        });
     }
 
     /** Les balles et roquettes sont affichées avec la texture de leur item. */
@@ -52,6 +59,8 @@ public final class ClientSetup {
         event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.CASING_BRASS.get(), CasingParticle.Provider::new);
         event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.CASING_STEEL.get(), CasingParticle.Provider::new);
         event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.CASING_SHELL.get(), CasingParticle.Provider::new);
+        event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.TRACER.get(),
+                fr.modeminecraft.client.particle.TracerParticle.Provider::new);
     }
 
     @SubscribeEvent
@@ -59,6 +68,7 @@ public final class ClientSetup {
         event.register(ModKeyMappings.RELOAD);
         event.register(ModKeyMappings.FIRE_MODE);
         event.register(ModKeyMappings.CHECK_CHAMBER);
+        event.register(ModKeyMappings.AMMO_TYPE);
     }
 
     @SubscribeEvent

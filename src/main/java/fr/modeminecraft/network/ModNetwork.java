@@ -14,7 +14,8 @@ public final class ModNetwork {
                 .playToServer(ReloadPayload.TYPE, ReloadPayload.STREAM_CODEC, ReloadPayload::handle)
                 .playToServer(FireModePayload.TYPE, FireModePayload.STREAM_CODEC, FireModePayload::handle)
                 .playToServer(CheckChamberPayload.TYPE, CheckChamberPayload.STREAM_CODEC, CheckChamberPayload::handle)
-                .playToServer(PronePayload.TYPE, PronePayload.STREAM_CODEC, PronePayload::handle);
+                .playToServer(PronePayload.TYPE, PronePayload.STREAM_CODEC, PronePayload::handle)
+                .playToServer(AmmoTypePayload.TYPE, AmmoTypePayload.STREAM_CODEC, AmmoTypePayload::handle);
     }
 
     private ModNetwork() {}

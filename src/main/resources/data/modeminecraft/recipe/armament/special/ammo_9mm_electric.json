@@ -1,0 +1,25 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "special_ammo",
+  "ingredients": [
+    {
+      "item": "modeminecraft:ammo_9mm",
+      "count": 16
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 2
+    },
+    {
+      "item": "minecraft:copper_ingot",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:ammo_9mm",
+    "count": 16,
+    "components": {
+      "modeminecraft:ammo_type": "electric"
+    }
+  }
+}

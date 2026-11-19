@@ -3,6 +3,7 @@ package fr.modeminecraft.recipe;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import fr.modeminecraft.registry.ModDataComponents;
 import fr.modeminecraft.registry.ModRecipes;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -39,7 +40,7 @@ public record ArmamentRecipe(Category category, List<SizedIngredient> ingredient
 
     /** Onglets de la table d'armement. */
     public enum Category implements net.minecraft.util.StringRepresentable {
-        WEAPONS("weapons"), AMMO("ammo"), ATTACHMENTS("attachments");
+        WEAPONS("weapons"), AMMO("ammo"), SPECIAL_AMMO("special_ammo"), ATTACHMENTS("attachments");
 
         public static final Codec<Category> CODEC = net.minecraft.util.StringRepresentable.fromEnum(Category::values);
         public static final StreamCodec<net.minecraft.network.FriendlyByteBuf, Category> STREAM_CODEC =
@@ -68,12 +69,17 @@ public record ArmamentRecipe(Category category, List<SizedIngredient> ingredient
             ItemStack.STREAM_CODEC, ArmamentRecipe::result,
             ArmamentRecipe::new);
 
+    /** Les munitions spéciales (traçantes...) ne peuvent pas servir d'ingrédient : seules les normales comptent. */
+    private static boolean usable(SizedIngredient ingredient, ItemStack stack) {
+        return ingredient.ingredient().test(stack) && !stack.has(ModDataComponents.AMMO_TYPE.get());
+    }
+
     /** Nombre d'objets correspondant à un ingrédient dans l'inventaire du joueur. */
     public static int count(Inventory inventory, SizedIngredient ingredient) {
         int total = 0;
         for (int i = 0; i < inventory.getContainerSize(); i++) {
             ItemStack stack = inventory.getItem(i);
-            if (ingredient.ingredient().test(stack)) {
+            if (usable(ingredient, stack)) {
                 total += stack.getCount();
             }
         }
@@ -102,7 +108,7 @@ public record ArmamentRecipe(Category category, List<SizedIngredient> ingredient
             int remaining = ingredient.count();
             for (int i = 0; i < inventory.getContainerSize() && remaining > 0; i++) {
                 ItemStack stack = inventory.getItem(i);
-                if (ingredient.ingredient().test(stack)) {
+                if (usable(ingredient, stack)) {
                     int n = Math.min(remaining, stack.getCount());
                     stack.shrink(n);
                     remaining -= n;

@@ -107,7 +107,7 @@ public class ModificationTableMenu extends AbstractContainerMenu {
         if (ammo > capacity) {
             GunItem.setAmmo(stack, capacity);
             if (!player.level().isClientSide) {
-                player.getInventory().placeItemBackInInventory(new ItemStack(gun.stats().ammo().get(), ammo - capacity));
+                gun.giveBack(player, ammo - capacity, GunItem.getLoadedType(stack));
             }
         }
         access.execute((level, pos) -> level.playSound(null, pos, SoundEvents.ARMOR_EQUIP_IRON.value(),

@@ -1,0 +1,21 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "special_ammo",
+  "ingredients": [
+    {
+      "item": "modeminecraft:ammo_762x54r",
+      "count": 16
+    },
+    {
+      "item": "minecraft:packed_ice",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:ammo_762x54r",
+    "count": 16,
+    "components": {
+      "modeminecraft:ammo_type": "cryo"
+    }
+  }
+}

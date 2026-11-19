@@ -17,5 +17,8 @@ public final class ModKeyMappings {
     public static final KeyMapping CHECK_CHAMBER = new KeyMapping("key.modeminecraft.check_chamber",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_H, CATEGORY);
 
+    public static final KeyMapping AMMO_TYPE = new KeyMapping("key.modeminecraft.ammo_type",
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_T, CATEGORY);
+
     private ModKeyMappings() {}
 }

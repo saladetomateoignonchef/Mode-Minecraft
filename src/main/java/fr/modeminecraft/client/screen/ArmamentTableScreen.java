@@ -26,6 +26,8 @@ public class ArmamentTableScreen extends AbstractContainerScreen<ArmamentTableMe
     private static final int DETAIL_X = 126;
 
     private ArmamentRecipe.Category category = ArmamentRecipe.Category.WEAPONS;
+    private net.minecraft.world.item.Item filter; // calibre affiché dans l'onglet "Spéciales" (null = tous)
+    private Button filterButton;
     private int scroll;
     private int selected = -1; // index dans la liste COMPLÈTE des recettes (= id envoyé au serveur)
     private Button craftButton;
@@ -34,7 +36,7 @@ public class ArmamentTableScreen extends AbstractContainerScreen<ArmamentTableMe
     public ArmamentTableScreen(ArmamentTableMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
         imageWidth = 256;
-        imageHeight = 214;
+        imageHeight = 232;
     }
 
     @Override
@@ -48,13 +50,28 @@ public class ArmamentTableScreen extends AbstractContainerScreen<ArmamentTableMe
                 category = c;
                 scroll = 0;
                 selected = -1;
-            }).bounds(leftPos + 8 + i * 80, topPos + 14, 78, 16).build();
+            }).bounds(leftPos + 8 + i * 60, topPos + 14, 58, 16).build();
             tabs.add(addRenderableWidget(tab));
         }
+        // Onglet "Spéciales" : filtre par calibre (sinon la liste serait très longue)
+        filterButton = addRenderableWidget(Button.builder(Component.empty(), b -> {
+            List<net.minecraft.world.item.Item> calibers = specialCalibers();
+            int i = filter == null ? -1 : calibers.indexOf(filter);
+            filter = i + 1 >= calibers.size() ? null : calibers.get(i + 1);
+            scroll = 0;
+            selected = -1;
+        }).bounds(leftPos + LIST_X - 1, topPos + LIST_Y + ROWS * ROW_H + 4, LIST_W + 2, 16).build());
         craftButton = addRenderableWidget(Button.builder(Component.translatable("gui.modeminecraft.craft"), b -> craft())
                 .bounds(leftPos + DETAIL_X, topPos + 188, 122, 18)
                 .tooltip(net.minecraft.client.gui.components.Tooltip.create(Component.translatable("gui.modeminecraft.craft_hint")))
                 .build());
+    }
+
+    /** Calibres présents dans l'onglet "Spéciales". */
+    private List<net.minecraft.world.item.Item> specialCalibers() {
+        return menu.recipes().stream().map(r -> r.value())
+                .filter(r -> r.category() == ArmamentRecipe.Category.SPECIAL_AMMO)
+                .map(r -> r.result().getItem()).distinct().toList();
     }
 
     /** Recettes de l'onglet courant, avec leur index dans la liste complète. */
@@ -62,7 +79,11 @@ public class ArmamentTableScreen extends AbstractContainerScreen<ArmamentTableMe
         List<RecipeHolder<ArmamentRecipe>> all = menu.recipes();
         List<Integer> out = new ArrayList<>();
         for (int i = 0; i < all.size(); i++) {
-            if (all.get(i).value().category() == category) {
+            ArmamentRecipe r = all.get(i).value();
+            if (category == ArmamentRecipe.Category.SPECIAL_AMMO && filter != null && !r.result().is(filter)) {
+                continue;
+            }
+            if (r.category() == category) {
                 out.add(i);
             }
         }
@@ -89,6 +110,9 @@ public class ArmamentTableScreen extends AbstractContainerScreen<ArmamentTableMe
         for (int i = 0; i < tabs.size(); i++) {
             tabs.get(i).active = ArmamentRecipe.Category.values()[i] != category;
         }
+        filterButton.visible = category == ArmamentRecipe.Category.SPECIAL_AMMO;
+        filterButton.setMessage(Component.translatable("gui.modeminecraft.filter",
+                filter == null ? Component.translatable("gui.modeminecraft.filter.all") : filter.getDescription()));
         super.render(g, mouseX, mouseY, partialTick);
         renderTooltip(g, mouseX, mouseY);
 
@@ -124,8 +148,17 @@ public class ArmamentTableScreen extends AbstractContainerScreen<ArmamentTableMe
             g.renderItem(recipe.result(), x + 1, y + 1);
             g.renderItemDecorations(font, recipe.result(), x + 1, y + 1);
             int color = recipe.canCraft(minecraft.player) ? 0xFFFFFF : 0xFF7777;
-            g.drawString(font, font.plainSubstrByWidth(recipe.result().getHoverName().getString(), LIST_W - 22),
-                    x + 20, y + 5, color, true);
+            String label = recipe.result().getHoverName().getString();
+            if (recipe.category() == ArmamentRecipe.Category.SPECIAL_AMMO) {
+                // Munitions spéciales : le type d'abord (dans sa couleur), puis le calibre
+                var type = fr.modeminecraft.item.AmmoItem.getType(recipe.result());
+                String typeName = Component.translatable(type.translationKey()).getString();
+                g.drawString(font, typeName, x + 20, y + 1, type.color, true);
+                g.drawString(font, font.plainSubstrByWidth(recipe.result().getItem().getDescription().getString(), LIST_W - 22),
+                        x + 20, y + 9, color, false);
+                continue;
+            }
+            g.drawString(font, font.plainSubstrByWidth(label, LIST_W - 22), x + 20, y + 5, color, true);
         }
         // Barre de défilement
         if (rows.size() > ROWS) {

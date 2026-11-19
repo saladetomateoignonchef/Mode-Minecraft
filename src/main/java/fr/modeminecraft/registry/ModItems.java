@@ -1,6 +1,7 @@
 package fr.modeminecraft.registry;
 
 import fr.modeminecraft.ModeMinecraft;
+import fr.modeminecraft.item.AmmoItem;
 import fr.modeminecraft.item.EnderBladeItem;
 import fr.modeminecraft.item.FireStaffItem;
 import fr.modeminecraft.item.MagicSwordItem;
@@ -153,7 +154,8 @@ public final class ModItems {
     public static final DeferredItem<Item> AMMO_792 = ammo("ammo_792");          // Kar98k
     public static final DeferredItem<Item> AMMO_338 = ammo("ammo_338");          // AWM
     public static final DeferredItem<Item> AMMO_50BMG = ammo("ammo_50bmg");      // Barrett M82
-    public static final DeferredItem<Item> SHOTGUN_SHELL = ammo("shotgun_shell"); // fusils à pompe
+    public static final DeferredItem<Item> SHOTGUN_SHELL = ITEMS.register("shotgun_shell", // fusils à pompe
+            () -> new AmmoItem(true, new Item.Properties()));
     public static final DeferredItem<Item> GRENADE_40MM = ITEMS.registerSimpleItem("grenade_40mm", new Item.Properties().stacksTo(16));
     public static final DeferredItem<Item> RPG_ROCKET = ITEMS.registerSimpleItem("rpg_rocket", new Item.Properties().stacksTo(16));
 
@@ -367,7 +369,7 @@ public final class ModItems {
     }
 
     private static DeferredItem<Item> ammo(String name) {
-        return ITEMS.registerSimpleItem(name);
+        return ITEMS.register(name, () -> new AmmoItem(false, new Item.Properties()));
     }
 
     private static DeferredItem<AttachmentItem> attachment(String name, AttachmentItem.Stats stats) {

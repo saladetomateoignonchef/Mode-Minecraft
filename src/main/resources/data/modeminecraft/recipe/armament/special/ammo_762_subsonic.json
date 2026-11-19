@@ -1,0 +1,21 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "special_ammo",
+  "ingredients": [
+    {
+      "item": "modeminecraft:ammo_762",
+      "count": 16
+    },
+    {
+      "tag": "minecraft:wool",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:ammo_762",
+    "count": 16,
+    "components": {
+      "modeminecraft:ammo_type": "subsonic"
+    }
+  }
+}

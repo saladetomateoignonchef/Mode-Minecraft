@@ -1,0 +1,25 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "special_ammo",
+  "ingredients": [
+    {
+      "item": "modeminecraft:ammo_792",
+      "count": 16
+    },
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 1
+    },
+    {
+      "item": "minecraft:flint",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:ammo_792",
+    "count": 16,
+    "components": {
+      "modeminecraft:ammo_type": "ap"
+    }
+  }
+}

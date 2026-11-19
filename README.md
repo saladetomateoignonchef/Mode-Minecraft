@@ -66,6 +66,14 @@ Toutes les armes à feu, munitions et accessoires se fabriquent à la **table d'
 (au clic droit, ou automatiquement à la fin d'un rechargement à vide) ; culasse des pistolets bloquée en arrière
 quand ils sont vides ; douilles éjectées (laiton, acier ou cartouche rouge) ; l'arme s'incline pendant le rechargement.
 
+**Munitions spéciales** (table d'armement, onglet *Spéciales* : 16 munitions normales + un ingrédient,
+touche **T** pour changer le type chargé ; les balles chargées sont rendues) :
+perforantes (flint + fer), explosives (TNT), traçantes (glowstone, traînée lumineuse visible par tous),
+incendiaires (poudre de blaze), pointe creuse (pépites de fer), subsoniques (laine), caoutchouc (boules de slime),
+marqueuses (poche d'encre lumineuse), venimeuses (yeux d'araignée), givrantes (glace compacte),
+électriques (redstone + cuivre), rubis (rubis) ; pour les fusils à pompe : slug, fléchettes, dragon's breath,
+chevrotine magnum. Une pastille de couleur sur l'icône indique le type.
+
 **Mécaniques :** tir à la tête x1,5, les balles cassent le verre, recul de la caméra,
 **culasse animée au tir** (pistolets : toute la culasse recule ; fusils : culasse et levier d'armement ;
 fusils à verrou : le verrou est manœuvré après le tir ; fusils à pompe : la pompe recule puis revient ;
@@ -154,6 +162,7 @@ src/main/resources/
 tools/generate_textures.py      # génère les textures pixel art (provisoires) + la lunette du sniper
 tools/gun_designs.py            # formes 3D des 44 armes (constructeurs paramétrés)
 tools/generate_gun_models.py    # génère modèles 3D, icônes, skins, accessoires et gun_mounts.json
+tools/generate_ammo.py          # munitions spéciales : pastilles, modèles, recettes
 ```
 
 ### Ajouter une nouvelle arme magique
