@@ -208,7 +208,7 @@ On ne peut pas les tenir à la main : ce sont des entités fixes qu'on déploie.
 | Tourelle | Munitions | Caractéristiques | Viseur fixe WWII |
 |---|---|---|---|
 | **Browning M2HB** (.50) | caisse de 100 balles .50 BMG | 550 coups/min, 14 PV, ignore 65 % de l'armure, brise les blocs fragiles, fort recul | hausse rabattable à anneau |
-| **MG-42** (trépied Lafette) | caisse de 250 cartouches 7,92 mm | 1200 coups/min, 6,5 PV ; **surchauffe** après 80 balles sans relâcher (3,5 s bloquée, fumée, canon rouge) | grand **Kreiskorn** en toile d'araignée + mire auxiliaire à gauche |
+| **MG-42** (trépied Lafette) | caisse de 250 cartouches 7,92 mm | 1200 coups/min, 6,5 PV ; **surchauffe** après 80 balles sans relâcher (3,5 s bloquée, fumée, canon rouge) | grand **Kreiskorn** en toile d'araignée + mire arrière en anneau dans le même axe (en visée, les deux ne forment qu'un) |
 | **Vickers / Maxim M1910** | bande en toile de 250 .303 British | 600 coups/min, 7,5 PV, refroidie à l'eau (jamais de surchauffe, vapeur blanche), **bouclier** qui arrête les tirs de face | cran de mire + guidon à lame |
 | **Flakvierling 20 mm** | 4 chargeurs de 20 obus (80) | 4 canons en alternance, 400 coups/min, 16 PV + micro-explosion de 1,5 bloc, 360° et jusqu'à +75° | grand viseur circulaire à croisillons doubles |
 | **Mk 19** | caisse de 32 grenades de 40 mm | 250 coups/min, grenades en cloche (60 blocs) qui explosent à l'impact (3,5 blocs) | hausse graduée en échelle |

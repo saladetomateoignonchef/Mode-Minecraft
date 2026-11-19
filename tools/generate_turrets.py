@@ -210,9 +210,13 @@ def mg42():
     # Kreiskorn : grand viseur antiaérien en toile d'araignée, aligné avec le guidon
     t.ring_sight(13.0, 15.2, [6.0, 4.5, 3.0, 1.5], t=0.34)
     t.zb(12.8, 9.1, 13.2, 9.4, 0.25, "k")
-    # mire auxiliaire rabattable en anneau, flanc gauche
-    t.zb(0.6, 9.8, 1.0, 13.8, 0.2, "k", z=4.6)
-    t.ring_sight(0.8, 15.6, [1.8], t=0.3, cross=False, cz=4.6, depth=0.3)
+    # Mire arrière en anneau, dans l'axe du Kreiskorn : vue depuis l'œil en visée, elle se superpose
+    # exactement à l'anneau extérieur (même taille apparente) et les deux ne forment plus qu'un seul viseur.
+    eye_x, ring_x, rear_x, outer = -6.0, 13.0, 0.8, 6.0
+    rear_r = outer * (rear_x - eye_x) / (ring_x - eye_x)
+    rear_t = 0.55 * (rear_x - eye_x) / (ring_x - eye_x)   # un peu plus épais : il recouvre l'anneau avant
+    t.zb(0.6, 9.8, 1.0, 15.2 - rear_r - rear_t / 2, 0.15, "k")
+    t.ring_sight(rear_x, 15.2, [rear_r], t=rear_t, cross=False, depth=0.25)
     t.zb(20.0, 8.6, 20.4, 15.2, 0.16, "k")                    # guidon au bout du canon
     t.part("barrel")
     t.zb(8, 6.9, 18.5, 9.1, 1.0, "k")                          # manchon perforé
