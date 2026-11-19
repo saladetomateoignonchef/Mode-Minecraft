@@ -26,5 +26,16 @@ public final class ModKeyMappings {
     public static final KeyMapping UNDERBARREL = new KeyMapping("key.modeminecraft.underbarrel",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_V, CATEGORY);
 
+    // GLFW_KEY_Q / GLFW_KEY_E = touches A / E sur un clavier AZERTY (Q / E en QWERTY).
+    // Elles ne servent à se pencher qu'en visant : sinon jeter / inventaire marchent normalement.
+    public static final KeyMapping LEAN_LEFT = new KeyMapping("key.modeminecraft.lean_left",
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_Q, CATEGORY);
+
+    public static final KeyMapping LEAN_RIGHT = new KeyMapping("key.modeminecraft.lean_right",
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_E, CATEGORY);
+
+    public static final KeyMapping HOLD_BREATH = new KeyMapping("key.modeminecraft.hold_breath",
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_ALT, CATEGORY);
+
     private ModKeyMappings() {}
 }

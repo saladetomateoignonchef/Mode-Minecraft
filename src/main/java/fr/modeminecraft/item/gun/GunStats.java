@@ -47,6 +47,7 @@ public record GunStats(
         boolean pistol,        // arme de poing (pour la compatibilité des accessoires, ex. attelle)
         Category category,     // famille d'arme (compatibilité des accessoires)
         int drawTicks,         // délai pour sortir l'arme (ticks)
+        float heatPerShot,     // chaleur nette ajoutée par tir en continu (mitrailleuses ; 100 = surchauffe)
         Set<AttachmentSlot> slots) { // emplacements d'accessoires disponibles
 
     /** Douille éjectée au tir. */
@@ -88,6 +89,7 @@ public record GunStats(
         private Casing casing = Casing.BRASS;
         private boolean chamber = true, slideLock = false, pistol = false;
         private int drawTicks = 10;
+        private float heatPerShot = 0;
         private Category category = Category.LAUNCHER;
         private Supplier<? extends Item> ammo;
         private Supplier<SoundEvent> sound;
@@ -127,6 +129,8 @@ public record GunStats(
         public Builder pistolCategory() { pistol = true; drawTicks = 5; category = Category.PISTOL; return this; }
         public Builder category(Category c) { category = c; return this; }
         public Builder draw(int ticks) { drawTicks = ticks; return this; }
+        /** Le canon chauffe : chaleur par tir (100 = surchauffe). */
+        public Builder heat(float perShot) { heatPerShot = perShot; return this; }
         public Builder slots(AttachmentSlot... s) { slots.addAll(Set.of(s)); return this; }
         /** Retire certains emplacements (ex. pas de crosse sur un bullpup). */
         public Builder without(AttachmentSlot... s) { slots.removeAll(Set.of(s)); return this; }
@@ -149,7 +153,7 @@ public record GunStats(
             return new GunStats(damage, pellets, magazine, fireDelay, reload, velocity, spread, aimSpread, recoil,
                     automatic, ammo, sound, volume, pitch, explosionPower, projectile, scopeZoom, scopeOverlay,
                     burst, burstCooldown, reloadPerRound, pierce, armorPiercing, spinUp, disposable, fireModes,
-                    projectile == ProjectileKind.BULLET ? casing : Casing.NONE, chamber && !disposable, slideLock, pistol, category, drawTicks,
+                    projectile == ProjectileKind.BULLET ? casing : Casing.NONE, chamber && !disposable, slideLock, pistol, category, drawTicks, heatPerShot,
                     Set.copyOf(slots));
         }
     }

@@ -31,14 +31,17 @@ import net.neoforged.neoforge.common.Tags;
 
 /**
  * Balle tirée par une arme à feu.
- * - Va très vite, sans gravité, et disparaît au bout de 3 secondes.
- * - Tir à la tête = dégâts x1.5.
- * - Casse le verre (si la règle mobGriefing est activée).
+ * - Va très vite, retombe un peu avec la distance et est déviée par le vent ({@link Wind}).
+ * - Zones : tête = dégâts x2, jambes = x0,75 et la cible est ralentie.
+ * - Casse le verre (si la règle mobGriefing est activée) et traverse les blocs fins (feuilles, laine, bois)
+ *   selon sa puissance ; peut ricocher sur la pierre ou le métal quand elle arrive en biais.
  * - Son type (traçante, explosive, incendiaire...) ajoute un effet à l'impact, voir {@link #applyTypeEffect}.
  */
 public class BulletEntity extends ThrowableItemProjectile {
     private static final int MAX_LIFE_TICKS = 60;
-    private static final float HEADSHOT_MULTIPLIER = 1.5f;
+    private static final float HEADSHOT_MULTIPLIER = 2.0f;
+    private static final float LEGS_MULTIPLIER = 0.75f;
+    private static final double GRAVITY = 0.0025;
 
     /** Type de munition, synchronisé avec le client (pour la traînée des traçantes). */
     private static final net.minecraft.network.syncher.EntityDataAccessor<Integer> TYPE =
@@ -48,6 +51,8 @@ public class BulletEntity extends ThrowableItemProjectile {
     private float damage = 5.0f;
     private int pierceLeft = 0;          // ennemis encore traversables
     private boolean armorPiercing = false;
+    private float penetration = 0;       // "puissance" restante pour traverser des blocs
+    private boolean ricocheted = false;
     private final java.util.Set<Integer> alreadyHit = new java.util.HashSet<>();
 
     public BulletEntity(EntityType<? extends BulletEntity> type, Level level) {
@@ -59,6 +64,7 @@ public class BulletEntity extends ThrowableItemProjectile {
         this.damage = damage;
         this.pierceLeft = pierce;
         this.armorPiercing = armorPiercing;
+        this.penetration = damage * 0.4f * (armorPiercing ? 2 : 1);
         this.entityData.set(TYPE, type.ordinal());
     }
 
@@ -86,12 +92,17 @@ public class BulletEntity extends ThrowableItemProjectile {
 
     @Override
     protected double getDefaultGravity() {
-        return 0.0; // trajectoire droite
+        return ammoType() == AmmoType.DRAGON_BREATH ? 0.0 : GRAVITY; // la balle retombe un peu
     }
 
     @Override
     public void tick() {
         Vec3 before = position();
+        if (!isInWater()) {
+            // Le vent pousse la balle sur le côté (même calcul côté client et serveur)
+            Vec3 wind = fr.modeminecraft.item.gun.Wind.get(level()).scale(fr.modeminecraft.item.gun.Wind.ACCEL_PER_MS);
+            setDeltaMovement(getDeltaMovement().add(wind));
+        }
         super.tick();
         AmmoType type = ammoType();
         if (level().isClientSide) {
@@ -111,7 +122,8 @@ public class BulletEntity extends ThrowableItemProjectile {
                             p.x, p.y, p.z, 0, 0, 0);
                 }
             }
-        } else if (tickCount > (type == AmmoType.DRAGON_BREATH ? 8 : MAX_LIFE_TICKS)) {
+        } else if (tickCount > (type == AmmoType.DRAGON_BREATH ? 8 : MAX_LIFE_TICKS)
+                || getY() > level().getMaxBuildHeight() + 64) {
             discard(); // le souffle du dragon porte très peu loin
         }
     }
@@ -125,12 +137,16 @@ public class BulletEntity extends ThrowableItemProjectile {
         Entity target = result.getEntity();
         float finalDamage = damage;
 
-        // Tir à la tête : on regarde à quelle hauteur la balle traverse la hitbox de la cible
+        // Zone touchée : on regarde à quelle hauteur la balle traverse la hitbox de la cible
         Vec3 start = position();
         Vec3 end = start.add(getDeltaMovement());
-        boolean headshot = target instanceof LivingEntity living && target.getBoundingBox().clip(start, end)
-                .map(hit -> hit.y >= living.getEyeY() - 0.25)
-                .orElse(false);
+        double hitY = target.getBoundingBox().clip(start, end).map(h -> h.y).orElse(target.getY() + target.getBbHeight() / 2);
+        boolean headshot = target instanceof LivingEntity living && hitY >= living.getEyeY() - 0.25;
+        boolean legs = target instanceof LivingEntity && !headshot && hitY < target.getY() + target.getBbHeight() * 0.35;
+        if (legs) {
+            finalDamage *= LEGS_MULTIPLIER;
+            ((LivingEntity) target).addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 40, 1), getOwner());
+        }
         if (headshot) {
             finalDamage *= HEADSHOT_MULTIPLIER;
             level.sendParticles(ParticleTypes.CRIT, target.getX(), target.getEyeY(), target.getZ(), 8, 0.2, 0.2, 0.2, 0.2);
@@ -208,34 +224,117 @@ public class BulletEntity extends ThrowableItemProjectile {
     @Override
     protected void onHitBlock(BlockHitResult result) {
         super.onHitBlock(result);
-        if (level() instanceof ServerLevel level) {
-            BlockPos pos = result.getBlockPos();
-            AmmoType type = ammoType();
-            if (type == AmmoType.EXPLOSIVE) {
-                Vec3 h = result.getLocation();
-                level.explode(this, h.x, h.y, h.z, 1.2f, Level.ExplosionInteraction.NONE);
-            } else if ((type == AmmoType.INCENDIARY || type == AmmoType.DRAGON_BREATH)
-                    && level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
-                BlockPos fire = pos.relative(result.getDirection());
-                if (net.minecraft.world.level.block.BaseFireBlock.canBePlacedAt(level, fire, result.getDirection())) {
-                    level.setBlockAndUpdate(fire, net.minecraft.world.level.block.BaseFireBlock.getState(level, fire));
-                }
-            }
-            BlockState state = level.getBlockState(pos);
-            Vec3 hit = result.getLocation();
-
-            boolean glass = state.is(Tags.Blocks.GLASS_BLOCKS) || state.is(Tags.Blocks.GLASS_PANES);
-            if (glass && level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
-                level.destroyBlock(pos, false, getOwner());
-            } else {
-                level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, state),
-                        hit.x, hit.y, hit.z, 6, 0.05, 0.05, 0.05, 0.1);
-                level.sendParticles(ParticleTypes.SMOKE, hit.x, hit.y, hit.z, 2, 0.02, 0.02, 0.02, 0.01);
-                level.playSound(null, pos, state.getSoundType(level, pos, this).getHitSound(),
-                        SoundSource.BLOCKS, 0.5f, 1.4f);
+        if (!(level() instanceof ServerLevel level)) {
+            return; // le serveur décide (traverser, ricocher ou s'arrêter)
+        }
+        BlockPos pos = result.getBlockPos();
+        BlockState state = level.getBlockState(pos);
+        Vec3 hit = result.getLocation();
+        AmmoType type = ammoType();
+        if (type == AmmoType.EXPLOSIVE) {
+            level.explode(this, hit.x, hit.y, hit.z, 1.2f, Level.ExplosionInteraction.NONE);
+            discard();
+            return;
+        }
+        boolean griefing = level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING);
+        if ((type == AmmoType.INCENDIARY || type == AmmoType.DRAGON_BREATH) && griefing) {
+            BlockPos fire = pos.relative(result.getDirection());
+            if (net.minecraft.world.level.block.BaseFireBlock.canBePlacedAt(level, fire, result.getDirection())) {
+                level.setBlockAndUpdate(fire, net.minecraft.world.level.block.BaseFireBlock.getState(level, fire));
             }
         }
+        Vec3 dir = getDeltaMovement().normalize();
+
+        // Verre : il casse et la balle continue
+        boolean glass = state.is(Tags.Blocks.GLASS_BLOCKS) || state.is(Tags.Blocks.GLASS_PANES);
+        if (glass && griefing) {
+            level.destroyBlock(pos, false, getOwner());
+            passThrough(pos, hit, dir, 0.9f);
+            return;
+        }
+        // Blocs fins : la balle les traverse si elle est assez puissante
+        int cost = penetrationCost(state);
+        if (cost > 0 && penetration >= cost) {
+            penetration -= cost;
+            impact(level, state, pos, hit);
+            passThrough(pos, hit, dir, 0.75f);
+            return;
+        }
+        // Ricochet : sur un bloc dur, quand la balle arrive très en biais
+        Vec3 normal = Vec3.atLowerCornerOf(result.getDirection().getNormal());
+        double facing = -dir.dot(normal); // 1 = de face, 0 = parallèle à la surface
+        if (!ricocheted && facing < 0.34 && isHard(level, state, pos) && random.nextFloat() < 0.7f) {
+            ricocheted = true;
+            Vec3 v = getDeltaMovement();
+            Vec3 bounce = v.subtract(normal.scale(2 * v.dot(normal))).scale(0.6);
+            damage *= 0.5f;
+            setDeltaMovement(bounce);
+            hasImpulse = true;
+            // ThrowableProjectile ajoute ensuite la vitesse : on recule d'autant pour repartir du point d'impact
+            setPos(hit.add(normal.scale(0.02)).subtract(bounce));
+            level.sendParticles(ParticleTypes.ELECTRIC_SPARK, hit.x, hit.y, hit.z, 6, 0.03, 0.03, 0.03, 0.15);
+            level.sendParticles(ParticleTypes.CRIT, hit.x, hit.y, hit.z, 3, 0.02, 0.02, 0.02, 0.1);
+            level.playSound(null, pos, SoundEvents.TRIDENT_HIT_GROUND, SoundSource.BLOCKS, 0.7f, 1.7f + random.nextFloat() * 0.3f);
+            return;
+        }
+        if (glass) {
+            level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, state), hit.x, hit.y, hit.z, 6, 0.05, 0.05, 0.05, 0.1);
+        } else {
+            impact(level, state, pos, hit);
+        }
         discard();
+    }
+
+    /** Coût pour traverser un bloc (0 = impossible). */
+    private static int penetrationCost(BlockState state) {
+        if (state.is(net.minecraft.tags.BlockTags.LEAVES)) {
+            return 1;
+        }
+        if (state.is(net.minecraft.tags.BlockTags.WOOL) || state.is(net.minecraft.tags.BlockTags.WOOL_CARPETS)) {
+            return 2;
+        }
+        var sound = state.getSoundType();
+        if (state.is(net.minecraft.tags.BlockTags.PLANKS) || state.is(net.minecraft.tags.BlockTags.LOGS)
+                || sound == net.minecraft.world.level.block.SoundType.WOOD || sound == net.minecraft.world.level.block.SoundType.NETHER_WOOD
+                || sound == net.minecraft.world.level.block.SoundType.BAMBOO_WOOD || sound == net.minecraft.world.level.block.SoundType.CHERRY_WOOD) {
+            return 3;
+        }
+        return 0;
+    }
+
+    /** Bloc dur sur lequel une balle peut ricocher (pierre, métal...). */
+    private static boolean isHard(ServerLevel level, BlockState state, BlockPos pos) {
+        return state.getDestroySpeed(level, pos) >= 1.5f && penetrationCost(state) == 0;
+    }
+
+    /** La balle ressort de l'autre côté du bloc, un peu ralentie. */
+    private void passThrough(BlockPos pos, Vec3 hit, Vec3 dir, float damageMul) {
+        Vec3 exit = hit;
+        for (int i = 0; i < 40 && BlockPos.containing(exit).equals(pos); i++) {
+            exit = exit.add(dir.scale(0.05));
+        }
+        damage *= damageMul;
+        Vec3 v = getDeltaMovement().scale(0.85);
+        setDeltaMovement(v);
+        hasImpulse = true;
+        setPos(exit.subtract(v)); // ThrowableProjectile ajoute ensuite la vitesse : on arrive juste derrière le bloc
+        if (level() instanceof ServerLevel level) {
+            level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(pos)),
+                    exit.x, exit.y, exit.z, 5, 0.05, 0.05, 0.05, 0.15);
+        }
+    }
+
+    /** Éclats, fumée et bruit à l'impact. */
+    private void impact(ServerLevel level, BlockState state, BlockPos pos, Vec3 hit) {
+        level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, state), hit.x, hit.y, hit.z, 6, 0.05, 0.05, 0.05, 0.1);
+        level.sendParticles(ParticleTypes.SMOKE, hit.x, hit.y, hit.z, 2, 0.02, 0.02, 0.02, 0.01);
+        level.playSound(null, pos, state.getSoundType(level, pos, this).getHitSound(), SoundSource.BLOCKS, 0.5f, 1.4f);
+    }
+
+    /** Une balle ne vit que quelques secondes : inutile de l'enregistrer avec le monde. */
+    @Override
+    public boolean shouldBeSaved() {
+        return false;
     }
 
     @Override
@@ -244,6 +343,7 @@ public class BulletEntity extends ThrowableItemProjectile {
         tag.putFloat("Damage", damage);
         tag.putInt("Pierce", pierceLeft);
         tag.putBoolean("ArmorPiercing", armorPiercing);
+        tag.putFloat("Penetration", penetration);
         tag.putInt("AmmoType", entityData.get(TYPE));
     }
 
@@ -253,6 +353,7 @@ public class BulletEntity extends ThrowableItemProjectile {
         damage = tag.getFloat("Damage");
         pierceLeft = tag.getInt("Pierce");
         armorPiercing = tag.getBoolean("ArmorPiercing");
+        penetration = tag.getFloat("Penetration");
         entityData.set(TYPE, tag.getInt("AmmoType"));
     }
 }

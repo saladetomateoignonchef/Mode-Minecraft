@@ -73,6 +73,9 @@ public final class ClientSetup {
         event.register(ModKeyMappings.AMMO_TYPE);
         event.register(ModKeyMappings.UNDERBARREL);
         event.register(ModKeyMappings.LASER);
+        event.register(ModKeyMappings.LEAN_LEFT);
+        event.register(ModKeyMappings.LEAN_RIGHT);
+        event.register(ModKeyMappings.HOLD_BREATH);
     }
 
     @SubscribeEvent

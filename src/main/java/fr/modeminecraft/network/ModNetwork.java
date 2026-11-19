@@ -17,7 +17,9 @@ public final class ModNetwork {
                 .playToServer(PronePayload.TYPE, PronePayload.STREAM_CODEC, PronePayload::handle)
                 .playToServer(AmmoTypePayload.TYPE, AmmoTypePayload.STREAM_CODEC, AmmoTypePayload::handle)
                 .playToServer(UnderbarrelPayload.TYPE, UnderbarrelPayload.STREAM_CODEC, UnderbarrelPayload::handle)
-                .playToServer(LaserPayload.TYPE, LaserPayload.STREAM_CODEC, LaserPayload::handle);
+                .playToServer(LaserPayload.TYPE, LaserPayload.STREAM_CODEC, LaserPayload::handle)
+                .playToServer(LeanPayload.TYPE, LeanPayload.STREAM_CODEC, LeanPayload::handle)
+                .playToClient(LeanSyncPayload.TYPE, LeanSyncPayload.STREAM_CODEC, LeanSyncPayload::handle);
     }
 
     private ModNetwork() {}

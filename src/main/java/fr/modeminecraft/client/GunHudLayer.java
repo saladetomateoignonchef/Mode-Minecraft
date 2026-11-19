@@ -45,6 +45,18 @@ public final class GunHudLayer {
         graphics.renderItem(new ItemStack(gun.stats().ammo().get()), x, y - 1);
         int color = ammo == 0 ? 0xFF5555 : (ammo <= max / 4 ? 0xFFAA00 : 0xFFFFFF);
         graphics.drawString(mc.font, text, x + 18, y + 4, color, true);
+        // Mitrailleuses : jauge de chaleur du canon
+        if (gun.stats().heatPerShot() > 0) {
+            float heat = GunItem.heat(stack, player.level());
+            boolean over = GunItem.isOverheated(stack, player.level());
+            int bx = x + 18, by = y - 12, bw = 60;
+            int hc = over ? 0xFFFF3030 : heat > 70 ? 0xFFFF8020 : heat > 40 ? 0xFFFFD040 : 0xFF60D060;
+            graphics.fill(bx - 1, by - 1, bx + bw + 1, by + 3, 0xA0000000);
+            graphics.fill(bx, by, bx + Math.round(bw * heat / 100f), by + 2, hc);
+            if (over) {
+                graphics.drawString(mc.font, Component.translatable("hud.modeminecraft.overheated"), bx, by - 10, 0xFF4040, true);
+            }
+        }
         // Mode de tir, juste au-dessus des munitions
         Component mode = Component.translatable(gun.getFireMode(stack).shortKey());
         graphics.drawString(mc.font, mode, x + 18, y - 6, 0xFFD84A, true);
@@ -91,6 +103,31 @@ public final class GunHudLayer {
     }
 
     /** Lunette numérique (cible + points de vie), télémètre (distance), zoom variable. */
+    /** Lunette : force et sens du vent (par rapport à là où l'on regarde) + jauge de souffle. */
+    private static void renderWindAndBreath(GuiGraphics graphics, int cx, int cy) {
+        Minecraft mc = Minecraft.getInstance();
+        var wind = fr.modeminecraft.item.gun.Wind.get(mc.level);
+        var look = mc.player.getLookAngle();
+        var forward = new net.minecraft.world.phys.Vec3(look.x, 0, look.z).normalize();
+        var right = fr.modeminecraft.item.gun.LeanHandler.right(mc.player);
+        double side = wind.dot(right), ahead = wind.dot(forward);
+        // Flèche : sens dans lequel le vent pousse la balle, vu par le tireur
+        String[] arrows = {"→", "↗", "↑", "↖", "←", "↙", "↓", "↘"};
+        double angle = Math.atan2(ahead, side);
+        String arrow = arrows[Math.floorMod((int) Math.round(angle / (Math.PI / 4)), 8)];
+        String speed = String.format("%.1f", wind.length());
+        graphics.drawString(mc.font, Component.translatable("hud.modeminecraft.wind", speed, arrow),
+                cx + 70, cy - 4, 0xA0E0FF, true);
+        // Souffle
+        int w = 50, x0 = cx - w / 2, y0 = cy + 60;
+        float breath = AimClient.breath();
+        int color = AimClient.exhausted() ? 0xFFFF5050 : AimClient.holdingBreath() ? 0xFF60D0FF : 0xFFE0E0E0;
+        graphics.fill(x0 - 1, y0 - 1, x0 + w + 1, y0 + 3, 0xA0000000);
+        graphics.fill(x0, y0, x0 + Math.round(w * breath), y0 + 2, color);
+        graphics.drawCenteredString(mc.font, Component.translatable("hud.modeminecraft.breath",
+                ModKeyMappings.HOLD_BREATH.getTranslatedKeyMessage()), cx, y0 + 5, 0xC0C0C0);
+    }
+
     private static void renderSightInfo(GuiGraphics graphics, ResolvedGun aim) {
         Minecraft mc = Minecraft.getInstance();
         int cx = graphics.guiWidth() / 2, cy = graphics.guiHeight() / 2;
@@ -100,6 +137,9 @@ public final class GunHudLayer {
             String zoom = String.format("x%.1f", SightEffects.currentMode(aim).magnification()).replace(".0", "");
             graphics.drawCenteredString(mc.font, net.minecraft.network.chat.Component.translatable("hud.modeminecraft.zoom", zoom),
                     cx, cy - 52, 0xFFD84A);
+        }
+        if (SightEffects.currentMode(aim).zoom() <= 0.26f) {
+            renderWindAndBreath(graphics, cx, cy);
         }
         if (hit == null) {
             return;

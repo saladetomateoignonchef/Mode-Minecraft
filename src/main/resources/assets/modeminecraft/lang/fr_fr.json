@@ -392,5 +392,16 @@
   "item.modeminecraft.leupold_x6": "Lunette de sniper Leupold Mark 4 x6",
   "item.modeminecraft.sb_x12": "Lunette de sniper Schmidt & Bender x12",
   "item.modeminecraft.nightforce_x20": "Lunette de sniper Nightforce x20",
-  "item.modeminecraft.sb_pm2_5_25": "Lunette variable S&B PM II 5-25x"
+  "item.modeminecraft.sb_pm2_5_25": "Lunette variable S&B PM II 5-25x",
+  "item.modeminecraft.spare_barrel": "Canon de rechange",
+  "key.modeminecraft.lean_left": "Se pencher à gauche (en visant)",
+  "key.modeminecraft.lean_right": "Se pencher à droite (en visant)",
+  "key.modeminecraft.hold_breath": "Retenir son souffle (lunette)",
+  "hud.modeminecraft.wind": "Vent %s m/s %s",
+  "hud.modeminecraft.breath": "[%s] retenir son souffle",
+  "hud.modeminecraft.overheated": "SURCHAUFFE",
+  "message.modeminecraft.overheated": "Canon en surchauffe ! Attends ou change de canon (R)",
+  "message.modeminecraft.no_spare_barrel": "Il te faut un canon de rechange pour changer le canon",
+  "message.modeminecraft.barrel_cooling": "Le canon de rechange refroidit encore (%s s)",
+  "message.modeminecraft.barrel_swapped": "Canon changé"
 }

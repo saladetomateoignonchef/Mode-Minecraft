@@ -63,6 +63,15 @@ public final class ModDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> MUZZLE_WEAR =
             DATA_COMPONENTS.registerComponentType("muzzle_wear", b -> b.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT));
 
+    /** Chaleur du canon (0 à 100) au moment HEAT_TIME ; elle redescend ensuite toute seule. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Float>> HEAT =
+            DATA_COMPONENTS.registerComponentType("heat", b -> b.persistent(Codec.FLOAT).networkSynchronized(ByteBufCodecs.FLOAT));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> HEAT_TIME = timestamp("heat_time");
+    /** Le canon a surchauffé : on ne peut plus tirer tant qu'il n'a pas refroidi. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> OVERHEATED =
+            DATA_COMPONENTS.registerComponentType("overheated", b -> b.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> BARREL_SWAP_AT = timestamp("barrel_swap_at");
+
     /** Instants (temps du monde, en ticks) des animations : armement, vérification de chambre, rechargement. */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> RACK_AT = timestamp("rack_at");
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> CHECK_AT = timestamp("check_at");

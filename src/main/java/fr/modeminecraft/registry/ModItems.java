@@ -158,6 +158,8 @@ public final class ModItems {
     public static final DeferredItem<Item> SHOTGUN_SHELL = ITEMS.register("shotgun_shell", // fusils à pompe
             () -> new AmmoItem(true, new Item.Properties()));
     public static final DeferredItem<Item> GRENADE_40MM = ITEMS.registerSimpleItem("grenade_40mm", new Item.Properties().stacksTo(16));
+    /** Canon de rechange : pour changer le canon d'une mitrailleuse en surchauffe (touche R). */
+    public static final DeferredItem<Item> SPARE_BARREL = ITEMS.registerSimpleItem("spare_barrel", new Item.Properties().stacksTo(1));
     public static final DeferredItem<Item> RPG_ROCKET = ITEMS.registerSimpleItem("rpg_rocket", new Item.Properties().stacksTo(16));
 
     private static final Supplier<SoundEvent> SHOT = SoundEvents.GENERIC_EXPLODE::value;
@@ -197,7 +199,7 @@ public final class ModItems {
     }
 
     private static GunStats.Builder machineGun() {
-        return GunStats.builder().category(GunStats.Category.MACHINE_GUN).automatic().velocity(4.8f).spread(3.2f, 1.4f).sound(SHOT, 0.5f, 1.5f).draw(18)
+        return GunStats.builder().category(GunStats.Category.MACHINE_GUN).automatic().velocity(4.8f).spread(3.2f, 1.4f).sound(SHOT, 0.5f, 1.5f).draw(18).heat(1.3f)
                 .slots(SIGHT, MUZZLE, GRIP, PGRIP, STOCK);
     }
 
@@ -326,7 +328,7 @@ public final class ModItems {
     /** Minigun : temps de lancement d'une seconde, puis 20 balles par seconde. */
     public static final DeferredItem<GunItem> MINIGUN = gun("minigun", Rarity.EPIC,
             machineGun().noChamber().damage(5).magazine(200).fireDelay(1).spinUp(20).reload(160).spread(4.0f, 3.0f).recoil(0.4f)
-                    .ammo(ModItems.AMMO_762).draw(25).noSlots());
+                    .ammo(ModItems.AMMO_762).draw(25).heat(0.6f).noSlots());
 
     // ================= LANCEURS =================
     public static final DeferredItem<GunItem> RPG7 = gun("rpg7", Rarity.EPIC, GunStats.builder().noChamber()

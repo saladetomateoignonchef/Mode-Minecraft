@@ -88,6 +88,9 @@ public class GunItem extends Item {
 
     /** Le joueur peut-il tirer tout de suite ? */
     public boolean canFire(Player player, ItemStack stack) {
+        if (isOverheated(stack, player.level())) {
+            return false;
+        }
         if (player.getAbilities().instabuild) {
             return true;
         }
@@ -253,7 +256,11 @@ public class GunItem extends Item {
 
         if (!canFire(player, stack)) {
             if (!level.isClientSide) {
-                rackOrReload(player, stack);
+                if (isOverheated(stack, level)) {
+                    overheatMessage(player);
+                } else {
+                    rackOrReload(player, stack);
+                }
             }
             return InteractionResultHolder.fail(stack);
         }
@@ -306,7 +313,11 @@ public class GunItem extends Item {
         if (!canFire(player, stack)) {
             player.stopUsingItem();
             if (!level.isClientSide) {
-                rackOrReload(player, stack);
+                if (isOverheated(stack, level)) {
+                    overheatMessage(player);
+                } else {
+                    rackOrReload(player, stack);
+                }
             }
             return;
         }
@@ -407,12 +418,18 @@ public class GunItem extends Item {
             return;
         }
 
+        float heat = heat(stack, level);
         float spread = (aiming ? gun.aimSpread() : gun.spread()) * stability * type.spreadMul * steadySpread
-                * (isMoving(player) ? gun.movingPenalty() : 1);
+                * (isMoving(player) ? gun.movingPenalty() : 1)
+                * (1 + Math.max(0, heat - 60) / 40f); // canon trop chaud : moins précis
+        Vec3 lean = LeanHandler.offset(player);
         int pellets = shells ? type.pellets(stats.pellets()) : stats.pellets();
         float damage = shells ? type.pelletDamage(gun.damage(), stats.pellets()) : gun.damage() * type.damageMul;
         for (int i = 0; i < pellets; i++) {
             Projectile projectile = createProjectile(level, player, gun, type, damage);
+            if (lean != Vec3.ZERO) {
+                projectile.setPos(projectile.position().add(lean)); // penché : la balle part de plus loin sur le côté
+            }
             projectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0f,
                     stats.velocity() * type.velocityMul, spread);
             level.addFreshEntity(projectile);
@@ -457,6 +474,8 @@ public class GunItem extends Item {
         }
 
         wearMuzzle(player, stack);
+        addHeat(player, stack, heat);
+        alertMonsters(player, gun.volume() * type.volumeMul);
         player.awardStat(Stats.ITEM_USED.get(this));
         if (!silenced) {
             // Un tir silencieux n'est pas détecté par les capteurs sculk
@@ -510,6 +529,93 @@ public class GunItem extends Item {
     // ------------------------------------------------------------------
     public static boolean isUnderbarrelLoaded(ItemStack stack) {
         return stack.getOrDefault(ModDataComponents.UNDERBARREL_LOADED.get(), false);
+    }
+
+    // ------------------------------------------------------------------
+    // Surchauffe du canon (mitrailleuses)
+    // ------------------------------------------------------------------
+    private static final float COOLING_PER_TICK = 0.6f;
+    private static final float RESUME_BELOW = 35f;
+    private static final int SPARE_BARREL_COOLDOWN = 400;
+
+    /** Chaleur actuelle du canon (0 à 100) : elle redescend avec le temps. */
+    public static float heat(ItemStack stack, Level level) {
+        Float stored = stack.get(ModDataComponents.HEAT.get());
+        if (stored == null) {
+            return 0;
+        }
+        long since = level.getGameTime() - stack.getOrDefault(ModDataComponents.HEAT_TIME.get(), 0L);
+        return Math.max(0, stored - since * COOLING_PER_TICK);
+    }
+
+    public static boolean isOverheated(ItemStack stack, Level level) {
+        return stack.getOrDefault(ModDataComponents.OVERHEATED.get(), false) && heat(stack, level) >= RESUME_BELOW;
+    }
+
+    private void addHeat(Player player, ItemStack stack, float current) {
+        if (stats.heatPerShot() <= 0 || stack.isEmpty()) {
+            return;
+        }
+        // heatPerShot = chaleur NETTE par tir : on compense le refroidissement entre deux tirs
+        float heat = Math.min(100, current + stats.heatPerShot() + COOLING_PER_TICK * stats.fireDelay());
+        stack.set(ModDataComponents.HEAT.get(), heat);
+        stack.set(ModDataComponents.HEAT_TIME.get(), player.level().getGameTime());
+        if (heat >= 100) {
+            stack.set(ModDataComponents.OVERHEATED.get(), true);
+            player.stopUsingItem();
+            player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
+                    SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 0.8f, 0.8f);
+            overheatMessage(player);
+        } else if (stack.has(ModDataComponents.OVERHEATED.get())) {
+            stack.remove(ModDataComponents.OVERHEATED.get());
+        }
+    }
+
+    private static void overheatMessage(Player player) {
+        player.displayClientMessage(Component.translatable("message.modeminecraft.overheated").withStyle(ChatFormatting.RED), true);
+    }
+
+    /** Touche R sur une mitrailleuse brûlante : on remplace le canon par le canon de rechange. */
+    private boolean swapBarrel(Player player, ItemStack stack) {
+        Level level = player.level();
+        if (!player.getAbilities().instabuild && !player.getInventory().hasAnyMatching(s -> s.is(ModItems.SPARE_BARREL.get()))) {
+            player.displayClientMessage(Component.translatable("message.modeminecraft.no_spare_barrel").withStyle(ChatFormatting.GRAY), true);
+            return false;
+        }
+        long since = level.getGameTime() - stack.getOrDefault(ModDataComponents.BARREL_SWAP_AT.get(), -SPARE_BARREL_COOLDOWN * 2L);
+        if (since < SPARE_BARREL_COOLDOWN) {
+            player.displayClientMessage(Component.translatable("message.modeminecraft.barrel_cooling",
+                    (SPARE_BARREL_COOLDOWN - since) / 20 + 1).withStyle(ChatFormatting.GOLD), true);
+            return true;
+        }
+        stack.remove(ModDataComponents.HEAT.get());
+        stack.remove(ModDataComponents.OVERHEATED.get());
+        stack.set(ModDataComponents.BARREL_SWAP_AT.get(), level.getGameTime());
+        player.getCooldowns().addCooldown(this, 50);
+        level.playSound(null, player.getX(), player.getY(), player.getZ(),
+                SoundEvents.ARMOR_EQUIP_IRON.value(), SoundSource.PLAYERS, 1.0f, 0.7f);
+        player.displayClientMessage(Component.translatable("message.modeminecraft.barrel_swapped").withStyle(ChatFormatting.GREEN), true);
+        return true;
+    }
+
+    // ------------------------------------------------------------------
+    // Le bruit des tirs attire les monstres
+    // ------------------------------------------------------------------
+    private static void alertMonsters(Player player, float loudness) {
+        double radius = Math.min(64, loudness * 48);
+        if (radius < 3 || player.isSpectator()) {
+            return;
+        }
+        for (var monster : player.level().getEntitiesOfClass(net.minecraft.world.entity.monster.Monster.class,
+                player.getBoundingBox().inflate(radius),
+                m -> m.getTarget() == null && !(m instanceof net.minecraft.world.entity.NeutralMob)
+                        && m.distanceToSqr(player) < radius * radius)) {
+            if (player.isCreative()) {
+                monster.getNavigation().moveTo(player, 1.0); // en créatif ils viennent voir, sans attaquer
+            } else {
+                monster.setTarget(player);
+            }
+        }
     }
 
     /** Silencieux artisanal : il s'use à chaque tir et finit par casser. */
@@ -636,6 +742,10 @@ public class GunItem extends Item {
     // Rechargement (appelé côté serveur : touche R ou chargeur vide)
     // ------------------------------------------------------------------
     public void reload(Player player, ItemStack stack) {
+        if (stats.heatPerShot() > 0 && heat(stack, player.level()) > 50 && !player.getCooldowns().isOnCooldown(this)
+                && swapBarrel(player, stack)) {
+            return;
+        }
         ResolvedGun gun = resolve(stack);
         int missing = gun.magazineSize() - getAmmo(stack);
         if (stats.disposable() || player.getCooldowns().isOnCooldown(this)) {

@@ -392,5 +392,16 @@
   "item.modeminecraft.leupold_x6": "Leupold Mark 4 6x Sniper Scope",
   "item.modeminecraft.sb_x12": "Schmidt & Bender 12x Sniper Scope",
   "item.modeminecraft.nightforce_x20": "Nightforce 20x Sniper Scope",
-  "item.modeminecraft.sb_pm2_5_25": "S&B PM II 5-25x Variable Scope"
+  "item.modeminecraft.sb_pm2_5_25": "S&B PM II 5-25x Variable Scope",
+  "item.modeminecraft.spare_barrel": "Spare Barrel",
+  "key.modeminecraft.lean_left": "Lean Left (while aiming)",
+  "key.modeminecraft.lean_right": "Lean Right (while aiming)",
+  "key.modeminecraft.hold_breath": "Hold Breath (scope)",
+  "hud.modeminecraft.wind": "Wind %s m/s %s",
+  "hud.modeminecraft.breath": "[%s] hold breath",
+  "hud.modeminecraft.overheated": "OVERHEAT",
+  "message.modeminecraft.overheated": "Barrel overheated! Wait or change the barrel (R)",
+  "message.modeminecraft.no_spare_barrel": "You need a spare barrel to change the barrel",
+  "message.modeminecraft.barrel_cooling": "The spare barrel is still cooling (%s s)",
+  "message.modeminecraft.barrel_swapped": "Barrel changed"
 }

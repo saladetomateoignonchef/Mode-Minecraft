@@ -60,7 +60,7 @@ Toutes les armes à feu, munitions et accessoires se fabriquent à la **table d'
 - **Double appui sur s'accroupir** : s'allonger / se relever (aussi en sautant), avec ou sans arme.
   Allongé : recul et dispersion divisés par 2. Maintenir s'accroupir pour viser.
 - **R** : recharger. **S'accroupir** : viser (moins de dispersion, zoom et réticule si un viseur est monté).
-- Les touches (R recharger, B mode de tir, H vérifier la chambre, G type de munition, T laser, V tir sous le canon) se changent dans *Options > Commandes > Mode Minecraft*. Munitions infinies en créatif.
+- Les touches (R recharger, B mode de tir, H vérifier la chambre, G type de munition, T laser, V tir sous le canon, A / E se pencher, Alt retenir son souffle) se changent dans *Options > Commandes > Mode Minecraft*. Munitions infinies en créatif.
 
 **Réalisme :** balle chambrée (le HUD affiche `chargeur+1`) ; arme neuve ou vidée = le personnage tire la culasse
 (au clic droit, ou automatiquement à la fin d'un rechargement à vide) ; culasse des pistolets bloquée en arrière
@@ -81,6 +81,21 @@ minigun : les canons tournent),
 modèles 3D texturés en main (métal brossé, bois veiné, camouflages), icônes 32x32 dans l'inventaire,
 pose « en joue » à la 3e personne,
 message de mort « X a été abattu par Y ».
+
+### Réalisme du tir
+- **Zones** : tir à la tête = dégâts x2, aux jambes = x0,75 et la cible est ralentie.
+- **Balistique** : les balles retombent avec la distance et sont **déviées par le vent** (plus fort sous la pluie
+  et l'orage). Avec une lunette (x4 et plus), le HUD affiche la force et le sens du vent.
+- **Pénétration** : les balles cassent le verre et traversent feuilles, laine et bois selon leur puissance
+  (sniper > fusil > pistolet, munitions perforantes x2), en perdant des dégâts. Pas la pierre.
+- **Ricochets** : une balle qui touche la pierre ou le métal très en biais peut rebondir (étincelles).
+- **Respiration** : avec une lunette, la visée bouge légèrement (moins allongé ou avec un bipied).
+  **Alt gauche** = retenir son souffle 5 secondes ; après, la visée tremble plus le temps de reprendre son souffle.
+- **Bruit** : un tir non silencieux attire les monstres proches (rayon selon le bruit de l'arme).
+- **Se pencher** : en visant, **A / E** (AZERTY) penchent à gauche / à droite pour tirer depuis un coin de mur.
+  Hors visée, A et E gardent leur rôle (jeter / inventaire).
+- **Surchauffe** (mitrailleuses) : jauge de chaleur ; à 100 l'arme se bloque jusqu'à refroidir. Avec un
+  **canon de rechange** dans l'inventaire, **R** change le canon (puis 20 s avant de pouvoir rechanger).
 
 ### Table d'armement
 Se fabrique à la table de craft : `lingot de fer, poudre à canon, lingot de fer` / `lingot de fer, table de craft, lingot de fer` / `3 planches`.
