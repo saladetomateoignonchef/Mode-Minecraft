@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/famas_3d",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_carbon",
+    "particle": "modeminecraft:item/gun_palette_carbon"
+  }
+}

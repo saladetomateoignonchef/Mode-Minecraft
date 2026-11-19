@@ -65,6 +65,17 @@ public record ResolvedGun(
                 modes, 1 + moving, steadyRecoil, steadySpread, mobility, aimSpeed, draw, specials);
     }
 
+    /** Bonus du niveau de l'arme (voir GunProgress). */
+    public ResolvedGun withLevel(int level) {
+        if (level <= 1) {
+            return this;
+        }
+        float s = GunProgress.spreadMul(level);
+        return new ResolvedGun(damage, magazineSize, Math.round(reloadTicks * GunProgress.reloadMul(level)), spread * s, aimSpread * s,
+                recoil * GunProgress.recoilMul(level), volume, silenced, sightModes, movingPenalty, steadyRecoil, steadySpread,
+                mobility, aimSpeed, drawMul, specials);
+    }
+
     public boolean has(AttachmentItem.Special special) {
         return specials.contains(special);
     }

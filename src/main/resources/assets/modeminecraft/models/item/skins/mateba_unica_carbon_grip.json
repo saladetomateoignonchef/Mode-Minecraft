@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/mateba_unica_grip",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_carbon",
+    "particle": "modeminecraft:item/gun_palette_carbon"
+  }
+}

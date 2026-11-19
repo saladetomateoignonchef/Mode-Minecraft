@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/uzi_3d",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_tiger",
+    "particle": "modeminecraft:item/gun_palette_tiger"
+  }
+}

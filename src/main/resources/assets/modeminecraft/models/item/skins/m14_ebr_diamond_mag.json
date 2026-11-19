@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/m14_ebr_mag",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_diamond",
+    "particle": "modeminecraft:item/gun_palette_diamond"
+  }
+}

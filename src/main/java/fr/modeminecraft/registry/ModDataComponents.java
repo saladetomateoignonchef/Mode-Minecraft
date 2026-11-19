@@ -83,6 +83,11 @@ public final class ModDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> RELOAD_TARGET =
             DATA_COMPONENTS.registerComponentType("reload_target", b -> b.networkSynchronized(ByteBufCodecs.VAR_INT));
 
+    /** Statistiques et niveau de l'arme (éliminations, tirs à la tête, expérience). */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<fr.modeminecraft.item.gun.GunProgress>> PROGRESS =
+            DATA_COMPONENTS.registerComponentType("progress", b -> b.persistent(fr.modeminecraft.item.gun.GunProgress.CODEC)
+                    .networkSynchronized(fr.modeminecraft.item.gun.GunProgress.STREAM_CODEC));
+
     private static DeferredHolder<DataComponentType<?>, DataComponentType<Long>> timestamp(String name) {
         // Non sauvegardé sur le disque : ne sert qu'aux animations
         return DATA_COMPONENTS.registerComponentType(name, b -> b.networkSynchronized(ByteBufCodecs.VAR_LONG));

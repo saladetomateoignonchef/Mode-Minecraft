@@ -37,5 +37,13 @@ public final class ModBlocks {
             () -> new WorkbenchBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SMITHING_TABLE),
                     Component.translatable("container.modeminecraft.modification_table"), ModificationTableMenu::new));
 
+    /** Râtelier d'armes : expose 3 armes à feu contre un mur. */
+    public static final DeferredBlock<Block> WEAPON_RACK = BLOCKS.register("weapon_rack",
+            () -> new fr.modeminecraft.block.WeaponRackBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_PLANKS).noOcclusion()));
+
+    /** Cible de tir : score de 0 à 10, distance et total de la série. */
+    public static final DeferredBlock<Block> SHOOTING_TARGET = BLOCKS.register("shooting_target",
+            () -> new fr.modeminecraft.block.ShootingTargetBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.TARGET).noOcclusion()));
+
     private ModBlocks() {}
 }

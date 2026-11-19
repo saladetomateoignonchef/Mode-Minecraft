@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/p90_stock",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_carbon",
+    "particle": "modeminecraft:item/gun_palette_carbon"
+  }
+}

@@ -129,9 +129,9 @@ public class ModificationTableMenu extends AbstractContainerMenu {
             return false;
         }
         if (id == BUTTON_PREVIOUS_SKIN) {
-            GunItem.setSkin(stack, GunItem.getSkin(stack).previous());
+            GunItem.setSkin(stack, GunItem.getSkin(stack).cycle(-1, GunItem.getProgress(stack).level()));
         } else if (id == BUTTON_NEXT_SKIN) {
-            GunItem.setSkin(stack, GunItem.getSkin(stack).next());
+            GunItem.setSkin(stack, GunItem.getSkin(stack).cycle(1, GunItem.getProgress(stack).level()));
         } else {
             return false;
         }

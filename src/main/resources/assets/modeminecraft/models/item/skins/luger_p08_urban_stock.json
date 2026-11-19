@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/luger_p08_stock",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_urban",
+    "particle": "modeminecraft:item/gun_palette_urban"
+  }
+}

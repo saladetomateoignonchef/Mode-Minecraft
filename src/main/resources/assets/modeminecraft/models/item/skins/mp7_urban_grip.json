@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/mp7_grip",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_urban",
+    "particle": "modeminecraft:item/gun_palette_urban"
+  }
+}

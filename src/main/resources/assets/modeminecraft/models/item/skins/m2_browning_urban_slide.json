@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/m2_browning_slide",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_urban",
+    "particle": "modeminecraft:item/gun_palette_urban"
+  }
+}

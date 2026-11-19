@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/five_seven_grip",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_carbon",
+    "particle": "modeminecraft:item/gun_palette_carbon"
+  }
+}

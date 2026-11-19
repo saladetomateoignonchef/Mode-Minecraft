@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/kar98k_mag",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_tiger",
+    "particle": "modeminecraft:item/gun_palette_tiger"
+  }
+}

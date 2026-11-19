@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "modeminecraft:item/skins/panzerfaust3_carbon"
+  }
+}

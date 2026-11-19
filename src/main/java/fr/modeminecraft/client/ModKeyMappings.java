@@ -37,6 +37,10 @@ public final class ModKeyMappings {
     public static final KeyMapping HOLD_BREATH = new KeyMapping("key.modeminecraft.hold_breath",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_LEFT_SHIFT, CATEGORY);
 
+    /** Menu rapide des accessoires (roue) : maintenir, pointer, relâcher. */
+    public static final KeyMapping QUICK_ATTACH = new KeyMapping("key.modeminecraft.quick_attach",
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_Y, CATEGORY);
+
     public static final KeyMapping MELEE = new KeyMapping("key.modeminecraft.melee",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_C, CATEGORY);
 

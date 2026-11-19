@@ -16,15 +16,39 @@ public enum GunSkin implements StringRepresentable {
     WOODLAND("woodland"),
     ARCTIC("arctic"),
     GOLD("gold"),
-    RUBY("ruby");
+    RUBY("ruby"),
+    URBAN("urban"),
+    TIGER("tiger"),
+    CARBON("carbon", 3),   // débloqué au niveau 3 de l'arme
+    DIAMOND("diamond", 5); // débloqué au niveau 5
 
     public static final Codec<GunSkin> CODEC = StringRepresentable.fromEnum(GunSkin::values);
     public static final StreamCodec<FriendlyByteBuf, GunSkin> STREAM_CODEC = NeoForgeStreamCodecs.enumCodec(GunSkin.class);
 
     private final String name;
+    private final int requiredLevel;
 
     GunSkin(String name) {
+        this(name, 1);
+    }
+
+    GunSkin(String name, int requiredLevel) {
         this.name = name;
+        this.requiredLevel = requiredLevel;
+    }
+
+    /** Niveau d'arme nécessaire pour utiliser ce skin. */
+    public int requiredLevel() {
+        return requiredLevel;
+    }
+
+    /** Skin suivant (ou précédent si step = -1) accessible pour une arme de ce niveau. */
+    public GunSkin cycle(int step, int level) {
+        GunSkin s = this;
+        do {
+            s = values()[(s.ordinal() + values().length + step) % values().length];
+        } while (s.requiredLevel > level && s != this);
+        return s;
     }
 
     @Override

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "modeminecraft:item/skins/m16a4_diamond"
+  }
+}

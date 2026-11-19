@@ -99,7 +99,7 @@ Toutes les armes à feu, munitions et accessoires se fabriquent à la **table d'
 - **C** : coup de crosse (ou de baïonnette).
 - **Double appui sur s'accroupir** (sans viser) : s'allonger / se relever (aussi en sautant), avec ou sans arme.
   Allongé : recul et dispersion divisés par 2.
-- Toutes les touches (R, B, H, G type de munition, T laser, V tir sous le canon, C crosse, A / E se pencher,
+- Toutes les touches (R, B, H, G type de munition, T laser, V tir sous le canon, C crosse, Y menu rapide des accessoires, A / E se pencher,
   Shift stabiliser) se changent dans *Options > Commandes > Mode Minecraft*. Munitions infinies en créatif.
 
 **Dégâts (cahier des charges) :** tête x2 (x2,5 au fusil de précision, avec un « ding » métallique), torse x1,
@@ -201,6 +201,24 @@ On relâche pour lancer ; si on la garde trop longtemps, elle explose dans la ma
 - **Mine Claymore** : à poser face à l'ennemi ; elle projette 40 éclats dans un cône quand une créature passe devant (jamais pour son poseur).
 - **Mortier** : clic droit avec un obus = tir en cloche ; clic droit = angle +5° (45 à 85°) ; Shift + clic droit = tourner de 15°.
 - Les explosifs posés explosent en chaîne s'ils sont pris dans une explosion. On les ramasse en les frappant.
+
+### Gameplay et progression
+- **Niveaux des armes (1 à 5)** : chaque arme garde ses statistiques (éliminations, tirs à la tête, tirs, ratio)
+  et gagne de l'expérience : +10 par élimination, +5 si tir à la tête, +10 pour un gros monstre (50 PV ou plus).
+  Paliers : 100 / 300 / 600 / 1000 XP. Chaque niveau donne -4 % de recul, -3 % de dispersion et -3 % de temps de rechargement.
+- **Skins** : 10 skins (Défaut, Désert, Forêt, Arctique, Or, Rubis, Urbain, Tigre, **Carbone** débloqué au niveau 3,
+  **Diamant** débloqué au niveau 5), à choisir dans la table de modification.
+- **Menu rapide des accessoires (touche Y)** : on maintient Y, une roue montre les accessoires compatibles de l'inventaire
+  (en vert) et ceux déjà montés (en rouge, pour les retirer) ; on pointe avec la souris et on relâche Y.
+- **Monstres armés** : 25 % des pillards (AK, fusils à pompe, PM), 4 % des squelettes (fusils à verrou)
+  et 4 % des zombies (pistolets) ont une arme à feu (deux fois plus en difficile). Ils tirent par rafales, rechargent,
+  et lâchent souvent des munitions (50 %), parfois leur arme (8 %).
+- **Butin** : armes, munitions, accessoires et grenades dans les coffres des donjons, mines, avant-postes de pillards,
+  forgerons de village, manoirs, bastions, cités antiques, trésors enfouis, etc. (les armes rares dans les coffres rares).
+- **Râtelier d'armes** : expose 3 armes contre un mur (clic droit avec une arme pour la poser à la hauteur visée,
+  main vide pour la reprendre). Recette : 3 colonnes planche / bâton / planche.
+- **Cible de tir** : une balle donne un score de 0 à 10 selon la distance au centre, affiché avec la distance de tir et le
+  total de la série ; elle émet un signal de redstone égal au score. Recette : laine blanche, colorant rouge et cible.
 
 ### Table d'armement
 Se fabrique à la table de craft : `lingot de fer, poudre à canon, lingot de fer` / `lingot de fer, table de craft, lingot de fer` / `3 planches`.

@@ -60,6 +60,11 @@ public final class GunClientEvents {
                 PacketDistributor.sendToServer(UnderbarrelPayload.INSTANCE);
             }
         }
+        while (ModKeyMappings.QUICK_ATTACH.consumeClick()) {
+            if (holdingGun && mc.screen == null) {
+                mc.setScreen(new fr.modeminecraft.client.screen.AttachmentWheelScreen());
+            }
+        }
         while (ModKeyMappings.MELEE.consumeClick()) {
             if (holdingGun) {
                 PacketDistributor.sendToServer(fr.modeminecraft.network.MeleePayload.INSTANCE);

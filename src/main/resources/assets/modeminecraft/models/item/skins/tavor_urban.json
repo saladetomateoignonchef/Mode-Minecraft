@@ -1,0 +1,15 @@
+{
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "base": {
+    "parent": "modeminecraft:item/skins/tavor_urban_3d"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "modeminecraft:item/skins/tavor_urban_icon"
+    },
+    "fixed": {
+      "parent": "modeminecraft:item/skins/tavor_urban_icon"
+    }
+  }
+}

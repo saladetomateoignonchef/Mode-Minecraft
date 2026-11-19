@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/hk416_slide",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_tiger",
+    "particle": "modeminecraft:item/gun_palette_tiger"
+  }
+}

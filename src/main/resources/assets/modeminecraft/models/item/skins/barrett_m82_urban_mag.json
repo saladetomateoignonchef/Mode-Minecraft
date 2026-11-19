@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/barrett_m82_mag",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_urban",
+    "particle": "modeminecraft:item/gun_palette_urban"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "WRW",
+    "RTR",
+    "WRW"
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:white_wool"
+    },
+    "R": {
+      "item": "minecraft:red_dye"
+    },
+    "T": {
+      "item": "minecraft:target"
+    }
+  },
+  "result": {
+    "id": "modeminecraft:shooting_target",
+    "count": 2
+  }
+}

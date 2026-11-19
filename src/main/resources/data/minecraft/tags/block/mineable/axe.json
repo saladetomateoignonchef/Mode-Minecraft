@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "modeminecraft:armament_table",
-    "modeminecraft:modification_table"
+    "modeminecraft:modification_table",
+    "modeminecraft:weapon_rack",
+    "modeminecraft:shooting_target"
   ]
 }

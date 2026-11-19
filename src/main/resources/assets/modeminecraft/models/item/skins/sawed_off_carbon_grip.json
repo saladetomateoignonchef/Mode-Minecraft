@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/sawed_off_grip",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_carbon",
+    "particle": "modeminecraft:item/gun_palette_carbon"
+  }
+}

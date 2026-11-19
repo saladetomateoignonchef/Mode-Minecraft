@@ -581,5 +581,22 @@
   "subtitles.modeminecraft.grenade_bounce": "Grenade bounces",
   "subtitles.modeminecraft.grenade_beep": "Semtex beeps",
   "subtitles.modeminecraft.sonar": "Sonar pulse",
-  "subtitles.modeminecraft.flash_ring": "Ears ringing"
+  "subtitles.modeminecraft.flash_ring": "Ears ringing",
+  "block.modeminecraft.weapon_rack": "Weapon Rack",
+  "block.modeminecraft.shooting_target": "Shooting Target",
+  "message.modeminecraft.target": "Target: %s pts — %s m — series %s (%s shot(s))",
+  "message.modeminecraft.gun.level_up": "%s reached level %s!",
+  "message.modeminecraft.gun.skin_unlocked": "Skin unlocked: %s",
+  "tooltip.modeminecraft.gun.level": "Level %s (XP %s)",
+  "tooltip.modeminecraft.gun.level_max": "max",
+  "tooltip.modeminecraft.gun.stats": "%s kills, %s headshots, %s shots (%s%% kill/shot)",
+  "skin.modeminecraft.urban": "Urban camo",
+  "skin.modeminecraft.tiger": "Tiger",
+  "skin.modeminecraft.carbon": "Carbon (level 3)",
+  "skin.modeminecraft.diamond": "Diamond (level 5)",
+  "key.modeminecraft.quick_attach": "Quick attachment menu (hold)",
+  "screen.modeminecraft.attachment_wheel": "Point at an attachment, release the key",
+  "screen.modeminecraft.attachment_wheel.empty": "No compatible attachment in your inventory",
+  "screen.modeminecraft.attachment_wheel.mount": "Mount %s",
+  "screen.modeminecraft.attachment_wheel.remove": "Remove %s"
 }

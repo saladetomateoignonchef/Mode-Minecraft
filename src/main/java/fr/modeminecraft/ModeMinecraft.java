@@ -30,6 +30,7 @@ public class ModeMinecraft {
         ModArmorMaterials.ARMOR_MATERIALS.register(modEventBus);
         ModDataComponents.DATA_COMPONENTS.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);
+        fr.modeminecraft.registry.ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         ModEntities.ENTITY_TYPES.register(modEventBus);
         fr.modeminecraft.registry.ModEffects.EFFECTS.register(modEventBus);
         ModMenus.MENUS.register(modEventBus);

@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/glock17_3d",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_diamond",
+    "particle": "modeminecraft:item/gun_palette_diamond"
+  }
+}

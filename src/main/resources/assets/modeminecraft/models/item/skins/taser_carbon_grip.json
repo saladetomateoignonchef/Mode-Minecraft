@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/taser_grip",
+  "textures": {
+    "p": "modeminecraft:item/gun_palette_carbon",
+    "particle": "modeminecraft:item/gun_palette_carbon"
+  }
+}

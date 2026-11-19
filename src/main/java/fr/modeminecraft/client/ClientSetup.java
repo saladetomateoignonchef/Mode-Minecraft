@@ -49,6 +49,7 @@ public final class ClientSetup {
     /** Les balles et roquettes sont affichées avec la texture de leur item. */
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(fr.modeminecraft.registry.ModBlockEntities.WEAPON_RACK.get(), WeaponRackRenderer::new);
         event.registerEntityRenderer(ModEntities.BULLET.get(), ctx -> new ThrownItemRenderer<>(ctx, 0.5f, true));
         event.registerEntityRenderer(ModEntities.ROCKET.get(), ctx -> new ThrownItemRenderer<>(ctx, 1.25f, true));
         event.registerEntityRenderer(ModEntities.GRENADE.get(), ctx -> new ThrownItemRenderer<>(ctx, 0.8f, false));
@@ -87,6 +88,7 @@ public final class ClientSetup {
         event.register(ModKeyMappings.LEAN_RIGHT);
         event.register(ModKeyMappings.HOLD_BREATH);
         event.register(ModKeyMappings.MELEE);
+        event.register(ModKeyMappings.QUICK_ATTACH);
     }
 
     @SubscribeEvent

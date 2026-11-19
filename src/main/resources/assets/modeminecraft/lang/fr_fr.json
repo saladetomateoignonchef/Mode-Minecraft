@@ -581,5 +581,22 @@
   "subtitles.modeminecraft.grenade_bounce": "Grenade qui rebondit",
   "subtitles.modeminecraft.grenade_beep": "Bip du Semtex",
   "subtitles.modeminecraft.sonar": "Impulsion sonar",
-  "subtitles.modeminecraft.flash_ring": "Acouphène"
+  "subtitles.modeminecraft.flash_ring": "Acouphène",
+  "block.modeminecraft.weapon_rack": "Râtelier d'armes",
+  "block.modeminecraft.shooting_target": "Cible de tir",
+  "message.modeminecraft.target": "Cible : %s pts — %s m — série %s (%s tir(s))",
+  "message.modeminecraft.gun.level_up": "%s passe au niveau %s !",
+  "message.modeminecraft.gun.skin_unlocked": "Skin débloqué : %s",
+  "tooltip.modeminecraft.gun.level": "Niveau %s (XP %s)",
+  "tooltip.modeminecraft.gun.level_max": "max",
+  "tooltip.modeminecraft.gun.stats": "%s éliminations, %s tirs à la tête, %s tirs (%s %% élim./tir)",
+  "skin.modeminecraft.urban": "Camouflage urbain",
+  "skin.modeminecraft.tiger": "Tigre",
+  "skin.modeminecraft.carbon": "Carbone (niveau 3)",
+  "skin.modeminecraft.diamond": "Diamant (niveau 5)",
+  "key.modeminecraft.quick_attach": "Menu rapide des accessoires (maintenir)",
+  "screen.modeminecraft.attachment_wheel": "Pointe un accessoire, relâche la touche",
+  "screen.modeminecraft.attachment_wheel.empty": "Aucun accessoire compatible dans l'inventaire",
+  "screen.modeminecraft.attachment_wheel.mount": "Monter : %s",
+  "screen.modeminecraft.attachment_wheel.remove": "Retirer : %s"
 }

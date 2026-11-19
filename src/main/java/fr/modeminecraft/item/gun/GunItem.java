@@ -272,7 +272,30 @@ public class GunItem extends Item {
 
     /** Statistiques finales (accessoires compris). */
     public ResolvedGun resolve(ItemStack stack) {
-        return ResolvedGun.of(stats, getAttachments(stack));
+        return ResolvedGun.of(stats, getAttachments(stack)).withLevel(getProgress(stack).level());
+    }
+
+    public static GunProgress getProgress(ItemStack stack) {
+        return stack.getOrDefault(ModDataComponents.PROGRESS.get(), GunProgress.EMPTY);
+    }
+
+    /** Élimination avec cette arme : expérience, et message + son si elle monte de niveau. */
+    public static void recordKill(ItemStack stack, Player player, boolean headshot, boolean big) {
+        GunProgress before = getProgress(stack);
+        GunProgress after = before.withKill(headshot, big);
+        stack.set(ModDataComponents.PROGRESS.get(), after);
+        if (after.level() > before.level()) {
+            player.displayClientMessage(Component.translatable("message.modeminecraft.gun.level_up", stack.getHoverName(), after.level())
+                    .withStyle(ChatFormatting.GOLD), false);
+            player.level().playSound(null, player.getX(), player.getY(), player.getZ(),
+                    net.minecraft.sounds.SoundEvents.PLAYER_LEVELUP, net.minecraft.sounds.SoundSource.PLAYERS, 0.8f, 1.3f);
+            for (GunSkin skin : GunSkin.values()) {
+                if (skin.requiredLevel() == after.level()) {
+                    player.displayClientMessage(Component.translatable("message.modeminecraft.gun.skin_unlocked",
+                            Component.translatable(skin.translationKey())).withStyle(ChatFormatting.LIGHT_PURPLE), false);
+                }
+            }
+        }
     }
 
     /** Cet accessoire peut-il être monté sur cette arme ? */
@@ -607,8 +630,12 @@ public class GunItem extends Item {
             }
             projectile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0f,
                     stats.velocity() * type.velocityMul, spread);
+            if (projectile instanceof BulletEntity bullet) {
+                bullet.setWeapon(stack); // pour compter les éliminations de cette arme
+            }
             level.addFreshEntity(projectile);
         }
+        stack.set(ModDataComponents.PROGRESS.get(), getProgress(stack).withShot());
 
         if (!player.getAbilities().instabuild && stats.special() != GunStats.Special.NO_AMMO) {
             if (stats.chamber()) {
@@ -1125,6 +1152,15 @@ public class GunItem extends Item {
         for (AttachmentSlot slot : AttachmentSlot.values()) {
             attachments.get(slot).ifPresent(item -> tooltip.add(Component.literal(" + ")
                     .append(item.getDescription()).withStyle(ChatFormatting.AQUA)));
+        }
+        GunProgress progress = getProgress(stack);
+        int next = progress.nextLevelXp();
+        tooltip.add(Component.translatable("tooltip.modeminecraft.gun.level", progress.level(),
+                next < 0 ? Component.translatable("tooltip.modeminecraft.gun.level_max") : Component.literal(progress.xp() + " / " + next))
+                .withStyle(ChatFormatting.YELLOW));
+        if (progress.shots() > 0) {
+            tooltip.add(Component.translatable("tooltip.modeminecraft.gun.stats", progress.kills(), progress.headshots(), progress.shots(),
+                    progress.shots() == 0 ? 0 : Math.round(100f * progress.kills() / progress.shots())).withStyle(ChatFormatting.DARK_GRAY));
         }
         GunSkin skin = getSkin(stack);
         if (skin != GunSkin.DEFAULT) {

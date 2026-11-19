@@ -44,6 +44,17 @@ public class BulletEntity extends ThrowableItemProjectile {
     private static final float LEGS_MULTIPLIER = 0.75f;
     private static final double GRAVITY = 0.0025;
 
+    /** Arme qui a tiré cette balle (pour ses statistiques), ou vide. */
+    private net.minecraft.world.item.ItemStack weapon = net.minecraft.world.item.ItemStack.EMPTY;
+
+    public void setWeapon(net.minecraft.world.item.ItemStack stack) {
+        weapon = stack;
+    }
+
+    public net.minecraft.world.item.ItemStack weapon() {
+        return weapon;
+    }
+
     public void setHeadshotMultiplier(float mul) {
         headshotMultiplier = mul;
     }
@@ -210,6 +221,9 @@ public class BulletEntity extends ThrowableItemProjectile {
                 int kind = (!target.isAlive() ? fr.modeminecraft.network.HitMarkerPayload.KILL : fr.modeminecraft.network.HitMarkerPayload.HIT)
                         | (headshot ? fr.modeminecraft.network.HitMarkerPayload.HEADSHOT : 0);
                 net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(shooter, new fr.modeminecraft.network.HitMarkerPayload(kind));
+                if (!target.isAlive() && weapon.getItem() instanceof fr.modeminecraft.item.gun.GunItem) {
+                    fr.modeminecraft.item.gun.GunItem.recordKill(weapon, shooter, headshot, ((LivingEntity) target).getMaxHealth() >= 50);
+                }
             }
             // Supprime l'invincibilité temporaire : sinon les plombs du fusil à pompe
             // et les rafales ne toucheraient qu'une fois sur deux.
@@ -289,6 +303,11 @@ public class BulletEntity extends ThrowableItemProjectile {
             if (net.minecraft.world.level.block.BaseFireBlock.canBePlacedAt(level, fire, result.getDirection())) {
                 level.setBlockAndUpdate(fire, net.minecraft.world.level.block.BaseFireBlock.getState(level, fire));
             }
+        }
+        if (state.getBlock() instanceof fr.modeminecraft.block.ShootingTargetBlock) {
+            fr.modeminecraft.block.ShootingTargetBlock.onBulletHit(level, pos, state, hit, getOwner());
+            discard();
+            return;
         }
         Vec3 dir = getDeltaMovement().normalize();
         lastFace = result.getDirection();

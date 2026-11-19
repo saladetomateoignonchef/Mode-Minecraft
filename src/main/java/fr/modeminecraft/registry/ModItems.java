@@ -782,6 +782,8 @@ public final class ModItems {
     // ---------- Tables ----------
     public static final DeferredItem<BlockItem> ARMAMENT_TABLE = ITEMS.registerSimpleBlockItem(ModBlocks.ARMAMENT_TABLE);
     public static final DeferredItem<BlockItem> MODIFICATION_TABLE = ITEMS.registerSimpleBlockItem(ModBlocks.MODIFICATION_TABLE);
+    public static final DeferredItem<BlockItem> WEAPON_RACK = ITEMS.registerSimpleBlockItem(ModBlocks.WEAPON_RACK);
+    public static final DeferredItem<BlockItem> SHOOTING_TARGET = ITEMS.registerSimpleBlockItem(ModBlocks.SHOOTING_TARGET);
 
     private static DeferredItem<GunItem> gun(String name, Rarity rarity, GunStats.Builder stats) {
         return ITEMS.register(name, () -> new GunItem(stats.build(), new Item.Properties().rarity(rarity)));
