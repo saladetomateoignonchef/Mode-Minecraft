@@ -62,6 +62,11 @@ public final class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> SONAR = register("gun.sonar");
     public static final DeferredHolder<SoundEvent, SoundEvent> FLASH_RING = register("gun.flash_ring");
     public static final DeferredHolder<SoundEvent, SoundEvent> FLASHLIGHT_CLICK = register("gun.flashlight_switch_click");
+    public static final DeferredHolder<SoundEvent, SoundEvent> POLICE_FREEZE_WARNING = register("bot.police_freeze_warning");
+    public static final DeferredHolder<SoundEvent, SoundEvent> FALCON_HORN_CHARGE = register("bot.falcon_horn_charge");
+    public static final DeferredHolder<SoundEvent, SoundEvent> DRAGONSLAYER_UNSHEATHE = register("bot.dragonslayer_unsheathe");
+    public static final DeferredHolder<SoundEvent, SoundEvent> DRAGONSLAYER_SHEATHE = register("bot.dragonslayer_sheathe");
+    public static final DeferredHolder<SoundEvent, SoundEvent> DRAGONSLAYER_CLANG = register("bot.dragonslayer_clang");
 
     private static DeferredHolder<SoundEvent, SoundEvent> register(String name) {
         return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(ModeMinecraft.id(name)));

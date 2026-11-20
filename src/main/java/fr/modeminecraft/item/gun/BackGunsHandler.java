@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class BackGunsHandler {
     private static final Map<UUID, String> LAST = new ConcurrentHashMap<>();
 
-    private static ItemStack[] pick(Player player) {
+    public static ItemStack[] pick(Player player) {
         ItemStack back = ItemStack.EMPTY, hip = ItemStack.EMPTY;
         for (int i = 0; i < 9; i++) {
             ItemStack s = player.getInventory().items.get(i);

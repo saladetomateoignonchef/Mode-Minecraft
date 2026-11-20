@@ -65,6 +65,10 @@ public final class ModEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.entity.AreaCloudEntity>> AREA_CLOUD = ENTITY_TYPES.register("area_cloud",
             () -> EntityType.Builder.<fr.modeminecraft.entity.AreaCloudEntity>of(fr.modeminecraft.entity.AreaCloudEntity::new, MobCategory.MISC)
                     .sized(0.5f, 0.5f).clientTrackingRange(10).updateInterval(20).fireImmune().build("area_cloud"));
+    /** Bots humains (PNJ des villes et des factions). */
+    public static final DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.entity.bot.HumanBotEntity>> HUMAN_BOT = ENTITY_TYPES.register("human_bot",
+            () -> EntityType.Builder.<fr.modeminecraft.entity.bot.HumanBotEntity>of(fr.modeminecraft.entity.bot.HumanBotEntity::new, net.minecraft.world.entity.MobCategory.MISC)
+                    .sized(0.6f, 1.8f).eyeHeight(1.62f).clientTrackingRange(10).build("human_bot"));
     public static final DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.entity.PlacedExplosiveEntity>> PLACED_EXPLOSIVE = ENTITY_TYPES.register("placed_explosive",
             () -> EntityType.Builder.<fr.modeminecraft.entity.PlacedExplosiveEntity>of(fr.modeminecraft.entity.PlacedExplosiveEntity::new, MobCategory.MISC)
                     .sized(0.5f, 0.4f).clientTrackingRange(8).updateInterval(5).build("placed_explosive"));

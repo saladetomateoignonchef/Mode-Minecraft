@@ -966,6 +966,29 @@ public final class ModItems {
         return ITEMS.register(name, () -> new AmmoItem(false, new Item.Properties()));
     }
 
+    // ---------- Villes et factions ----------
+    /** La Pourfendeuse de Dragons (Chef des Troupes de Choc des Faucons Blancs) : impossible à enchanter. */
+    public static final DeferredItem<Item> DRAGONSLAYER = ITEMS.register("dragonslayer",
+            () -> new fr.modeminecraft.item.DragonslayerItem(new Item.Properties().rarity(Rarity.EPIC)));
+    public static final DeferredItem<Item> BLUE_ACCESS_CARD = ITEMS.register("blue_access_card",
+            () -> new fr.modeminecraft.item.AccessCardItem(1, new Item.Properties().stacksTo(16).rarity(Rarity.UNCOMMON)));
+    public static final DeferredItem<Item> RED_ACCESS_CARD = ITEMS.register("red_access_card",
+            () -> new fr.modeminecraft.item.AccessCardItem(2, new Item.Properties().stacksTo(16).rarity(Rarity.RARE)));
+    public static final DeferredItem<Item> BLACK_ACCESS_CARD = ITEMS.register("black_access_card",
+            () -> new fr.modeminecraft.item.AccessCardItem(3, new Item.Properties().stacksTo(16).rarity(Rarity.EPIC)));
+    public static final DeferredItem<Item> FALCON_INSIGNIA = ITEMS.registerSimpleItem("falcon_insignia", new Item.Properties().rarity(Rarity.RARE));
+    // Œufs d'apparition des bots (une faction chacun, rôle tiré au hasard)
+    public static final java.util.List<DeferredItem<Item>> BOT_EGGS = new java.util.ArrayList<>();
+    static {
+        for (var f : fr.modeminecraft.entity.bot.Faction.values()) {
+            BOT_EGGS.add(ITEMS.register("bot_egg_" + f.id, () -> new fr.modeminecraft.item.BotSpawnEggItem(f, null, new Item.Properties())));
+        }
+        BOT_EGGS.add(ITEMS.register("bot_egg_falcon_chief", () -> new fr.modeminecraft.item.BotSpawnEggItem(
+                fr.modeminecraft.entity.bot.Faction.FALCON, fr.modeminecraft.entity.bot.BotRole.CHIEF, new Item.Properties())));
+        BOT_EGGS.add(ITEMS.register("bot_egg_falcon_squad", () -> new fr.modeminecraft.item.BotSpawnEggItem(
+                fr.modeminecraft.entity.bot.Faction.FALCON, fr.modeminecraft.entity.bot.BotRole.COMMANDER, new Item.Properties())));
+    }
+
     private static DeferredItem<AttachmentItem> attachment(String name, AttachmentItem.Stats stats) {
         return ITEMS.register(name, () -> new AttachmentItem(stats, new Item.Properties()));
     }

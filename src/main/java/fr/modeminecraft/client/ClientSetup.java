@@ -66,6 +66,7 @@ public final class ClientSetup {
         event.registerEntityRenderer(ModEntities.BOLT.get(), BoltRenderer::new);
         event.registerEntityRenderer(ModEntities.TOMAHAWK.get(), ctx -> new ThrownItemRenderer<>(ctx, 1.2f, false));
         event.registerEntityRenderer(ModEntities.MOUNTED_GUN.get(), MountedGunRenderer::new);
+        event.registerEntityRenderer(ModEntities.HUMAN_BOT.get(), HumanBotRenderer::new);
         event.registerEntityRenderer(ModEntities.THROWN_GRENADE.get(), ExplosiveRenderers.Grenade::new);
         event.registerEntityRenderer(ModEntities.PLACED_EXPLOSIVE.get(), ExplosiveRenderers.Placed::new);
         event.registerEntityRenderer(ModEntities.AREA_CLOUD.get(), ExplosiveRenderers.Invisible::new);
@@ -103,6 +104,18 @@ public final class ClientSetup {
         event.register(ModKeyMappings.PRONE);
         event.register(ModKeyMappings.SHOW_RECIPE);
         event.register(ModKeyMappings.SHOW_USES);
+    }
+
+    /** Couleurs des œufs d'apparition des bots (celle de la faction). */
+    @SubscribeEvent
+    public static void itemColors(net.neoforged.neoforge.client.event.RegisterColorHandlersEvent.Item event) {
+        for (var egg : ModItems.BOT_EGGS) {
+            event.register((stack, tint) -> {
+                var f = ((fr.modeminecraft.item.BotSpawnEggItem) stack.getItem()).faction();
+                int c = f.color;
+                return 0xFF000000 | (tint == 0 ? c : (c >> 1 & 0x7F7F7F));
+            }, egg.get());
+        }
     }
 
     @SubscribeEvent

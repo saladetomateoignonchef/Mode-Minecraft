@@ -327,5 +327,35 @@
     "sounds": [
       "modeminecraft:gun/flashlight_switch_click_0"
     ]
+  },
+  "bot.police_freeze_warning": {
+    "subtitle": "subtitles.modeminecraft.police_freeze_warning",
+    "sounds": [
+      "modeminecraft:bot/police_freeze_warning"
+    ]
+  },
+  "bot.falcon_horn_charge": {
+    "subtitle": "subtitles.modeminecraft.falcon_horn_charge",
+    "sounds": [
+      "modeminecraft:bot/falcon_horn_charge"
+    ]
+  },
+  "bot.dragonslayer_unsheathe": {
+    "subtitle": "subtitles.modeminecraft.dragonslayer_unsheathe",
+    "sounds": [
+      "modeminecraft:bot/dragonslayer_unsheathe"
+    ]
+  },
+  "bot.dragonslayer_sheathe": {
+    "subtitle": "subtitles.modeminecraft.dragonslayer_sheathe",
+    "sounds": [
+      "modeminecraft:bot/dragonslayer_sheathe"
+    ]
+  },
+  "bot.dragonslayer_clang": {
+    "subtitle": "subtitles.modeminecraft.dragonslayer_clang",
+    "sounds": [
+      "modeminecraft:bot/dragonslayer_clang"
+    ]
   }
 }

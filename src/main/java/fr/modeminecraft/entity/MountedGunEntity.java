@@ -233,6 +233,11 @@ public class MountedGunEntity extends Entity {
         return left <= 0 ? -1 : Mth.clamp(1 - left / RELOAD_TICKS, 0, 1);
     }
 
+    /** Tourelle posée et déjà déployée (villes générées, tests). */
+    public void deployNow() {
+        entityData.set(DEPLOY, DEPLOY_TICKS);
+    }
+
     public boolean isOverheated() {
         return entityData.get(OVERHEAT_END) > now();
     }
@@ -441,6 +446,16 @@ public class MountedGunEntity extends Entity {
             entityData.set(GUN_YAW, clampYaw(player.getYRot()));
             entityData.set(GUN_PITCH, clampPitch(player.getXRot()));
             fire(player);
+        } else if (rider instanceof fr.modeminecraft.entity.bot.HumanBotEntity bot) {
+            // servant de tourelle (bot) : il vise lui-même, munitions illimitées (rechargement quand la bande est vide)
+            entityData.set(GUN_YAW, clampYaw(bot.getYRot()));
+            entityData.set(GUN_PITCH, clampPitch(bot.getXRot()));
+            if (bot.turretFireTicks > 0) {
+                bot.turretFireTicks--;
+                fireBot(bot);
+            } else {
+                stopFiring();
+            }
         } else {
             stopFiring();
         }
@@ -460,6 +475,27 @@ public class MountedGunEntity extends Entity {
         float heat = heat();
         if (heat > 0 && !isOverheated()) {
             entityData.set(HEAT, Math.max(0, heat - kind().cooling()));
+        }
+    }
+
+    private void fireBot(net.minecraft.world.entity.LivingEntity bot) {
+        if (deployTicks() < DEPLOY_TICKS || reloadProgress(0) >= 0 || isOverheated()) {
+            stopFiring();
+            return;
+        }
+        if (ammo() <= 0) {
+            entityData.set(RELOAD_END, (int) now() + RELOAD_TICKS);
+            pendingLoad = kind().capacity;
+            level().playSound(null, getX(), getY(), getZ(), ModSounds.TURRET_RELOAD.get(), SoundSource.HOSTILE, 1.0f, 1.0f);
+            return;
+        }
+        Kind kind = kind();
+        float interval = 1200f / kind.rpm;
+        int due = (int) Math.floor(firingTicks / interval) + 1 - shotsThisPull;
+        firingTicks++;
+        for (int i = 0; i < due && ammo() > 0 && !isOverheated(); i++) {
+            shootOnce(bot);
+            shotsThisPull++;
         }
     }
 
@@ -503,7 +539,7 @@ public class MountedGunEntity extends Entity {
                 muzzles.get(Math.floorMod(shot, muzzles.size()))));
     }
 
-    private void shootOnce(Player player) {
+    private void shootOnce(net.minecraft.world.entity.LivingEntity player) {
         ServerLevel level = (ServerLevel) level();
         Kind kind = kind();
         TurretGeometry.Geo geo = kind.geo();
@@ -540,7 +576,9 @@ public class MountedGunEntity extends Entity {
                 entityData.set(OVERHEAT_END, now() + OVERHEAT_TICKS);
                 level.playSound(null, muzzle.x, muzzle.y, muzzle.z, SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 1.2f, 0.6f);
                 level.sendParticles(ParticleTypes.LARGE_SMOKE, muzzle.x, muzzle.y, muzzle.z, 12, 0.3, 0.15, 0.3, 0.02);
-                player.displayClientMessage(Component.translatable("message.modeminecraft.turret.overheated").withStyle(ChatFormatting.RED), true);
+                if (player instanceof Player p) {
+                    p.displayClientMessage(Component.translatable("message.modeminecraft.turret.overheated").withStyle(ChatFormatting.RED), true);
+                }
             }
             entityData.set(HEAT, heat);
         }

@@ -263,6 +263,54 @@ def mechanical(name, seed):
     return normalize(x, 0.6)
 
 
+def bot_sound(name, seed):
+    """Sons des bots et des Faucons Blancs."""
+    rng = np.random.default_rng(seed)
+    if name == "police_freeze_warning":
+        # radio : grésillement, deux tons de sirène, voix filtrée (formants) puis fin de transmission
+        t = t_axis(1.6)
+        x = band(noise(len(t), rng), lo=1500, hi=5000) * env(t, 0.002, 0.08) * 0.5
+        for k, (at, f) in enumerate([(0.12, 960), (0.3, 1280), (0.48, 960), (0.66, 1280)]):
+            m = (t >= at) & (t < at + 0.16)
+            x[m] += np.sign(np.sin(2 * np.pi * f * t[m])) * 0.35
+        m = (t >= 0.9) & (t < 1.4)
+        tt = t[m] - 0.9
+        voice = (np.sin(2 * np.pi * 140 * tt) + 0.6 * np.sin(2 * np.pi * 700 * tt) + 0.4 * np.sin(2 * np.pi * 1150 * tt))
+        voice *= (0.6 + 0.4 * np.sin(2 * np.pi * 7 * tt)) * np.clip(tt / 0.02, 0, 1) * np.clip((0.5 - tt) / 0.05, 0, 1)
+        x[m] += band(voice, lo=300, hi=3400) * 0.7
+        x += band(noise(len(t), rng), lo=2000, hi=6000) * ((t > 1.42) & (t < 1.5)) * 0.6
+        return normalize(x, 0.8)
+    if name == "falcon_horn_charge":
+        # cor de guerre : son cuivré grave qui enfle, avec vibrato, puis deux appels plus aigus
+        t = t_axis(3.2)
+        x = np.zeros(len(t))
+        for at, dur, f in [(0.0, 1.5, 155), (1.6, 0.6, 207), (2.3, 0.85, 207)]:
+            m = (t >= at) & (t < at + dur)
+            tt = t[m] - at
+            fv = f * (1 + 0.012 * np.sin(2 * np.pi * 5.5 * tt))
+            ph = 2 * np.pi * np.cumsum(fv) / SR
+            tone = sum(np.sin(k * ph) / k ** 0.8 for k in range(1, 9))
+            x[m] += tone * np.clip(tt / 0.25, 0, 1) * np.clip((dur - tt) / 0.12, 0, 1)
+        x = echo(x, [0.18, 0.37], [0.3, 0.15])
+        return normalize(x, 0.85)
+    if name == "dragonslayer_unsheathe":
+        t = t_axis(0.9)
+        scr = band(noise(len(t), rng), lo=2500, hi=9000) * np.clip(t / 0.05, 0, 1) * np.clip((0.7 - t) / 0.1, 0, 1)
+        ring = sum(np.sin(2 * np.pi * f * t) * w for f, w in [(820, 1), (1730, 0.5), (2900, 0.3)]) * env(t - 0.68, 0.001, 0.25) * (t > 0.68)
+        return normalize(scr * 0.7 * (0.6 + 0.4 * t) + ring * 0.6, 0.8)
+    if name == "dragonslayer_sheathe":
+        t = t_axis(0.8)
+        scr = band(noise(len(t), rng), lo=2000, hi=8000) * np.clip(t / 0.03, 0, 1) * np.clip((0.55 - t) / 0.08, 0, 1) * (1 - 0.5 * t)
+        clunk = click(rng, t, 0.56, 300, 0.04, 1.4, 80, 1500)
+        return normalize(scr * 0.6 + clunk, 0.8)
+    if name == "dragonslayer_clang":
+        t = t_axis(1.0)
+        whoosh = band(noise(len(t), rng), lo=200, hi=1800) * np.sin(np.clip(t / 0.25, 0, 1) * np.pi) * 0.9
+        ring = sum(np.sin(2 * np.pi * f * t) * w for f, w in [(410, 1), (980, 0.6), (1650, 0.35), (2470, 0.2)]) * env(t - 0.2, 0.001, 0.35) * (t > 0.2)
+        return normalize(whoosh + ring * 0.8 + click(rng, t, 0.2, 600, 0.02, 1.2, 100, 4000), 0.85)
+    raise ValueError(name)
+
+
 def distant(seed):
     rng = np.random.default_rng(seed)
     t = t_axis(1.6)
@@ -316,6 +364,9 @@ def write_ogg(path, x):
     os.remove(wav_path)
 
 
+BOT_SOUNDS = ["police_freeze_warning", "falcon_horn_charge", "dragonslayer_unsheathe", "dragonslayer_sheathe", "dragonslayer_clang"]
+
+
 def main():
     sounds_dir = os.path.join(ASSETS, "sounds")
     events = {}
@@ -357,6 +408,11 @@ def main():
             files.append(f"gun/{name}_{v}")
             seed += 1
         add(f"gun.{name}", files, name)
+
+    for name in BOT_SOUNDS:
+        write_ogg(os.path.join(sounds_dir, "bot", f"{name}.ogg"), bot_sound(name, seed))
+        seed += 1
+        add(f"bot.{name}", [f"bot/{name}"], name)
 
     with open(os.path.join(ASSETS, "sounds.json"), "w", encoding="utf-8") as f:
         json.dump(events, f, indent=2)
