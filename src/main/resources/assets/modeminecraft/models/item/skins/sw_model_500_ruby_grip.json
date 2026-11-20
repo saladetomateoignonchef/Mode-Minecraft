@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/sw_model_500_grip",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_ruby",
-    "particle": "modeminecraft:item/gun_palette_ruby"
+    "p": "modeminecraft:item/gun/sw_model_500_ruby",
+    "particle": "modeminecraft:item/gun/sw_model_500_ruby"
   }
 }

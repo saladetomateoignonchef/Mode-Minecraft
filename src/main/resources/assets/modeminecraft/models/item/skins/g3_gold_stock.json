@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/g3_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_gold",
-    "particle": "modeminecraft:item/gun_palette_gold"
+    "p": "modeminecraft:item/gun/g3_gold",
+    "particle": "modeminecraft:item/gun/g3_gold"
   }
 }

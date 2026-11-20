@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/ak74u_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_tiger",
-    "particle": "modeminecraft:item/gun_palette_tiger"
+    "p": "modeminecraft:item/gun/ak74u_tiger",
+    "particle": "modeminecraft:item/gun/ak74u_tiger"
   }
 }

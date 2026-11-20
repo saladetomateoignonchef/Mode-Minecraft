@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/m24_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_tiger",
-    "particle": "modeminecraft:item/gun_palette_tiger"
+    "p": "modeminecraft:item/gun/m24_tiger",
+    "particle": "modeminecraft:item/gun/m24_tiger"
   }
 }

@@ -1,5 +1,9 @@
 {
   "parent": "modeminecraft:item/parts/part_base",
+  "textures": {
+    "p": "modeminecraft:item/gun/mosin_nagant_default",
+    "particle": "modeminecraft:item/gun/mosin_nagant_default"
+  },
   "elements": [
     {
       "from": [
@@ -15,55 +19,55 @@
       "faces": {
         "north": {
           "uv": [
-            4,
-            0,
-            8,
-            4
-          ],
-          "texture": "#p"
-        },
-        "east": {
-          "uv": [
-            4,
-            0,
-            8,
-            4
+            10.125,
+            13.4,
+            10.375,
+            13.6
           ],
           "texture": "#p"
         },
         "south": {
           "uv": [
-            4,
-            0,
-            8,
-            4
+            10.625,
+            13.4,
+            10.875,
+            13.6
+          ],
+          "texture": "#p"
+        },
+        "east": {
+          "uv": [
+            2.625,
+            13.4,
+            3.875,
+            13.6
           ],
           "texture": "#p"
         },
         "west": {
           "uv": [
-            4,
-            0,
-            8,
-            4
+            4.125,
+            13.4,
+            5.375,
+            13.6
           ],
           "texture": "#p"
         },
         "up": {
           "uv": [
-            4,
-            0,
-            8,
-            4
+            2.625,
+            0.2,
+            2.875,
+            2.2
           ],
           "texture": "#p"
         },
         "down": {
           "uv": [
-            4,
-            0,
-            8,
-            4
+            3.125,
+            0.2,
+            3.375,
+            2.2
           ],
           "texture": "#p"
         }
@@ -83,55 +87,55 @@
       "faces": {
         "north": {
           "uv": [
-            4,
-            0,
-            8,
-            4
-          ],
-          "texture": "#p"
-        },
-        "east": {
-          "uv": [
-            4,
-            0,
-            8,
-            4
+            2.5,
+            12.6,
+            2.875,
+            13.0
           ],
           "texture": "#p"
         },
         "south": {
           "uv": [
-            4,
-            0,
-            8,
-            4
+            3.125,
+            12.6,
+            3.5,
+            13.0
+          ],
+          "texture": "#p"
+        },
+        "east": {
+          "uv": [
+            3.75,
+            12.6,
+            4.125,
+            13.0
           ],
           "texture": "#p"
         },
         "west": {
           "uv": [
-            4,
-            0,
-            8,
-            4
+            4.375,
+            12.6,
+            4.75,
+            13.0
           ],
           "texture": "#p"
         },
         "up": {
           "uv": [
-            4,
-            0,
-            8,
-            4
+            2.625,
+            9.2,
+            3.0,
+            9.8
           ],
           "texture": "#p"
         },
         "down": {
           "uv": [
-            4,
-            0,
-            8,
-            4
+            3.25,
+            9.2,
+            3.625,
+            9.8
           ],
           "texture": "#p"
         }

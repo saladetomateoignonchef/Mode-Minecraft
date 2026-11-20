@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/mosin_nagant_slide",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_woodland",
-    "particle": "modeminecraft:item/gun_palette_woodland"
+    "p": "modeminecraft:item/gun/mosin_nagant_woodland",
+    "particle": "modeminecraft:item/gun/mosin_nagant_woodland"
   }
 }

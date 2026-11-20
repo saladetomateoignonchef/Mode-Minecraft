@@ -436,6 +436,31 @@ puis utiliser les configurations de lancement générées (Client, Server).
 Ajouter une valeur dans `GunSkin.java` et sa palette dans `SKINS` de `tools/generate_gun_models.py`,
 relancer le script et ajouter la traduction `skin.modeminecraft.<nom>`.
 
+### Textures détaillées (style Minecraft, rondes mais pas lisses)
+Tous les modèles 3D (armes, accessoires, tourelles, grenades, casques, gilets, pantalons, rangers) passent par
+`tools/voxel_bake.py`, qui « cuit » une vraie texture pour chaque objet au lieu d'une simple case de couleur :
+- **arrondi en marches** : les pièces longues ont leurs arêtes chanfreinées (section octogonale en escalier) ;
+- **3 pixels de texture par pixel de modèle**, chaque face ayant sa propre zone dans la texture de l'objet ;
+- **matières peintes pixel par pixel** : métal brossé et rayé, bois veiné, polymère grainé, tissu tissé, cuir,
+  peinture écaillée, verre ; **arêtes en relief** (haut éclairé, bas dans l'ombre) ; **camouflages continus** d'une
+  face à l'autre ;
+- **icônes d'inventaire 32×32** dessinées depuis ces textures (lumière en haut à gauche, liseré entre les pièces, contour).
+
+Les objets en 2D (armes blanches, munitions, matériaux, outils et armure en rubis, blocs) passent en 32×32 avec
+`tools/enhance_icons.py` (agrandissement Scale2x qui arrondit les diagonales, relief, contour sélectif, grain).
+Ordre de génération complet :
+
+```bash
+python3 tools/generate_gun_models.py
+python3 tools/generate_turrets.py
+python3 tools/generate_explosives.py
+python3 tools/generate_helmets.py
+python3 tools/enhance_icons.py
+```
+
+Les textures sont rangées au plus serré (largeur en puissance de 2, hauteur multiple de 16) : le tout tient dans un atlas
+de blocs de 4096×4096, comme un pack de textures classique.
+
 ## Organisation du code
 
 ```
@@ -463,6 +488,8 @@ tools/generate_melee.py         # icônes des 20 armes blanches
 tools/generate_explosives.py    # modèles 3D des grenades et explosifs
 tools/generate_helmets.py       # casques 3D, palette militaire, contours d'écran, textures titane / acier / kevlar
 tools/generate_turrets.py       # tourelles en pièces (trépied, arme, capot, bande, viseurs WWII) + turrets.json
+tools/voxel_bake.py             # textures détaillées des modèles 3D (arrondi en marches, matières, icônes 32x32)
+tools/enhance_icons.py          # icônes 2D et blocs en 32x32 (Scale2x, relief, contour, grain)
 ```
 
 ### Ajouter une nouvelle arme magique

@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/thompson_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_diamond",
-    "particle": "modeminecraft:item/gun_palette_diamond"
+    "p": "modeminecraft:item/gun/thompson_diamond",
+    "particle": "modeminecraft:item/gun/thompson_diamond"
   }
 }

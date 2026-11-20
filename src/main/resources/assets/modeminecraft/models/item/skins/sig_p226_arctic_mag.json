@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/sig_p226_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_arctic",
-    "particle": "modeminecraft:item/gun_palette_arctic"
+    "p": "modeminecraft:item/gun/sig_p226_arctic",
+    "particle": "modeminecraft:item/gun/sig_p226_arctic"
   }
 }

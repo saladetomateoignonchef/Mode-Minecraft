@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/galil_ace_slide",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_carbon",
-    "particle": "modeminecraft:item/gun_palette_carbon"
+    "p": "modeminecraft:item/gun/galil_ace_carbon",
+    "particle": "modeminecraft:item/gun/galil_ace_carbon"
   }
 }

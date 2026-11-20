@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/spas12_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_woodland",
-    "particle": "modeminecraft:item/gun_palette_woodland"
+    "p": "modeminecraft:item/gun/spas12_woodland",
+    "particle": "modeminecraft:item/gun/spas12_woodland"
   }
 }

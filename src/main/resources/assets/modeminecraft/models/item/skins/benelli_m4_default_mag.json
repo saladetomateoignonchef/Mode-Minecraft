@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/benelli_m4_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_default",
-    "particle": "modeminecraft:item/gun_palette_default"
+    "p": "modeminecraft:item/gun/benelli_m4_default",
+    "particle": "modeminecraft:item/gun/benelli_m4_default"
   }
 }

@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/colt_python_grip",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_gold",
-    "particle": "modeminecraft:item/gun_palette_gold"
+    "p": "modeminecraft:item/gun/colt_python_gold",
+    "particle": "modeminecraft:item/gun/colt_python_gold"
   }
 }

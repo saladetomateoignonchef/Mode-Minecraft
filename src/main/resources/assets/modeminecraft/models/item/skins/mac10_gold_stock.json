@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/mac10_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_gold",
-    "particle": "modeminecraft:item/gun_palette_gold"
+    "p": "modeminecraft:item/gun/mac10_gold",
+    "particle": "modeminecraft:item/gun/mac10_gold"
   }
 }

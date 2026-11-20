@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/usp_s_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_urban",
-    "particle": "modeminecraft:item/gun_palette_urban"
+    "p": "modeminecraft:item/gun/usp_s_urban",
+    "particle": "modeminecraft:item/gun/usp_s_urban"
   }
 }

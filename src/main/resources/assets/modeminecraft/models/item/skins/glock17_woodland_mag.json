@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/glock17_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_woodland",
-    "particle": "modeminecraft:item/gun_palette_woodland"
+    "p": "modeminecraft:item/gun/glock17_woodland",
+    "particle": "modeminecraft:item/gun/glock17_woodland"
   }
 }

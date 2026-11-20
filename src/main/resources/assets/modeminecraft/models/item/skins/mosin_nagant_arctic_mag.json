@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/mosin_nagant_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_arctic",
-    "particle": "modeminecraft:item/gun_palette_arctic"
+    "p": "modeminecraft:item/gun/mosin_nagant_arctic",
+    "particle": "modeminecraft:item/gun/mosin_nagant_arctic"
   }
 }

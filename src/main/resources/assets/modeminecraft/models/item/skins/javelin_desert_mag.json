@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/javelin_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_desert",
-    "particle": "modeminecraft:item/gun_palette_desert"
+    "p": "modeminecraft:item/gun/javelin_desert",
+    "particle": "modeminecraft:item/gun/javelin_desert"
   }
 }

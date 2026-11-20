@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/m14_ebr_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_urban",
-    "particle": "modeminecraft:item/gun_palette_urban"
+    "p": "modeminecraft:item/gun/m14_ebr_urban",
+    "particle": "modeminecraft:item/gun/m14_ebr_urban"
   }
 }

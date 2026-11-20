@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/mac10_3d",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_desert",
-    "particle": "modeminecraft:item/gun_palette_desert"
+    "p": "modeminecraft:item/gun/mac10_desert",
+    "particle": "modeminecraft:item/gun/mac10_desert"
   }
 }

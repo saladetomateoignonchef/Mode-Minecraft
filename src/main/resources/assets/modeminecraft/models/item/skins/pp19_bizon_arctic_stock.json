@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/pp19_bizon_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_arctic",
-    "particle": "modeminecraft:item/gun_palette_arctic"
+    "p": "modeminecraft:item/gun/pp19_bizon_arctic",
+    "particle": "modeminecraft:item/gun/pp19_bizon_arctic"
   }
 }

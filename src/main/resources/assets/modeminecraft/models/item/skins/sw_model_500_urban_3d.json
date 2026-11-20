@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/sw_model_500_3d",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_urban",
-    "particle": "modeminecraft:item/gun_palette_urban"
+    "p": "modeminecraft:item/gun/sw_model_500_urban",
+    "particle": "modeminecraft:item/gun/sw_model_500_urban"
   }
 }

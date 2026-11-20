@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/tactical_crossbow_slide",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_ruby",
-    "particle": "modeminecraft:item/gun_palette_ruby"
+    "p": "modeminecraft:item/gun/tactical_crossbow_ruby",
+    "particle": "modeminecraft:item/gun/tactical_crossbow_ruby"
   }
 }

@@ -1,5 +1,9 @@
 {
   "parent": "modeminecraft:item/parts/part_base",
+  "textures": {
+    "p": "modeminecraft:item/gun/scorpion_evo_default",
+    "particle": "modeminecraft:item/gun/scorpion_evo_default"
+  },
   "elements": [
     {
       "from": [
@@ -15,55 +19,55 @@
       "faces": {
         "north": {
           "uv": [
-            0,
-            0,
-            4,
-            4
-          ],
-          "texture": "#p"
-        },
-        "east": {
-          "uv": [
-            0,
-            0,
-            4,
-            4
+            12.125,
+            2.8,
+            14.375,
+            4.0
           ],
           "texture": "#p"
         },
         "south": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            0.125,
+            5.0,
+            2.375,
+            6.2
+          ],
+          "texture": "#p"
+        },
+        "east": {
+          "uv": [
+            7.625,
+            5.0,
+            7.75,
+            6.2
           ],
           "texture": "#p"
         },
         "west": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            8.0,
+            5.0,
+            8.125,
+            6.2
           ],
           "texture": "#p"
         },
         "up": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            10.375,
+            10.8,
+            12.625,
+            11.0
           ],
           "texture": "#p"
         },
         "down": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            12.875,
+            10.8,
+            15.125,
+            11.0
           ],
           "texture": "#p"
         }

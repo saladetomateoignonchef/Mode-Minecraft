@@ -1,5 +1,9 @@
 {
   "parent": "modeminecraft:item/parts/part_base",
+  "textures": {
+    "p": "modeminecraft:item/att/folding_stock",
+    "particle": "modeminecraft:item/att/folding_stock"
+  },
   "elements": [
     {
       "from": [
@@ -15,55 +19,55 @@
       "faces": {
         "north": {
           "uv": [
-            0,
-            0,
-            4,
-            4
-          ],
-          "texture": "#p"
-        },
-        "east": {
-          "uv": [
-            0,
-            0,
-            4,
-            4
+            3.75,
+            1.0,
+            8.25,
+            6.0
           ],
           "texture": "#p"
         },
         "south": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            8.75,
+            1.0,
+            13.25,
+            6.0
+          ],
+          "texture": "#p"
+        },
+        "east": {
+          "uv": [
+            13.75,
+            1.0,
+            14.0,
+            6.0
           ],
           "texture": "#p"
         },
         "west": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            14.5,
+            1.0,
+            14.75,
+            6.0
           ],
           "texture": "#p"
         },
         "up": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            0.25,
+            11.0,
+            4.75,
+            12.0
           ],
           "texture": "#p"
         },
         "down": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            5.25,
+            11.0,
+            9.75,
+            12.0
           ],
           "texture": "#p"
         }
@@ -83,55 +87,55 @@
       "faces": {
         "north": {
           "uv": [
-            8,
-            4,
-            12,
-            8
-          ],
-          "texture": "#p"
-        },
-        "east": {
-          "uv": [
-            8,
-            4,
-            12,
-            8
+            0.25,
+            1.0,
+            0.75,
+            9.0
           ],
           "texture": "#p"
         },
         "south": {
           "uv": [
-            8,
-            4,
-            12,
-            8
+            1.25,
+            1.0,
+            1.75,
+            9.0
+          ],
+          "texture": "#p"
+        },
+        "east": {
+          "uv": [
+            2.25,
+            1.0,
+            2.5,
+            9.0
           ],
           "texture": "#p"
         },
         "west": {
           "uv": [
-            8,
-            4,
-            12,
-            8
+            3.0,
+            1.0,
+            3.25,
+            9.0
           ],
           "texture": "#p"
         },
         "up": {
           "uv": [
-            8,
-            4,
-            12,
-            8
+            10.25,
+            11.0,
+            10.75,
+            12.0
           ],
           "texture": "#p"
         },
         "down": {
           "uv": [
-            8,
-            4,
-            12,
-            8
+            11.25,
+            11.0,
+            11.75,
+            12.0
           ],
           "texture": "#p"
         }

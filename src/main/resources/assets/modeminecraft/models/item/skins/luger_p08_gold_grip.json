@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/luger_p08_grip",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_gold",
-    "particle": "modeminecraft:item/gun_palette_gold"
+    "p": "modeminecraft:item/gun/luger_p08_gold",
+    "particle": "modeminecraft:item/gun/luger_p08_gold"
   }
 }

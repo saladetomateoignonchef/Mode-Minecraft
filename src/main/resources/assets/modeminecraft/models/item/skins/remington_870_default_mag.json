@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/remington_870_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_default",
-    "particle": "modeminecraft:item/gun_palette_default"
+    "p": "modeminecraft:item/gun/remington_870_default",
+    "particle": "modeminecraft:item/gun/remington_870_default"
   }
 }

@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/usp_s_3d",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_ruby",
-    "particle": "modeminecraft:item/gun_palette_ruby"
+    "p": "modeminecraft:item/gun/usp_s_ruby",
+    "particle": "modeminecraft:item/gun/usp_s_ruby"
   }
 }

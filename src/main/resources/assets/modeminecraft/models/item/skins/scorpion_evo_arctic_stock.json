@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/scorpion_evo_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_arctic",
-    "particle": "modeminecraft:item/gun_palette_arctic"
+    "p": "modeminecraft:item/gun/scorpion_evo_arctic",
+    "particle": "modeminecraft:item/gun/scorpion_evo_arctic"
   }
 }

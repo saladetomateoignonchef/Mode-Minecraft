@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/kar98k_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_desert",
-    "particle": "modeminecraft:item/gun_palette_desert"
+    "p": "modeminecraft:item/gun/kar98k_desert",
+    "particle": "modeminecraft:item/gun/kar98k_desert"
   }
 }

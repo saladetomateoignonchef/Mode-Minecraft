@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/m1_garand_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_arctic",
-    "particle": "modeminecraft:item/gun_palette_arctic"
+    "p": "modeminecraft:item/gun/m1_garand_arctic",
+    "particle": "modeminecraft:item/gun/m1_garand_arctic"
   }
 }

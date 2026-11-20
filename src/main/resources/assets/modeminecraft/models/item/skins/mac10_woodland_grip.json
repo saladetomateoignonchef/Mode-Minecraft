@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/mac10_grip",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_woodland",
-    "particle": "modeminecraft:item/gun_palette_woodland"
+    "p": "modeminecraft:item/gun/mac10_woodland",
+    "particle": "modeminecraft:item/gun/mac10_woodland"
   }
 }

@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/rpg7_3d",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_gold",
-    "particle": "modeminecraft:item/gun_palette_gold"
+    "p": "modeminecraft:item/gun/rpg7_gold",
+    "particle": "modeminecraft:item/gun/rpg7_gold"
   }
 }

@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/famas_3d",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_ruby",
-    "particle": "modeminecraft:item/gun_palette_ruby"
+    "p": "modeminecraft:item/gun/famas_ruby",
+    "particle": "modeminecraft:item/gun/famas_ruby"
   }
 }

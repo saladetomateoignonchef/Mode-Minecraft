@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/m16a4_3d",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_ruby",
-    "particle": "modeminecraft:item/gun_palette_ruby"
+    "p": "modeminecraft:item/gun/m16a4_ruby",
+    "particle": "modeminecraft:item/gun/m16a4_ruby"
   }
 }

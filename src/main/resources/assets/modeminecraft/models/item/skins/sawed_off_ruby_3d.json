@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/sawed_off_3d",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_ruby",
-    "particle": "modeminecraft:item/gun_palette_ruby"
+    "p": "modeminecraft:item/gun/sawed_off_ruby",
+    "particle": "modeminecraft:item/gun/sawed_off_ruby"
   }
 }

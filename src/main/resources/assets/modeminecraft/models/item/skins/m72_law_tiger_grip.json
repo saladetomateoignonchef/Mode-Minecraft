@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/m72_law_grip",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_tiger",
-    "particle": "modeminecraft:item/gun_palette_tiger"
+    "p": "modeminecraft:item/gun/m72_law_tiger",
+    "particle": "modeminecraft:item/gun/m72_law_tiger"
   }
 }

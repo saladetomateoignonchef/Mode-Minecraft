@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/tavor_3d",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_gold",
-    "particle": "modeminecraft:item/gun_palette_gold"
+    "p": "modeminecraft:item/gun/tavor_gold",
+    "particle": "modeminecraft:item/gun/tavor_gold"
   }
 }

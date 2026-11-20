@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/famas_slide",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_tiger",
-    "particle": "modeminecraft:item/gun_palette_tiger"
+    "p": "modeminecraft:item/gun/famas_tiger",
+    "particle": "modeminecraft:item/gun/famas_tiger"
   }
 }

@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/cz75_auto_grip",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_gold",
-    "particle": "modeminecraft:item/gun_palette_gold"
+    "p": "modeminecraft:item/gun/cz75_auto_gold",
+    "particle": "modeminecraft:item/gun/cz75_auto_gold"
   }
 }

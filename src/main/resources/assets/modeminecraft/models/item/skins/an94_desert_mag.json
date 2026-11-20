@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/an94_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_desert",
-    "particle": "modeminecraft:item/gun_palette_desert"
+    "p": "modeminecraft:item/gun/an94_desert",
+    "particle": "modeminecraft:item/gun/an94_desert"
   }
 }

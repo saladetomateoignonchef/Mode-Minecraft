@@ -1,4 +1,8 @@
 {
   "parent": "modeminecraft:item/parts/part_base",
+  "textures": {
+    "p": "modeminecraft:item/gun/glock18_default",
+    "particle": "modeminecraft:item/gun/glock18_default"
+  },
   "elements": []
 }

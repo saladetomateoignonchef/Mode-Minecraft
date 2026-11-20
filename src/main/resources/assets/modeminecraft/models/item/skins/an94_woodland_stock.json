@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/an94_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_woodland",
-    "particle": "modeminecraft:item/gun_palette_woodland"
+    "p": "modeminecraft:item/gun/an94_woodland",
+    "particle": "modeminecraft:item/gun/an94_woodland"
   }
 }

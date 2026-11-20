@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/glock17_grip",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_desert",
-    "particle": "modeminecraft:item/gun_palette_desert"
+    "p": "modeminecraft:item/gun/glock17_desert",
+    "particle": "modeminecraft:item/gun/glock17_desert"
   }
 }

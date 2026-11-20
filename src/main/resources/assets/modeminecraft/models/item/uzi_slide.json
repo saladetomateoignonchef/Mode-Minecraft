@@ -1,5 +1,9 @@
 {
   "parent": "modeminecraft:item/parts/part_base",
+  "textures": {
+    "p": "modeminecraft:item/gun/uzi_default",
+    "particle": "modeminecraft:item/gun/uzi_default"
+  },
   "elements": [
     {
       "from": [
@@ -15,55 +19,55 @@
       "faces": {
         "north": {
           "uv": [
-            0,
-            0,
-            4,
-            4
-          ],
-          "texture": "#p"
-        },
-        "east": {
-          "uv": [
-            0,
-            0,
-            4,
-            4
+            5.8125,
+            12.5,
+            6.0,
+            13.5
           ],
           "texture": "#p"
         },
         "south": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            6.125,
+            12.5,
+            6.3125,
+            13.5
+          ],
+          "texture": "#p"
+        },
+        "east": {
+          "uv": [
+            8.5625,
+            12.5,
+            8.6875,
+            13.5
           ],
           "texture": "#p"
         },
         "west": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            8.8125,
+            12.5,
+            8.9375,
+            13.5
           ],
           "texture": "#p"
         },
         "up": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            6.4375,
+            12.5,
+            6.625,
+            13.5
           ],
           "texture": "#p"
         },
         "down": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            6.75,
+            12.5,
+            6.9375,
+            13.5
           ],
           "texture": "#p"
         }

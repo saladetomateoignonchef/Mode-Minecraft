@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/makarov_grip",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_ruby",
-    "particle": "modeminecraft:item/gun_palette_ruby"
+    "p": "modeminecraft:item/gun/makarov_ruby",
+    "particle": "modeminecraft:item/gun/makarov_ruby"
   }
 }

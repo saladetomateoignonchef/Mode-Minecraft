@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/ak12_grip",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_gold",
-    "particle": "modeminecraft:item/gun_palette_gold"
+    "p": "modeminecraft:item/gun/ak12_gold",
+    "particle": "modeminecraft:item/gun/ak12_gold"
   }
 }

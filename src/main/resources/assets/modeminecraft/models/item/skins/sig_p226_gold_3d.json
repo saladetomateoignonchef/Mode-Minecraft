@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/sig_p226_3d",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_gold",
-    "particle": "modeminecraft:item/gun_palette_gold"
+    "p": "modeminecraft:item/gun/sig_p226_gold",
+    "particle": "modeminecraft:item/gun/sig_p226_gold"
   }
 }

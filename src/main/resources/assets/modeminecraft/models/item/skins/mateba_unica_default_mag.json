@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/mateba_unica_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_default",
-    "particle": "modeminecraft:item/gun_palette_default"
+    "p": "modeminecraft:item/gun/mateba_unica_default",
+    "particle": "modeminecraft:item/gun/mateba_unica_default"
   }
 }

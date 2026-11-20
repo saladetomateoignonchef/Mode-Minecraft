@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/mosin_nagant_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_carbon",
-    "particle": "modeminecraft:item/gun_palette_carbon"
+    "p": "modeminecraft:item/gun/mosin_nagant_carbon",
+    "particle": "modeminecraft:item/gun/mosin_nagant_carbon"
   }
 }

@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/g36_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_desert",
-    "particle": "modeminecraft:item/gun_palette_desert"
+    "p": "modeminecraft:item/gun/g36_desert",
+    "particle": "modeminecraft:item/gun/g36_desert"
   }
 }

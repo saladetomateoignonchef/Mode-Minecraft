@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/colt_python_3d",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_ruby",
-    "particle": "modeminecraft:item/gun_palette_ruby"
+    "p": "modeminecraft:item/gun/colt_python_ruby",
+    "particle": "modeminecraft:item/gun/colt_python_ruby"
   }
 }

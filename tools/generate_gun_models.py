@@ -25,6 +25,7 @@ from PIL import Image, ImageDraw
 
 from attachment_designs import ACCESSORIES, LENS_COLORS
 from gun_designs import GUNS, KEYS, box
+import voxel_bake as vb
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 ASSETS = os.path.join(ROOT, "src/main/resources/assets/modeminecraft")
@@ -204,9 +205,21 @@ OUTLINE = (18, 20, 23, 255)
 
 
 def element_key(el):
-    """Retrouve la couleur (clé de palette) d'un pavé à partir de ses UV."""
-    u, v = el["faces"]["south"]["uv"][:2]
-    return KEYS[(v // 4) * 4 + u // 4]
+    """Couleur (clé de palette) d'un pavé."""
+    return el["__key"]
+
+
+VB_MATERIAL = {"metal": "metal", "wood": "wood", "polymer": "polymer", "flat": "flat", "glass": "glass", "gem": "gem"}
+
+
+def painter(skin):
+    """Peintre des textures détaillées pour un skin (camouflages compris)."""
+    colors = {k: SKINS[skin].get(k, DEFAULT[k]) for k in KEYS}
+    alpha = {"q": 170}
+    if not skin.startswith("lens_"):
+        alpha["s"] = 14                       # vitre de viseur presque invisible : on vise au travers
+        colors["s"] = "#cdebf5"
+    return vb.Painter(colors, lambda k: VB_MATERIAL[MATERIAL[k]], alpha, seed=skin)
 
 
 def element_polygon(el):
@@ -283,6 +296,8 @@ def main():
     models = os.path.join(ASSETS, "models/item")
     textures = os.path.join(ASSETS, "textures/item")
     os.makedirs(os.path.join(textures, "skins"), exist_ok=True)
+    os.makedirs(os.path.join(textures, "gun"), exist_ok=True)
+    os.makedirs(os.path.join(textures, "att"), exist_ok=True)
 
     for skin in SKINS:
         palette_image(skin).save(os.path.join(textures, f"gun_palette_{skin}.png"))
@@ -305,30 +320,31 @@ def main():
         mounts[name] = {"mounts": gun.mounts, "mag_needs_ammo": gun.flags.get("mag_needs_ammo", False)}
         if gun.slide:
             mounts[name]["slide"] = gun.slide_info
-        write(os.path.join(models, f"{name}_3d.json"), {"parent": f"{MOD}:item/gun_3d", "elements": gun.body})
-        write(os.path.join(models, f"{name}_mag.json"), {"parent": f"{MOD}:item/parts/part_base", "elements": gun.mag})
-        # Pièce mobile (culasse, pompe, canons...) : animée par le jeu au moment du tir
-        write(os.path.join(models, f"{name}_slide.json"), {"parent": f"{MOD}:item/parts/part_base", "elements": gun.slide})
-        # Poignée et crosse d'origine : masquées quand un accessoire les remplace
-        for part, elements in gun.parts.items():
-            write(os.path.join(models, f"{name}_{part}.json"), {"parent": f"{MOD}:item/parts/part_base", "elements": elements})
+        # Textures détaillées : une seule disposition pour l'arme (corps, chargeur, culasse, poignée, crosse),
+        # peinte une fois par skin
+        groups = {"body": gun.body, "mag": gun.mag, "slide": gun.slide, "grip": gun.parts["grip"], "stock": gun.parts["stock"]}
+        baked = vb.bake(groups, skip_chamfer=("s", "q", "d"))
+        tex_default = f"{MOD}:item/gun/{name}_default"
+        write(os.path.join(models, f"{name}_3d.json"), {"parent": f"{MOD}:item/gun_3d",
+              "textures": {"p": tex_default, "particle": tex_default}, "elements": vb.elements(baked, "body")})
+        for part in ("mag", "slide", "grip", "stock"):
+            write(os.path.join(models, f"{name}_{part}.json"), {"parent": f"{MOD}:item/parts/part_base",
+                  "textures": {"p": tex_default, "particle": tex_default}, "elements": vb.elements(baked, part)})
         for skin in SKINS:
-            palette = f"{MOD}:item/gun_palette_{skin}"
+            atlas = vb.paint(baked, painter(skin))
+            atlas.save(os.path.join(textures, "gun", f"{name}_{skin}.png"))
+            tex = f"{MOD}:item/gun/{name}_{skin}"
             base = f"{MOD}:item/skins/{name}_{skin}"
-            icon_img = render_icon(gun.body + gun.slide + gun.mag + gun.parts["grip"] + gun.parts["stock"], skin)
+            icon_img = vb.icon(baked, atlas, ["body", "slide", "mag", "grip", "stock"])
             if skin == "default":
                 icon_img.save(os.path.join(textures, f"{name}.png"))
                 icon = f"{MOD}:item/{name}"
             else:
                 icon_img.save(os.path.join(textures, "skins", f"{name}_{skin}.png"))
                 icon = f"{MOD}:item/skins/{name}_{skin}"
-            write(os.path.join(models, "skins", f"{name}_{skin}_3d.json"),
-                  {"parent": f"{MOD}:item/{name}_3d", "textures": {"p": palette, "particle": palette}})
-            write(os.path.join(models, "skins", f"{name}_{skin}_mag.json"),
-                  {"parent": f"{MOD}:item/{name}_mag", "textures": {"p": palette, "particle": palette}})
-            for part in ["slide"] + list(gun.parts):
+            for part in ("3d", "mag", "slide", "grip", "stock"):
                 write(os.path.join(models, "skins", f"{name}_{skin}_{part}.json"),
-                      {"parent": f"{MOD}:item/{name}_{part}", "textures": {"p": palette, "particle": palette}})
+                      {"parent": f"{MOD}:item/{name}_{part}", "textures": {"p": tex, "particle": tex}})
             write(os.path.join(models, "skins", f"{name}_{skin}_icon.json"),
                   {"parent": "minecraft:item/generated", "textures": {"layer0": icon}})
             write(os.path.join(models, "skins", f"{name}_{skin}.json"), separate(base))
@@ -343,18 +359,20 @@ def main():
         palette_image(f"lens_{name}").save(os.path.join(textures, f"gun_palette_lens_{name}.png"))
 
     for name, elements in ACCESSORIES.items():
-        part = {"parent": f"{MOD}:item/parts/part_base", "elements": elements}
-        if name in LENS_COLORS:
-            pal = f"{MOD}:item/gun_palette_lens_{name}"
-            part["textures"] = {"p": pal, "particle": pal}
+        skin = f"lens_{name}" if name in LENS_COLORS else "default"
+        src = elements if elements else ACCESSORIES["buffer_tube"]   # "sans crosse" : icône d'une crosse barrée
+        baked = vb.bake({"a": src}, skip_chamfer=("s", "q", "d"))
+        atlas = vb.paint(baked, painter(skin))
+        if elements:
+            atlas.save(os.path.join(textures, "att", f"{name}.png"))
+            tex = f"{MOD}:item/att/{name}"
+            part = {"parent": f"{MOD}:item/parts/part_base", "textures": {"p": tex, "particle": tex}, "elements": vb.elements(baked, "a")}
+        else:
+            part = {"parent": f"{MOD}:item/parts/part_base", "elements": []}
         write(os.path.join(models, "parts", f"{name}.json"), part)
         write(os.path.join(models, f"{name}.json"),
               {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{name}"}})
-        # Icône calculée à partir du modèle 3D (vue de profil)
-        if elements:
-            render_icon(elements, f"lens_{name}" if name in LENS_COLORS else "default").save(os.path.join(textures, f"{name}.png"))
-        else:  # "sans crosse" : on dessine une crosse barrée
-            render_icon(ACCESSORIES["buffer_tube"], "default").save(os.path.join(textures, f"{name}.png"))
+        vb.icon(baked, atlas, ["a"]).save(os.path.join(textures, f"{name}.png"))
 
     # Hauteur du centre optique de chaque viseur (pixels au-dessus du rail) : la vraie visée met l'œil pile dessus
     optics = {}

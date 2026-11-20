@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/sig_p226_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_diamond",
-    "particle": "modeminecraft:item/gun_palette_diamond"
+    "p": "modeminecraft:item/gun/sig_p226_diamond",
+    "particle": "modeminecraft:item/gun/sig_p226_diamond"
   }
 }

@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/usp_s_slide",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_default",
-    "particle": "modeminecraft:item/gun_palette_default"
+    "p": "modeminecraft:item/gun/usp_s_default",
+    "particle": "modeminecraft:item/gun/usp_s_default"
   }
 }

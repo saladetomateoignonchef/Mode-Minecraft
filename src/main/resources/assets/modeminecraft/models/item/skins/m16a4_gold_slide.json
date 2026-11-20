@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/m16a4_slide",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_gold",
-    "particle": "modeminecraft:item/gun_palette_gold"
+    "p": "modeminecraft:item/gun/m16a4_gold",
+    "particle": "modeminecraft:item/gun/m16a4_gold"
   }
 }

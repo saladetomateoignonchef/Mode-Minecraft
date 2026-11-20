@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/kar98k_grip",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_tiger",
-    "particle": "modeminecraft:item/gun_palette_tiger"
+    "p": "modeminecraft:item/gun/kar98k_tiger",
+    "particle": "modeminecraft:item/gun/kar98k_tiger"
   }
 }

@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/tactical_crossbow_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_gold",
-    "particle": "modeminecraft:item/gun_palette_gold"
+    "p": "modeminecraft:item/gun/tactical_crossbow_gold",
+    "particle": "modeminecraft:item/gun/tactical_crossbow_gold"
   }
 }

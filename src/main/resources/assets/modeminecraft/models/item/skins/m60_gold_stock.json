@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/m60_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_gold",
-    "particle": "modeminecraft:item/gun_palette_gold"
+    "p": "modeminecraft:item/gun/m60_gold",
+    "particle": "modeminecraft:item/gun/m60_gold"
   }
 }

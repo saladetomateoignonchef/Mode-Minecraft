@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/rpg7_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_tiger",
-    "particle": "modeminecraft:item/gun_palette_tiger"
+    "p": "modeminecraft:item/gun/rpg7_tiger",
+    "particle": "modeminecraft:item/gun/rpg7_tiger"
   }
 }

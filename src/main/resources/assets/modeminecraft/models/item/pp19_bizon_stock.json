@@ -1,5 +1,9 @@
 {
   "parent": "modeminecraft:item/parts/part_base",
+  "textures": {
+    "p": "modeminecraft:item/gun/pp19_bizon_default",
+    "particle": "modeminecraft:item/gun/pp19_bizon_default"
+  },
   "elements": [
     {
       "from": [
@@ -15,55 +19,55 @@
       "faces": {
         "north": {
           "uv": [
-            0,
-            0,
-            4,
-            4
-          ],
-          "texture": "#p"
-        },
-        "east": {
-          "uv": [
-            0,
-            0,
-            4,
-            4
+            9.875,
+            7.2,
+            12.125,
+            8.0
           ],
           "texture": "#p"
         },
         "south": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            12.375,
+            7.2,
+            14.625,
+            8.0
+          ],
+          "texture": "#p"
+        },
+        "east": {
+          "uv": [
+            8.875,
+            8.6,
+            9.0,
+            9.4
           ],
           "texture": "#p"
         },
         "west": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            9.25,
+            8.6,
+            9.375,
+            9.4
           ],
           "texture": "#p"
         },
         "up": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            3.875,
+            13.4,
+            6.125,
+            13.6
           ],
           "texture": "#p"
         },
         "down": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            6.375,
+            13.4,
+            8.625,
+            13.6
           ],
           "texture": "#p"
         }

@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/remington_870_slide",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_arctic",
-    "particle": "modeminecraft:item/gun_palette_arctic"
+    "p": "modeminecraft:item/gun/remington_870_arctic",
+    "particle": "modeminecraft:item/gun/remington_870_arctic"
   }
 }

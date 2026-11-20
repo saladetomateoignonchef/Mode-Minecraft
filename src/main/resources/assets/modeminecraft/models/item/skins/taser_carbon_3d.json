@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/taser_3d",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_carbon",
-    "particle": "modeminecraft:item/gun_palette_carbon"
+    "p": "modeminecraft:item/gun/taser_carbon",
+    "particle": "modeminecraft:item/gun/taser_carbon"
   }
 }

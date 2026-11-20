@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/tactical_crossbow_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_arctic",
-    "particle": "modeminecraft:item/gun_palette_arctic"
+    "p": "modeminecraft:item/gun/tactical_crossbow_arctic",
+    "particle": "modeminecraft:item/gun/tactical_crossbow_arctic"
   }
 }

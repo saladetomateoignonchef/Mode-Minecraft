@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/an94_3d",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_ruby",
-    "particle": "modeminecraft:item/gun_palette_ruby"
+    "p": "modeminecraft:item/gun/an94_ruby",
+    "particle": "modeminecraft:item/gun/an94_ruby"
   }
 }

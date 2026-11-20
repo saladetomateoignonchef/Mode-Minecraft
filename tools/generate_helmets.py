@@ -17,10 +17,14 @@ Utilisation : python3 tools/generate_helmets.py
 import json
 import math
 import os
+import sys
 import random
 import zlib
 
 from PIL import Image, ImageDraw
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import voxel_bake as vb  # noqa: E402
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 ASSETS = os.path.join(ROOT, "src/main/resources/assets/modeminecraft")
@@ -81,11 +85,38 @@ def uv(key):
 def box(frm, to, key, rot=None):
     u = uv(key)
     el = {"from": [round(v, 3) for v in frm], "to": [round(v, 3) for v in to],
-          "faces": {f: {"uv": u, "texture": "#p"} for f in ("north", "east", "south", "west", "up", "down")}}
+          "faces": {f: {"uv": u, "texture": "#p"} for f in ("north", "east", "south", "west", "up", "down")}, "__key": key}
     if rot:
         axis, angle, origin = rot
         el["rotation"] = {"angle": angle, "axis": axis, "origin": origin}
     return el
+
+
+# ------------------------------------------------------------------ textures détaillées (voir voxel_bake.py)
+MATERIAL = {}
+for _k in ("glass", "dark_glass", "lens", "visor_d"):
+    MATERIAL[_k] = "glass"
+for _k in ("iron_ox", "bronze", "bronze_d", "steel", "steel_d", "brass", "rivet", "scale_ti", "rail", "brass_case"):
+    MATERIAL[_k] = "metal"
+for _k in ("canvas", "horizon", "horizon_d", "khaki", "khaki_d", "moss", "net", "nato", "coyote", "coyote_d", "ranger",
+           "ranger_d", "velcro", "navy", "navy_d", "woodland", "multicam", "lace", "padding"):
+    MATERIAL[_k] = "fabric"
+for _k in ("leather", "leather_d", "leather_red"):
+    MATERIAL[_k] = "leather"
+for _k in ("black", "comtac", "nvg", "jugg"):
+    MATERIAL[_k] = "polymer"
+for _k in ("red", "cyan"):
+    MATERIAL[_k] = "flat"
+PAINTER = vb.Painter({**COLORS, **CAMO}, lambda k: MATERIAL.get(k, "paint"), dict(TRANSLUCENT), seed="armor")
+SKIP = ("glass", "dark_glass", "lens", "visor_d", "red", "cyan")
+
+
+def baked_models(name, groups):
+    """Cuît un ensemble de pavés (groupes) dans une texture détaillée propre à l'objet ; renvoie (Baked, textures)."""
+    baked = vb.bake(groups, skip_chamfer=SKIP)
+    vb.paint(baked, PAINTER).save(os.path.join(ASSETS, "textures/item/armor3d", f"{name}.png"))
+    t = f"{MOD}:item/armor3d/{name}"
+    return baked, {"p": t, "particle": t}
 
 
 class H:
@@ -481,12 +512,12 @@ VEST_DISPLAY = {
 
 
 def vest_models():
-    tex = {"p": f"{MOD}:item/helmet_palette", "particle": f"{MOD}:item/helmet_palette"}
     for name, fn in VESTS.items():
         els = fn().els
         check(name, els)
+        baked, tex = baked_models(name, {"m": els})
         write(os.path.join(ASSETS, f"models/item/{name}.json"),
-              {"textures": tex, "render_type": "minecraft:translucent", "display": VEST_DISPLAY, "elements": els})
+              {"textures": tex, "render_type": "minecraft:translucent", "display": VEST_DISPLAY, "elements": vb.elements(baked, "m")})
 
 
 # ------------------------------------------------------------------ pantalons (repère d'une jambe)
@@ -691,18 +722,20 @@ def shifted(els, dx, dy):
 
 
 def gear_models():
-    tex = {"p": f"{MOD}:item/helmet_palette", "particle": f"{MOD}:item/helmet_palette"}
     for name, fn in GEAR.items():
         parts = fn()
         for part, h in parts.items():
             check(name, h.els)
+        baked, tex = baked_models(name, {part: h.els for part, h in parts.items()})
+        parts = {part: vb.elements(baked, part) for part in parts}
+        for part, els in parts.items():
             write(os.path.join(ASSETS, f"models/gear/{name}_{part}.json"),
-                  {"textures": tex, "render_type": "minecraft:translucent", "elements": h.els})
+                  {"textures": tex, "render_type": "minecraft:translucent", "elements": els})
         if "belt" in parts:   # pantalon complet (inventaire) : ceinture + jambes sous la taille
-            whole = parts["belt"].els + shifted(parts["leg_l"].els, -2, -12) + shifted(parts["leg_r"].els, 2, -12)
+            whole = parts["belt"] + shifted(parts["leg_l"], -2, -12) + shifted(parts["leg_r"], 2, -12)
             disp = {"gui": {"rotation": [15, 200, 0], "translation": [0, 6, 0], "scale": [0.55, 0.55, 0.55]}}
         else:
-            whole = shifted(parts["boot_l"].els, -2.6, 0) + shifted(parts["boot_r"].els, 2.6, 0)
+            whole = shifted(parts["boot_l"], -2.6, 0) + shifted(parts["boot_r"], 2.6, 0)
             disp = {"gui": {"rotation": [20, 200, 0], "translation": [0, 3, 0], "scale": [0.85, 0.85, 0.85]}}
         disp.update({k: v for k, v in VEST_DISPLAY.items() if k != "gui"})
         check(name, whole)
@@ -723,17 +756,18 @@ def check(name, els):
 
 
 def helmet_models():
-    tex = {"p": f"{MOD}:item/helmet_palette", "particle": f"{MOD}:item/helmet_palette"}
     for name, fn in HELMETS.items():
-        els = fn().els
-        check(name, els)
-        model = {"textures": tex, "render_type": "minecraft:translucent", "display": DISPLAY, "elements": els}
+        groups = {"m": fn().els}
+        if name in MODULES:
+            groups["mod"] = MODULES[name]().els
+        for els in groups.values():
+            check(name, els)
+        baked, tex = baked_models(name, groups)
+        model = {"textures": tex, "render_type": "minecraft:translucent", "display": DISPLAY, "elements": vb.elements(baked, "m")}
         if name in MODULES:
             model["overrides"] = [{"predicate": {f"{MOD}:module": 1}, "model": f"{MOD}:item/{name}_module"}]
-            mels = MODULES[name]().els
-            check(name, mels)
             write(os.path.join(ASSETS, f"models/item/{name}_module.json"),
-                  {"textures": tex, "render_type": "minecraft:translucent", "display": DISPLAY, "elements": mels})
+                  {"textures": tex, "render_type": "minecraft:translucent", "display": DISPLAY, "elements": vb.elements(baked, "mod")})
         write(os.path.join(ASSETS, f"models/item/{name}.json"), model)
 
 
@@ -997,6 +1031,7 @@ def materials():
 
 
 def main():
+    os.makedirs(os.path.join(ASSETS, "textures/item/armor3d"), exist_ok=True)
     palette_image().save(os.path.join(ASSETS, "textures/item/helmet_palette.png"))
     helmet_models()
     vest_models()

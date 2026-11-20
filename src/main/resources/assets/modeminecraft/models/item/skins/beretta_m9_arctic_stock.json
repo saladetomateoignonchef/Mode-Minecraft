@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/beretta_m9_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_arctic",
-    "particle": "modeminecraft:item/gun_palette_arctic"
+    "p": "modeminecraft:item/gun/beretta_m9_arctic",
+    "particle": "modeminecraft:item/gun/beretta_m9_arctic"
   }
 }

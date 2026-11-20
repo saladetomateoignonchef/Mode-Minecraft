@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/ruby_railgun_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_urban",
-    "particle": "modeminecraft:item/gun_palette_urban"
+    "p": "modeminecraft:item/gun/ruby_railgun_urban",
+    "particle": "modeminecraft:item/gun/ruby_railgun_urban"
   }
 }

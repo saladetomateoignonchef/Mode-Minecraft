@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/p90_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_woodland",
-    "particle": "modeminecraft:item/gun_palette_woodland"
+    "p": "modeminecraft:item/gun/p90_woodland",
+    "particle": "modeminecraft:item/gun/p90_woodland"
   }
 }

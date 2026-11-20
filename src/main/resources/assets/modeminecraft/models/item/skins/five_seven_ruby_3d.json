@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/five_seven_3d",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_ruby",
-    "particle": "modeminecraft:item/gun_palette_ruby"
+    "p": "modeminecraft:item/gun/five_seven_ruby",
+    "particle": "modeminecraft:item/gun/five_seven_ruby"
   }
 }

@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/colt_python_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_urban",
-    "particle": "modeminecraft:item/gun_palette_urban"
+    "p": "modeminecraft:item/gun/colt_python_urban",
+    "particle": "modeminecraft:item/gun/colt_python_urban"
   }
 }

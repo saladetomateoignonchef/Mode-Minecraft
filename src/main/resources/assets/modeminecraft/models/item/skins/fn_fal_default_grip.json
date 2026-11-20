@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/fn_fal_grip",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_default",
-    "particle": "modeminecraft:item/gun_palette_default"
+    "p": "modeminecraft:item/gun/fn_fal_default",
+    "particle": "modeminecraft:item/gun/fn_fal_default"
   }
 }

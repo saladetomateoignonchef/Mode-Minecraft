@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/hk416_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_ruby",
-    "particle": "modeminecraft:item/gun_palette_ruby"
+    "p": "modeminecraft:item/gun/hk416_ruby",
+    "particle": "modeminecraft:item/gun/hk416_ruby"
   }
 }

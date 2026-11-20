@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/m32_mgl_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_urban",
-    "particle": "modeminecraft:item/gun_palette_urban"
+    "p": "modeminecraft:item/gun/m32_mgl_urban",
+    "particle": "modeminecraft:item/gun/m32_mgl_urban"
   }
 }

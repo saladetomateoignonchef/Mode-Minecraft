@@ -1,69 +1,150 @@
 {
   "parent": "modeminecraft:item/parts/part_base",
+  "textures": {
+    "p": "modeminecraft:item/gun/panzerfaust3_default",
+    "particle": "modeminecraft:item/gun/panzerfaust3_default"
+  },
   "elements": [
     {
       "from": [
-        4.5,
+        4.83,
         3.9,
         7.3
       ],
       "to": [
-        6.1,
+        5.77,
         6.9,
         8.7
       ],
       "faces": {
         "north": {
           "uv": [
-            0,
-            0,
-            4,
-            4
-          ],
-          "texture": "#p"
-        },
-        "east": {
-          "uv": [
-            0,
-            0,
-            4,
-            4
+            12.875,
+            0.2,
+            13.25,
+            2.0
           ],
           "texture": "#p"
         },
         "south": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            13.5,
+            0.2,
+            13.875,
+            2.0
+          ],
+          "texture": "#p"
+        },
+        "east": {
+          "uv": [
+            11.375,
+            0.2,
+            11.875,
+            2.0
           ],
           "texture": "#p"
         },
         "west": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            12.125,
+            0.2,
+            12.625,
+            2.0
           ],
           "texture": "#p"
         },
         "up": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            15.375,
+            12.0,
+            15.75,
+            12.8
           ],
           "texture": "#p"
         },
         "down": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            0.125,
+            13.2,
+            0.5,
+            14.0
+          ],
+          "texture": "#p"
+        }
+      },
+      "rotation": {
+        "angle": -22.5,
+        "axis": "z",
+        "origin": [
+          5.3,
+          6.9,
+          8
+        ]
+      }
+    },
+    {
+      "from": [
+        4.5,
+        3.92,
+        7.63
+      ],
+      "to": [
+        6.1,
+        6.88,
+        8.37
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            9.625,
+            0.2,
+            10.25,
+            2.0
+          ],
+          "texture": "#p"
+        },
+        "south": {
+          "uv": [
+            10.5,
+            0.2,
+            11.125,
+            2.0
+          ],
+          "texture": "#p"
+        },
+        "east": {
+          "uv": [
+            14.125,
+            0.2,
+            14.375,
+            2.0
+          ],
+          "texture": "#p"
+        },
+        "west": {
+          "uv": [
+            14.625,
+            0.2,
+            14.875,
+            2.0
+          ],
+          "texture": "#p"
+        },
+        "up": {
+          "uv": [
+            12.5,
+            13.2,
+            13.125,
+            13.6
+          ],
+          "texture": "#p"
+        },
+        "down": {
+          "uv": [
+            13.375,
+            13.2,
+            14.0,
+            13.6
           ],
           "texture": "#p"
         }

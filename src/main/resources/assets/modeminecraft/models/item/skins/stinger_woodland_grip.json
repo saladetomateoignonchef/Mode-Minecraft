@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/stinger_grip",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_woodland",
-    "particle": "modeminecraft:item/gun_palette_woodland"
+    "p": "modeminecraft:item/gun/stinger_woodland",
+    "particle": "modeminecraft:item/gun/stinger_woodland"
   }
 }

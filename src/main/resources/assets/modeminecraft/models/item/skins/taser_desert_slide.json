@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/taser_slide",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_desert",
-    "particle": "modeminecraft:item/gun_palette_desert"
+    "p": "modeminecraft:item/gun/taser_desert",
+    "particle": "modeminecraft:item/gun/taser_desert"
   }
 }

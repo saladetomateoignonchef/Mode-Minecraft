@@ -9,6 +9,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from gun_designs import box  # noqa: E402
+import voxel_bake as vb  # noqa: E402
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 MODELS = os.path.join(ROOT, "src/main/resources/assets/modeminecraft/models/item")
@@ -83,9 +84,18 @@ BASE = {
 def main():
     with open(os.path.join(MODELS, "gadget_base.json"), "w", encoding="utf-8") as f:
         json.dump(BASE, f, indent=2)
+    from generate_gun_models import painter
+    paint = painter("default")
+    textures = os.path.join(ROOT, "src/main/resources/assets/modeminecraft/textures/item/gadget")
+    os.makedirs(textures, exist_ok=True)
     for name, elements in MODELS_DEF.items():
+        # texture détaillée propre à chaque objet (voir voxel_bake.py)
+        baked = vb.bake({"m": elements}, skip_chamfer=("s", "q", "d"))
+        vb.paint(baked, paint).save(os.path.join(textures, f"{name}.png"))
+        tex = f"{MOD}:item/gadget/{name}"
         with open(os.path.join(MODELS, f"{name}.json"), "w", encoding="utf-8") as f:
-            json.dump({"parent": f"{MOD}:item/gadget_base", "elements": elements}, f, indent=2)
+            json.dump({"parent": f"{MOD}:item/gadget_base", "textures": {"p": tex, "particle": tex},
+                       "elements": vb.elements(baked, "m")}, f, separators=(",", ":"))
     print(f"{len(MODELS_DEF)} modèles d'explosifs")
 
 

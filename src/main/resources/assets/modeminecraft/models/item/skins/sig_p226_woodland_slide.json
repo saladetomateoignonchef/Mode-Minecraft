@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/sig_p226_slide",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_woodland",
-    "particle": "modeminecraft:item/gun_palette_woodland"
+    "p": "modeminecraft:item/gun/sig_p226_woodland",
+    "particle": "modeminecraft:item/gun/sig_p226_woodland"
   }
 }

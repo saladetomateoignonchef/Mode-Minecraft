@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/desert_eagle_grip",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_arctic",
-    "particle": "modeminecraft:item/gun_palette_arctic"
+    "p": "modeminecraft:item/gun/desert_eagle_arctic",
+    "particle": "modeminecraft:item/gun/desert_eagle_arctic"
   }
 }

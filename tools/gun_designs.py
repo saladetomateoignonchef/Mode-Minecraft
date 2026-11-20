@@ -27,7 +27,7 @@ def cell_uv(color):
 def box(frm, to, color, rot=None):
     """Un pavé. rot = (axe, angle, origine) avec angle dans -45, -22.5, 0, 22.5, 45."""
     uv = cell_uv(color)
-    el = {"from": [round(v, 3) for v in frm], "to": [round(v, 3) for v in to],
+    el = {"from": [round(v, 3) for v in frm], "to": [round(v, 3) for v in to], "__key": color,
           "faces": {f: {"uv": uv, "texture": "#p"} for f in ("north", "east", "south", "west", "up", "down")}}
     if rot:
         axis, angle, origin = rot

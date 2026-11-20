@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/colt_m1911_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_gold",
-    "particle": "modeminecraft:item/gun_palette_gold"
+    "p": "modeminecraft:item/gun/colt_m1911_gold",
+    "particle": "modeminecraft:item/gun/colt_m1911_gold"
   }
 }

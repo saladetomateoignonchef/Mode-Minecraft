@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/glock18_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_gold",
-    "particle": "modeminecraft:item/gun_palette_gold"
+    "p": "modeminecraft:item/gun/glock18_gold",
+    "particle": "modeminecraft:item/gun/glock18_gold"
   }
 }

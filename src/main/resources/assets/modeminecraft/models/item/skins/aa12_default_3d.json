@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/aa12_3d",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_default",
-    "particle": "modeminecraft:item/gun_palette_default"
+    "p": "modeminecraft:item/gun/aa12_default",
+    "particle": "modeminecraft:item/gun/aa12_default"
   }
 }

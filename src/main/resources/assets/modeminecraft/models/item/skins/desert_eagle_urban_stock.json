@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/desert_eagle_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_urban",
-    "particle": "modeminecraft:item/gun_palette_urban"
+    "p": "modeminecraft:item/gun/desert_eagle_urban",
+    "particle": "modeminecraft:item/gun/desert_eagle_urban"
   }
 }

@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/fn_fal_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_diamond",
-    "particle": "modeminecraft:item/gun_palette_diamond"
+    "p": "modeminecraft:item/gun/fn_fal_diamond",
+    "particle": "modeminecraft:item/gun/fn_fal_diamond"
   }
 }

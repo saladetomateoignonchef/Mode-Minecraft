@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/m60_grip",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_arctic",
-    "particle": "modeminecraft:item/gun_palette_arctic"
+    "p": "modeminecraft:item/gun/m60_arctic",
+    "particle": "modeminecraft:item/gun/m60_arctic"
   }
 }

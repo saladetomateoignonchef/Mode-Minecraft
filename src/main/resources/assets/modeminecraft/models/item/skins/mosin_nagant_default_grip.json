@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/mosin_nagant_grip",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_default",
-    "particle": "modeminecraft:item/gun_palette_default"
+    "p": "modeminecraft:item/gun/mosin_nagant_default",
+    "particle": "modeminecraft:item/gun/mosin_nagant_default"
   }
 }

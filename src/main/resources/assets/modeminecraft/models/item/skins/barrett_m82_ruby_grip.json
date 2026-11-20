@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/barrett_m82_grip",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_ruby",
-    "particle": "modeminecraft:item/gun_palette_ruby"
+    "p": "modeminecraft:item/gun/barrett_m82_ruby",
+    "particle": "modeminecraft:item/gun/barrett_m82_ruby"
   }
 }

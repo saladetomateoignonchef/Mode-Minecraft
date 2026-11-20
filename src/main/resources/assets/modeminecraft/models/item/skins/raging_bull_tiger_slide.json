@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/raging_bull_slide",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_tiger",
-    "particle": "modeminecraft:item/gun_palette_tiger"
+    "p": "modeminecraft:item/gun/raging_bull_tiger",
+    "particle": "modeminecraft:item/gun/raging_bull_tiger"
   }
 }

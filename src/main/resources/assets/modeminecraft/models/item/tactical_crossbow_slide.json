@@ -1,5 +1,9 @@
 {
   "parent": "modeminecraft:item/parts/part_base",
+  "textures": {
+    "p": "modeminecraft:item/gun/tactical_crossbow_default",
+    "particle": "modeminecraft:item/gun/tactical_crossbow_default"
+  },
   "elements": [
     {
       "from": [
@@ -15,55 +19,55 @@
       "faces": {
         "north": {
           "uv": [
-            0,
-            4,
-            4,
-            8
-          ],
-          "texture": "#p"
-        },
-        "east": {
-          "uv": [
-            0,
-            4,
-            4,
-            8
+            11.75,
+            12.3333,
+            15.0,
+            12.5
           ],
           "texture": "#p"
         },
         "south": {
           "uv": [
-            0,
-            4,
-            4,
-            8
+            0.125,
+            12.8333,
+            3.375,
+            13.0
+          ],
+          "texture": "#p"
+        },
+        "east": {
+          "uv": [
+            8.625,
+            13.8333,
+            8.75,
+            14.0
           ],
           "texture": "#p"
         },
         "west": {
           "uv": [
-            0,
-            4,
-            4,
-            8
+            9.0,
+            13.8333,
+            9.125,
+            14.0
           ],
           "texture": "#p"
         },
         "up": {
           "uv": [
-            0,
-            4,
-            4,
-            8
+            3.625,
+            12.8333,
+            6.875,
+            13.0
           ],
           "texture": "#p"
         },
         "down": {
           "uv": [
-            0,
-            4,
-            4,
-            8
+            7.125,
+            12.8333,
+            10.375,
+            13.0
           ],
           "texture": "#p"
         }

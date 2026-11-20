@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/tavor_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_default",
-    "particle": "modeminecraft:item/gun_palette_default"
+    "p": "modeminecraft:item/gun/tavor_default",
+    "particle": "modeminecraft:item/gun/tavor_default"
   }
 }

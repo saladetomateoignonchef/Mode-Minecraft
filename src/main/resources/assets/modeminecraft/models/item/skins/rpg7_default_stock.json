@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/rpg7_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_default",
-    "particle": "modeminecraft:item/gun_palette_default"
+    "p": "modeminecraft:item/gun/rpg7_default",
+    "particle": "modeminecraft:item/gun/rpg7_default"
   }
 }

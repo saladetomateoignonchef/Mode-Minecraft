@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/ruby_railgun_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_arctic",
-    "particle": "modeminecraft:item/gun_palette_arctic"
+    "p": "modeminecraft:item/gun/ruby_railgun_arctic",
+    "particle": "modeminecraft:item/gun/ruby_railgun_arctic"
   }
 }

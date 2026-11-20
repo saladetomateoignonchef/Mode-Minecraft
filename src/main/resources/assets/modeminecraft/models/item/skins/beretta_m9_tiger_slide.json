@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/beretta_m9_slide",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_tiger",
-    "particle": "modeminecraft:item/gun_palette_tiger"
+    "p": "modeminecraft:item/gun/beretta_m9_tiger",
+    "particle": "modeminecraft:item/gun/beretta_m9_tiger"
   }
 }

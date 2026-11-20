@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/tavor_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_ruby",
-    "particle": "modeminecraft:item/gun_palette_ruby"
+    "p": "modeminecraft:item/gun/tavor_ruby",
+    "particle": "modeminecraft:item/gun/tavor_ruby"
   }
 }

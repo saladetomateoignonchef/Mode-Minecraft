@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/plasma_rifle_grip",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_carbon",
-    "particle": "modeminecraft:item/gun_palette_carbon"
+    "p": "modeminecraft:item/gun/plasma_rifle_carbon",
+    "particle": "modeminecraft:item/gun/plasma_rifle_carbon"
   }
 }

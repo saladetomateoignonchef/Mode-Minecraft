@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/makarov_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_desert",
-    "particle": "modeminecraft:item/gun_palette_desert"
+    "p": "modeminecraft:item/gun/makarov_desert",
+    "particle": "modeminecraft:item/gun/makarov_desert"
   }
 }

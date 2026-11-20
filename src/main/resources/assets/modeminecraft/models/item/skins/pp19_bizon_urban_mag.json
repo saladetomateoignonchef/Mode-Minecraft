@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/pp19_bizon_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_urban",
-    "particle": "modeminecraft:item/gun_palette_urban"
+    "p": "modeminecraft:item/gun/pp19_bizon_urban",
+    "particle": "modeminecraft:item/gun/pp19_bizon_urban"
   }
 }

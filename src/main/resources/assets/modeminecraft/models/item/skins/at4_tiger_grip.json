@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/at4_grip",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_tiger",
-    "particle": "modeminecraft:item/gun_palette_tiger"
+    "p": "modeminecraft:item/gun/at4_tiger",
+    "particle": "modeminecraft:item/gun/at4_tiger"
   }
 }

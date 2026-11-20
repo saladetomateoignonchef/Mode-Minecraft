@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/mp5_grip",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_tiger",
-    "particle": "modeminecraft:item/gun_palette_tiger"
+    "p": "modeminecraft:item/gun/mp5_tiger",
+    "particle": "modeminecraft:item/gun/mp5_tiger"
   }
 }

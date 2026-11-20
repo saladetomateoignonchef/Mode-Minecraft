@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/sawed_off_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_woodland",
-    "particle": "modeminecraft:item/gun_palette_woodland"
+    "p": "modeminecraft:item/gun/sawed_off_woodland",
+    "particle": "modeminecraft:item/gun/sawed_off_woodland"
   }
 }

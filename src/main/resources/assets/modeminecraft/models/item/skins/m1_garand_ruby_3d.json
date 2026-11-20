@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/m1_garand_3d",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_ruby",
-    "particle": "modeminecraft:item/gun_palette_ruby"
+    "p": "modeminecraft:item/gun/m1_garand_ruby",
+    "particle": "modeminecraft:item/gun/m1_garand_ruby"
   }
 }

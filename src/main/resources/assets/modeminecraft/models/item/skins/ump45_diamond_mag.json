@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/ump45_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_diamond",
-    "particle": "modeminecraft:item/gun_palette_diamond"
+    "p": "modeminecraft:item/gun/ump45_diamond",
+    "particle": "modeminecraft:item/gun/ump45_diamond"
   }
 }

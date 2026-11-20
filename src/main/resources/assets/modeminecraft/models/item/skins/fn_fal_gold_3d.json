@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/fn_fal_3d",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_gold",
-    "particle": "modeminecraft:item/gun_palette_gold"
+    "p": "modeminecraft:item/gun/fn_fal_gold",
+    "particle": "modeminecraft:item/gun/fn_fal_gold"
   }
 }

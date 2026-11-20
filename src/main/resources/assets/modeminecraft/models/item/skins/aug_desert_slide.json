@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/aug_slide",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_desert",
-    "particle": "modeminecraft:item/gun_palette_desert"
+    "p": "modeminecraft:item/gun/aug_desert",
+    "particle": "modeminecraft:item/gun/aug_desert"
   }
 }

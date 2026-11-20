@@ -1,5 +1,9 @@
 {
   "parent": "modeminecraft:item/parts/part_base",
+  "textures": {
+    "p": "modeminecraft:item/gun/kar98k_default",
+    "particle": "modeminecraft:item/gun/kar98k_default"
+  },
   "elements": [
     {
       "from": [
@@ -15,55 +19,55 @@
       "faces": {
         "north": {
           "uv": [
-            0,
-            0,
-            4,
-            4
-          ],
-          "texture": "#p"
-        },
-        "east": {
-          "uv": [
-            0,
-            0,
-            4,
-            4
+            10.375,
+            12.6,
+            10.625,
+            13.0
           ],
           "texture": "#p"
         },
         "south": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            10.875,
+            12.6,
+            11.125,
+            13.0
+          ],
+          "texture": "#p"
+        },
+        "east": {
+          "uv": [
+            10.875,
+            11.8,
+            12.125,
+            12.2
           ],
           "texture": "#p"
         },
         "west": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            12.375,
+            11.8,
+            13.625,
+            12.2
           ],
           "texture": "#p"
         },
         "up": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            2.625,
+            0.2,
+            2.875,
+            2.2
           ],
           "texture": "#p"
         },
         "down": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            3.125,
+            0.2,
+            3.375,
+            2.2
           ],
           "texture": "#p"
         }

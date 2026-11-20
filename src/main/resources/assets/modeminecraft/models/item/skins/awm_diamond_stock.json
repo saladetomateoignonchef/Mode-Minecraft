@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/awm_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_diamond",
-    "particle": "modeminecraft:item/gun_palette_diamond"
+    "p": "modeminecraft:item/gun/awm_diamond",
+    "particle": "modeminecraft:item/gun/awm_diamond"
   }
 }

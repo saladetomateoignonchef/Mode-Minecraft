@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/taurus_judge_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_gold",
-    "particle": "modeminecraft:item/gun_palette_gold"
+    "p": "modeminecraft:item/gun/taurus_judge_gold",
+    "particle": "modeminecraft:item/gun/taurus_judge_gold"
   }
 }

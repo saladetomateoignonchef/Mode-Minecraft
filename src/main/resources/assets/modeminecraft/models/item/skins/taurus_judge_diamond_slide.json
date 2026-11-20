@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/taurus_judge_slide",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_diamond",
-    "particle": "modeminecraft:item/gun_palette_diamond"
+    "p": "modeminecraft:item/gun/taurus_judge_diamond",
+    "particle": "modeminecraft:item/gun/taurus_judge_diamond"
   }
 }

@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/pp19_bizon_grip",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_diamond",
-    "particle": "modeminecraft:item/gun_palette_diamond"
+    "p": "modeminecraft:item/gun/pp19_bizon_diamond",
+    "particle": "modeminecraft:item/gun/pp19_bizon_diamond"
   }
 }

@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/flintlock_grip",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_tiger",
-    "particle": "modeminecraft:item/gun_palette_tiger"
+    "p": "modeminecraft:item/gun/flintlock_tiger",
+    "particle": "modeminecraft:item/gun/flintlock_tiger"
   }
 }

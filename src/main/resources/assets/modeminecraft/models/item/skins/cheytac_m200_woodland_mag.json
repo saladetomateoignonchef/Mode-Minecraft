@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/cheytac_m200_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_woodland",
-    "particle": "modeminecraft:item/gun_palette_woodland"
+    "p": "modeminecraft:item/gun/cheytac_m200_woodland",
+    "particle": "modeminecraft:item/gun/cheytac_m200_woodland"
   }
 }

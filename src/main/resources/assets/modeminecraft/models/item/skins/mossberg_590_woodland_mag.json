@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/mossberg_590_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_woodland",
-    "particle": "modeminecraft:item/gun_palette_woodland"
+    "p": "modeminecraft:item/gun/mossberg_590_woodland",
+    "particle": "modeminecraft:item/gun/mossberg_590_woodland"
   }
 }

@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/galil_ace_3d",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_arctic",
-    "particle": "modeminecraft:item/gun_palette_arctic"
+    "p": "modeminecraft:item/gun/galil_ace_arctic",
+    "particle": "modeminecraft:item/gun/galil_ace_arctic"
   }
 }

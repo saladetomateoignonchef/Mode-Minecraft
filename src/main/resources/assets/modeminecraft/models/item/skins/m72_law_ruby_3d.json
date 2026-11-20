@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/m72_law_3d",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_ruby",
-    "particle": "modeminecraft:item/gun_palette_ruby"
+    "p": "modeminecraft:item/gun/m72_law_ruby",
+    "particle": "modeminecraft:item/gun/m72_law_ruby"
   }
 }

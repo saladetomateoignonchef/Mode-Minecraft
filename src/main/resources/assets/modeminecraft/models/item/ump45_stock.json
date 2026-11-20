@@ -1,5 +1,9 @@
 {
   "parent": "modeminecraft:item/parts/part_base",
+  "textures": {
+    "p": "modeminecraft:item/gun/ump45_default",
+    "particle": "modeminecraft:item/gun/ump45_default"
+  },
   "elements": [
     {
       "from": [
@@ -15,55 +19,55 @@
       "faces": {
         "north": {
           "uv": [
-            0,
-            0,
-            4,
-            4
-          ],
-          "texture": "#p"
-        },
-        "east": {
-          "uv": [
-            0,
-            0,
-            4,
-            4
+            12.125,
+            3.5,
+            14.375,
+            5.0
           ],
           "texture": "#p"
         },
         "south": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            0.125,
+            6.25,
+            2.375,
+            7.75
+          ],
+          "texture": "#p"
+        },
+        "east": {
+          "uv": [
+            7.375,
+            6.25,
+            7.5,
+            7.75
           ],
           "texture": "#p"
         },
         "west": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            7.75,
+            6.25,
+            7.875,
+            7.75
           ],
           "texture": "#p"
         },
         "up": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            0.125,
+            13.25,
+            2.375,
+            13.5
           ],
           "texture": "#p"
         },
         "down": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            2.625,
+            13.25,
+            4.875,
+            13.5
           ],
           "texture": "#p"
         }

@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/mp7_3d",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_urban",
-    "particle": "modeminecraft:item/gun_palette_urban"
+    "p": "modeminecraft:item/gun/mp7_urban",
+    "particle": "modeminecraft:item/gun/mp7_urban"
   }
 }

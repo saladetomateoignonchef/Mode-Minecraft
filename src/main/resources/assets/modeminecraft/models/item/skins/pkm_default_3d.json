@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/pkm_3d",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_default",
-    "particle": "modeminecraft:item/gun_palette_default"
+    "p": "modeminecraft:item/gun/pkm_default",
+    "particle": "modeminecraft:item/gun/pkm_default"
   }
 }

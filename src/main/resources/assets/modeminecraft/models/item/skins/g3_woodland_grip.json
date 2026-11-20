@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/g3_grip",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_woodland",
-    "particle": "modeminecraft:item/gun_palette_woodland"
+    "p": "modeminecraft:item/gun/g3_woodland",
+    "particle": "modeminecraft:item/gun/g3_woodland"
   }
 }

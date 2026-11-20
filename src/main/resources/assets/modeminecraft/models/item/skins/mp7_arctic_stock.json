@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/mp7_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_arctic",
-    "particle": "modeminecraft:item/gun_palette_arctic"
+    "p": "modeminecraft:item/gun/mp7_arctic",
+    "particle": "modeminecraft:item/gun/mp7_arctic"
   }
 }

@@ -713,16 +713,6 @@
       "travel": 1.6
     }
   },
-  "dshk": {
-    "mounts": {
-      "muzzle": [
-        24.05,
-        8.6,
-        8
-      ]
-    },
-    "mag_needs_ammo": false
-  },
   "famas": {
     "mounts": {
       "muzzle": [
@@ -1391,16 +1381,6 @@
       "travel": 1.6
     }
   },
-  "m2_browning": {
-    "mounts": {
-      "muzzle": [
-        25.05,
-        8.6,
-        8
-      ]
-    },
-    "mag_needs_ammo": false
-  },
   "m32_mgl": {
     "mounts": {
       "muzzle": [
@@ -1645,10 +1625,6 @@
         8
       ]
     },
-    "mag_needs_ammo": false
-  },
-  "mg_tripod": {
-    "mounts": {},
     "mag_needs_ammo": false
   },
   "minigun": {

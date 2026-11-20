@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/ppsh41_grip",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_urban",
-    "particle": "modeminecraft:item/gun_palette_urban"
+    "p": "modeminecraft:item/gun/ppsh41_urban",
+    "particle": "modeminecraft:item/gun/ppsh41_urban"
   }
 }

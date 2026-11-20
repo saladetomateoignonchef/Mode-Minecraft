@@ -1,5 +1,9 @@
 {
   "parent": "modeminecraft:item/parts/part_base",
+  "textures": {
+    "p": "modeminecraft:item/att/magpul_afg",
+    "particle": "modeminecraft:item/att/magpul_afg"
+  },
   "elements": [
     {
       "from": [
@@ -15,55 +19,55 @@
       "faces": {
         "north": {
           "uv": [
-            4,
-            0,
-            8,
-            4
-          ],
-          "texture": "#p"
-        },
-        "east": {
-          "uv": [
-            4,
-            0,
-            8,
-            4
+            5.75,
+            7.0,
+            8.75,
+            8.0
           ],
           "texture": "#p"
         },
         "south": {
           "uv": [
-            4,
-            0,
-            8,
-            4
+            9.25,
+            7.0,
+            12.25,
+            8.0
+          ],
+          "texture": "#p"
+        },
+        "east": {
+          "uv": [
+            12.75,
+            7.0,
+            13.75,
+            8.0
           ],
           "texture": "#p"
         },
         "west": {
           "uv": [
-            4,
-            0,
-            8,
-            4
+            14.25,
+            7.0,
+            15.25,
+            8.0
           ],
           "texture": "#p"
         },
         "up": {
           "uv": [
-            4,
-            0,
-            8,
-            4
+            0.25,
+            1.0,
+            3.25,
+            5.0
           ],
           "texture": "#p"
         },
         "down": {
           "uv": [
-            4,
-            0,
-            8,
-            4
+            3.75,
+            1.0,
+            6.75,
+            5.0
           ],
           "texture": "#p"
         }
@@ -83,55 +87,55 @@
       "faces": {
         "north": {
           "uv": [
-            0,
-            0,
-            4,
-            4
-          ],
-          "texture": "#p"
-        },
-        "east": {
-          "uv": [
-            0,
-            0,
-            4,
-            4
+            12.25,
+            1.0,
+            14.25,
+            4.0
           ],
           "texture": "#p"
         },
         "south": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            0.25,
+            7.0,
+            2.25,
+            10.0
+          ],
+          "texture": "#p"
+        },
+        "east": {
+          "uv": [
+            2.75,
+            7.0,
+            3.75,
+            10.0
           ],
           "texture": "#p"
         },
         "west": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            4.25,
+            7.0,
+            5.25,
+            10.0
           ],
           "texture": "#p"
         },
         "up": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            7.25,
+            1.0,
+            9.25,
+            5.0
           ],
           "texture": "#p"
         },
         "down": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            9.75,
+            1.0,
+            11.75,
+            5.0
           ],
           "texture": "#p"
         }

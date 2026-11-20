@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/sig_p226_3d",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_tiger",
-    "particle": "modeminecraft:item/gun_palette_tiger"
+    "p": "modeminecraft:item/gun/sig_p226_tiger",
+    "particle": "modeminecraft:item/gun/sig_p226_tiger"
   }
 }

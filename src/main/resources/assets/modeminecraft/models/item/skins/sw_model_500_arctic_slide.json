@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/sw_model_500_slide",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_arctic",
-    "particle": "modeminecraft:item/gun_palette_arctic"
+    "p": "modeminecraft:item/gun/sw_model_500_arctic",
+    "particle": "modeminecraft:item/gun/sw_model_500_arctic"
   }
 }

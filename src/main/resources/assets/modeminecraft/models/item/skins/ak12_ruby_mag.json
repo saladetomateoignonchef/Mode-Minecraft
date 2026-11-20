@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/ak12_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_ruby",
-    "particle": "modeminecraft:item/gun_palette_ruby"
+    "p": "modeminecraft:item/gun/ak12_ruby",
+    "particle": "modeminecraft:item/gun/ak12_ruby"
   }
 }

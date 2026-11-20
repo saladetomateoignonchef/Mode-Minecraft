@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/aug_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_default",
-    "particle": "modeminecraft:item/gun_palette_default"
+    "p": "modeminecraft:item/gun/aug_default",
+    "particle": "modeminecraft:item/gun/aug_default"
   }
 }

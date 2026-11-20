@@ -26,6 +26,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from gun_designs import box  # noqa: E402
+import voxel_bake as vb  # noqa: E402
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 ASSETS = os.path.join(ROOT, "src/main/resources/assets/modeminecraft")
@@ -138,8 +139,7 @@ def finish(t):
     hot = []
     for el in t.parts.get("barrel", []):
         e = json.loads(json.dumps(el))
-        for f in e["faces"].values():
-            f["uv"] = box([0, 0, 0], [1, 1, 1], "r")["faces"]["north"]["uv"]
+        e["__key"] = "r"
         hot.append(e)
     t.parts["barrel_hot"] = hot
     return t
@@ -381,8 +381,8 @@ def write(path, data):
 
 
 def main():
-    tex = {"p": f"{MOD}:item/gun_palette_default", "particle": f"{MOD}:item/gun_palette_default"}
-    write(os.path.join(ASSETS, "models/turret/part_base.json"), {"textures": tex})
+    from generate_gun_models import painter
+    paint = painter("default")
     points = {}
     for name, fn in TURRETS.items():
         t = fn()
@@ -390,14 +390,26 @@ def main():
             for e in els:
                 for v in e["from"] + e["to"]:
                     assert -16 <= v <= 32, f"{name}/{part} hors limites : {e['from']} {e['to']}"
-        for part, els in t.parts.items():
+        # textures détaillées : une texture (atlas) par tourelle pour toutes ses pièces ;
+        # densité réduite si la tourelle est très grande (atlas plafonné à 512 pixels)
+        for d in (3, 2):
+            baked = vb.bake(t.parts, d=d, skip_chamfer=("s", "q", "d"))
+            if baked.size <= 512:
+                break
+        atlas = vb.paint(baked, paint)
+        atlas.save(os.path.join(ASSETS, f"textures/item/turret/{name}.png"))
+        tex = {"p": f"{MOD}:item/turret/{name}", "particle": f"{MOD}:item/turret/{name}"}
+        write(os.path.join(ASSETS, f"models/turret/{name}_base_tex.json"), {"textures": tex})
+        for part in t.parts:
             write(os.path.join(ASSETS, f"models/turret/{name}_{part}.json"),
-                  {"parent": f"{MOD}:turret/part_base", "elements": els})
+                  {"parent": f"{MOD}:turret/{name}_base_tex", "elements": vb.elements(baked, part)})
         # Objet : la tourelle complète, en 3D
-        whole = [e for p in ("base", "mount", "body", "barrel", "cover", "box", "mag0", "mag1") for e in t.parts.get(p, [])]
+        whole = [e for p in ("base", "mount", "body", "barrel", "cover", "box", "mag0", "mag1") if p in t.parts
+                 for e in vb.elements(baked, p)]
         write(os.path.join(ASSETS, f"models/item/{name}.json"), {"textures": tex, "display": ITEM_DISPLAY, "elements": whole})
         points[name] = t.points
         points[name]["parts"] = sorted(t.parts.keys())
+        print(f"{name} : atlas {baked.size}px (densité {d})")
     with open(os.path.join(ASSETS, "turrets.json"), "w", encoding="utf-8") as f:
         json.dump(points, f, indent=1)
     print(f"{len(TURRETS)} tourelles : " + ", ".join(f"{n} ({sum(len(v) for v in fn().parts.values())} pavés)" for n, fn in TURRETS.items()))

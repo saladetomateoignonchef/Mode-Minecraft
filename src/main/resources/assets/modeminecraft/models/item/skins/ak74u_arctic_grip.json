@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/ak74u_grip",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_arctic",
-    "particle": "modeminecraft:item/gun_palette_arctic"
+    "p": "modeminecraft:item/gun/ak74u_arctic",
+    "particle": "modeminecraft:item/gun/ak74u_arctic"
   }
 }

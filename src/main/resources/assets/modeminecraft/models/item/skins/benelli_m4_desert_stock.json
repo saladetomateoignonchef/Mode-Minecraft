@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/benelli_m4_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_desert",
-    "particle": "modeminecraft:item/gun_palette_desert"
+    "p": "modeminecraft:item/gun/benelli_m4_desert",
+    "particle": "modeminecraft:item/gun/benelli_m4_desert"
   }
 }

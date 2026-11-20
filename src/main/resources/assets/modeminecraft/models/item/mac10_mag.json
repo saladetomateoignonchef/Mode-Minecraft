@@ -1,5 +1,9 @@
 {
   "parent": "modeminecraft:item/parts/part_base",
+  "textures": {
+    "p": "modeminecraft:item/gun/mac10_default",
+    "particle": "modeminecraft:item/gun/mac10_default"
+  },
   "elements": [
     {
       "from": [
@@ -15,55 +19,55 @@
       "faces": {
         "north": {
           "uv": [
-            0,
-            0,
-            4,
-            4
-          ],
-          "texture": "#p"
-        },
-        "east": {
-          "uv": [
-            0,
-            0,
-            4,
-            4
+            4.375,
+            15.0,
+            5.125,
+            15.3333
           ],
           "texture": "#p"
         },
         "south": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            5.375,
+            15.0,
+            6.125,
+            15.3333
+          ],
+          "texture": "#p"
+        },
+        "east": {
+          "uv": [
+            9.875,
+            15.0,
+            10.375,
+            15.3333
           ],
           "texture": "#p"
         },
         "west": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            10.625,
+            15.0,
+            11.125,
+            15.3333
           ],
           "texture": "#p"
         },
         "up": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            8.5,
+            9.0,
+            9.25,
+            10.3333
           ],
           "texture": "#p"
         },
         "down": {
           "uv": [
-            0,
-            0,
-            4,
-            4
+            9.5,
+            9.0,
+            10.25,
+            10.3333
           ],
           "texture": "#p"
         }

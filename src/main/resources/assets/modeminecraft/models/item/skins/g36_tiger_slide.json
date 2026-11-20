@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/g36_slide",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_tiger",
-    "particle": "modeminecraft:item/gun_palette_tiger"
+    "p": "modeminecraft:item/gun/g36_tiger",
+    "particle": "modeminecraft:item/gun/g36_tiger"
   }
 }

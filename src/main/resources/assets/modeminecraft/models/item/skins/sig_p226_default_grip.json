@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/sig_p226_grip",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_default",
-    "particle": "modeminecraft:item/gun_palette_default"
+    "p": "modeminecraft:item/gun/sig_p226_default",
+    "particle": "modeminecraft:item/gun/sig_p226_default"
   }
 }

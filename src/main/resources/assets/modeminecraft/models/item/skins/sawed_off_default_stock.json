@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/sawed_off_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_default",
-    "particle": "modeminecraft:item/gun_palette_default"
+    "p": "modeminecraft:item/gun/sawed_off_default",
+    "particle": "modeminecraft:item/gun/sawed_off_default"
   }
 }

@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/plasma_rifle_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_woodland",
-    "particle": "modeminecraft:item/gun_palette_woodland"
+    "p": "modeminecraft:item/gun/plasma_rifle_woodland",
+    "particle": "modeminecraft:item/gun/plasma_rifle_woodland"
   }
 }

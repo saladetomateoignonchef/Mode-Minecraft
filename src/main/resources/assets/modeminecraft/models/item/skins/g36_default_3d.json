@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/g36_3d",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_default",
-    "particle": "modeminecraft:item/gun_palette_default"
+    "p": "modeminecraft:item/gun/g36_default",
+    "particle": "modeminecraft:item/gun/g36_default"
   }
 }

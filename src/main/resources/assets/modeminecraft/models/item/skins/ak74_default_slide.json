@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/ak74_slide",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_default",
-    "particle": "modeminecraft:item/gun_palette_default"
+    "p": "modeminecraft:item/gun/ak74_default",
+    "particle": "modeminecraft:item/gun/ak74_default"
   }
 }

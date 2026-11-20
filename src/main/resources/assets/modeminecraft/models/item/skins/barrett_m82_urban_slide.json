@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/barrett_m82_slide",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_urban",
-    "particle": "modeminecraft:item/gun_palette_urban"
+    "p": "modeminecraft:item/gun/barrett_m82_urban",
+    "particle": "modeminecraft:item/gun/barrett_m82_urban"
   }
 }

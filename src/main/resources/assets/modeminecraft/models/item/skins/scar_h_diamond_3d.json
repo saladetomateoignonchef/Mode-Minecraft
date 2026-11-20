@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/scar_h_3d",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_diamond",
-    "particle": "modeminecraft:item/gun_palette_diamond"
+    "p": "modeminecraft:item/gun/scar_h_diamond",
+    "particle": "modeminecraft:item/gun/scar_h_diamond"
   }
 }

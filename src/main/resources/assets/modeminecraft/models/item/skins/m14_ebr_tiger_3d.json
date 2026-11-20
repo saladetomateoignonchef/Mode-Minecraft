@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/m14_ebr_3d",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_tiger",
-    "particle": "modeminecraft:item/gun_palette_tiger"
+    "p": "modeminecraft:item/gun/m14_ebr_tiger",
+    "particle": "modeminecraft:item/gun/m14_ebr_tiger"
   }
 }

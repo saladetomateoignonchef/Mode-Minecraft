@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/flintlock_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_woodland",
-    "particle": "modeminecraft:item/gun_palette_woodland"
+    "p": "modeminecraft:item/gun/flintlock_woodland",
+    "particle": "modeminecraft:item/gun/flintlock_woodland"
   }
 }

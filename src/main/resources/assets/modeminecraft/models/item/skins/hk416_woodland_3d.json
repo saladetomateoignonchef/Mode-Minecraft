@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/hk416_3d",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_woodland",
-    "particle": "modeminecraft:item/gun_palette_woodland"
+    "p": "modeminecraft:item/gun/hk416_woodland",
+    "particle": "modeminecraft:item/gun/hk416_woodland"
   }
 }

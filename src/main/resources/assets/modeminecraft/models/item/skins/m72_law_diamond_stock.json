@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/m72_law_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_diamond",
-    "particle": "modeminecraft:item/gun_palette_diamond"
+    "p": "modeminecraft:item/gun/m72_law_diamond",
+    "particle": "modeminecraft:item/gun/m72_law_diamond"
   }
 }

@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/vector_grip",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_gold",
-    "particle": "modeminecraft:item/gun_palette_gold"
+    "p": "modeminecraft:item/gun/vector_gold",
+    "particle": "modeminecraft:item/gun/vector_gold"
   }
 }

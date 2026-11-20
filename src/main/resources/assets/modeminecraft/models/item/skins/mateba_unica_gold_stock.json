@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/mateba_unica_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_gold",
-    "particle": "modeminecraft:item/gun_palette_gold"
+    "p": "modeminecraft:item/gun/mateba_unica_gold",
+    "particle": "modeminecraft:item/gun/mateba_unica_gold"
   }
 }

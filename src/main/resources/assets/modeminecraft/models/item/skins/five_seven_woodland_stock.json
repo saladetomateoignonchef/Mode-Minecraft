@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/five_seven_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_woodland",
-    "particle": "modeminecraft:item/gun_palette_woodland"
+    "p": "modeminecraft:item/gun/five_seven_woodland",
+    "particle": "modeminecraft:item/gun/five_seven_woodland"
   }
 }

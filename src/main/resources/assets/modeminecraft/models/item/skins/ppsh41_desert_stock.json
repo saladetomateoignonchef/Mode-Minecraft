@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/ppsh41_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_desert",
-    "particle": "modeminecraft:item/gun_palette_desert"
+    "p": "modeminecraft:item/gun/ppsh41_desert",
+    "particle": "modeminecraft:item/gun/ppsh41_desert"
   }
 }

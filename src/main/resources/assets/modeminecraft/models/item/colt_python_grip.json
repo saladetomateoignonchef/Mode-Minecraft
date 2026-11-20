@@ -1,69 +1,150 @@
 {
   "parent": "modeminecraft:item/parts/part_base",
+  "textures": {
+    "p": "modeminecraft:item/gun/colt_python_default",
+    "particle": "modeminecraft:item/gun/colt_python_default"
+  },
   "elements": [
     {
       "from": [
-        2.5,
+        2.83,
         2.5,
         7.3
       ],
       "to": [
-        5.0,
+        4.67,
         7,
         8.7
       ],
       "faces": {
         "north": {
           "uv": [
-            0,
-            4,
-            4,
-            8
-          ],
-          "texture": "#p"
-        },
-        "east": {
-          "uv": [
-            0,
-            4,
-            4,
-            8
+            0.125,
+            0.2,
+            0.875,
+            3.0
           ],
           "texture": "#p"
         },
         "south": {
           "uv": [
-            0,
-            4,
-            4,
-            8
+            1.125,
+            0.2,
+            1.875,
+            3.0
+          ],
+          "texture": "#p"
+        },
+        "east": {
+          "uv": [
+            2.125,
+            0.2,
+            2.625,
+            3.0
           ],
           "texture": "#p"
         },
         "west": {
           "uv": [
-            0,
-            4,
-            4,
-            8
+            2.875,
+            0.2,
+            3.375,
+            3.0
           ],
           "texture": "#p"
         },
         "up": {
           "uv": [
-            0,
-            4,
-            4,
-            8
+            10.125,
+            7.2,
+            10.875,
+            8.0
           ],
           "texture": "#p"
         },
         "down": {
           "uv": [
-            0,
-            4,
-            4,
-            8
+            11.125,
+            7.2,
+            11.875,
+            8.0
+          ],
+          "texture": "#p"
+        }
+      },
+      "rotation": {
+        "angle": -22.5,
+        "axis": "z",
+        "origin": [
+          3.75,
+          7,
+          8
+        ]
+      }
+    },
+    {
+      "from": [
+        2.5,
+        2.52,
+        7.63
+      ],
+      "to": [
+        5.0,
+        6.98,
+        8.37
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            3.625,
+            0.2,
+            4.625,
+            2.8
+          ],
+          "texture": "#p"
+        },
+        "south": {
+          "uv": [
+            4.875,
+            0.2,
+            5.875,
+            2.8
+          ],
+          "texture": "#p"
+        },
+        "east": {
+          "uv": [
+            6.125,
+            0.2,
+            6.375,
+            2.8
+          ],
+          "texture": "#p"
+        },
+        "west": {
+          "uv": [
+            6.625,
+            0.2,
+            6.875,
+            2.8
+          ],
+          "texture": "#p"
+        },
+        "up": {
+          "uv": [
+            11.625,
+            10.6,
+            12.625,
+            11.0
+          ],
+          "texture": "#p"
+        },
+        "down": {
+          "uv": [
+            12.875,
+            10.6,
+            13.875,
+            11.0
           ],
           "texture": "#p"
         }

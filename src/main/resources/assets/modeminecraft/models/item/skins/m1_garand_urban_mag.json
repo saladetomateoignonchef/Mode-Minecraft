@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/m1_garand_mag",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_urban",
-    "particle": "modeminecraft:item/gun_palette_urban"
+    "p": "modeminecraft:item/gun/m1_garand_urban",
+    "particle": "modeminecraft:item/gun/m1_garand_urban"
   }
 }

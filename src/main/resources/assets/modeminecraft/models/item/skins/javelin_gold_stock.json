@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/javelin_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_gold",
-    "particle": "modeminecraft:item/gun_palette_gold"
+    "p": "modeminecraft:item/gun/javelin_gold",
+    "particle": "modeminecraft:item/gun/javelin_gold"
   }
 }

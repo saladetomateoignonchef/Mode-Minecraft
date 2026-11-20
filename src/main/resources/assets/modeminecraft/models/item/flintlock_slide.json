@@ -1,4 +1,8 @@
 {
   "parent": "modeminecraft:item/parts/part_base",
+  "textures": {
+    "p": "modeminecraft:item/gun/flintlock_default",
+    "particle": "modeminecraft:item/gun/flintlock_default"
+  },
   "elements": []
 }

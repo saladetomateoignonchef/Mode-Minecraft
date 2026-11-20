@@ -1,7 +1,7 @@
 {
   "parent": "modeminecraft:item/galil_ace_stock",
   "textures": {
-    "p": "modeminecraft:item/gun_palette_desert",
-    "particle": "modeminecraft:item/gun_palette_desert"
+    "p": "modeminecraft:item/gun/galil_ace_desert",
+    "particle": "modeminecraft:item/gun/galil_ace_desert"
   }
 }
