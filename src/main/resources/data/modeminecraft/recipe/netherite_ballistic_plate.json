@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "modeminecraft:titanium_plate"
+    },
+    {
+      "item": "modeminecraft:titanium_plate"
+    },
+    {
+      "item": "minecraft:netherite_ingot"
+    },
+    {
+      "item": "modeminecraft:multilayer_kevlar"
+    },
+    {
+      "item": "modeminecraft:multilayer_kevlar"
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:netherite_ballistic_plate",
+    "count": 1
+  }
+}

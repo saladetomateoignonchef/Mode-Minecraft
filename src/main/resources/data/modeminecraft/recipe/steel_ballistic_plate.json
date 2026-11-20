@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "modeminecraft:steel_plate"
+    },
+    {
+      "item": "modeminecraft:steel_plate"
+    },
+    {
+      "item": "minecraft:leather"
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:steel_ballistic_plate",
+    "count": 1
+  }
+}

@@ -63,6 +63,9 @@ public final class GunPoseHelper {
         if (gun != null && player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD).is(fr.modeminecraft.registry.ModItems.MICH_2000.get())) {
             aimSpeed = Math.max(1.0f, aimSpeed); // casque MICH sans visière : pas de malus de visée avec les lunettes
         }
+        if (gun != null) {
+            aimSpeed *= fr.modeminecraft.item.VestItem.adsMul(player); // porte-plaques JPC : +15 %
+        }
         float speed = 0.22f * aimSpeed;
         aim = target > aim ? Math.min(target, aim + speed) : Math.max(target, aim - speed);
     }

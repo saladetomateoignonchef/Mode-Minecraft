@@ -251,6 +251,39 @@ On le met au **clic droit** : les deux bras le posent sur la tête (bruit de jug
 - Les casques fermés affichent un contour à l'écran (heaume, fente de visière, tubes des jumelles, visière numérique), sans gêner le centre.
 - Réparation à l'enclume (fer, acier, plaques de kevlar / titane, kevlar multicouche ou composite selon l'époque).
 
+### Gilets pare-balles 3D (10) et plaques balistiques
+Chaque gilet a un **vrai modèle 3D** sur le torse (poches, chargeurs, épaulières, cols, sangles), visible sur les joueurs,
+les monstres et les supports d'armure. On le met au **clic droit** : les deux bras le serrent devant le torse (fermeture éclair, velcros).
+Fabrication : table d'armement, onglet **Protections**.
+
+| Époque | Gilet | Armure | Protection | Particularité |
+|---|---|---|---|---|
+| Guerres mondiales | Cuirasse 14-18 (Sappenpanzer) | 5 | éclats -40 %, pistolets -20 % | lourde : -10 % de vitesse |
+| | Gilet pare-éclats M12 | 4 | éclats et grenades -55 %, balles -15 % | aucun malus |
+| Guerre froide / 80-90 | Gilet PASGT (Woodland) | 6 | 9 mm / .45 / plombs -50 %, fusils -20 % | col montant |
+| | Gilet lourd 6B3 / 6B5 | 7 | toutes les balles -40 % | rechargement +10 %, -5 % de vitesse |
+| | Gilet SWAT / GIGN | 6,5 | pistolets, PM, fusils à pompe -60 %, explosions -30 % | protège-aine, « SWAT » dans le dos |
+| Moderne | Porte-plaques JPC 2.0 | 6 → **8** | 2 plaques | visée +15 %, rechargement +15 % |
+| | IOTV / Osprey Mk4 | 7,5 → **9,5** | balles -45 %, explosions -50 % | -4 % de vitesse |
+| | Porte-plaques AVS | 8 → **10** | 2 plaques | saignement réduit de moitié, régénération +25 % hors combat |
+| Prototypes lourds | Fort Defender-2 / Zabralo | 9 → **11** | balles -65 % (même .50 BMG) | -12 % de vitesse, pas de long sprint |
+| | Combinaison EOD « Juggernaut » | 10 | explosions -85 %, balles -70 % | aucun recul ; -18 % de vitesse, sauter donne faim |
+
+**Plaques balistiques** (porte-plaques JPC, IOTV, AVS, Fort Defender) : clic droit en tenant une plaque, le bras gauche l'enfonce dans
+la poche avant puis arrière (si les deux sont pleines, elle remplace la plus abîmée). Une balle au torse touche la plaque avant
+ou arrière selon d'où elle vient : la plaque absorbe d'abord, puis le gilet réduit le reste.
+
+| Plaque | Fabrication | Contre pistolets / PM | Contre fusils | Contre snipers / .50 | Points |
+|---|---|---|---|---|---|
+| Acier (IIIA) | 2 plaques d'acier + 1 cuir | arrête tout | -30 % | -10 % | 40 (lourde : -3 % de vitesse) |
+| Céramique (IV) | 2 composites céramique-titane + 2 plaques de kevlar | arrête tout | arrête tout | -50 % | 60 (se fissure vite) |
+| Titane-netherite (IV+) | 2 plaques de titane + 1 netherite + 2 kevlars multicouches | arrête tout | arrête tout | -90 % | 120 |
+
+Une plaque à 0 point se brise (bruit de céramique, message). Une jauge à côté de la barre d'armure montre l'état des plaques
+avant / arrière (vert intacte, orange fissurée, rouge détruite).
+Nouveaux matériaux : **tissu Cordura** (4 ficelles + 2 cuirs + 1 colorant vert, marron ou noir) et **sangle MOLLE**
+(2 cuirs + 1 lingot de fer ou d'acier → 4).
+
 ### Nouveaux minerais et matériaux
 - **Titane** : minerai (et minerai des abîmes) entre Y = -64 et Y = 16, aussi rare que l'or, pioche en fer minimum.
   Titane brut → four / haut-fourneau → **lingot de titane** ; 4 lingots → 2 **plaques de titane**.

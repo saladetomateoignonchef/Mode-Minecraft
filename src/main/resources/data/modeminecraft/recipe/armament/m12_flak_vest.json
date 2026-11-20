@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "armor",
+  "ingredients": [
+    {
+      "item": "modeminecraft:steel_ingot",
+      "count": 4
+    },
+    {
+      "item": "minecraft:green_wool",
+      "count": 4
+    },
+    {
+      "item": "minecraft:leather",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:m12_flak_vest",
+    "count": 1
+  }
+}

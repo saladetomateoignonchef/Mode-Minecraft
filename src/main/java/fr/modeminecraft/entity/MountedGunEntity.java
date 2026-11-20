@@ -519,6 +519,7 @@ public class MountedGunEntity extends Entity {
             projectile = new RocketEntity(ModEntities.GRENADE.get(), level, player, 1.75f); // rayon d'explosion ~3,5 blocs
         } else {
             BulletEntity b = new BulletEntity(level, player, kind.damage, kind.pierce, false, AmmoType.STANDARD);
+            b.setCaliberClass(kind == Kind.MG42 || kind == Kind.VICKERS ? 1 : 2);
             b.setArmorPenetration(kind.armorPen);
             b.setHeavy(kind.breaksFragile, kind.knockback, kind.projectile == Projectile.FLAK ? 0.75f : 0);
             b.setBallistics(0.002f, 60, 100);

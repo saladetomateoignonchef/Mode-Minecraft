@@ -279,5 +279,29 @@
     "sounds": [
       "modeminecraft:gun/helmet_breath_0"
     ]
+  },
+  "gun.vest_equip_velcro": {
+    "subtitle": "subtitles.modeminecraft.vest_equip_velcro",
+    "sounds": [
+      "modeminecraft:gun/vest_equip_velcro_0"
+    ]
+  },
+  "gun.plate_insert": {
+    "subtitle": "subtitles.modeminecraft.plate_insert",
+    "sounds": [
+      "modeminecraft:gun/plate_insert_0"
+    ]
+  },
+  "gun.vest_bullet_hit": {
+    "subtitle": "subtitles.modeminecraft.vest_bullet_hit",
+    "sounds": [
+      "modeminecraft:gun/vest_bullet_hit_0"
+    ]
+  },
+  "gun.plate_shatter": {
+    "subtitle": "subtitles.modeminecraft.plate_shatter",
+    "sounds": [
+      "modeminecraft:gun/plate_shatter_0"
+    ]
   }
 }

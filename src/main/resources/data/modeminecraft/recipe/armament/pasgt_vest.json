@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "armor",
+  "ingredients": [
+    {
+      "item": "modeminecraft:kevlar_plate",
+      "count": 5
+    },
+    {
+      "item": "modeminecraft:ballistic_nylon",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:tactical_strap",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:pasgt_vest",
+    "count": 1
+  }
+}

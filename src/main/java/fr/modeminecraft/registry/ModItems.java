@@ -848,6 +848,42 @@ public final class ModItems {
     public static final DeferredItem<Item> JUGGERNAUT_HELMET = helmet("juggernaut_helmet", Rarity.EPIC,
             new HelmetItem.Stats(4, 6.0, 0.85f, 0.85f, 0, 0, 0, 900, HelmetItem.Module.NONE, -0.08, () -> ModItems.CERAMIC_TITANIUM_COMPOSITE.get()));
 
+    // ---------- Gilets pare-balles 3D : matériaux, plaques balistiques, gilets ----------
+    public static final DeferredItem<Item> BALLISTIC_NYLON = ITEMS.registerSimpleItem("ballistic_nylon");
+    public static final DeferredItem<Item> TACTICAL_STRAP = ITEMS.registerSimpleItem("tactical_strap");
+    public static final DeferredItem<Item> STEEL_BALLISTIC_PLATE = ITEMS.register("steel_ballistic_plate",
+            () -> new fr.modeminecraft.item.BallisticPlateItem(fr.modeminecraft.item.VestItem.PlateType.STEEL, new Item.Properties()));
+    public static final DeferredItem<Item> CERAMIC_BALLISTIC_PLATE = ITEMS.register("ceramic_ballistic_plate",
+            () -> new fr.modeminecraft.item.BallisticPlateItem(fr.modeminecraft.item.VestItem.PlateType.CERAMIC, new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final DeferredItem<Item> NETHERITE_BALLISTIC_PLATE = ITEMS.register("netherite_ballistic_plate",
+            () -> new fr.modeminecraft.item.BallisticPlateItem(fr.modeminecraft.item.VestItem.PlateType.NETHERITE, new Item.Properties().rarity(Rarity.RARE).fireResistant()));
+
+    //                                                        époque armure éclats explo. léger fusil gros  mêlée plaques vitesse recharg. visée durab. spécial
+    public static final DeferredItem<Item> WWI_CUIRASS = vest("wwi_cuirass", Rarity.COMMON, new fr.modeminecraft.item.VestItem.Stats(
+            1, 5.0, 0.40f, 0.40f, 0.20f, 0, 0, 0.15f, false, -0.10, 0, 0, 220, fr.modeminecraft.item.VestItem.Special.NONE, () -> net.minecraft.world.item.Items.IRON_INGOT));
+    public static final DeferredItem<Item> M12_FLAK_VEST = vest("m12_flak_vest", Rarity.COMMON, new fr.modeminecraft.item.VestItem.Stats(
+            1, 4.0, 0.55f, 0.55f, 0.15f, 0.15f, 0.15f, 0.10f, false, 0, 0, 0, 240, fr.modeminecraft.item.VestItem.Special.NONE, () -> ModItems.STEEL_INGOT.get()));
+    public static final DeferredItem<Item> PASGT_VEST = vest("pasgt_vest", Rarity.UNCOMMON, new fr.modeminecraft.item.VestItem.Stats(
+            2, 6.0, 0.30f, 0.20f, 0.50f, 0.20f, 0.05f, 0, false, 0, 0, 0, 380, fr.modeminecraft.item.VestItem.Special.NONE, () -> ModItems.KEVLAR_PLATE.get()));
+    public static final DeferredItem<Item> VEST_6B3 = vest("vest_6b3", Rarity.UNCOMMON, new fr.modeminecraft.item.VestItem.Stats(
+            2, 7.0, 0.30f, 0.20f, 0.40f, 0.40f, 0.40f, 0, false, -0.05, 0.10f, 0, 450, fr.modeminecraft.item.VestItem.Special.NONE, () -> ModItems.TITANIUM_PLATE.get()));
+    public static final DeferredItem<Item> SWAT_VEST = vest("swat_vest", Rarity.UNCOMMON, new fr.modeminecraft.item.VestItem.Stats(
+            2, 6.5, 0.30f, 0.30f, 0.60f, 0.15f, 0.05f, 0.10f, false, 0, 0, 0, 400, fr.modeminecraft.item.VestItem.Special.NONE, () -> ModItems.KEVLAR_PLATE.get()));
+    public static final DeferredItem<Item> JPC_PLATE_CARRIER = vest("jpc_plate_carrier", Rarity.RARE, new fr.modeminecraft.item.VestItem.Stats(
+            3, 6.0, 0.20f, 0.10f, 0.20f, 0.10f, 0, 0, true, 0, 0.15f, 0.15f, 420, fr.modeminecraft.item.VestItem.Special.NONE, () -> ModItems.MULTILAYER_KEVLAR.get()));
+    public static final DeferredItem<Item> IOTV_VEST = vest("iotv_vest", Rarity.RARE, new fr.modeminecraft.item.VestItem.Stats(
+            3, 7.5, 0.45f, 0.50f, 0.45f, 0.45f, 0.45f, 0, true, -0.04, 0, 0, 520, fr.modeminecraft.item.VestItem.Special.NONE, () -> ModItems.MULTILAYER_KEVLAR.get()));
+    public static final DeferredItem<Item> AVS_PLATE_CARRIER = vest("avs_plate_carrier", Rarity.RARE, new fr.modeminecraft.item.VestItem.Stats(
+            3, 8.0, 0.30f, 0.20f, 0.25f, 0.15f, 0.05f, 0, true, 0, 0, 0, 520, fr.modeminecraft.item.VestItem.Special.AVS, () -> ModItems.MULTILAYER_KEVLAR.get()));
+    public static final DeferredItem<Item> FORT_DEFENDER = vest("fort_defender", Rarity.EPIC, new fr.modeminecraft.item.VestItem.Stats(
+            4, 9.0, 0.50f, 0.50f, 0.65f, 0.65f, 0.65f, 0.20f, true, -0.12, 0, 0, 800, fr.modeminecraft.item.VestItem.Special.FORT_DEFENDER, () -> ModItems.CERAMIC_TITANIUM_COMPOSITE.get()));
+    public static final DeferredItem<Item> EOD_SUIT = vest("eod_suit", Rarity.EPIC, new fr.modeminecraft.item.VestItem.Stats(
+            4, 10.0, 0.85f, 0.85f, 0.70f, 0.70f, 0.70f, 0.20f, false, -0.18, 0, 0, 1000, fr.modeminecraft.item.VestItem.Special.EOD, () -> ModItems.CERAMIC_TITANIUM_COMPOSITE.get()));
+
+    private static DeferredItem<Item> vest(String name, Rarity rarity, fr.modeminecraft.item.VestItem.Stats stats) {
+        return ITEMS.register(name, () -> new fr.modeminecraft.item.VestItem(stats, new Item.Properties().rarity(rarity)));
+    }
+
     private static DeferredItem<Item> helmet(String name, Rarity rarity, HelmetItem.Stats stats) {
         return ITEMS.register(name, () -> new HelmetItem(stats, new Item.Properties().rarity(rarity)));
     }

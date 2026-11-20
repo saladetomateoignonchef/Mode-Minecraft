@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "armor",
+  "ingredients": [
+    {
+      "item": "modeminecraft:multilayer_kevlar",
+      "count": 5
+    },
+    {
+      "item": "modeminecraft:titanium_plate",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:ballistic_nylon",
+      "count": 2
+    },
+    {
+      "item": "minecraft:diamond",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:iotv_vest",
+    "count": 1
+  }
+}

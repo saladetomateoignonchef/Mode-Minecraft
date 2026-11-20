@@ -125,6 +125,7 @@ public class GunAttackGoal extends Goal {
         int pellets = Math.max(1, stats.pellets());
         for (int i = 0; i < pellets; i++) {
             var bullet = new BulletEntity(level, mob, pellets > 1 ? damage / pellets * 1.5f : damage, 0, false, AmmoType.STANDARD);
+            bullet.setWeapon(mob.getMainHandItem()); // calibre (gilets pare-balles)
             double dx = target.getX() - mob.getX();
             double dy = target.getY(0.6) - bullet.getY();
             double dz = target.getZ() - mob.getZ();

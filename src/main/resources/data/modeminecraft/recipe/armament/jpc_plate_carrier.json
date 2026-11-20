@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "armor",
+  "ingredients": [
+    {
+      "item": "modeminecraft:multilayer_kevlar",
+      "count": 4
+    },
+    {
+      "item": "modeminecraft:ballistic_nylon",
+      "count": 3
+    },
+    {
+      "item": "modeminecraft:tactical_strap",
+      "count": 2
+    },
+    {
+      "item": "minecraft:diamond",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:jpc_plate_carrier",
+    "count": 1
+  }
+}

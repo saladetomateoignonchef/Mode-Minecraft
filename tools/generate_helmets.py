@@ -37,6 +37,7 @@ COLORS = {
     "ranger_d": "#3A4236", "black": "#222426", "rail": "#2A2C2E", "velcro": "#5C6352", "jugg": "#2A3028",
     "lens": "#2E6B3A", "nvg": "#1A1C1E", "red": "#C8223B", "cyan": "#3FC8D8", "padding": "#3A3A3A",
     "comtac": "#1F2124", "white": "#D8D8D0", "dark_glass": "#2A3A44",
+    "navy": "#1E2A44", "navy_d": "#141C30", "scale_ti": "#7E8A96", "brass_case": "#C8A040",
 }
 CAMO = {
     "woodland": ["#4B5A2A", "#5A4630", "#1E2416", "#6B7D3A"],
@@ -320,6 +321,173 @@ DISPLAY = {
 }
 
 
+# ------------------------------------------------------------------ les 10 gilets (repère du torse)
+# Torse : x [4 ; 12], y [2 ; 14] (cou en haut), z [6 ; 10] ; devant vers -Z ; +X = côté DROIT du joueur.
+def shell(h, key, y0=2.4, y1=13.8, t=0.9, front=True, back=True, sides=True):
+    if front:
+        h.add([3.4, y0, 6 - t], [12.6, y1, 6.0], key)
+    if back:
+        h.add([3.4, y0, 10.0], [12.6, y1, 10 + t], key)
+    if sides:
+        h.add([3.4, y0, 6.0], [4.0, y1, 10.0], key).add([12.0, y0, 6.0], [12.6, y1, 10.0], key)
+    h.add([4.0, y1 - 0.2, 6 - t], [6.4, y1 + 0.5, 10 + t], key)                  # bretelles
+    h.add([9.6, y1 - 0.2, 6 - t], [12.0, y1 + 0.5, 10 + t], key)
+    return h
+
+
+def collar(h, key, top=15.4, front_open=True):
+    h.add([3.8, 13.6, 9.6], [12.2, top, 10.9], key)                                  # col montant (nuque)
+    h.mirror([3.6, 13.6, 5.4], [4.6, top - 0.3, 10.4], key)
+    if not front_open:
+        h.add([4.6, 13.6, 4.9], [11.4, top - 0.8, 5.8], key)
+    return h
+
+
+def molle(h, key, z, x0=4.6, x1=11.4, rows=(6.4, 7.6, 8.8)):
+    for y in rows:
+        h.add([x0, y, z - 0.15], [x1, y + 0.35, z], key)
+    return h
+
+
+def cuirass():
+    h = H()
+    for i in range(4):                                                               # plaques d'acier qui se chevauchent
+        y0 = 3.0 + i * 2.6
+        w = 4.2 - abs(i - 2.2) * 0.25
+        z0 = 4.7 if i % 2 else 4.4
+        h.add([8 - w, y0, z0], [8 + w, y0 + 2.9, z0 + 1.0], "iron_ox")
+        for x in (8 - w + 0.6, 8 + w - 1.2):
+            h.add([x, y0 + 2.2, z0 - 0.2], [x + 0.6, y0 + 2.8, z0], "rivet")
+    h.add([4.4, 13.6, 4.6], [6.0, 14.4, 10.6], "leather_d").add([10.0, 13.6, 4.6], [11.6, 14.4, 10.6], "leather_d")
+    h.add([4.4, 4.0, 10.0], [5.6, 13.6, 10.5], "leather_d").add([10.4, 4.0, 10.0], [11.6, 13.6, 10.5], "leather_d")
+    h.add([3.6, 7.6, 6.0], [12.4, 8.4, 10.5], "leather_d")                           # sangle de dos
+    return h
+
+
+def m12():
+    h = shell(H(), "olive")
+    for y in (4.0, 5.6, 7.2, 8.8, 10.4, 12.0):                                       # coutures matelassées
+        h.add([3.5, y, 4.95], [12.5, y + 0.25, 5.1], "olive_d").add([3.5, y, 10.9], [12.5, y + 0.25, 11.05], "olive_d")
+    for x in (5.6, 8.0, 10.4):
+        h.add([x, 2.6, 4.95], [x + 0.25, 13.6, 5.1], "olive_d")
+    return h
+
+
+def pasgt_vest():
+    h = collar(shell(H(), "woodland"), "woodland")
+    h.add([7.8, 2.4, 4.9], [8.2, 13.6, 5.05], "olive_d")                              # fermeture
+    h.add([4.2, 2.8, 4.3], [7.2, 5.6, 5.1], "woodland").add([8.8, 2.8, 4.3], [11.8, 5.6, 5.1], "woodland")
+    return h
+
+
+def vest_6b3():
+    h = shell(H(), "soviet")
+    for row in range(3):                                                               # écailles de titane sous le tissu
+        for col in range(5):
+            x = 4.0 + col * 1.6 + (0.8 if row % 2 else 0)
+            if x < 11.6:
+                h.add([x, 9.6 + row * 1.3, 4.95], [x + 1.3, 10.6 + row * 1.3, 5.05], "scale_ti")
+    for i in range(4):                                                                 # poches à chargeurs AK
+        x = 4.0 + i * 2.0
+        h.add([x, 3.0, 3.6], [x + 1.8, 7.6, 5.1], "soviet_d").add([x + 0.1, 7.6, 3.5], [x + 1.7, 8.2, 5.1], "soviet")
+    return h
+
+
+def swat():
+    h = shell(H(), "black")
+    h.add([5.6, -1.6, 4.6], [10.4, 2.4, 5.6], "black")                                 # protège-aine
+    h.mirror([1.8, 12.6, 5.4], [4.2, 14.6, 10.6], "black")                            # épaulières légères
+    # inscription blanche dans le dos ("SWAT", pixels de 0,4)
+    letters = {"S": ["111", "100", "111", "001", "111"], "W": ["101", "101", "101", "111", "101"],
+               "A": ["010", "101", "111", "101", "101"], "T": ["111", "010", "010", "010", "010"]}
+    x = 4.9
+    for ch in "SWAT":
+        for r, row in enumerate(letters[ch]):
+            for c, on in enumerate(row):
+                if on == "1":
+                    px, py = x + c * 0.4, 11.6 - r * 0.4
+                    h.add([px, py, 10.9], [px + 0.4, py + 0.4, 11.0], "white")
+        x += 1.6
+    return h
+
+
+def jpc():
+    h = H()
+    h.add([4.4, 5.6, 5.0], [11.6, 13.2, 6.0], "coyote").add([4.4, 5.6, 10.0], [11.6, 13.4, 11.0], "coyote")
+    for y in (5.6, 7.4):                                                               # ceinture ajourée
+        h.add([3.4, y, 6.0], [4.0, y + 1.0, 10.0], "coyote_d").add([12.0, y, 6.0], [12.6, y + 1.0, 10.0], "coyote_d")
+    h.add([4.6, 13.0, 5.4], [6.2, 14.3, 10.6], "coyote").add([9.8, 13.0, 5.4], [11.4, 14.3, 10.6], "coyote")
+    molle(h, "coyote_d", 5.0)
+    for x in (4.8, 7.2, 9.6):                                                          # 3 chargeurs M4 sur la poitrine
+        h.add([x, 9.2, 4.0], [x + 1.6, 11.6, 5.0], "coyote_d").add([x + 0.3, 11.6, 4.2], [x + 1.3, 13.0, 4.8], "black")
+    return h
+
+
+def iotv():
+    h = collar(shell(H(), "multicam", t=1.0), "multicam")
+    h.mirror([1.8, 11.4, 5.0], [4.2, 14.4, 11.0], "multicam")                         # épaulières blindées
+    h.add([3.6, 12.2, 4.4], [5.4, 14.8, 5.4], "ranger_d")                             # radio, épaule gauche
+    h.add([4.2, 14.8, 4.7], [4.5, 18.0, 5.0], "black")                                 # antenne
+    h.add([5.0, 3.6, 11.0], [11.0, 13.0, 12.6], "ranger")                              # poche d'hydratation
+    molle(h, "ranger_d", 5.0, rows=(4.0, 5.2, 6.4))
+    return h
+
+
+def avs():
+    h = H()
+    h.add([4.4, 5.4, 4.9], [11.6, 13.2, 6.0], "ranger").add([4.4, 5.4, 10.0], [11.6, 13.4, 11.1], "ranger")
+    h.mirror([3.0, 4.6, 6.2], [4.0, 8.6, 9.8], "ranger_d")                            # poches latérales blindées
+    h.add([4.6, 13.0, 5.2], [6.4, 14.4, 10.8], "ranger").add([9.6, 13.0, 5.2], [11.4, 14.4, 10.8], "ranger")
+    h.add([4.7, 12.4, 4.6], [6.3, 13.6, 5.2], "red").add([4.9, 12.7, 4.5], [6.1, 13.0, 4.6], "black")  # garrot
+    h.add([5.6, 3.2, 4.0], [10.4, 5.4, 5.0], "ranger_d")                               # poche utilitaire
+    molle(h, "ranger_d", 4.9)
+    return h
+
+
+def fort_defender():
+    h = shell(H(), "moss", y0=1.6, y1=14.0, t=1.2)
+    h.add([3.6, 2.0, 3.6], [12.4, 13.0, 4.8], "moss").add([4.2, 3.0, 3.0], [11.8, 11.0, 3.6], "olive_d")   # plaques superposées
+    h.add([3.6, 2.0, 11.2], [12.4, 13.0, 12.4], "moss")
+    collar(h, "moss", top=16.0, front_open=False)
+    h.mirror([1.2, 10.8, 4.4], [4.2, 14.6, 11.4], "moss")                             # grosses épaulières
+    h.add([5.4, -2.2, 3.8], [10.6, 2.0, 5.0], "moss")                                  # bas-ventre
+    return h
+
+
+def eod():
+    h = H()
+    h.add([2.8, 0.4, 2.6], [13.2, 14.0, 6.0], "jugg")                                  # plastron intégral
+    h.add([4.0, 8.0, 1.8], [12.0, 13.0, 2.6], "black")                                 # renfort pectoral
+    h.add([2.8, 0.4, 10.0], [13.2, 14.0, 11.4], "jugg")
+    h.add([2.6, 0.4, 6.0], [4.0, 14.0, 10.0], "jugg").add([12.0, 0.4, 6.0], [13.4, 14.0, 10.0], "jugg")
+    h.add([3.2, 13.6, 8.6], [12.8, 17.2, 11.4], "black")                               # haute collerette
+    h.mirror([2.8, 13.6, 4.6], [4.6, 16.6, 10.6], "black")
+    h.add([4.4, 3.0, 11.4], [11.6, 13.0, 13.8], "black")                               # pack dorsal stabilisateur
+    h.mirror([1.0, 10.4, 3.8], [3.6, 14.6, 11.8], "jugg")
+    return h
+
+
+VESTS = {"wwi_cuirass": cuirass, "m12_flak_vest": m12, "pasgt_vest": pasgt_vest, "vest_6b3": vest_6b3, "swat_vest": swat,
+         "jpc_plate_carrier": jpc, "iotv_vest": iotv, "avs_plate_carrier": avs, "fort_defender": fort_defender, "eod_suit": eod}
+
+VEST_DISPLAY = {
+    "gui": {"rotation": [12, 200, 0], "translation": [0, 0, 0], "scale": [0.7, 0.7, 0.7]},
+    "ground": {"rotation": [0, 0, 0], "translation": [0, 2, 0], "scale": [0.45, 0.45, 0.45]},
+    "fixed": {"rotation": [0, 180, 0], "translation": [0, 0, 0], "scale": [0.7, 0.7, 0.7]},
+    "thirdperson_righthand": {"rotation": [0, 45, 0], "translation": [0, 2, 1], "scale": [0.4, 0.4, 0.4]},
+    "firstperson_righthand": {"rotation": [0, 225, 0], "translation": [2, 3, 0], "scale": [0.45, 0.45, 0.45]},
+}
+
+
+def vest_models():
+    tex = {"p": f"{MOD}:item/helmet_palette", "particle": f"{MOD}:item/helmet_palette"}
+    for name, fn in VESTS.items():
+        els = fn().els
+        check(name, els)
+        write(os.path.join(ASSETS, f"models/item/{name}.json"),
+              {"textures": tex, "render_type": "minecraft:translucent", "display": VEST_DISPLAY, "elements": els})
+
+
 def write(path, data):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
@@ -515,6 +683,51 @@ def preform():
     return img
 
 
+def nylon():
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    g = [hexc(c) for c in ("#3A4230", "#4B5335", "#5E6844", "#6E7A50")]
+    for y in range(3, 14):
+        for x in range(2, 14):
+            img.putpixel((x, y), g[2] if (x + y) % 2 else g[1])
+    for x in range(2, 14):
+        img.putpixel((x, 3), g[3])
+        img.putpixel((x, 13), g[0])
+    for y in range(5, 14, 3):
+        for x in range(2, 14):
+            img.putpixel((x, y), g[0])
+    return img
+
+
+def strap():
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    s = [hexc(c) for c in ("#2A2C24", "#3E4230", "#555A42")]
+    for i in range(1, 15):
+        for w in range(3):
+            x, y = i, 14 - i + w - 1
+            if 0 <= y < 16:
+                img.putpixel((x, y), s[w])
+    for x in range(5, 9):                                                            # boucle
+        for y in range(5, 9):
+            if x in (5, 8) or y in (5, 8):
+                img.putpixel((x, y), hexc("#8A8E92"))
+    return img
+
+
+def ballistic_plate(pal, edge):
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    for y in range(1, 15):
+        for x in range(3, 13):
+            if (y < 3 and (x < 4 + (3 - y) or x > 11 - (3 - y))):
+                continue                                                               # coins coupés (plaque SAPI)
+            c = pal[2]
+            if x in (3, 12) or y in (1, 14):
+                c = edge
+            img.putpixel((x, y), c)
+    for x in range(5, 11):
+        img.putpixel((x, 4), pal[3])
+    return img
+
+
 def materials():
     tex = os.path.join(ASSETS, "textures")
     ore(21, STONE).save(os.path.join(tex, "block/titanium_ore.png"))
@@ -524,6 +737,10 @@ def materials():
         "ceramic_titanium_composite": composite(), "composite_preform": preform(),
         "steel_ingot": ingot(ST), "carburized_iron": ingot(FE, specks=hexc("#1A1A1A")), "steel_plate": plate(ST),
         "kevlar_fiber": fiber(), "kevlar_plate": plate(KV, woven), "multilayer_kevlar": multilayer(),
+        "ballistic_nylon": nylon(), "tactical_strap": strap(),
+        "steel_ballistic_plate": ballistic_plate(ST, ST[0]),
+        "ceramic_ballistic_plate": ballistic_plate(CE, KV[1]),
+        "netherite_ballistic_plate": ballistic_plate([hexc(c) for c in ("#2A2426", "#443A3C", "#5A4E50", "#7A6C6E")], TI[2]),
     }
     for name, img in items.items():
         img.save(os.path.join(tex, f"item/{name}.png"))
@@ -538,6 +755,7 @@ def materials():
 def main():
     palette_image().save(os.path.join(ASSETS, "textures/item/helmet_palette.png"))
     helmet_models()
+    vest_models()
     overlays()
     materials()
     print(f"{len(HELMETS)} casques ({len(KEYS)} couleurs), {len(MODULES)} variantes, contours et matériaux générés")

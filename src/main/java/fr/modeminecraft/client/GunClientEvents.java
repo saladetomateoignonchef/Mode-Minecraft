@@ -197,6 +197,9 @@ public final class GunClientEvents {
                 .getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD).is(fr.modeminecraft.registry.ModItems.MICH_2000.get())) {
             aimSpeed = Math.max(1.0f, aimSpeed);
         }
+        if (aim != null && Minecraft.getInstance().player != null) {
+            aimSpeed *= fr.modeminecraft.item.VestItem.adsMul(Minecraft.getInstance().player);
+        }
         float speed = aim == null ? 0.4f : Math.min(1.0f, 0.3f * aimSpeed);
         currentZoom += (target - currentZoom) * speed;
         if (Math.abs(currentZoom - 1.0f) > 0.002f) {

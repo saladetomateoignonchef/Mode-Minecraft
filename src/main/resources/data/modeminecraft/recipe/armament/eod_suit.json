@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "armor",
+  "ingredients": [
+    {
+      "item": "minecraft:netherite_ingot",
+      "count": 3
+    },
+    {
+      "item": "modeminecraft:ceramic_titanium_composite",
+      "count": 5
+    },
+    {
+      "item": "modeminecraft:multilayer_kevlar",
+      "count": 4
+    },
+    {
+      "item": "minecraft:redstone_block",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:eod_suit",
+    "count": 1
+  }
+}

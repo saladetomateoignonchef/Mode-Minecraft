@@ -97,6 +97,32 @@ public class BulletEntity extends ThrowableItemProjectile {
         return damage - absorbed;
     }
 
+    /** Classe de calibre pour les gilets : -1 = d'après l'arme, 0 = léger, 1 = fusil, 2 = gros calibre. */
+    private int caliberClass = -1;
+
+    public void setCaliberClass(int c) {
+        caliberClass = c;
+    }
+
+    public int caliberClass() {
+        if (caliberClass >= 0) {
+            return caliberClass;
+        }
+        if (weapon.getItem() instanceof fr.modeminecraft.item.gun.GunItem gun) {
+            var st = gun.stats();
+            String caliber = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(st.ammo().get()).getPath();
+            if (st.category() == fr.modeminecraft.item.gun.GunStats.Category.SNIPER || caliber.equals("ammo_50bmg")
+                    || caliber.equals("ammo_408") || caliber.equals("ammo_338")) {
+                return 2;
+            }
+            return switch (st.category()) {
+                case PISTOL, SMG, SHOTGUN -> 0;
+                default -> 1;
+            };
+        }
+        return damage < 7 ? 0 : damage < 13 ? 1 : 2;
+    }
+
     public void setWeapon(net.minecraft.world.item.ItemStack stack) {
         weapon = stack;
     }
@@ -254,6 +280,12 @@ public class BulletEntity extends ThrowableItemProjectile {
             finalDamage = helmetProtection(level, (LivingEntity) target, finalDamage);
         }
 
+        // Gilet pare-balles : tir au torse (ni la tête ni les membres) -> plaque balistique puis gilet
+        if (!headshot && !legs && target instanceof LivingEntity living) {
+            Vec3 look = Vec3.directionFromRotation(0, living.yBodyRot);
+            boolean front = getDeltaMovement().x * look.x + getDeltaMovement().z * look.z < 0;
+            finalDamage = fr.modeminecraft.item.VestItem.protect(level, living, finalDamage, caliberClass(), front);
+        }
         AmmoType type = ammoType();
         if (type == AmmoType.HOLLOW_POINT && target instanceof LivingEntity living) {
             finalDamage *= living.getArmorValue() > 0 ? 0.6f : 1.35f; // très efficace sans armure

@@ -490,7 +490,7 @@ public class GunItem extends Item {
         if (start == null || end == null || now >= end - 1 || now < start) {
             return false;
         }
-        int per = Math.max(1, resolve(stack).reloadTicks());
+        int per = Math.max(1, Math.round(resolve(stack).reloadTicks() * fr.modeminecraft.item.VestItem.reloadMul(player)));
         int target = stack.getOrDefault(ModDataComponents.RELOAD_TARGET.get(), getAmmo(stack));
         int before = stack.getOrDefault(ModDataComponents.RELOAD_FROM.get(), getAmmo(stack));
         int inserted = (int) Math.max(0, Math.min(target - before, (now - start) / per));
@@ -1055,7 +1055,9 @@ public class GunItem extends Item {
         // Pas de stopUsingItem() ici : il ne s'exécuterait que côté serveur et désynchroniserait le client.
         // Le cooldown (synchronisé) suffit à suspendre le tir automatique pendant le rechargement.
         // Rechargement balle par balle : la durée dépend du nombre de balles insérées
-        int time = stats.reloadPerRound() ? gun.reloadTicks() * taken : gun.reloadTicks();
+        // Gilet à poches ventrales (6B3, JPC) : rechargement plus rapide
+        int per = Math.max(1, Math.round(gun.reloadTicks() * fr.modeminecraft.item.VestItem.reloadMul(player)));
+        int time = stats.reloadPerRound() ? per * taken : per;
         long now = player.level().getGameTime();
         boolean wasChambered = isChambered(stack);
         if (stats.chamber() && !isChambered(stack)) {
@@ -1072,7 +1074,7 @@ public class GunItem extends Item {
         if (stats.reloadPerRound()) {
             for (int i = 0; i < taken; i++) {
                 DelayedSounds.play(player, ModSounds.SHELL_INSERT, 0.8f, 0.95f + player.getRandom().nextFloat() * 0.1f,
-                        gun.reloadTicks() * i + gun.reloadTicks() / 2);
+                        per * i + per / 2);
             }
         } else {
             DelayedSounds.play(player, ModSounds.MAG_OUT, 0.9f, 1.0f, 0);

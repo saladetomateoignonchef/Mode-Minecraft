@@ -105,6 +105,7 @@ public final class ClientSetup {
         event.registerAbove(VanillaGuiLayers.HOTBAR, ModeMinecraft.id("gun_ammo"), GunHudLayer.AMMO);
         event.registerBelow(VanillaGuiLayers.HOTBAR, ModeMinecraft.id("gun_sight"), GunHudLayer.SIGHT_OVERLAY);
         event.registerAbove(VanillaGuiLayers.CAMERA_OVERLAYS, ModeMinecraft.id("helmet_overlay"), HelmetClient::renderOverlay);
+        event.registerAbove(VanillaGuiLayers.ARMOR_LEVEL, ModeMinecraft.id("vest_plates"), VestClient::renderHud);
         event.registerAbove(VanillaGuiLayers.CROSSHAIR, ModeMinecraft.id("hit_marker"), GunFx::renderHitMarker);
         event.registerAbove(VanillaGuiLayers.CROSSHAIR, ModeMinecraft.id("lock_on"), LockOnClient::render);
         event.registerAbove(VanillaGuiLayers.CROSSHAIR, ModeMinecraft.id("grenade_timer"), GunHudLayer::renderGrenadeTimer);
@@ -120,7 +121,19 @@ public final class ClientSetup {
             var renderer = event.getSkin(skin);
             if (renderer instanceof net.minecraft.client.renderer.entity.player.PlayerRenderer player) {
                 player.addLayer(new BackGunsLayer(player));
+                player.addLayer(new VestLayer<>(player));
             }
+        }
+        // Gilets pare-balles 3D aussi sur les zombies, squelettes, supports d'armure...
+        for (var type : event.getEntityTypes()) {
+            addVestLayer(event.getRenderer(type));
+        }
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static void addVestLayer(Object renderer) {
+        if (renderer instanceof net.minecraft.client.renderer.entity.LivingEntityRenderer lr && lr.getModel() instanceof HumanoidModel) {
+            lr.addLayer(new VestLayer(lr));
         }
     }
 

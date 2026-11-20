@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "armor",
+  "ingredients": [
+    {
+      "item": "modeminecraft:kevlar_plate",
+      "count": 6
+    },
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:ballistic_nylon",
+      "count": 1
+    },
+    {
+      "item": "minecraft:black_dye",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:swat_vest",
+    "count": 1
+  }
+}

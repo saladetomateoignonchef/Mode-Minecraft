@@ -150,6 +150,26 @@ def mechanical(name, seed):
         t = t_axis(0.12)
         x = np.sign(np.sin(2 * np.pi * f * t)) * 0.4 * np.clip(t / 0.005, 0, 1) * np.clip((0.12 - t) / 0.01, 0, 1)
         x = band(x, hi=6000)
+    elif name == "vest_equip_velcro":
+        # fermeture éclair (petits clics rapides) puis velcros arrachés / plaqués
+        t = t_axis(1.1)
+        x = np.zeros(len(t))
+        for i in range(18):
+            x = x + click(rng, t, 0.02 + i * 0.016, 4500, 0.003, 0.35, 2500, 10000)
+        x = x + scrape(rng, t, 0.45, 0.22, 0.9, 1500, 9000) + scrape(rng, t, 0.78, 0.18, 0.8, 1500, 9000)
+    elif name == "plate_insert":
+        t = t_axis(0.7)
+        x = scrape(rng, t, 0.0, 0.3, 0.35, 400, 3000) + click(rng, t, 0.34, 600, 0.06, 1.0, 100, 2500) \
+            + click(rng, t, 0.36, 2200, 0.01, 0.4, 800, 6000)
+    elif name == "vest_bullet_hit":
+        # impact sourd sur kevlar / céramique (pas de bruit de chair)
+        t = t_axis(0.4)
+        x = click(rng, t, 0.0, 350, 0.05, 1.0, 60, 1800) + np.sin(2 * np.pi * 120 * t) * env(t, 0.001, 0.06) * 0.8
+    elif name == "plate_shatter":
+        t = t_axis(1.0)
+        x = click(rng, t, 0.0, 2800, 0.02, 1.0, 900, 10000)
+        for i in range(10):
+            x = x + click(rng, t, 0.04 + i * 0.05 + rng.uniform(0, 0.03), rng.uniform(3000, 7000), 0.01, 0.5 - i * 0.04, 1500, 11000)
     elif name == "helmet_strap_click":
         # boucle de jugulaire qui se ferme : clic sec + petit frottement de sangle
         t = t_axis(0.3)
@@ -310,7 +330,8 @@ def main():
     add("shot.launcher", ["shot/launcher_0", "shot/launcher_1"], "shot_launcher")
     for name in ["mag_out", "mag_in", "rack", "bolt", "pump", "shell_insert", "empty_click", "casing", "shell_casing", "hitmarker", "headshot", "garand_ping", "lock_search", "lock_tone",
                  "grenade_pin", "grenade_bounce", "grenade_beep", "sonar", "flash_ring", "turret_deploy", "turret_reload", "dry_fire",
-                 "helmet_strap_click", "helmet_ricochet", "helmet_visor", "nvg_on", "helmet_breath"]:
+                 "helmet_strap_click", "helmet_ricochet", "helmet_visor", "nvg_on", "helmet_breath",
+                 "vest_equip_velcro", "plate_insert", "vest_bullet_hit", "plate_shatter"]:
         files = []
         for v in range(2 if name in ("casing", "mag_in", "rack") else 1):
             write_ogg(os.path.join(sounds_dir, "gun", f"{name}_{v}.ogg"), mechanical(name, seed))

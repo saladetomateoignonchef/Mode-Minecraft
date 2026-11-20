@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "armor",
+  "ingredients": [
+    {
+      "item": "modeminecraft:titanium_plate",
+      "count": 4
+    },
+    {
+      "item": "modeminecraft:kevlar_plate",
+      "count": 3
+    },
+    {
+      "item": "modeminecraft:ballistic_nylon",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:vest_6b3",
+    "count": 1
+  }
+}

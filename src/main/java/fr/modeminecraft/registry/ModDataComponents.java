@@ -99,6 +99,16 @@ public final class ModDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> HELMET_EQUIP_TIME = timestamp("helmet_equip_time");
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> HELMET_MODULE_TIME = timestamp("helmet_module_time");
 
+    /** Gilets : plaques balistiques dans les poches avant / arrière. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<fr.modeminecraft.item.VestItem.Plate>> PLATE_FRONT =
+            DATA_COMPONENTS.registerComponentType("plate_front", b -> b.persistent(fr.modeminecraft.item.VestItem.Plate.CODEC)
+                    .networkSynchronized(fr.modeminecraft.item.VestItem.Plate.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<fr.modeminecraft.item.VestItem.Plate>> PLATE_BACK =
+            DATA_COMPONENTS.registerComponentType("plate_back", b -> b.persistent(fr.modeminecraft.item.VestItem.Plate.CODEC)
+                    .networkSynchronized(fr.modeminecraft.item.VestItem.Plate.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> VEST_EQUIP_TIME = timestamp("vest_equip_time");
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> PLATE_INSERT_TIME = timestamp("plate_insert_time");
+
     private static DeferredHolder<DataComponentType<?>, DataComponentType<Long>> timestamp(String name) {
         // Non sauvegardé sur le disque : ne sert qu'aux animations
         return DATA_COMPONENTS.registerComponentType(name, b -> b.networkSynchronized(ByteBufCodecs.VAR_LONG));

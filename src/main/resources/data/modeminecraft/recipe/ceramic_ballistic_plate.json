@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "modeminecraft:ceramic_titanium_composite"
+    },
+    {
+      "item": "modeminecraft:ceramic_titanium_composite"
+    },
+    {
+      "item": "modeminecraft:kevlar_plate"
+    },
+    {
+      "item": "modeminecraft:kevlar_plate"
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:ceramic_ballistic_plate",
+    "count": 1
+  }
+}

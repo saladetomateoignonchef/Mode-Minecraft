@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "armor",
+  "ingredients": [
+    {
+      "item": "modeminecraft:ceramic_titanium_composite",
+      "count": 4
+    },
+    {
+      "item": "modeminecraft:multilayer_kevlar",
+      "count": 4
+    },
+    {
+      "item": "minecraft:netherite_ingot",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:ballistic_nylon",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:fort_defender",
+    "count": 1
+  }
+}

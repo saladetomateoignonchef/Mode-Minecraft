@@ -1,6 +1,6 @@
 {
   "type": "modeminecraft:armament",
-  "category": "helmets",
+  "category": "armor",
   "ingredients": [
     {
       "item": "minecraft:iron_ingot",
