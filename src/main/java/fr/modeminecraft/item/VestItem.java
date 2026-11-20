@@ -158,7 +158,8 @@ public class VestItem extends Item implements Equipable {
     /** Multiplicateur du temps de rechargement des armes selon le gilet porté (6B3 : -10 %, JPC : -15 %). */
     public static float reloadMul(Player player) {
         VestItem v = worn(player);
-        return v == null ? 1 : 1 - v.stats.reload();
+        // + pantalon à poches cargo (M42)
+        return 1 - (v == null ? 0 : v.stats.reload()) - GearEffects.reloadBonus(player);
     }
 
     /** Bonus de vitesse de visée (JPC : +15 %). */

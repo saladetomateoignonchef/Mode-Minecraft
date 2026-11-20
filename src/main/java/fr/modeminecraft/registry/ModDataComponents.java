@@ -107,6 +107,7 @@ public final class ModDataComponents {
             DATA_COMPONENTS.registerComponentType("plate_back", b -> b.persistent(fr.modeminecraft.item.VestItem.Plate.CODEC)
                     .networkSynchronized(fr.modeminecraft.item.VestItem.Plate.STREAM_CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> VEST_EQUIP_TIME = timestamp("vest_equip_time");
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> GEAR_EQUIP_TIME = timestamp("gear_equip_time");
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> PLATE_INSERT_TIME = timestamp("plate_insert_time");
 
     private static DeferredHolder<DataComponentType<?>, DataComponentType<Long>> timestamp(String name) {

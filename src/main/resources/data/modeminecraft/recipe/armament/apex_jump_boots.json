@@ -1,0 +1,30 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "armor",
+  "ingredients": [
+    {
+      "item": "modeminecraft:multilayer_kevlar",
+      "count": 3
+    },
+    {
+      "item": "modeminecraft:titanium_plate",
+      "count": 4
+    },
+    {
+      "item": "minecraft:netherite_ingot",
+      "count": 2
+    },
+    {
+      "item": "minecraft:redstone_block",
+      "count": 2
+    },
+    {
+      "item": "minecraft:phantom_membrane",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:apex_jump_boots",
+    "count": 1
+  }
+}

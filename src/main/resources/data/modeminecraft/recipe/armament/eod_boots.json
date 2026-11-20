@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "armor",
+  "ingredients": [
+    {
+      "item": "modeminecraft:multilayer_kevlar",
+      "count": 3
+    },
+    {
+      "item": "modeminecraft:titanium_plate",
+      "count": 3
+    },
+    {
+      "item": "minecraft:netherite_ingot",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:ballistic_nylon",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:eod_boots",
+    "count": 1
+  }
+}

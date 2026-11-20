@@ -22,6 +22,22 @@
     "modeminecraft:iotv_vest",
     "modeminecraft:avs_plate_carrier",
     "modeminecraft:fort_defender",
-    "modeminecraft:eod_suit"
+    "modeminecraft:eod_suit",
+    "modeminecraft:wwi_trousers",
+    "modeminecraft:m42_paratrooper_pants",
+    "modeminecraft:bdu_woodland_pants",
+    "modeminecraft:swat_pants",
+    "modeminecraft:crye_g3_pants",
+    "modeminecraft:infiltrator_pants",
+    "modeminecraft:ratnik_pants",
+    "modeminecraft:talos_exo_pants",
+    "modeminecraft:wwi_hobnail_boots",
+    "modeminecraft:corcoran_jump_boots",
+    "modeminecraft:m65_combat_boots",
+    "modeminecraft:panama_jungle_boots",
+    "modeminecraft:lowa_zephyr_boots",
+    "modeminecraft:salomon_forces_boots",
+    "modeminecraft:eod_boots",
+    "modeminecraft:apex_jump_boots"
   ]
 }

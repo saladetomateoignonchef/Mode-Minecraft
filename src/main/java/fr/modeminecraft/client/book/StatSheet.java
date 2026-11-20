@@ -79,6 +79,14 @@ public final class StatSheet {
             if (s.ads() > 0) out.add(line("ads_bonus", pct(s.ads())));
             out.add(line(s.plates() ? "plates_yes" : "plates_no"));
             out.add(line("durability", s.durability()));
+        } else if (item instanceof fr.modeminecraft.item.GearItem gear) {
+            out.add(line("era", Component.translatable("tooltip.modeminecraft.gear.era." + gear.stats().tier)));
+            out.add(line("armor", gear.stats().armor));
+            for (Component c : gear.effectLines()) {
+                out.add(Component.literal("• ").append(c));
+            }
+            out.add(line("durability", gear.stats().durability));
+            out.add(Component.translatable("tooltip.modeminecraft.gear.set_bonus").withStyle(ChatFormatting.DARK_GREEN));
         } else if (item instanceof MountedGunItem t) {
             MountedGunEntity.Kind k = t.kind();
             out.add(line("turret_ammo", k.ammo().getDescription(), k.perLoad));
@@ -97,7 +105,8 @@ public final class StatSheet {
         }
         // Le reste : la description de l'objet (infobulle)
         var mc = Minecraft.getInstance();
-        boolean fullSheet = item instanceof GunItem || item instanceof HelmetItem || item instanceof VestItem || item instanceof MountedGunItem;
+        boolean fullSheet = item instanceof GunItem || item instanceof HelmetItem || item instanceof VestItem || item instanceof MountedGunItem
+                || item instanceof fr.modeminecraft.item.GearItem;
         if (mc.level != null && !fullSheet) {
             List<Component> tip = stack.getTooltipLines(Item.TooltipContext.of(mc.level), mc.player, TooltipFlag.NORMAL);
             if (tip.size() > 1) {

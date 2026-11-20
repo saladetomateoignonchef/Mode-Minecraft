@@ -1,0 +1,18 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "armor",
+  "ingredients": [
+    {
+      "item": "minecraft:leather",
+      "count": 4
+    },
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:wwi_hobnail_boots",
+    "count": 1
+  }
+}

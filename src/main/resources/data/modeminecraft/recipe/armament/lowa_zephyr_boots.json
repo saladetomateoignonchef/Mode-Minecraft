@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "armor",
+  "ingredients": [
+    {
+      "item": "modeminecraft:ballistic_nylon",
+      "count": 3
+    },
+    {
+      "item": "minecraft:leather",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:kevlar_fiber",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:titanium_ingot",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:lowa_zephyr_boots",
+    "count": 1
+  }
+}

@@ -53,6 +53,10 @@ public final class ModKeyMappings {
     public static final KeyMapping SHOW_USES = new KeyMapping("key.modeminecraft.show_uses",
             net.neoforged.neoforge.client.settings.KeyConflictContext.GUI, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_U, CATEGORY);
 
+    /** S'allonger / se relever (en plus du double appui sur "s'accroupir"). */
+    public static final KeyMapping PRONE = new KeyMapping("key.modeminecraft.prone",
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_X, CATEGORY);
+
     public static final KeyMapping MELEE = new KeyMapping("key.modeminecraft.melee",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_C, CATEGORY);
 

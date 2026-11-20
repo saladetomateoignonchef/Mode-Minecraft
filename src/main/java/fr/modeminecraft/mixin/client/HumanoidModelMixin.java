@@ -16,5 +16,6 @@ public abstract class HumanoidModelMixin<T extends LivingEntity> {
                                           float headPitch, CallbackInfo ci) {
         HelmetClient.poseArms(entity, (HumanoidModel<?>) (Object) this);
         fr.modeminecraft.client.VestClient.poseArms(entity, (HumanoidModel<?>) (Object) this);
+        fr.modeminecraft.client.GearClient.poseArms(entity, (HumanoidModel<?>) (Object) this);
     }
 }

@@ -99,6 +99,14 @@ public final class GunModels {
                 event.register(ModelResourceLocation.standalone(defaultPartModel(name(gun), skin, "stock")));
             }
         }
+        for (var h : ModItems.ITEMS.getEntries()) {                                    // pantalons et rangers, en pièces
+            if (h.get() instanceof fr.modeminecraft.item.GearItem gear) {
+                String id = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(gear).getPath();
+                for (String p : fr.modeminecraft.client.GearLayer.parts(gear)) {
+                    event.register(fr.modeminecraft.client.GearLayer.part(id, p));
+                }
+            }
+        }
         for (var kind : fr.modeminecraft.entity.MountedGunEntity.Kind.values()) {   // tourelles, en pièces
             var geo = kind.geo();
             if (geo != null) {

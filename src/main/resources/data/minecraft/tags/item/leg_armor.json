@@ -1,6 +1,14 @@
 {
   "replace": false,
   "values": [
-    "modeminecraft:rubis_leggings"
+    "modeminecraft:rubis_leggings",
+    "modeminecraft:wwi_trousers",
+    "modeminecraft:m42_paratrooper_pants",
+    "modeminecraft:bdu_woodland_pants",
+    "modeminecraft:swat_pants",
+    "modeminecraft:crye_g3_pants",
+    "modeminecraft:infiltrator_pants",
+    "modeminecraft:ratnik_pants",
+    "modeminecraft:talos_exo_pants"
   ]
 }

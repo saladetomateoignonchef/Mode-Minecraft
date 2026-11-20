@@ -140,6 +140,10 @@ public final class RecipeIndex {
             } else if (item instanceof VestItem v) {
                 k.addAll(List.of("vest", "gilet", "armor", "protection"));
                 k.addAll(era(v.stats().tier(), false));
+            } else if (item instanceof fr.modeminecraft.item.GearItem gear) {
+                k.addAll(gear.isBoots() ? List.of("boots", "rangers", "bottes", "chaussures") : List.of("pants", "pantalon", "jambieres", "treillis"));
+                k.addAll(List.of("armor", "protection", "equipement"));
+                k.addAll(era(gear.stats().tier, false));
             } else if (item instanceof BallisticPlateItem) {
                 k.addAll(List.of("plate", "plaque", "balistique", "protection"));
             } else if (item instanceof MountedGunItem) {

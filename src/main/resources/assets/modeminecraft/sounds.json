@@ -303,5 +303,23 @@
     "sounds": [
       "modeminecraft:gun/plate_shatter_0"
     ]
+  },
+  "gun.gear_equip_cloth": {
+    "subtitle": "subtitles.modeminecraft.gear_equip_cloth",
+    "sounds": [
+      "modeminecraft:gun/gear_equip_cloth_0"
+    ]
+  },
+  "gun.boots_lace": {
+    "subtitle": "subtitles.modeminecraft.boots_lace",
+    "sounds": [
+      "modeminecraft:gun/boots_lace_0"
+    ]
+  },
+  "gun.ranger_step": {
+    "subtitle": "subtitles.modeminecraft.ranger_step",
+    "sounds": [
+      "modeminecraft:gun/ranger_step_0"
+    ]
   }
 }

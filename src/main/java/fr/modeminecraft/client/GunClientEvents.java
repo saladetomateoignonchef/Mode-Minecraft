@@ -154,6 +154,9 @@ public final class GunClientEvents {
             }
         }
         sneakWasDown = sneak;
+        while (ModKeyMappings.PRONE.consumeClick()) {
+            toggleProne(mc, !ProneHandler.isProne(mc.player));
+        }
         boolean jump = mc.options.keyJump.isDown();
         if (jump && !jumpWasDown && ProneHandler.isProne(mc.player)) {
             toggleProne(mc, false);

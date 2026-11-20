@@ -38,6 +38,7 @@ COLORS = {
     "lens": "#2E6B3A", "nvg": "#1A1C1E", "red": "#C8223B", "cyan": "#3FC8D8", "padding": "#3A3A3A",
     "comtac": "#1F2124", "white": "#D8D8D0", "dark_glass": "#2A3A44",
     "navy": "#1E2A44", "navy_d": "#141C30", "scale_ti": "#7E8A96", "brass_case": "#C8A040",
+    "leather_red": "#7A3E26", "lace": "#B8A880",
 }
 CAMO = {
     "woodland": ["#4B5A2A", "#5A4630", "#1E2416", "#6B7D3A"],
@@ -488,6 +489,227 @@ def vest_models():
               {"textures": tex, "render_type": "minecraft:translucent", "display": VEST_DISPLAY, "elements": els})
 
 
+# ------------------------------------------------------------------ pantalons (repère d'une jambe)
+# Jambe : x [6 ; 10], y [2 ; 14] (hanche en haut), z [6 ; 10] ; devant vers -Z ; +X = côté droit du joueur.
+# Ceinture : repère du torse (comme les gilets), taille vers y = 2.
+def leg_shell(h, key, y0=3.0, y1=14.2, t=0.45):
+    h.add([6 - t, y0, 6 - t], [10 + t, y1, 6.0], key).add([6 - t, y0, 10.0], [10 + t, y1, 10 + t], key)
+    h.add([6 - t, y0, 6.0], [6.0, y1, 10.0], key).add([10.0, y0, 6.0], [10 + t, y1, 10.0], key)
+    return h
+
+
+def outer(h, right, y0, y1, z0, z1, d, key, gap=0.45):
+    """Pièce sur la face EXTÉRIEURE de la jambe (gauche : -X, droite : +X)."""
+    if right:
+        h.add([10 + gap, y0, z0], [10 + gap + d, y1, z1], key)
+    else:
+        h.add([6 - gap - d, y0, z0], [6 - gap, y1, z1], key)
+    return h
+
+
+def belt(key, buckle="brass"):
+    h = H()
+    h.add([3.5, 1.4, 5.5], [12.5, 2.8, 6.0], key).add([3.5, 1.4, 10.0], [12.5, 2.8, 10.5], key)
+    h.add([3.5, 1.4, 6.0], [4.0, 2.8, 10.0], key).add([12.0, 1.4, 6.0], [12.5, 2.8, 10.0], key)
+    h.add([7.2, 1.5, 5.3], [8.8, 2.7, 5.5], buckle)
+    return h
+
+
+def pants(shell, belt_key, extra=None, buckle="brass", belt_extra=None):
+    parts = {}
+    for side, right in (("leg_l", False), ("leg_r", True)):
+        h = leg_shell(H(), shell)
+        if extra:
+            extra(h, right)
+        parts[side] = h
+    b = belt(belt_key, buckle)
+    if belt_extra:
+        belt_extra(b)
+    parts["belt"] = b
+    return parts
+
+
+def cargo(h, right, key, flap):
+    outer(h, right, 8.0, 11.4, 6.5, 9.5, 0.6, key)
+    outer(h, right, 11.0, 11.6, 6.4, 9.6, 0.7, flap)
+
+
+def p_wwi():
+    def puttees(h, right):
+        for i in range(7):
+            y = 2.6 + i * 0.8
+            h.add([5.4, y, 5.4], [10.6, y + 0.55, 10.6], "khaki_d")
+    return pants("khaki", "leather_d", puttees)
+
+
+def p_m42():
+    def e(h, right):
+        cargo(h, right, "olive", "olive_d")
+        h.add([5.45, 7.3, 5.45], [10.55, 7.8, 10.55], "canvas")                    # sangle de maintien
+    return pants("olive", "canvas", e)
+
+
+def p_bdu():
+    def e(h, right):
+        h.add([6.2, 6.0, 5.3], [9.8, 8.4, 5.55], "woodland")                       # genoux doublés
+        h.add([6.2, 10.5, 10.45], [9.8, 13.5, 10.7], "woodland")                   # assise renforcée
+        cargo(h, right, "woodland", "woodland")
+    return pants("woodland", "olive_d", e)
+
+
+def p_swat():
+    def e(h, right):
+        h.add([5.9, 5.6, 4.8], [10.1, 8.6, 5.55], "comtac")                         # grosses genouillères
+        if right:                                                                   # étui de cuisse (holster)
+            outer(h, True, 7.0, 11.2, 6.4, 8.8, 1.1, "black")
+            outer(h, True, 11.2, 12.6, 6.8, 7.8, 0.8, "rail", gap=0.6)
+            h.add([5.45, 9.2, 5.45], [11.6, 9.7, 10.55], "black")
+    return pants("black", "black", e, buckle="rail")
+
+
+def p_crye():
+    def e(h, right):
+        h.add([6.2, 5.8, 5.2], [9.8, 8.2, 5.55], "coyote_d")                       # genouillères AirFlex
+        cargo(h, right, "multicam", "coyote_d")
+        outer(h, right, 4.0, 6.0, 7.0, 9.0, 0.5, "multicam")
+    return pants("multicam", "coyote_d", e, buckle="rail")
+
+
+def p_infiltrator():
+    def e(h, right):
+        for y in (4.6, 9.4, 12.6):                                                  # sangles élastiques silencieuses
+            h.add([5.45, y, 5.45], [10.55, y + 0.4, 10.55], "steel_d")
+    return pants("black", "steel_d", e, buckle="steel_d")
+
+
+def p_ratnik():
+    def e(h, right):
+        h.add([5.6, 8.5, 5.0], [10.4, 13.6, 5.55], "olive_d")                      # kevlar multicouche sur les cuisses
+        h.add([6.0, 2.8, 5.0], [10.0, 7.6, 5.55], "scale_ti")                      # protège-tibias en titane
+        cargo(h, right, "moss", "olive_d")
+    return pants("moss", "moss", e, buckle="scale_ti")
+
+
+def p_talos():
+    def e(h, right):
+        outer(h, right, 3.0, 13.6, 7.6, 8.4, 0.45, "black")                         # vérins hydrauliques
+        outer(h, right, 7.4, 8.6, 7.2, 8.8, 0.7, "scale_ti", gap=0.45)              # articulation du genou
+        h.add([6.4, 2.6, 4.9], [9.6, 3.2, 5.5], "black")
+    def battery(b):
+        b.add([6.0, 0.8, 10.5], [10.0, 3.2, 11.8], "black").add([7.6, 2.4, 11.8], [8.4, 2.8, 11.9], "cyan")
+    return pants("ranger", "black", e, buckle="scale_ti", belt_extra=battery)
+
+
+# ------------------------------------------------------------------ rangers
+def boot(key, top=6.4, sole="black", toe=None, laces="lace", extra=None):
+    parts = {}
+    for side, right in (("boot_l", False), ("boot_r", True)):
+        h = H()
+        h.add([5.5, 2.0, 5.5], [10.5, top, 10.5], key)
+        h.add([5.5, 2.0, 4.5], [10.5, 3.4, 5.5], toe or key)                      # bout du pied
+        h.add([5.3, 1.3, 4.3], [10.7, 2.1, 10.7], sole)                             # semelle crantée
+        for x in (5.6, 7.4, 9.2):
+            h.add([x, 1.1, 4.6], [x + 1.2, 1.3, 10.4], sole)
+        if laces:
+            h.add([7.5, 3.4, 5.42], [8.5, top - 0.3, 5.5], laces)
+            for y in [3.8 + 0.8 * i for i in range(int((top - 4.2) / 0.8))]:
+                h.add([7.0, y, 5.4], [9.0, y + 0.25, 5.48], laces)
+        if extra:
+            extra(h, right)
+        parts[side] = h
+    return parts
+
+
+def b_wwi():
+    def nails(h, right):
+        for x in (5.8, 7.6, 9.4):
+            h.add([x, 1.0, 5.0], [x + 0.5, 1.15, 5.5], "rivet").add([x, 1.0, 9.4], [x + 0.5, 1.15, 9.9], "rivet")
+    return boot("leather_d", top=4.2, sole="steel_d", laces="leather", extra=nails)
+
+
+def b_corcoran():
+    def ankle(h, right):
+        h.add([5.4, 3.6, 5.4], [10.6, 4.6, 10.6], "leather_d")                     # double renfort de cheville
+    return boot("leather_red", top=7.0, extra=ankle)
+
+
+def b_m65():
+    def strap(h, right):
+        h.add([5.4, 6.4, 5.4], [10.6, 7.0, 10.6], "black").add([9.6, 6.3, 5.25], [10.4, 7.1, 5.4], "rivet")
+    return boot("black", top=7.2, sole="comtac", extra=strap)
+
+
+def b_panama():
+    def foot(h, right):
+        h.add([5.45, 2.0, 5.45], [10.55, 3.6, 10.55], "black")                      # pied en cuir noir
+    return boot("olive", top=7.0, extra=foot)
+
+
+def b_lowa():
+    def frame(h, right):
+        outer(h, right, 2.4, 5.4, 6.4, 9.6, 0.15, "coyote_d", gap=0.5)              # armature latérale
+    return boot("coyote", top=6.8, sole="coyote_d", extra=frame)
+
+
+def b_salomon():
+    return boot("black", top=6.6, sole="comtac", laces="steel_d")
+
+
+def b_eod():
+    def armor(h, right):
+        h.add([5.2, 2.0, 5.2], [10.8, 8.0, 10.8], "moss")
+        h.add([5.6, 2.4, 4.4], [10.4, 7.6, 5.2], "scale_ti")                       # plaques de titane
+        h.add([5.0, 0.8, 4.2], [11.0, 2.0, 11.0], "black")                         # semelle déflectrice de souffle
+    return boot("moss", top=8.0, laces=None, extra=armor)
+
+
+def b_apex():
+    def springs(h, right):
+        h.add([6.0, 0.2, 8.4], [10.0, 1.4, 10.6], "black")                         # lame amortissante sous le talon
+        for x0, x1 in ((5.15, 5.5), (10.5, 10.85)):
+            h.add([x0, 1.6, 8.6], [x1, 4.6, 9.6], "scale_ti")                      # ressorts latéraux
+    return boot("ranger", top=6.6, sole="black", toe="scale_ti", extra=springs)
+
+
+GEAR = {
+    "wwi_trousers": p_wwi, "m42_paratrooper_pants": p_m42, "bdu_woodland_pants": p_bdu, "swat_pants": p_swat,
+    "crye_g3_pants": p_crye, "infiltrator_pants": p_infiltrator, "ratnik_pants": p_ratnik, "talos_exo_pants": p_talos,
+    "wwi_hobnail_boots": b_wwi, "corcoran_jump_boots": b_corcoran, "m65_combat_boots": b_m65, "panama_jungle_boots": b_panama,
+    "lowa_zephyr_boots": b_lowa, "salomon_forces_boots": b_salomon, "eod_boots": b_eod, "apex_jump_boots": b_apex,
+}
+
+
+def shifted(els, dx, dy):
+    out = json.loads(json.dumps(els))
+    for e in out:
+        for k in ("from", "to"):
+            e[k] = [round(e[k][0] + dx, 3), round(e[k][1] + dy, 3), e[k][2]]
+        if "rotation" in e:
+            o = e["rotation"]["origin"]
+            e["rotation"]["origin"] = [o[0] + dx, o[1] + dy, o[2]]
+    return out
+
+
+def gear_models():
+    tex = {"p": f"{MOD}:item/helmet_palette", "particle": f"{MOD}:item/helmet_palette"}
+    for name, fn in GEAR.items():
+        parts = fn()
+        for part, h in parts.items():
+            check(name, h.els)
+            write(os.path.join(ASSETS, f"models/gear/{name}_{part}.json"),
+                  {"textures": tex, "render_type": "minecraft:translucent", "elements": h.els})
+        if "belt" in parts:   # pantalon complet (inventaire) : ceinture + jambes sous la taille
+            whole = parts["belt"].els + shifted(parts["leg_l"].els, -2, -12) + shifted(parts["leg_r"].els, 2, -12)
+            disp = {"gui": {"rotation": [15, 200, 0], "translation": [0, 6, 0], "scale": [0.55, 0.55, 0.55]}}
+        else:
+            whole = shifted(parts["boot_l"].els, -2.6, 0) + shifted(parts["boot_r"].els, 2.6, 0)
+            disp = {"gui": {"rotation": [20, 200, 0], "translation": [0, 3, 0], "scale": [0.85, 0.85, 0.85]}}
+        disp.update({k: v for k, v in VEST_DISPLAY.items() if k != "gui"})
+        check(name, whole)
+        write(os.path.join(ASSETS, f"models/item/{name}.json"),
+              {"textures": tex, "render_type": "minecraft:translucent", "display": disp, "elements": whole})
+
+
 def write(path, data):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
@@ -778,6 +1000,7 @@ def main():
     palette_image().save(os.path.join(ASSETS, "textures/item/helmet_palette.png"))
     helmet_models()
     vest_models()
+    gear_models()
     overlays()
     materials()
     print(f"{len(HELMETS)} casques ({len(KEYS)} couleurs), {len(MODULES)} variantes, contours et matériaux générés")

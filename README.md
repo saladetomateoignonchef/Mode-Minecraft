@@ -111,7 +111,7 @@ Toutes les armes à feu, munitions et accessoires se fabriquent à la **table d'
 - **C** : coup de crosse (ou de baïonnette).
 - **Double appui sur s'accroupir** (sans viser) : s'allonger / se relever (aussi en sautant), avec ou sans arme.
   Allongé : recul et dispersion divisés par 2.
-- Toutes les touches (R, B, H, G type de munition, T laser, V tir sous le canon, C crosse, Y menu rapide des accessoires, N visière / vision nocturne du casque, O panneau des recettes, A / E se pencher,
+- Toutes les touches (R, B, H, G type de munition, T laser, V tir sous le canon, C crosse, Y menu rapide des accessoires, N visière / vision nocturne du casque, O panneau des recettes, X s'allonger, A / E se pencher,
   Shift stabiliser) se changent dans *Options > Commandes > Mode Minecraft*. Munitions infinies en créatif.
 
 **Dégâts (cahier des charges) :** tête x2 (x2,5 au fusil de précision, avec un « ding » métallique), torse x1,
@@ -295,6 +295,27 @@ Une plaque à 0 point se brise (bruit de céramique, message). Une jauge à côt
 avant / arrière (vert intacte, orange fissurée, rouge détruite).
 Nouveaux matériaux : **tissu Cordura** (4 ficelles + 2 cuirs + 1 colorant vert, marron ou noir) et **sangle MOLLE**
 (2 cuirs + 1 lingot de fer ou d'acier → 4).
+
+### Pantalons militaires et rangers 3D (8 + 8)
+Peu d'armure (+1 à +3,5) mais des **effets passifs** de mobilité et d'endurance, d'autant plus forts que la pièce est récente.
+Vrai modèle 3D sur les jambes et les pieds (poches cargo, genouillères, holster de cuisse, bandes molletières, semelles crantées, lacets...).
+Clic droit pour les mettre (les bras s'abaissent sur les côtés, bruit de tissu / de lacets). Les rangers ont des pas de semelles lourdes.
+Fabrication : table d'armement, onglet **Protections**. Toutes ces pièces sont dans le livre des recettes (`@pantalon`, `@rangers`).
+
+| Époque | Pantalon | Effets | Rangers | Effets |
+|---|---|---|---|---|
+| Guerres mondiales | Pantalon 14-18 (molletières) | immunité au gel | Brodequins cloutés | pas ralenti par le sable des âmes, la boue, la neige poudreuse |
+| | Parachutiste M42 | faim -10 %, rechargement +10 % | « Corcoran » | chute -25 %, faim -10 % |
+| Guerre froide | Treillis BDU Woodland | vitesse +8 %, accroupi et rampant +25 % | M65 / BMJA | vitesse +10 %, chute -30 %, faim -15 % |
+| | SWAT / GIGN | accroupi et rampant +35 %, pistolets dégainés 30 % plus vite, balles de pistolet aux jambes -25 % | Jungle « Panama » | +15 % en forêt / jungle / marais, nage +25 %, faim -20 % |
+| Moderne | Crye G3 | vitesse +15 %, rampant +50 %, accroupi +40 %, faim -25 % | Désert « Lowa Zephyr » | course +18 %, faim -40 %, chute -40 % |
+| | « Infiltrator » | vitesse +18 %, rampant et accroupi +65 %, détection -50 %, faim -30 % | Furtives « Salomon Forces » | pas silencieux (-80 %, pas de capteurs sculk), vitesse +20 %, rampant +30 %, chute -50 % |
+| Prototypes | Balistique « Ratnik » | aucun recul, rampant +30 %, faim -20 %, balles et explosions aux jambes -45 % | Anti-mines EOD | mines, Claymores, explosions au sol -75 %, aucun recul |
+| | Exosquelette « TALOS » | course +25 %, rampant +80 %, faim -50 %, **montée automatique** d'un bloc | « Apex-Jump » | course +25 %, saut +50 %, **aucun dégât de chute** (jusqu'à 25 blocs), faim -50 % |
+
+- **Ramper** : touche **X** (ou double appui sur s'accroupir) pour s'allonger ; on passe sous les dalles, et les pantalons / rangers accélèrent la reptation.
+- **Faim** : les réductions du pantalon et des rangers s'additionnent, jusqu'à **-75 %** au maximum.
+- **Bonus d'ensemble** : casque + gilet + pantalon + rangers de la même époque = régénération +10 %.
 
 ### Nouveaux minerais et matériaux
 - **Titane** : minerai (et minerai des abîmes) entre Y = -64 et Y = 16, aussi rare que l'or, pioche en fer minimum.

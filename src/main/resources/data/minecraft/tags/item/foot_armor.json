@@ -1,6 +1,14 @@
 {
   "replace": false,
   "values": [
-    "modeminecraft:rubis_boots"
+    "modeminecraft:rubis_boots",
+    "modeminecraft:wwi_hobnail_boots",
+    "modeminecraft:corcoran_jump_boots",
+    "modeminecraft:m65_combat_boots",
+    "modeminecraft:panama_jungle_boots",
+    "modeminecraft:lowa_zephyr_boots",
+    "modeminecraft:salomon_forces_boots",
+    "modeminecraft:eod_boots",
+    "modeminecraft:apex_jump_boots"
   ]
 }

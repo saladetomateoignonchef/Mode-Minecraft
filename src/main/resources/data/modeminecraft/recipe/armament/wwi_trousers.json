@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "armor",
+  "ingredients": [
+    {
+      "tag": "minecraft:wool",
+      "count": 4
+    },
+    {
+      "item": "minecraft:string",
+      "count": 2
+    },
+    {
+      "item": "minecraft:leather",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:wwi_trousers",
+    "count": 1
+  }
+}

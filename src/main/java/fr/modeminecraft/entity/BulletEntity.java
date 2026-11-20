@@ -280,6 +280,10 @@ public class BulletEntity extends ThrowableItemProjectile {
             finalDamage = helmetProtection(level, (LivingEntity) target, finalDamage);
         }
 
+        // Pantalon renforcé : balle dans les jambes (pas dans les bras)
+        if (legs && hitY < target.getY() + target.getBbHeight() * 0.375 && target instanceof LivingEntity living) {
+            finalDamage = fr.modeminecraft.item.GearItem.protectLegs(level, living, finalDamage, caliberClass());
+        }
         // Gilet pare-balles : tir au torse (ni la tête ni les membres) -> plaque balistique puis gilet
         if (!headshot && !legs && target instanceof LivingEntity living) {
             Vec3 look = Vec3.directionFromRotation(0, living.yBodyRot);

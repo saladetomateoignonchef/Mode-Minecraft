@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "armor",
+  "ingredients": [
+    {
+      "item": "modeminecraft:ballistic_nylon",
+      "count": 3
+    },
+    {
+      "item": "modeminecraft:kevlar_plate",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:titanium_plate",
+      "count": 2
+    },
+    {
+      "item": "minecraft:diamond",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:salomon_forces_boots",
+    "count": 1
+  }
+}

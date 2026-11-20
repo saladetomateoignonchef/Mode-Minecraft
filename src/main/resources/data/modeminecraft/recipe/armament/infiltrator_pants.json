@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "armor",
+  "ingredients": [
+    {
+      "item": "modeminecraft:ballistic_nylon",
+      "count": 4
+    },
+    {
+      "item": "modeminecraft:kevlar_plate",
+      "count": 3
+    },
+    {
+      "item": "modeminecraft:titanium_plate",
+      "count": 2
+    },
+    {
+      "item": "minecraft:diamond",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:infiltrator_pants",
+    "count": 1
+  }
+}

@@ -884,6 +884,52 @@ public final class ModItems {
     public static final DeferredItem<Item> EOD_SUIT = vest("eod_suit", Rarity.EPIC, new fr.modeminecraft.item.VestItem.Stats(
             4, 10.0, 0.85f, 0.85f, 0.70f, 0.70f, 0.70f, 0.20f, false, -0.18, 0, 0, 1000, fr.modeminecraft.item.VestItem.Special.EOD, () -> ModItems.CERAMIC_TITANIUM_COMPOSITE.get()));
 
+    // ---------- Pantalons militaires 3D (jambières) ----------
+    private static final net.minecraft.world.entity.EquipmentSlot LEGS = net.minecraft.world.entity.EquipmentSlot.LEGS;
+    private static final net.minecraft.world.entity.EquipmentSlot FEET = net.minecraft.world.entity.EquipmentSlot.FEET;
+    private static fr.modeminecraft.item.GearItem.Stats g(int tier, double armor, int durability) {
+        return fr.modeminecraft.item.GearItem.Stats.of(tier, armor, durability);
+    }
+    public static final DeferredItem<Item> WWI_TROUSERS = gear("wwi_trousers", Rarity.COMMON, LEGS,
+            g(1, 1.0, 150).coldImmune());
+    public static final DeferredItem<Item> M42_PARATROOPER_PANTS = gear("m42_paratrooper_pants", Rarity.COMMON, LEGS,
+            g(1, 1.5, 180).food(0.10f).reload(0.10f));
+    public static final DeferredItem<Item> BDU_WOODLAND_PANTS = gear("bdu_woodland_pants", Rarity.UNCOMMON, LEGS,
+            g(2, 2.0, 260).speed(0.08).sneak(0.25).prone(0.25).repair(() -> ModItems.BALLISTIC_NYLON.get()));
+    public static final DeferredItem<Item> SWAT_PANTS = gear("swat_pants", Rarity.UNCOMMON, LEGS,
+            g(2, 2.5, 300).sneak(0.35).prone(0.35).draw(0.30f).legs(0.25f, 0.25f, true).repair(() -> ModItems.BALLISTIC_NYLON.get()));
+    public static final DeferredItem<Item> CRYE_G3_PANTS = gear("crye_g3_pants", Rarity.RARE, LEGS,
+            g(3, 2.5, 360).speed(0.15).prone(0.50).sneak(0.40).food(0.25f).repair(() -> ModItems.BALLISTIC_NYLON.get()));
+    public static final DeferredItem<Item> INFILTRATOR_PANTS = gear("infiltrator_pants", Rarity.RARE, LEGS,
+            g(3, 3.0, 380).speed(0.18).prone(0.65).sneak(0.65).detection(0.50f).food(0.30f).repair(() -> ModItems.KEVLAR_PLATE.get()));
+    public static final DeferredItem<Item> RATNIK_PANTS = gear("ratnik_pants", Rarity.EPIC, LEGS,
+            g(4, 3.5, 520).knockback().prone(0.30).food(0.20f).legs(0.45f, 0.45f, false).repair(() -> ModItems.MULTILAYER_KEVLAR.get()));
+    public static final DeferredItem<Item> TALOS_EXO_PANTS = gear("talos_exo_pants", Rarity.EPIC, LEGS,
+            g(4, 3.0, 520).sprint(0.25).prone(0.80).food(0.50f).step(0.4).repair(() -> ModItems.TITANIUM_PLATE.get()));
+
+    // ---------- Rangers et bottes militaires 3D ----------
+    public static final DeferredItem<Item> WWI_HOBNAIL_BOOTS = gear("wwi_hobnail_boots", Rarity.COMMON, FEET,
+            g(1, 1.0, 150).noSlowdown());
+    public static final DeferredItem<Item> CORCORAN_JUMP_BOOTS = gear("corcoran_jump_boots", Rarity.COMMON, FEET,
+            g(1, 1.5, 200).fall(0.25).food(0.10f).repair(() -> ModItems.STEEL_INGOT.get()));
+    public static final DeferredItem<Item> M65_COMBAT_BOOTS = gear("m65_combat_boots", Rarity.UNCOMMON, FEET,
+            g(2, 2.0, 280).speed(0.10).fall(0.30).food(0.15f).repair(() -> ModItems.STEEL_INGOT.get()));
+    public static final DeferredItem<Item> PANAMA_JUNGLE_BOOTS = gear("panama_jungle_boots", Rarity.UNCOMMON, FEET,
+            g(2, 1.5, 240).biomeSpeed(0.15).swim(0.25).food(0.20f).repair(() -> ModItems.BALLISTIC_NYLON.get()));
+    public static final DeferredItem<Item> LOWA_ZEPHYR_BOOTS = gear("lowa_zephyr_boots", Rarity.RARE, FEET,
+            g(3, 2.0, 340).sprint(0.18).food(0.40f).fall(0.40).repair(() -> ModItems.BALLISTIC_NYLON.get()));
+    public static final DeferredItem<Item> SALOMON_FORCES_BOOTS = gear("salomon_forces_boots", Rarity.RARE, FEET,
+            g(3, 2.5, 360).stealth().speed(0.20).prone(0.30).fall(0.50).detection(0.30f).repair(() -> ModItems.KEVLAR_PLATE.get()));
+    public static final DeferredItem<Item> EOD_BOOTS = gear("eod_boots", Rarity.EPIC, FEET,
+            g(4, 3.0, 520).groundBlast(0.75f).knockback().repair(() -> ModItems.MULTILAYER_KEVLAR.get()));
+    public static final DeferredItem<Item> APEX_JUMP_BOOTS = gear("apex_jump_boots", Rarity.EPIC, FEET,
+            g(4, 2.5, 520).sprint(0.25).jump(0.22).fall(1.0).safeFall(22).food(0.50f).repair(() -> ModItems.TITANIUM_PLATE.get()));
+
+    private static DeferredItem<Item> gear(String name, Rarity rarity, net.minecraft.world.entity.EquipmentSlot slot,
+                                           fr.modeminecraft.item.GearItem.Stats stats) {
+        return ITEMS.register(name, () -> new fr.modeminecraft.item.GearItem(slot, stats, new Item.Properties().rarity(rarity)));
+    }
+
     private static DeferredItem<Item> vest(String name, Rarity rarity, fr.modeminecraft.item.VestItem.Stats stats) {
         return ITEMS.register(name, () -> new fr.modeminecraft.item.VestItem(stats, new Item.Properties().rarity(rarity)));
     }

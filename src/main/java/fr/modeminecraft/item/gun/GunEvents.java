@@ -40,7 +40,8 @@ public final class GunEvents {
         // Délai pour sortir l'arme quand on la prend en main
         ItemStack previous = LAST_HELD.put(player.getUUID(), held);
         if (gun != null && previous != held && previous != null && !player.getAbilities().instabuild) {
-            int draw = Math.round(gun.stats().drawTicks() * gun.resolve(held).drawMul());
+            int draw = Math.round(gun.stats().drawTicks() * gun.resolve(held).drawMul()
+                    * (gun.stats().pistol() ? fr.modeminecraft.item.GearEffects.drawMul(player) : 1)); // holster de cuisse
             if (draw > 0 && !player.getCooldowns().isOnCooldown(gun)) {
                 player.getCooldowns().addCooldown(gun, draw);
             }

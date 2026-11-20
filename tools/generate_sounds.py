@@ -150,6 +150,20 @@ def mechanical(name, seed):
         t = t_axis(0.12)
         x = np.sign(np.sin(2 * np.pi * f * t)) * 0.4 * np.clip(t / 0.005, 0, 1) * np.clip((0.12 - t) / 0.01, 0, 1)
         x = band(x, hi=6000)
+    elif name == "gear_equip_cloth":
+        # tissu froissé puis boucle de ceinture
+        t = t_axis(0.9)
+        x = scrape(rng, t, 0.0, 0.25, 0.5, 800, 5000) + scrape(rng, t, 0.3, 0.2, 0.35, 800, 5000) \
+            + click(rng, t, 0.62, 2600, 0.015, 0.9, 900, 8000) + click(rng, t, 0.66, 4200, 0.006, 0.5, 2000, 10000)
+    elif name == "boots_lace":
+        # lacets tirés d'un coup sec, deux fois
+        t = t_axis(0.8)
+        x = scrape(rng, t, 0.05, 0.18, 0.6, 2500, 9000) + scrape(rng, t, 0.42, 0.2, 0.6, 2500, 9000) \
+            + click(rng, t, 0.24, 1800, 0.01, 0.5, 600, 6000) + click(rng, t, 0.63, 1800, 0.01, 0.5, 600, 6000)
+    elif name == "ranger_step":
+        # semelle lourde sur le gravier : choc sourd + crissement
+        t = t_axis(0.35)
+        x = click(rng, t, 0.0, 220, 0.04, 1.0, 60, 1200) + scrape(rng, t, 0.01, 0.12, 0.35, 1500, 7000)
     elif name == "vest_equip_velcro":
         # fermeture éclair (petits clics rapides) puis velcros arrachés / plaqués
         t = t_axis(1.1)
@@ -331,7 +345,8 @@ def main():
     for name in ["mag_out", "mag_in", "rack", "bolt", "pump", "shell_insert", "empty_click", "casing", "shell_casing", "hitmarker", "headshot", "garand_ping", "lock_search", "lock_tone",
                  "grenade_pin", "grenade_bounce", "grenade_beep", "sonar", "flash_ring", "turret_deploy", "turret_reload", "dry_fire",
                  "helmet_strap_click", "helmet_ricochet", "helmet_visor", "nvg_on", "helmet_breath",
-                 "vest_equip_velcro", "plate_insert", "vest_bullet_hit", "plate_shatter"]:
+                 "vest_equip_velcro", "plate_insert", "vest_bullet_hit", "plate_shatter",
+                 "gear_equip_cloth", "boots_lace", "ranger_step"]:
         files = []
         for v in range(2 if name in ("casing", "mag_in", "rack") else 1):
             write_ogg(os.path.join(sounds_dir, "gun", f"{name}_{v}.ogg"), mechanical(name, seed))

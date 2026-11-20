@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "armor",
+  "ingredients": [
+    {
+      "item": "modeminecraft:ballistic_nylon",
+      "count": 2
+    },
+    {
+      "item": "minecraft:green_dye",
+      "count": 1
+    },
+    {
+      "item": "minecraft:leather",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:tactical_strap",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:panama_jungle_boots",
+    "count": 1
+  }
+}

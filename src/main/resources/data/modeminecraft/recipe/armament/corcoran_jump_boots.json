@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "armor",
+  "ingredients": [
+    {
+      "item": "minecraft:leather",
+      "count": 4
+    },
+    {
+      "item": "modeminecraft:steel_ingot",
+      "count": 1
+    },
+    {
+      "item": "minecraft:string",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:corcoran_jump_boots",
+    "count": 1
+  }
+}

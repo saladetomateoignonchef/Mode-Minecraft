@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "armor",
+  "ingredients": [
+    {
+      "item": "minecraft:leather",
+      "count": 3
+    },
+    {
+      "item": "modeminecraft:steel_ingot",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:tactical_strap",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:m65_combat_boots",
+    "count": 1
+  }
+}

@@ -99,6 +99,7 @@ public final class ClientSetup {
         event.register(ModKeyMappings.QUICK_ATTACH);
         event.register(ModKeyMappings.HELMET_MODULE);
         event.register(ModKeyMappings.ITEM_PANEL);
+        event.register(ModKeyMappings.PRONE);
         event.register(ModKeyMappings.SHOW_RECIPE);
         event.register(ModKeyMappings.SHOW_USES);
     }
@@ -125,6 +126,7 @@ public final class ClientSetup {
             if (renderer instanceof net.minecraft.client.renderer.entity.player.PlayerRenderer player) {
                 player.addLayer(new BackGunsLayer(player));
                 player.addLayer(new VestLayer<>(player));
+                player.addLayer(new GearLayer<>(player));
             }
         }
         // Gilets pare-balles 3D aussi sur les zombies, squelettes, supports d'armure...
@@ -137,6 +139,7 @@ public final class ClientSetup {
     private static void addVestLayer(Object renderer) {
         if (renderer instanceof net.minecraft.client.renderer.entity.LivingEntityRenderer lr && lr.getModel() instanceof HumanoidModel) {
             lr.addLayer(new VestLayer(lr));
+            lr.addLayer(new GearLayer(lr));
         }
     }
 

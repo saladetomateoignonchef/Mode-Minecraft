@@ -398,6 +398,8 @@ public class RecipeViewScreen extends Screen {
                 new Category("helmets", "@casque", ModItems.OPS_CORE_FAST.get()),
                 new Category("vests", "@gilet", ModItems.JPC_PLATE_CARRIER.get()),
                 new Category("plates", "@plaque", ModItems.CERAMIC_BALLISTIC_PLATE.get()),
+                new Category("pants", "@pantalon", ModItems.CRYE_G3_PANTS.get()),
+                new Category("boots", "@rangers", ModItems.M65_COMBAT_BOOTS.get()),
                 new Category("materials", "@material", ModItems.TITANIUM_INGOT.get()));
     }
 
@@ -416,11 +418,11 @@ public class RecipeViewScreen extends Screen {
         }
         List<Category> cats = categories();
         for (int i = 0; i < cats.size(); i++) {
-            int bx = wx + 10 + (i % 2) * 110, by = wy + 92 + (i / 2) * 22;
-            boolean hover = mx >= bx && mx < bx + 106 && my >= by && my < by + 20;
-            g.fill(bx, by, bx + 106, by + 20, hover ? 0xFF6A7A5A : 0xFF8B8B8B);
-            g.renderItem(new ItemStack(cats.get(i).icon()), bx + 2, by + 2);
-            g.drawString(font, Component.translatable("gui.modeminecraft.book.cat." + cats.get(i).key()), bx + 21, by + 6, 0xFFFFFFFF, false);
+            int bx = wx + 10 + (i % 2) * 110, by = wy + 88 + (i / 2) * 19;
+            boolean hover = mx >= bx && mx < bx + 106 && my >= by && my < by + 18;
+            g.fill(bx, by, bx + 106, by + 18, hover ? 0xFF6A7A5A : 0xFF8B8B8B);
+            g.renderItem(new ItemStack(cats.get(i).icon()), bx + 1, by + 1);
+            g.drawString(font, Component.translatable("gui.modeminecraft.book.cat." + cats.get(i).key()), bx + 20, by + 5, 0xFFFFFFFF, false);
         }
     }
 
@@ -502,8 +504,8 @@ public class RecipeViewScreen extends Screen {
         if (stack.isEmpty()) {
             List<Category> cats = categories();
             for (int i = 0; i < cats.size(); i++) {
-                int bx = wx + 10 + (i % 2) * 110, by = wy + 92 + (i / 2) * 22;
-                if (mx >= bx && mx < bx + 106 && my >= by && my < by + 20 && panel != null) {
+                int bx = wx + 10 + (i % 2) * 110, by = wy + 88 + (i / 2) * 19;
+                if (mx >= bx && mx < bx + 106 && my >= by && my < by + 18 && panel != null) {
                     panel.setQuery(cats.get(i).query());
                     return true;
                 }
