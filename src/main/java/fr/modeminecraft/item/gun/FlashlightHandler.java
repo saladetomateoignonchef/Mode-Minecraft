@@ -270,6 +270,7 @@ public final class FlashlightHandler {
         }
         PLACED.clear();
         LEVEL_OF.clear();
+        fr.modeminecraft.entity.drone.Jamming.clear();
     }
 
     /** Au démarrage : on retire les lumières restées en place (arrêt brutal du serveur). */

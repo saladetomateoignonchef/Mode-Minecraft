@@ -2,7 +2,6 @@ package fr.modeminecraft.mixin;
 
 import fr.modeminecraft.item.GearEffects;
 import fr.modeminecraft.item.GearItem;
-import fr.modeminecraft.registry.ModSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -14,8 +13,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * Bruits de pas des rangers : semelles lourdes (ranger_step) ; bottes furtives : pas atténués de 80 %.
- * Les liquides et les blocs spéciaux gardent leur bruit normal.
+ * Bruits de pas : toujours ceux de Minecraft selon le bloc (aucun son de semelle ajouté) ; seules les rangers
+ * furtives atténuent ces pas de 80 %.
  */
 @Mixin(Entity.class)
 public abstract class EntityStepMixin {
@@ -25,13 +24,11 @@ public abstract class EntityStepMixin {
         if (!(self instanceof LivingEntity e) || state.liquid() || !(GearItem.worn(e, EquipmentSlot.FEET) instanceof GearItem boots)) {
             return;
         }
-        var type = state.getSoundType(e.level(), pos, e);
-        if (GearEffects.stealthy(e)) {
-            e.playSound(type.getStepSound(), type.getVolume() * 0.15f * 0.2f, type.getPitch());
-        } else {
-            e.playSound(type.getStepSound(), type.getVolume() * 0.08f, type.getPitch());
-            e.playSound(ModSounds.RANGER_STEP.get(), 0.18f, 0.9f + e.getRandom().nextFloat() * 0.2f);
+        if (!GearEffects.stealthy(e)) {
+            return;                                   // pas normaux de Minecraft, selon le bloc
         }
+        var type = state.getSoundType(e.level(), pos, e);
+        e.playSound(type.getStepSound(), type.getVolume() * 0.15f * 0.2f, type.getPitch());
         ci.cancel();
     }
 }

@@ -89,6 +89,16 @@ public class DroneEntity extends LivingEntity {
     private float inForward, inStrafe, inVertical;
     private boolean inFire, lastFire;
     private long inputAt;
+    /** Début du pilotage : 1 s de grâce avant de vérifier la portée et le brouillage (connexion stable au décollage). */
+    private long pilotStart;
+    public static final int LINK_GRACE = 20;
+    private static final EntityDataAccessor<java.util.Optional<UUID>> OWNER_ID = SynchedEntityData.defineId(DroneEntity.class,
+            EntityDataSerializers.OPTIONAL_UUID);
+
+    /** Propriétaire (pilote associé), connu du serveur ET du client. */
+    public UUID ownerId() {
+        return level().isClientSide ? entityData.get(OWNER_ID).orElse(null) : owner;
+    }
     private int fireCooldown, salvo;
     private int salvoTarget = -1;
     public float rotorSpin, rotorSpinO;
@@ -117,6 +127,7 @@ public class DroneEntity extends LivingEntity {
         b.define(CARGO, false);
         b.define(PAYLOAD, ItemStack.EMPTY);
         b.define(INTERFERENCE, 0f);
+        b.define(OWNER_ID, java.util.Optional.empty());
     }
 
     public DroneType droneType() {
@@ -252,6 +263,11 @@ public class DroneEntity extends LivingEntity {
     @Override protected net.minecraft.sounds.SoundEvent getDeathSound() { return null; }
 
     // ------------------------------------------------------------------ pilotage
+    /** Hélices en marche (son en boucle côté client). */
+    public boolean rotorsRunning() {
+        return powered() || !jammed() && (botTarget >= 0 || level().isClientSide && !onGround());
+    }
+
     public boolean powered() {
         return battery() > 0 && !jammed() && (mode() == PILOT || mode() == RTH);
     }
@@ -260,6 +276,9 @@ public class DroneEntity extends LivingEntity {
         setMode(PILOT);
         entityData.set(PILOT_ID, player.getId());
         inputAt = level().getGameTime();
+        pilotStart = level().getGameTime();
+        owner = player.getUUID();
+        entityData.set(OWNER_ID, java.util.Optional.of(owner));
         PacketDistributor.sendToPlayer(player, new DronePilotPayload(getId(), true));
     }
 
@@ -312,7 +331,7 @@ public class DroneEntity extends LivingEntity {
     public void tick() {
         super.tick();
         rotorSpinO = rotorSpin;
-        if (powered() || botTarget >= 0 && !jammed()) {
+        if (powered() || botTarget >= 0 && !jammed() || level().isClientSide && !onGround() && !jammed()) {
             rotorSpin += 1.4f;
         }
         if (level().isClientSide) {
@@ -322,6 +341,9 @@ public class DroneEntity extends LivingEntity {
             return;
         }
         ServerLevel level = (ServerLevel) level();
+        if (!java.util.Objects.equals(owner, entityData.get(OWNER_ID).orElse(null))) {
+            entityData.set(OWNER_ID, java.util.Optional.ofNullable(owner));
+        }
         boolean flying = powered() || botTarget >= 0;
         if (flying) {
             // la batterie se vide en vol ; le chunk du drone reste chargé
@@ -333,9 +355,6 @@ public class DroneEntity extends LivingEntity {
             }
             if (tickCount % 20 == 0) {
                 level.getChunkSource().addRegionTicket(TICKET, chunkPosition(), 2, chunkPosition());
-                float vol = (float) (noiseRadius() / 16.0);
-                level.playSound(null, getX(), getY(), getZ(), ModSounds.DRONE_MOTOR.get(), SoundSource.NEUTRAL, Math.max(0.1f, vol),
-                        droneType() == DroneType.FPV ? 1.5f : droneType() == DroneType.REAPER ? 0.7f : 1.0f);
             }
         }
         Jamming.tickDrone(this, level);
@@ -434,11 +453,12 @@ public class DroneEntity extends LivingEntity {
             startRth(null);
             return;
         }
-        if (distanceTo(pilot) > radioRange()) {
+        boolean grace = level.getGameTime() - pilotStart < LINK_GRACE;      // décollage : liaison en cours d'initialisation
+        if (!grace && distanceTo(pilot) > radioRange()) {
             startRth("signal_lost");                                // perte de signal radio : retour automatique
             return;
         }
-        if (Jamming.lostControl(level, position())) {
+        if (!grace && Jamming.lostControl(level, position())) {
             startRth("jammed");
             return;
         }

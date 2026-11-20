@@ -71,6 +71,7 @@ public final class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> TRANSFORMER_SHORT = register("bot.transformer_short_circuit");
     public static final DeferredHolder<SoundEvent, SoundEvent> DRONE_PAIRED = register("bot.drone_paired");
     public static final DeferredHolder<SoundEvent, SoundEvent> DRONE_MOTOR = register("bot.drone_motor");
+    public static final DeferredHolder<SoundEvent, SoundEvent> DRONE_ROTOR_LOOP = register("bot.drone_rotor_loop");
     public static final DeferredHolder<SoundEvent, SoundEvent> FPV_BUZZ = register("bot.fpv_incoming_buzz");
     public static final DeferredHolder<SoundEvent, SoundEvent> EMP_JAMMER = register("bot.emp_jammer");
     public static final DeferredHolder<SoundEvent, SoundEvent> DRONE_JAMMED = register("bot.drone_jammed");

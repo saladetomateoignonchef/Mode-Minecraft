@@ -41,6 +41,8 @@ public class PlacedExplosiveEntity extends Entity {
 
     private static final EntityDataAccessor<Integer> KIND = SynchedEntityData.defineId(PlacedExplosiveEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> ANGLE = SynchedEntityData.defineId(PlacedExplosiveEntity.class, EntityDataSerializers.INT);
+    /** Mortier : un obus est dans le tube, prêt à partir. */
+    private static final EntityDataAccessor<Boolean> LOADED = SynchedEntityData.defineId(PlacedExplosiveEntity.class, EntityDataSerializers.BOOLEAN);
     private UUID owner;
     private int stuckTo = -1;
     private Vec3 stuckOffset = Vec3.ZERO;
@@ -64,11 +66,15 @@ public class PlacedExplosiveEntity extends Entity {
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        builder.define(KIND, 0).define(ANGLE, 65);
+        builder.define(KIND, 0).define(ANGLE, 65).define(LOADED, false);
     }
 
     public Kind kind() {
         return Kind.values()[entityData.get(KIND)];
+    }
+
+    public boolean loaded() {
+        return entityData.get(LOADED);
     }
 
     public int angle() {
@@ -148,8 +154,20 @@ public class PlacedExplosiveEntity extends Entity {
             return InteractionResult.SUCCESS;
         }
         ItemStack held = player.getItemInHand(hand);
-        if (held.is(ModItems.MORTAR_SHELL.get())) {
-            // Tir en cloche dans la direction du mortier, avec l'angle réglé
+        if (!player.isSecondaryUseActive() && !loaded() && held.is(ModItems.MORTAR_SHELL.get())) {
+            // 1er temps : l'obus glisse dans le tube, mais rien ne part encore
+            entityData.set(LOADED, true);
+            player.swing(hand, true);
+            level().playSound(null, getX(), getY(), getZ(), fr.modeminecraft.registry.ModSounds.SHELL_INSERT.get(), SoundSource.PLAYERS, 1.2f, 0.55f);
+            level().playSound(null, getX(), getY(), getZ(), SoundEvents.CHAIN_PLACE, SoundSource.PLAYERS, 0.8f, 0.6f);
+            player.displayClientMessage(Component.translatable("message.modeminecraft.mortar.loaded").withStyle(ChatFormatting.GOLD), true);
+            if (!player.getAbilities().instabuild) {
+                held.shrink(1);
+            }
+        } else if (!player.isSecondaryUseActive() && loaded()) {
+            // 2e temps : percussion, l'obus part en cloche dans la direction du mortier, avec l'angle réglé
+            entityData.set(LOADED, false);
+            player.swing(hand, true);
             var shell = new RocketEntity(ModEntities.GRENADE.get(), level(), player, 3.0f);
             shell.setItem(new ItemStack(ModItems.MORTAR_SHELL.get()));
             shell.setPos(getX(), getY() + 1.1, getZ());
@@ -158,9 +176,6 @@ public class PlacedExplosiveEntity extends Entity {
             level().addFreshEntity(shell);
             level().playSound(null, getX(), getY(), getZ(), fr.modeminecraft.registry.ModSounds.SHOT_LAUNCHER.get(), SoundSource.PLAYERS, 4f, 0.6f);
             ((ServerLevel) level()).sendParticles(net.minecraft.core.particles.ParticleTypes.LARGE_SMOKE, getX(), getY() + 1.3, getZ(), 8, 0.2, 0.2, 0.2, 0.02);
-            if (!player.getAbilities().instabuild) {
-                held.shrink(1);
-            }
         } else if (player.isSecondaryUseActive()) {
             setYRot(getYRot() + 15);
             player.displayClientMessage(Component.translatable("message.modeminecraft.mortar.aim", angle(), Math.round(getYRot())).withStyle(ChatFormatting.YELLOW), true);
@@ -180,6 +195,9 @@ public class PlacedExplosiveEntity extends Entity {
         if (source.getEntity() instanceof Player player && source.getDirectEntity() == player) {
             if (!player.getAbilities().instabuild) {
                 spawnAtLocation(new ItemStack(item()));
+                if (loaded()) {
+                    spawnAtLocation(new ItemStack(ModItems.MORTAR_SHELL.get()));
+                }
             }
             discard();
             return true;
@@ -195,6 +213,7 @@ public class PlacedExplosiveEntity extends Entity {
     protected void readAdditionalSaveData(CompoundTag tag) {
         entityData.set(KIND, tag.getInt("Kind"));
         entityData.set(ANGLE, tag.contains("Angle") ? tag.getInt("Angle") : 65);
+        entityData.set(LOADED, tag.getBoolean("Loaded"));
         if (tag.hasUUID("Owner")) {
             owner = tag.getUUID("Owner");
         }
@@ -204,6 +223,7 @@ public class PlacedExplosiveEntity extends Entity {
     protected void addAdditionalSaveData(CompoundTag tag) {
         tag.putInt("Kind", entityData.get(KIND));
         tag.putInt("Angle", angle());
+        tag.putBoolean("Loaded", loaded());
         if (owner != null) {
             tag.putUUID("Owner", owner);
         }

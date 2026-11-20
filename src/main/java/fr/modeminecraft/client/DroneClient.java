@@ -35,11 +35,15 @@ public final class DroneClient {
     private static boolean zoom, thermal, useWasDown;
     private static boolean fire, exit, detonate;
     private static final RandomSource NOISE = RandomSource.create();
+    /** Ticks depuis le début du pilotage : le temps que le drone arrive côté client, on attend au lieu de couper. */
+    private static int linkTicks;
 
     public static void onPilot(int id, boolean start) {
         Minecraft mc = Minecraft.getInstance();
         if (start) {
             droneId = id;
+            linkTicks = 0;
+            while (ModKeyMappings.RELOAD.consumeClick()) { /* un appui sur R en attente ne doit pas faire rentrer le drone */ }
             previousCamera = mc.options.getCameraType();
             mc.options.setCameraType(CameraType.FIRST_PERSON);
             zoom = thermal = false;
@@ -102,7 +106,9 @@ public final class DroneClient {
             }
         }
         useWasDown = use;
-        exit = !screen && (o.keyShift.isDown() || ModKeyMappings.RELOAD.consumeClick());
+        // pendant la seconde de décollage, Maj (encore enfoncée après l'association) ne coupe pas la liaison
+        exit = !screen && linkTicks > fr.modeminecraft.entity.drone.DroneEntity.LINK_GRACE
+                && (o.keyShift.isDown() || ModKeyMappings.RELOAD.consumeClick());
         // touche N (module de casque) : pendant le pilotage, elle déclenche la charge du drone kamikaze
         while (ModKeyMappings.HELMET_MODULE.consumeClick()) {
             detonate = !screen;
@@ -119,7 +125,11 @@ public final class DroneClient {
         if (!piloting() || mc.player == null) {
             return;
         }
+        linkTicks++;
         DroneEntity d = drone();
+        if (d == null && linkTicks < 60) {
+            return;                                                // drone pas encore reçu par le client : on patiente
+        }
         if (d == null || !d.isAlive()) {
             stop();
             return;

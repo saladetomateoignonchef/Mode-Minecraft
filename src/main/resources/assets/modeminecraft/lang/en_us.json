@@ -568,7 +568,7 @@
   "tooltip.modeminecraft.grenade.use": "Hold right-click to pull the pin (the fuse runs), release to throw",
   "tooltip.modeminecraft.explosive.c4": "Right-click a block or creature to stick it; blow it up with the detonator",
   "tooltip.modeminecraft.explosive.claymore": "Place it facing the enemy: explodes when someone passes in front (never for you)",
-  "tooltip.modeminecraft.explosive.mortar": "Place it; right-click with a shell = fire, right-click = angle +5°, sneak + right-click = turn 15°",
+  "tooltip.modeminecraft.explosive.mortar": "Place it; right-click with a shell = load, then right-click = fire; empty right-click (unloaded) = angle +5°, Shift + right-click = turn 15°",
   "tooltip.modeminecraft.detonator": "Blows up all your C4 within 128 blocks",
   "message.modeminecraft.detonator": "%s C4 detonated",
   "message.modeminecraft.mortar.aim": "Mortar: angle %s°, direction %s°",
@@ -1112,5 +1112,15 @@
   "gui.modeminecraft.slot.backpack": "Backpack (press K to open)",
   "message.modeminecraft.drone.unpaired": "Controller unpaired from the drone",
   "gui.modeminecraft.drone.charge_n": "CHARGE: %s — N: DETONATE",
-  "subtitles.modeminecraft.vehicle_engine": "Vehicle engine"
+  "subtitles.modeminecraft.vehicle_engine": "Vehicle engine",
+  "message.modeminecraft.mortar.loaded": "Shell loaded: right-click to fire",
+  "itemGroup.modeminecraft.firearms": "Mode Minecraft — Firearms",
+  "itemGroup.modeminecraft.melee": "Mode Minecraft — Melee weapons & shields",
+  "itemGroup.modeminecraft.ammo_explosives": "Mode Minecraft — Ammo, grenades & explosives",
+  "itemGroup.modeminecraft.attachments": "Mode Minecraft — Weapon attachments",
+  "itemGroup.modeminecraft.equipment": "Mode Minecraft — Gear & 3D armor",
+  "itemGroup.modeminecraft.drones_vehicles": "Mode Minecraft — Drones & vehicles",
+  "itemGroup.modeminecraft.medical_tools": "Mode Minecraft — Medical, tools & special items",
+  "itemGroup.modeminecraft.blocks": "Mode Minecraft — Blocks, decorations & spawners",
+  "subtitles.modeminecraft.drone_rotor_loop": "Drone rotors"
 }

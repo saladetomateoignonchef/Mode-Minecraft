@@ -473,6 +473,27 @@ Des **villes générées** apparaissent selon le biome (environ une tous les 1 2
   mais plus lents (AK-47 : 600) ; snipers à verrou 35-50 coups/min, semi-automatiques 120-180, 18-38 PV ;
   mitrailleuses 650-850 coups/min, 8-14 PV, gros recul debout.
 
+### Correctifs et réglages de la mise à jour 0.3
+
+- **Nuit réaliste** : loin de toute lumière, la nuit est presque noire (même avec la luminosité au maximum) ; les zones
+  éclairées par des blocs (torches, lampadaires, lampes tactiques) restent claires. Lampes tactiques, jumelles de vision
+  nocturne, illuminateur infrarouge et lunettes thermiques deviennent indispensables.
+- **Bruits de pas** : toujours ceux de Minecraft selon le bloc (plus de bruit de semelle ajouté) ; seules les rangers
+  furtives les atténuent.
+- **Drones** : son d'hélices en boucle parfaite (fondu, hauteur selon la vitesse) ; liaison stable dès le décollage
+  (1 s de grâce, propriétaire connu du serveur et du client, plus de tours de brouillage « fantômes »).
+- **Mortier en deux temps** : clic droit avec un obus = chargement (bruit de glissement), puis clic droit = tir.
+- **Bouclier balistique + arme de poing** (pistolet ou revolver en main, bouclier dans l'autre main) : clic droit maintenu
+  = bouclier levé, clic gauche = tir à une main sur le côté (dispersion x1,6) ; le bouclier s'abaisse le temps d'un
+  rechargement puis remonte.
+- **Bases militaires secrètes terminées** : hangar fermé (voûte pleine, mur du fond, porte de service, armurerie,
+  éclairage), poste radar avec consoles, bunker à cloisons (commandement, radio, dortoir, armurerie, générateurs, salle
+  forte) ; butin **rare** dédié (armes haut de gamme, plaques céramique / titane, lunettes thermiques, munitions lourdes,
+  pièces de drones).
+- **8 onglets créatifs** : armes à feu, armes blanches et boucliers, munitions / grenades / explosifs, accessoires,
+  équipements 3D, drones et véhicules, soins / outils / objets spéciaux, blocs et décors.
+- **Coffre bonus** : couteau de combat, Glock 17 et 32 balles de 9 mm en plus des objets de Minecraft.
+
 ### Gameplay et progression
 - **Niveaux des armes (1 à 5)** : chaque arme garde ses statistiques (éliminations, tirs à la tête, tirs, ratio)
   et gagne de l'expérience : +10 par élimination, +5 si tir à la tête, +10 pour un gros monstre (50 PV ou plus).

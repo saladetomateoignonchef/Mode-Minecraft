@@ -8,7 +8,8 @@
     "client.EntityMixin",
     "client.CameraMixin",
     "client.HumanoidModelMixin",
-    "client.CreativeScreenMixin"
+    "client.CreativeScreenMixin",
+    "client.LightTextureMixin"
   ],
   "injectors": {
     "defaultRequire": 1

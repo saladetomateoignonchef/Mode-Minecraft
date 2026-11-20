@@ -373,6 +373,16 @@ def bot_sound(name, seed):
         x[:fade] = x[:fade] * np.linspace(0, 1, fade) + x[-fade:] * np.linspace(1, 0, fade)
         x = x[:len(x) - fade]
         return normalize(x, 0.7)
+    if name == "drone_rotor_loop":
+        # hélices en boucle parfaite (2 s) : toutes les fréquences font un nombre entier de cycles et le souffle est
+        # filtré par FFT (circulaire), donc la fin rejoint exactement le début, sans blanc ni clic
+        t = t_axis(2.0)
+        ph = 2 * np.pi * 190 * t
+        tone = sum(np.sin(k * ph + rng.uniform(0, 6)) / k ** 1.2 for k in range(1, 10))
+        tone *= 0.82 + 0.18 * np.sin(2 * np.pi * 4 * t)
+        tone += 0.25 * np.sin(2 * np.pi * 95 * t) * (0.7 + 0.3 * np.sin(2 * np.pi * 1.5 * t))
+        x = tone * 0.6 + band(noise(len(t), rng), lo=300, hi=5000) * 0.35
+        return normalize(x, 0.6)
     if name == "drone_jammed":
         t = t_axis(0.8)
         x = band(noise(len(t), rng), lo=800, hi=6000) * (0.5 + 0.5 * np.sign(np.sin(2 * np.pi * 13 * t))) * env(t, 0.01, 0.6)
@@ -435,7 +445,7 @@ def write_ogg(path, x):
 
 BOT_SOUNDS = ["police_freeze_warning", "falcon_horn_charge", "dragonslayer_unsheathe", "dragonslayer_sheathe", "dragonslayer_clang",
               "berserk_roar_clang", "transformer_short_circuit", "drone_paired", "drone_motor", "fpv_incoming_buzz", "emp_jammer",
-              "drone_jammed", "vehicle_engine"]
+              "drone_jammed", "vehicle_engine", "drone_rotor_loop"]
 
 
 def main():

@@ -118,13 +118,19 @@ public final class B {
      * Prépare le sol de la parcelle : fondations jusqu'au terrain (vallées comblées), relief dégagé au-dessus
      * (jusqu'à `clear` blocs), puis le revêtement en y = -1.
      */
+    /** Génération normale : carte de hauteur de génération ; /place sur un chunk déjà fini : carte de hauteur finale. */
+    net.minecraft.world.level.levelgen.Heightmap.Types surfaceType(int x, int z) {
+        return level.getChunk(x >> 4, z >> 4) instanceof net.minecraft.world.level.chunk.LevelChunk
+                ? net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE : net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE_WG;
+    }
+
     void ground(int x0, int z0, int x1, int z1, BlockState surface, BlockState under, int clear) {
         int ax = Math.max(x0, clip.minX() - ox), bx = Math.min(x1, clip.maxX() - ox);
         int az = Math.max(z0, clip.minZ() - oz), bz = Math.min(z1, clip.maxZ() - oz);
         for (int x = ax; x <= bx; x++) {
             for (int z = az; z <= bz; z++) {
                 // tout ce qui dépasse le niveau de la rue est rasé, jusqu'au sommet de la colline (60 blocs au plus)
-                int top = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE_WG, ox + x, oz + z) - oy;
+                int top = level.getHeight(surfaceType(ox + x, oz + z), ox + x, oz + z) - oy;
                 int limit = Math.max(clear, Math.min(60, top));
                 for (int y = 0; y <= limit; y++) {
                     BlockPos p = pos(x, y, z);

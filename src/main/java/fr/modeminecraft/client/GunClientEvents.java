@@ -95,12 +95,18 @@ public final class GunClientEvents {
         boolean gun = (player.getMainHandItem().getItem() instanceof GunItem || mounted) && mc.screen == null
                 && !player.isSpectator() && mc.mouseHandler.isMouseGrabbed();
         boolean trigger = gun && mc.options.keyAttack.isDown();
-        boolean aim = gun && mc.options.keyUse.isDown();
+        // bouclier balistique + arme de poing : le clic droit lève le bouclier au lieu de viser
+        boolean aim = gun && mc.options.keyUse.isDown() && !fr.modeminecraft.item.ShieldCombat.active(player);
         boolean use = mc.options.keyUse.isDown();
         if (use && !useWasDown) {
             usePressTick = player.level().getGameTime();
         }
         useWasDown = use;
+        // bouclier abaissé pour un rechargement : il remonte tout seul si le clic droit est toujours maintenu
+        if (use && gun && fr.modeminecraft.item.ShieldCombat.active(player) && !player.isUsingItem()
+                && !fr.modeminecraft.item.ShieldCombat.reloading(player) && mc.gameMode != null && player.tickCount % 2 == 0) {
+            mc.gameMode.useItem(player, net.minecraft.world.InteractionHand.OFF_HAND);
+        }
         if (trigger != triggerSent || aim != aimSent) {
             triggerSent = trigger;
             aimSent = aim;

@@ -29,6 +29,11 @@ public final class Jamming {
         TOWERS.computeIfAbsent(level.dimension(), k -> ConcurrentHashMap.newKeySet()).add(pos.immutable());
     }
 
+    /** Nouveau monde / arrêt du serveur : on oublie les tours de la partie précédente. */
+    public static void clear() {
+        TOWERS.clear();
+    }
+
     public static void removeTower(Level level, BlockPos pos) {
         Set<BlockPos> set = TOWERS.get(level.dimension());
         if (set != null) {
@@ -42,6 +47,11 @@ public final class Jamming {
         double best = Double.MAX_VALUE;
         if (set != null) {
             for (BlockPos p : set) {
+                // tour disparue (détruite, autre monde chargé avant) : on l'oublie, elle ne brouille plus rien
+                if (level.isLoaded(p) && !level.getBlockState(p).is(fr.modeminecraft.registry.ModBlocks.JAMMER_TOWER.get())) {
+                    set.remove(p);
+                    continue;
+                }
                 best = Math.min(best, Math.sqrt(p.getCenter().distanceToSqr(pos)));
             }
         }

@@ -568,7 +568,7 @@
   "tooltip.modeminecraft.grenade.use": "Clic droit maintenu : dégoupiller (le minuteur tourne), relâcher : lancer",
   "tooltip.modeminecraft.explosive.c4": "Clic droit sur un bloc ou une créature pour le coller ; détonateur pour l'exploser",
   "tooltip.modeminecraft.explosive.claymore": "À poser face à l'ennemi : explose quand quelqu'un passe devant (jamais pour toi)",
-  "tooltip.modeminecraft.explosive.mortar": "À poser ; clic droit avec un obus = tir, clic droit = angle +5°, Shift + clic droit = tourner de 15°",
+  "tooltip.modeminecraft.explosive.mortar": "À poser ; clic droit avec un obus = chargement, puis clic droit = tir ; clic droit à vide (non chargé) = angle +5°, Shift + clic droit = tourner de 15°",
   "tooltip.modeminecraft.detonator": "Fait exploser tous tes C4 à moins de 128 blocs",
   "message.modeminecraft.detonator": "%s C4 explosé(s)",
   "message.modeminecraft.mortar.aim": "Mortier : angle %s°, direction %s°",
@@ -1112,5 +1112,15 @@
   "gui.modeminecraft.slot.backpack": "Sac à dos (touche K pour l'ouvrir)",
   "message.modeminecraft.drone.unpaired": "Télécommande dissociée du drone",
   "gui.modeminecraft.drone.charge_n": "CHARGE : %s — N : EXPLOSION",
-  "subtitles.modeminecraft.vehicle_engine": "Moteur de véhicule"
+  "subtitles.modeminecraft.vehicle_engine": "Moteur de véhicule",
+  "message.modeminecraft.mortar.loaded": "Obus chargé : clic droit pour faire feu",
+  "itemGroup.modeminecraft.firearms": "Mode Minecraft — Armes à feu",
+  "itemGroup.modeminecraft.melee": "Mode Minecraft — Armes blanches & boucliers",
+  "itemGroup.modeminecraft.ammo_explosives": "Mode Minecraft — Munitions, grenades & explosifs",
+  "itemGroup.modeminecraft.attachments": "Mode Minecraft — Accessoires d'armes",
+  "itemGroup.modeminecraft.equipment": "Mode Minecraft — Équipements & armures 3D",
+  "itemGroup.modeminecraft.drones_vehicles": "Mode Minecraft — Drones & véhicules",
+  "itemGroup.modeminecraft.medical_tools": "Mode Minecraft — Soins, outils & objets spéciaux",
+  "itemGroup.modeminecraft.blocks": "Mode Minecraft — Blocs, décorations & générateurs",
+  "subtitles.modeminecraft.drone_rotor_loop": "Hélices de drone"
 }

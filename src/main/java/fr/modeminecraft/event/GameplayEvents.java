@@ -159,6 +159,16 @@ public final class GameplayEvents {
         if (!name.getNamespace().equals("minecraft")) {
             return;
         }
+        if (name.getPath().equals("chests/spawn_bonus_chest")) {
+            // option « Coffre bonus » : équipement de départ en plus des objets de Minecraft
+            for (var e : java.util.List.of(Map.entry("combat_knife", 1), Map.entry("glock17", 1), Map.entry("ammo_9mm", 32))) {
+                Item item = net.minecraft.core.registries.BuiltInRegistries.ITEM.get(fr.modeminecraft.ModeMinecraft.id(e.getKey()));
+                event.getTable().addPool(LootPool.lootPool().setRolls(net.minecraft.world.level.storage.loot.providers.number.ConstantValue.exactly(1))
+                        .add(LootItem.lootTableItem(item).apply(SetItemCountFunction.setCount(
+                                net.minecraft.world.level.storage.loot.providers.number.ConstantValue.exactly(e.getValue())))).build());
+            }
+            return;
+        }
         Tier tier = CHESTS.get(name.getPath());
         if (tier == null) {
             return;

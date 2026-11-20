@@ -713,6 +713,9 @@ public class GunItem extends Item {
         if (fanning) {
             spread *= 2.5f; // tir au chien frappé : rapide mais imprécis
         }
+        if (fr.modeminecraft.item.ShieldCombat.active(player)) {
+            spread *= fr.modeminecraft.item.ShieldCombat.ONE_HAND_SPREAD;   // tir à une main sur le côté du bouclier
+        }
         Vec3 lean = LeanHandler.offset(player);
         int pellets = shells ? type.pellets(stats.pellets()) : stats.pellets();
         if (stats.projectile() == GunStats.ProjectileKind.TASER) {

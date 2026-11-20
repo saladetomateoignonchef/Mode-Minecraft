@@ -488,21 +488,46 @@ final class CityGenRegions {
             }
             case "hangar" -> {
                 for (int x = 2; x <= 29; x++) {
-                    for (int i = 0; i <= 10; i++) {
-                        double a = Math.PI * i / 10;
+                    for (int i = 0; i <= 90; i++) {                                          // voûte pleine (sans jour)
+                        double a = Math.PI * i / 90;
                         int z = (int) Math.round(16 - Math.cos(a) * 13), y = (int) Math.round(Math.sin(a) * 11);
                         b.set(x, y, z, (x % 5 == 0 ? Blocks.IRON_BLOCK : Blocks.LIGHT_GRAY_CONCRETE).defaultBlockState());
                     }
                 }
                 b.fill(2, 0, 3, 2, 11, 29, Blocks.LIGHT_GRAY_CONCRETE);
                 b.fill(2, 1, 9, 2, 7, 23, Blocks.AIR.defaultBlockState());                      // grande porte
+                b.fill(29, 0, 3, 29, 11, 29, Blocks.LIGHT_GRAY_CONCRETE);                         // mur du fond (fermé)
+                for (int z = 3; z <= 29; z++) {
+                    for (int y = 0; y <= 11; y++) {
+                        double r = Math.hypot(z - 16, y * 13.0 / 11);
+                        if (r > 13.4) {                                                       // hors de la voûte : air
+                            b.set(2, y, z, Blocks.AIR);
+                            b.set(29, y, z, Blocks.AIR);
+                        }
+                    }
+                }
+                Deco.door(b, 29, 0, 16, Direction.WEST, Blocks.IRON_DOOR);                        // porte de service
+                b.set(28, 1, 15, B.facing(Blocks.STONE_BUTTON, Direction.WEST));
+                b.set(30, 1, 17, B.facing(Blocks.STONE_BUTTON, Direction.EAST));
+                for (int x = 6; x <= 26; x += 5) {                                              // rampes d'éclairage
+                    b.set(x, 10, 16, Blocks.SEA_LANTERN);
+                    b.set(x, 6, 8, Blocks.SEA_LANTERN);
+                    b.set(x, 6, 24, Blocks.SEA_LANTERN);
+                }
                 b.fill(3, -1, 3, 29, -1, 29, Blocks.GRAY_CONCRETE);
                 b.vehicle(10, 0, 11, fr.modeminecraft.entity.VehicleEntity.Type.JEEP, 90);
                 b.vehicle(11, 0, 21, fr.modeminecraft.entity.VehicleEntity.Type.ARMORED_TRUCK, 90);
                 forklift(b, 20, 0, 14);
                 for (int z = 6; z <= 26; z += 4) {
-                    b.chest(27, 0, z, Direction.WEST, "military_crate", false);
+                    if (z != 14 && z != 18) {
+                        b.chest(27, 0, z, Direction.WEST, "military_base", false);
+                    }
                 }
+                // armurerie du hangar : râteliers contre le mur nord
+                for (int x = 14; x <= 24; x += 2) {
+                    Deco.armoryRack(b, x, 1, 5, Direction.SOUTH);
+                }
+                b.set(19, 0, 5, fr.modeminecraft.registry.ModBlocks.ARMAMENT_TABLE.get());
                 b.set(16, 10, 16, Blocks.SEA_LANTERN);
                 b.set(10, 9, 16, Blocks.SEA_LANTERN);
                 b.set(22, 9, 16, Blocks.SEA_LANTERN);
@@ -510,9 +535,23 @@ final class CityGenRegions {
                 b.bot(16, 12, 16, Faction.GARRISON, BotRole.SNIPER, 2);
             }
             case "radar" -> {
-                b.fill(6, 0, 6, 9, 3, 9, Blocks.GRAY_CONCRETE);
-                b.fill(7, 1, 6, 7, 2, 6, Blocks.AIR.defaultBlockState());
-                for (int y = 4; y < 20; y++) {
+                b.fill(4, -1, 4, 11, 4, 11, Blocks.GRAY_CONCRETE);                              // poste de contrôle
+                b.fill(5, 0, 5, 10, 3, 10, Blocks.AIR.defaultBlockState());
+                Deco.door(b, 7, 0, 4, Direction.NORTH, Blocks.IRON_DOOR);
+                b.set(6, 1, 3, B.facing(Blocks.STONE_BUTTON, Direction.NORTH));
+                b.set(8, 1, 5, B.facing(Blocks.STONE_BUTTON, Direction.SOUTH));
+                b.set(4, 2, 8, Blocks.GRAY_STAINED_GLASS);
+                b.set(11, 2, 8, Blocks.GRAY_STAINED_GLASS);
+                for (int x = 5; x <= 10; x++) {                                                  // consoles
+                    b.set(x, 0, 10, (x % 2 == 0 ? Blocks.OBSERVER : Blocks.IRON_BLOCK).defaultBlockState());
+                    b.set(x, 1, 10, Blocks.REDSTONE_LAMP.defaultBlockState().setValue(BlockStateProperties.LIT, x % 2 == 1));
+                }
+                Deco.desk(b, 6, 0, 8, Direction.NORTH);
+                Deco.desk(b, 9, 0, 8, Direction.NORTH);
+                b.set(7, 3, 7, Blocks.SEA_LANTERN);
+                b.chest(10, 0, 6, Direction.WEST, "military_base", false);
+                b.bot(7, 0, 7, Faction.GARRISON, BotRole.OFFICER, 4);
+                for (int y = 5; y < 20; y++) {
                     b.set(6, y, 6, Blocks.IRON_BARS);
                     b.set(9, y, 6, Blocks.IRON_BARS);
                     b.set(6, y, 9, Blocks.IRON_BARS);
@@ -521,8 +560,7 @@ final class CityGenRegions {
                 b.fill(6, 20, 6, 9, 20, 9, Blocks.IRON_BLOCK);
                 b.fill(4, 22, 7, 11, 24, 8, Blocks.WHITE_CONCRETE);                               // antenne radar
                 b.fill(7, 21, 7, 8, 21, 8, Blocks.LIGHTNING_ROD);
-                b.set(8, 1, 8, Blocks.OBSERVER);
-                b.set(7, 1, 8, Blocks.REDSTONE_LAMP.defaultBlockState().setValue(BlockStateProperties.LIT, true));
+
             }
             case "flak" -> {
                 Deco.sandbags(b, 4, 0, 4, 11, 4);
@@ -530,7 +568,7 @@ final class CityGenRegions {
                 Deco.sandbags(b, 4, 0, 4, 4, 11);
                 Deco.sandbags(b, 11, 0, 4, 11, 11);
                 b.turret(8, 0, 8, MountedGunEntity.Kind.FLAK, 0, Faction.GARRISON);
-                b.chest(5, 0, 5, Direction.SOUTH, "military_crate", false);
+                b.chest(5, 0, 5, Direction.SOUTH, "military_base", false);
             }
             case "barracks" -> {
                 b.fill(2, 0, 3, 13, 0, 12, Blocks.SPRUCE_PLANKS);
@@ -539,9 +577,14 @@ final class CityGenRegions {
                 b.fill(7, 1, 3, 8, 2, 3, Blocks.AIR.defaultBlockState());
                 for (int x = 3; x <= 12; x += 2) {
                     Deco.bed(b, x, 1, 10, Direction.NORTH, Blocks.GREEN_BED);
-                    b.chest(x, 1, 11, Direction.NORTH, "military_crate", true);
+                    b.chest(x, 1, 11, Direction.NORTH, "military_base", true);
                 }
-                b.set(7, 3, 7, Blocks.GLOWSTONE);
+                b.set(5, 3, 7, Blocks.GLOWSTONE);
+                b.set(10, 3, 7, Blocks.GLOWSTONE);
+                b.set(2, 2, 7, Blocks.GRAY_STAINED_GLASS);
+                b.set(13, 2, 7, Blocks.GRAY_STAINED_GLASS);
+                Deco.armoryRack(b, 3, 1, 4, Direction.SOUTH);
+                Deco.armoryRack(b, 12, 1, 4, Direction.SOUTH);
                 Deco.camoNet(b, 1, 2, 14, 13, 5, false);
                 b.set(4, 0, 1, fr.modeminecraft.registry.ModBlocks.SHOOTING_TARGET.get());
                 b.pair(6, 0, 1, Faction.GARRISON, 24);
@@ -576,48 +619,79 @@ final class CityGenRegions {
         }
     }
 
-    /** Bunker souterrain sur 3 niveaux : poste de commandement (serveurs), dortoir / armurerie, salle forte (carte noire). */
+    /**
+     * Bunker souterrain sur 3 niveaux reliés par un puits d'échelles : poste de commandement (serveurs, table des
+     * cartes) et salle radio ; dortoir et armurerie séparés par une cloison ; salle forte (carte noire) et salle
+     * des générateurs. Chaque salle a son plafond, ses portes et son éclairage.
+     */
     private static void bunker(B b) {
         b.fill(4, 0, 4, 11, 4, 11, Blocks.GRAY_CONCRETE);                             // blockhaus d'entrée
         b.fill(5, 0, 5, 10, 3, 10, Blocks.AIR.defaultBlockState());
         CityGen.vaultDoor(b, 7, 0, 4, Direction.NORTH, 1);
+        b.set(6, 3, 7, Blocks.SEA_LANTERN);
         Deco.camoNet(b, 2, 2, 13, 13, 5, false);
         for (int lvl = 0; lvl < 3; lvl++) {
             int y = -6 - lvl * 6;
             b.fill(1, y - 1, 1, 14, y + 4, 14, Blocks.POLISHED_DEEPSLATE);
             b.fill(2, y, 2, 13, y + 3, 13, Blocks.AIR.defaultBlockState());
-            for (int x = 4; x <= 12; x += 4) {
-                b.set(x, y + 3, 7, Blocks.SEA_LANTERN);
+            b.fill(2, y - 1, 2, 13, y - 1, 13, Blocks.SMOOTH_STONE);                       // sol
+            b.fill(2, y + 4, 2, 13, y + 4, 13, Blocks.POLISHED_DEEPSLATE);                 // plafond
+            // cloison est-ouest : deux salles par niveau, reliées par une porte
+            b.fill(2, y, 8, 13, y + 3, 8, Blocks.DEEPSLATE_TILES);
+            Deco.door(b, 5, y, 8, Direction.SOUTH, Blocks.IRON_DOOR);
+            b.set(4, y + 1, 7, B.facing(Blocks.STONE_BUTTON, Direction.NORTH));
+            b.set(4, y + 1, 9, B.facing(Blocks.STONE_BUTTON, Direction.SOUTH));
+            for (int x = 3; x <= 12; x += 3) {
+                b.set(x, y + 3, 5, Blocks.SEA_LANTERN);
+                b.set(x, y + 3, 11, Blocks.SEA_LANTERN);
             }
         }
         b.fill(9, -18, 9, 9, 0, 9, Blocks.AIR.defaultBlockState());                          // puits d'échelles
         b.fill(9, -18, 9, 9, -1, 9, B.facing(Blocks.LADDER, Direction.NORTH));
         b.fill(9, -18, 10, 9, -1, 10, Blocks.POLISHED_DEEPSLATE);
-        // niveau 1 : poste de commandement, serveurs militaires
+        for (int lvl = 0; lvl < 3; lvl++) {
+            b.set(9, -6 - lvl * 6, 8, Blocks.AIR);                                          // le puits débouche des deux côtés
+            b.set(9, -5 - lvl * 6, 8, Blocks.AIR);
+        }
+        // niveau 1 (sud) : poste de commandement, serveurs militaires, table des cartes
         for (int x = 3; x <= 12; x++) {
+            if (x == 9) continue;
             b.set(x, -6, 13, (x % 2 == 0 ? Blocks.IRON_BLOCK : Blocks.OBSERVER).defaultBlockState());
             b.set(x, -5, 13, Blocks.REDSTONE_LAMP.defaultBlockState().setValue(BlockStateProperties.LIT, x % 3 == 0));
         }
-        Deco.desk(b, 4, -6, 4, Direction.SOUTH);
-        Deco.desk(b, 7, -6, 4, Direction.SOUTH);
-        b.bot(6, -6, 8, Faction.GARRISON, BotRole.OFFICER, 5);
-        b.bot(6, -6, 8, Faction.GARRISON, BotRole.BOSS, 5);                   // Commandant des Forces Spéciales
-        b.bot(6, -6, 8, Faction.GARRISON, BotRole.DRONE_OPERATOR, 5);
-        // niveau 2 : dortoir et armurerie
+        b.set(6, -6, 11, Blocks.CARTOGRAPHY_TABLE);
+        b.set(7, -6, 11, Blocks.CARTOGRAPHY_TABLE);
+        b.bot(6, -6, 10, Faction.GARRISON, BotRole.OFFICER, 5);
+        b.bot(6, -6, 10, Faction.GARRISON, BotRole.BOSS, 5);                   // Commandant des Forces Spéciales
+        // niveau 1 (nord) : salle radio
+        Deco.desk(b, 4, -6, 3, Direction.SOUTH);
+        Deco.desk(b, 7, -6, 3, Direction.SOUTH);
+        b.set(11, -6, 2, Blocks.JUKEBOX);
+        b.chest(12, -6, 2, Direction.SOUTH, "military_base", false);
+        b.bot(6, -6, 5, Faction.GARRISON, BotRole.DRONE_OPERATOR, 4);
+        // niveau 2 (nord) : dortoir ; (sud) : armurerie
         for (int x = 3; x <= 11; x += 2) {
-            Deco.bed(b, x, -12, 2, Direction.SOUTH, Blocks.GREEN_BED);
+            if (x != 9) Deco.bed(b, x, -12, 2, Direction.SOUTH, Blocks.GREEN_BED);
         }
-        for (int x = 3; x <= 7; x++) {
+        b.pair(6, -12, 5, Faction.GARRISON, 4);
+        for (int x = 3; x <= 12; x++) {
+            if (x == 9) continue;
             Deco.armoryRack(b, x, -11, 13, Direction.NORTH);
-            b.chest(x, -12, 13, Direction.NORTH, "military_crate", false);
+            if (x % 2 == 1) b.chest(x, -12, 13, Direction.NORTH, "military_base", false);
         }
-        b.pair(6, -12, 8, Faction.GARRISON, 5);
-        // niveau 3 : salle forte (carte noire)
-        b.walls(2, -18, 2, 7, -15, 7, Blocks.REINFORCED_DEEPSLATE.defaultBlockState());
-        CityGen.vaultDoor(b, 7, -18, 5, Direction.EAST, 3);
-        b.chest(3, -18, 3, Direction.EAST, "city_vault", false);
-        b.chest(3, -18, 5, Direction.EAST, "military_crate", false);
-        b.set(4, -15, 4, Blocks.SEA_LANTERN);
+        b.set(11, -12, 10, fr.modeminecraft.registry.ModBlocks.ARMAMENT_TABLE.get());
+        b.set(12, -12, 10, fr.modeminecraft.registry.ModBlocks.MODIFICATION_TABLE.get());
+        // niveau 3 (nord) : salle des générateurs ; (sud) : salle forte (carte noire)
+        for (int x = 3; x <= 7; x += 2) {
+            b.fill(x, -18, 3, x, -16, 4, Blocks.IRON_BLOCK);
+            b.set(x, -15, 3, Blocks.REDSTONE_LAMP.defaultBlockState().setValue(BlockStateProperties.LIT, true));
+        }
+        b.walls(2, -18, 9, 7, -15, 13, Blocks.REINFORCED_DEEPSLATE.defaultBlockState());
+        CityGen.vaultDoor(b, 7, -18, 11, Direction.EAST, 3);
+        b.chest(3, -18, 10, Direction.EAST, "city_vault", false);
+        b.chest(3, -18, 12, Direction.EAST, "military_base", false);
+        b.set(4, -15, 11, Blocks.SEA_LANTERN);
+        b.chest(12, -18, 12, Direction.WEST, "military_base", false);
     }
 
     static void jeep(B b, int x, int y, int z) {

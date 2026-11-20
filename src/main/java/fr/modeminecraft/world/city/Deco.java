@@ -244,6 +244,13 @@ final class Deco {
         b.set(x + 2, y + 1, z, Blocks.FLOWER_POT);
     }
 
+    /** Porte (deux moitiés) ; `door` = n'importe quel bloc de porte. */
+    static void door(B b, int x, int y, int z, Direction facing, Block door) {
+        BlockState s = door.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, facing);
+        b.set(x, y, z, s);
+        b.set(x, y + 1, z, s.setValue(BlockStateProperties.DOUBLE_BLOCK_HALF, net.minecraft.world.level.block.state.properties.DoubleBlockHalf.UPPER));
+    }
+
     /** Râtelier d'armes et établi d'armurier (armurerie). */
     static void armoryRack(B b, int x, int y, int z, Direction facing) {
         b.set(x, y, z, B.facing(fr.modeminecraft.registry.ModBlocks.WEAPON_RACK.get(), facing));

@@ -405,5 +405,11 @@
     "sounds": [
       "modeminecraft:bot/vehicle_engine"
     ]
+  },
+  "bot.drone_rotor_loop": {
+    "subtitle": "subtitles.modeminecraft.drone_rotor_loop",
+    "sounds": [
+      "modeminecraft:bot/drone_rotor_loop"
+    ]
   }
 }
