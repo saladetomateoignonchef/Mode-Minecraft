@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "attachments",
+  "ingredients": [
+    {
+      "item": "modeminecraft:steel_ingot",
+      "count": 2
+    },
+    {
+      "item": "minecraft:glowstone_dust",
+      "count": 1
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 1
+    },
+    {
+      "item": "minecraft:glass_pane",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:surefire_m600",
+    "count": 1
+  }
+}

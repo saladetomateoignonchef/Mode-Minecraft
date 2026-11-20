@@ -321,5 +321,11 @@
     "sounds": [
       "modeminecraft:gun/ranger_step_0"
     ]
+  },
+  "gun.flashlight_switch_click": {
+    "subtitle": "subtitles.modeminecraft.flashlight_switch_click",
+    "sounds": [
+      "modeminecraft:gun/flashlight_switch_click_0"
+    ]
   }
 }

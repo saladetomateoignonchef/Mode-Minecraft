@@ -74,6 +74,14 @@ public final class GunHudLayer {
             graphics.drawString(mc.font, Component.translatable(type.translationKey()),
                     x + 22 + mc.font.width(mode), y - 6, type.color, true);
         }
+        // Lampe tactique : mode et charge de la pile
+        if (GunItem.light(stack) != null) {
+            var lm = GunItem.lightMode(stack);
+            int pct = GunItem.lightBattery(stack) * 100 / GunItem.BATTERY_SECONDS;
+            int ly = gun.stats().heatPerShot() > 0 ? y - 26 : y - 16;
+            int lc = pct <= 15 ? 0xFF5555 : lm == fr.modeminecraft.item.gun.LightMode.OFF ? 0xA0A0A0 : 0xFFF4B0;
+            graphics.drawString(mc.font, Component.translatable("hud.modeminecraft.light." + lm.getSerializedName(), pct), x + 18, ly, lc, true);
+        }
     }
 
     /** Grenade dégoupillée : temps restant avant l'explosion. */

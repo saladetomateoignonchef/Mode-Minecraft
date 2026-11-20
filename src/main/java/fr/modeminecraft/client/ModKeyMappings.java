@@ -23,6 +23,10 @@ public final class ModKeyMappings {
     public static final KeyMapping LASER = new KeyMapping("key.modeminecraft.laser",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_T, CATEGORY);
 
+    /** Lampe tactique : L = allumer / éteindre, Maj + L = changer de mode. */
+    public static final KeyMapping FLASHLIGHT = new KeyMapping("key.modeminecraft.flashlight",
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_L, CATEGORY);
+
     public static final KeyMapping UNDERBARREL = new KeyMapping("key.modeminecraft.underbarrel",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_V, CATEGORY);
 

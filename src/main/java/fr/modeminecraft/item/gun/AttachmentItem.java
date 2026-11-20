@@ -44,8 +44,24 @@ public class AttachmentItem extends Item {
         UNDERBARREL_SHOTGUN, // tir secondaire (touche V) : coup de calibre 12
         BAYONET,             // +6 dégâts au corps à corps
         ECHO,                // silencieux à écho : aucun bruit du tout
-        NO_FLASH             // cache-flamme : pas de flash au tir
+        NO_FLASH,            // cache-flamme : pas de flash au tir
+        FLASHLIGHT           // lampe tactique (touche L), voir Light
     }
+
+    /**
+     * Lampe tactique.
+     * @param range portée du faisceau (blocs)
+     * @param level niveau de lumière des blocs éclairés (0-15)
+     * @param color couleur du faisceau (0xRRGGBB)
+     * @param cone demi-angle du cône du faisceau (degrés)
+     * @param tier niveau (1 à 4)
+     * @param strobe mode stroboscopique disponible (Maj + L)
+     * @param ir mode infrarouge disponible
+     * @param flicker léger scintillement (lampe de fortune)
+     * @param onHipSpread / onAimSpeed bonus tant que la lampe est allumée (AN/PEQ-15)
+     */
+    public record Light(float range, int level, int color, float cone, int tier, boolean strobe, boolean ir, boolean flicker,
+                        float onHipSpread, float onAimSpeed) {}
 
     /** Sur quelles armes l'accessoire se monte. */
     public enum Compat {
@@ -141,7 +157,29 @@ public class AttachmentItem extends Item {
         if (stats.specials.contains(Special.LASER)) {
             tooltip.add(Component.translatable("tooltip.modeminecraft.attachment.laser_toggle").withStyle(ChatFormatting.GRAY));
         }
+        if (stats.light != null) {
+            Light l = stats.light;
+            tooltip.add(Component.translatable("tooltip.modeminecraft.light.tier", l.tier()).withStyle(ChatFormatting.GOLD));
+            tooltip.add(Component.translatable("tooltip.modeminecraft.light.range", (int) l.range(), l.level()).withStyle(ChatFormatting.BLUE));
+            if (l.strobe()) {
+                tooltip.add(Component.translatable("tooltip.modeminecraft.light.strobe").withStyle(ChatFormatting.LIGHT_PURPLE));
+            }
+            if (l.ir()) {
+                tooltip.add(Component.translatable("tooltip.modeminecraft.light.ir").withStyle(ChatFormatting.LIGHT_PURPLE));
+            }
+            if (l.onHipSpread() != 1 || l.onAimSpeed() != 1) {
+                tooltip.add(Component.translatable("tooltip.modeminecraft.light.bonus",
+                        Math.round((1 - l.onHipSpread()) * 100), Math.round((l.onAimSpeed() - 1) * 100)).withStyle(ChatFormatting.GREEN));
+            }
+            tooltip.add(Component.translatable("tooltip.modeminecraft.light.keys", Component.keybind("key.modeminecraft.flashlight"),
+                            Component.keybind("key.modeminecraft.flashlight"))
+                    .withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable("tooltip.modeminecraft.light.battery").withStyle(ChatFormatting.DARK_GRAY));
+        }
         for (Special special : stats.specials) {
+            if (special == Special.FLASHLIGHT) {
+                continue;
+            }
             tooltip.add(Component.translatable("tooltip.modeminecraft.attachment.special." + special.name().toLowerCase())
                     .withStyle(ChatFormatting.LIGHT_PURPLE));
         }
@@ -184,6 +222,7 @@ public class AttachmentItem extends Item {
         List<String> calibers = List.of(); // munitions compatibles (vide = toutes)
         int laserColor = 0xFF1010;         // couleur du laser (-1 = arc-en-ciel)
         int wearShots = 0;                 // > 0 : l'accessoire casse après ce nombre de tirs
+        Light light = null;                // lampe tactique
         final Set<Special> specials = EnumSet.noneOf(Special.class);
 
         private Stats(AttachmentSlot slot) {
@@ -224,6 +263,10 @@ public class AttachmentItem extends Item {
         /** Son du tir multiplié par mul (après le silencieux). */
         public Stats volume(float mul) { volumeMul = mul; return this; }
         public Stats wears(int shots) { wearShots = shots; return this; }
+        /** Lampe tactique (voir {@link Light}). */
+        public Stats light(Light l) { light = l; specials.add(Special.FLASHLIGHT); return this; }
+
+        public Light light() { return light; }
 
         public int laserColor() { return laserColor; }
         public int wearShots() { return wearShots; }

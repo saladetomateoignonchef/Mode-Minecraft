@@ -23,7 +23,7 @@ import zlib
 
 from PIL import Image, ImageDraw
 
-from attachment_designs import ACCESSORIES, LENS_COLORS
+from attachment_designs import ACC_COLORS, ACCESSORIES, LENS_COLORS
 from gun_designs import GUNS, KEYS, box
 import voxel_bake as vb
 
@@ -216,7 +216,7 @@ def painter(skin):
     """Peintre des textures détaillées pour un skin (camouflages compris)."""
     colors = {k: SKINS[skin].get(k, DEFAULT[k]) for k in KEYS}
     alpha = {"q": 170}
-    if not skin.startswith("lens_"):
+    if not skin.startswith(("lens_", "acc_")):
         alpha["s"] = 14                       # vitre de viseur presque invisible : on vise au travers
         colors["s"] = "#cdebf5"
     return vb.Painter(colors, lambda k: VB_MATERIAL[MATERIAL[k]], alpha, seed=skin)
@@ -358,8 +358,11 @@ def main():
         SKINS[f"lens_{name}"] = {"s": color}
         palette_image(f"lens_{name}").save(os.path.join(textures, f"gun_palette_lens_{name}.png"))
 
+    for name, over in ACC_COLORS.items():
+        SKINS[f"acc_{name}"] = over
+
     for name, elements in ACCESSORIES.items():
-        skin = f"lens_{name}" if name in LENS_COLORS else "default"
+        skin = f"lens_{name}" if name in LENS_COLORS else f"acc_{name}" if name in ACC_COLORS else "default"
         src = elements if elements else ACCESSORIES["buffer_tube"]   # "sans crosse" : icône d'une crosse barrée
         baked = vb.bake({"a": src}, skip_chamfer=("s", "q", "d"))
         atlas = vb.paint(baked, painter(skin))
@@ -385,7 +388,7 @@ def main():
     optics["peq15"] = max(e["to"][1] for e in ACCESSORIES["peq15"]) + 0.5  # on vise au-dessus du boîtier laser
     write(os.path.join(ASSETS, "sight_optics.json"), optics)
 
-    print(f"{len(GUNS)} armes x {len(SKINS) - len(LENS_COLORS)} skins + {len(ACCESSORIES)} accessoires générés")
+    print(f"{len(GUNS)} armes x {len(SKINS) - len(LENS_COLORS) - len(ACC_COLORS)} skins + {len(ACCESSORIES)} accessoires générés")
 
 
 if __name__ == "__main__":

@@ -92,6 +92,7 @@ public final class ClientSetup {
         event.register(ModKeyMappings.AMMO_TYPE);
         event.register(ModKeyMappings.UNDERBARREL);
         event.register(ModKeyMappings.LASER);
+        event.register(ModKeyMappings.FLASHLIGHT);
         event.register(ModKeyMappings.LEAN_LEFT);
         event.register(ModKeyMappings.LEAN_RIGHT);
         event.register(ModKeyMappings.HOLD_BREATH);
@@ -105,6 +106,11 @@ public final class ClientSetup {
     }
 
     @SubscribeEvent
+    public static void registerDecorations(net.neoforged.neoforge.client.event.RegisterItemDecorationsEvent event) {
+        FlashlightClient.registerDecorators(event);
+    }
+
+    @SubscribeEvent
     public static void registerGuiLayers(RegisterGuiLayersEvent event) {
         event.registerAbove(VanillaGuiLayers.HOTBAR, ModeMinecraft.id("gun_ammo"), GunHudLayer.AMMO);
         event.registerBelow(VanillaGuiLayers.HOTBAR, ModeMinecraft.id("gun_sight"), GunHudLayer.SIGHT_OVERLAY);
@@ -114,6 +120,7 @@ public final class ClientSetup {
         event.registerAbove(VanillaGuiLayers.CROSSHAIR, ModeMinecraft.id("lock_on"), LockOnClient::render);
         event.registerAbove(VanillaGuiLayers.CROSSHAIR, ModeMinecraft.id("grenade_timer"), GunHudLayer::renderGrenadeTimer);
         event.registerAboveAll(ModeMinecraft.id("flashbang"), FlashClient::render);
+        event.registerAboveAll(ModeMinecraft.id("strobe_dazzle"), FlashlightClient::renderDazzle);
         event.registerAbove(VanillaGuiLayers.HOTBAR, ModeMinecraft.id("mounted_gun"), GunHudLayer::renderMounted);
     }
 

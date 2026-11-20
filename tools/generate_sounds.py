@@ -242,6 +242,10 @@ def mechanical(name, seed):
     elif name == "flash_ring":
         t = t_axis(3.0)
         x = np.sin(2 * np.pi * 4100 * t) * (0.8 + 0.2 * np.sin(2 * np.pi * 6 * t)) * np.exp(-t / 1.4) * np.clip(t / 0.05, 0, 1)
+    elif name == "flashlight_switch_click":
+        # interrupteur de lampe tactique : clic sec à l'appui, plus léger au relâchement
+        t = t_axis(0.18)
+        x = click(rng, t, 0.0, 3800, 0.003, 1.0, 2500, 11000) + click(rng, t, 0.07, 3200, 0.002, 0.45, 2500, 11000)
     elif name == "casing":
         t = t_axis(0.7)
         x = np.zeros(len(t))
@@ -346,7 +350,7 @@ def main():
                  "grenade_pin", "grenade_bounce", "grenade_beep", "sonar", "flash_ring", "turret_deploy", "turret_reload", "dry_fire",
                  "helmet_strap_click", "helmet_ricochet", "helmet_visor", "nvg_on", "helmet_breath",
                  "vest_equip_velcro", "plate_insert", "vest_bullet_hit", "plate_shatter",
-                 "gear_equip_cloth", "boots_lace", "ranger_step"]:
+                 "gear_equip_cloth", "boots_lace", "ranger_step", "flashlight_switch_click"]:
         files = []
         for v in range(2 if name in ("casing", "mag_in", "rack") else 1):
             write_ogg(os.path.join(sounds_dir, "gun", f"{name}_{v}.ogg"), mechanical(name, seed))

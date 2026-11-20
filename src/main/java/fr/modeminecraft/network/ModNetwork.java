@@ -22,6 +22,7 @@ public final class ModNetwork {
                 .playToServer(AmmoTypePayload.TYPE, AmmoTypePayload.STREAM_CODEC, AmmoTypePayload::handle)
                 .playToServer(UnderbarrelPayload.TYPE, UnderbarrelPayload.STREAM_CODEC, UnderbarrelPayload::handle)
                 .playToServer(LaserPayload.TYPE, LaserPayload.STREAM_CODEC, LaserPayload::handle)
+                .playToServer(FlashlightPayload.TYPE, FlashlightPayload.STREAM_CODEC, FlashlightPayload::handle)
                 .playToServer(LeanPayload.TYPE, LeanPayload.STREAM_CODEC, LeanPayload::handle)
                 .playToServer(TriggerPayload.TYPE, TriggerPayload.STREAM_CODEC, TriggerPayload::handle)
                 .playToServer(MeleePayload.TYPE, MeleePayload.STREAM_CODEC, MeleePayload::handle)
@@ -31,7 +32,8 @@ public final class ModNetwork {
                 .playToClient(HitMarkerPayload.TYPE, HitMarkerPayload.STREAM_CODEC, HitMarkerPayload::handle)
                 .playToClient(ImpactPayload.TYPE, ImpactPayload.STREAM_CODEC, ImpactPayload::handle)
                 .playToClient(BackGunsPayload.TYPE, BackGunsPayload.STREAM_CODEC, BackGunsPayload::handle)
-                .playToClient(FlashPayload.TYPE, FlashPayload.STREAM_CODEC, FlashPayload::handle);
+                .playToClient(FlashPayload.TYPE, FlashPayload.STREAM_CODEC, FlashPayload::handle)
+                .playToClient(DazzlePayload.TYPE, DazzlePayload.STREAM_CODEC, DazzlePayload::handle);
     }
 
     private ModNetwork() {}

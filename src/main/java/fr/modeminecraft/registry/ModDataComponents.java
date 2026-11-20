@@ -56,6 +56,19 @@ public final class ModDataComponents {
             DATA_COMPONENTS.registerComponentType("underbarrel_loaded", b -> b.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
 
     /** Laser allumé ? (touche T ; allumé par défaut) */
+    /** Lampe tactique : mode (éteinte, continue, stroboscope, infrarouge). */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<fr.modeminecraft.item.gun.LightMode>> LIGHT_MODE =
+            DATA_COMPONENTS.registerComponentType("light_mode", b -> b.persistent(fr.modeminecraft.item.gun.LightMode.CODEC)
+                    .networkSynchronized(fr.modeminecraft.item.gun.LightMode.STREAM_CODEC));
+
+    /** Lampe tactique : heure (jeu) du dernier appui sur l'interrupteur (animation du bras gauche). */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> LIGHT_SWITCH_AT =
+            DATA_COMPONENTS.registerComponentType("light_switch_at", b -> b.networkSynchronized(ByteBufCodecs.VAR_LONG));
+
+    /** Lampe tactique : secondes d'éclairage restantes dans la pile (absent = pile neuve, 600 s). */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> LIGHT_BATTERY =
+            DATA_COMPONENTS.registerComponentType("light_battery", b -> b.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT));
+
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> LASER_ON =
             DATA_COMPONENTS.registerComponentType("laser_on", b -> b.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
 

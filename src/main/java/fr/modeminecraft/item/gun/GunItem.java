@@ -4,6 +4,7 @@ import fr.modeminecraft.entity.BulletEntity;
 import fr.modeminecraft.item.AmmoItem;
 import fr.modeminecraft.entity.RocketEntity;
 import fr.modeminecraft.registry.ModDataComponents;
+import fr.modeminecraft.item.gun.LightMode;
 import fr.modeminecraft.registry.ModSounds;
 import fr.modeminecraft.registry.ModEntities;
 import fr.modeminecraft.registry.ModItems;
@@ -277,7 +278,93 @@ public class GunItem extends Item {
 
     /** Statistiques finales (accessoires compris). */
     public ResolvedGun resolve(ItemStack stack) {
-        return ResolvedGun.of(stats, getAttachments(stack)).withLevel(getProgress(stack).level());
+        ResolvedGun r = ResolvedGun.of(stats, getAttachments(stack)).withLevel(getProgress(stack).level());
+        AttachmentItem.Light l = light(stack);
+        if (l != null && activeLightMode(stack) != LightMode.OFF) {
+            r = r.withLightBonus(l.onHipSpread(), l.onAimSpeed());
+        }
+        return r;
+    }
+
+    // ------------------------------------------------------------------
+    // Lampe tactique (rail latéral) : touche L = allumer / éteindre, Maj + L = changer de mode
+    // ------------------------------------------------------------------
+    /** Autonomie d'une pile CR123A neuve, en secondes (10 minutes). */
+    public static final int BATTERY_SECONDS = 600;
+
+    /** La lampe montée sur l'arme, ou null. */
+    public static AttachmentItem.Light light(ItemStack stack) {
+        for (Item item : getAttachments(stack).parts().values()) {
+            if (item instanceof AttachmentItem a && a.stats().light() != null) {
+                return a.stats().light();
+            }
+        }
+        return null;
+    }
+
+    /** L'accessoire lampe monté, ou null. */
+    public static AttachmentItem lightItem(ItemStack stack) {
+        for (Item item : getAttachments(stack).parts().values()) {
+            if (item instanceof AttachmentItem a && a.stats().light() != null) {
+                return a;
+            }
+        }
+        return null;
+    }
+
+    public static LightMode lightMode(ItemStack stack) {
+        return stack.getOrDefault(ModDataComponents.LIGHT_MODE.get(), LightMode.OFF);
+    }
+
+    public static int lightBattery(ItemStack stack) {
+        return stack.getOrDefault(ModDataComponents.LIGHT_BATTERY.get(), BATTERY_SECONDS);
+    }
+
+    public static void setLightBattery(ItemStack stack, int seconds) {
+        stack.set(ModDataComponents.LIGHT_BATTERY.get(), Math.max(0, Math.min(BATTERY_SECONDS, seconds)));
+    }
+
+    /** Mode réellement actif : éteinte si pas de lampe, pile vide, ou mode indisponible sur ce modèle. */
+    public static LightMode activeLightMode(ItemStack stack) {
+        LightMode mode = lightMode(stack);
+        AttachmentItem.Light l = light(stack);
+        if (mode == LightMode.OFF || l == null || lightBattery(stack) <= 0
+                || mode == LightMode.STROBE && !l.strobe() || mode == LightMode.IR && !l.ir()) {
+            return LightMode.OFF;
+        }
+        return mode;
+    }
+
+    /** Touche L (allumer / éteindre) ou Maj + L (mode suivant : continu -> stroboscope -> infrarouge -> éteint). */
+    public void switchLight(Player player, ItemStack stack, boolean cycle) {
+        AttachmentItem.Light l = light(stack);
+        if (l == null) {
+            player.displayClientMessage(Component.translatable("message.modeminecraft.light.none").withStyle(ChatFormatting.GRAY), true);
+            return;
+        }
+        LightMode mode = lightMode(stack);
+        LightMode next;
+        if (cycle) {
+            next = switch (mode) {
+                case OFF -> LightMode.ON;
+                case ON -> l.strobe() ? LightMode.STROBE : l.ir() ? LightMode.IR : LightMode.OFF;
+                case STROBE -> l.ir() ? LightMode.IR : LightMode.OFF;
+                case IR -> LightMode.OFF;
+            };
+        } else {
+            next = mode == LightMode.OFF ? LightMode.ON : LightMode.OFF;
+        }
+        if (next != LightMode.OFF && lightBattery(stack) <= 0) {
+            player.displayClientMessage(Component.translatable("message.modeminecraft.light.empty").withStyle(ChatFormatting.RED), true);
+            player.level().playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.FLASHLIGHT_CLICK.get(), SoundSource.PLAYERS, 0.5f, 0.7f);
+            return;
+        }
+        stack.set(ModDataComponents.LIGHT_MODE.get(), next);
+        stack.set(ModDataComponents.LIGHT_SWITCH_AT.get(), player.level().getGameTime());
+        player.displayClientMessage(Component.translatable("message.modeminecraft.light." + next.getSerializedName(),
+                lightBattery(stack) * 100 / BATTERY_SECONDS).withStyle(next == LightMode.OFF ? ChatFormatting.GRAY : ChatFormatting.YELLOW), true);
+        player.level().playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.FLASHLIGHT_CLICK.get(),
+                SoundSource.PLAYERS, 0.6f, next == LightMode.OFF ? 0.85f : 1.05f);
     }
 
     public static GunProgress getProgress(ItemStack stack) {

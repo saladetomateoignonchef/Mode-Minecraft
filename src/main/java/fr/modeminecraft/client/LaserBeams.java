@@ -54,7 +54,8 @@ public final class LaserBeams {
                     return null;
                 }
                 String id = BuiltInRegistries.ITEM.getKey(a).getPath();
-                Vector3f lens = entry.getKey() == AttachmentSlot.SIDE_RAIL ? SIDE_LENS : LENS.getOrDefault(id, new Vector3f(2, 0, 0));
+                Vector3f lens = id.equals("an_peq15") ? new Vector3f(2.3f, 0.45f, 2.05f)
+                        : entry.getKey() == AttachmentSlot.SIDE_RAIL ? SIDE_LENS : LENS.getOrDefault(id, new Vector3f(2, 0, 0));
                 return new Vector3f(lens).div(16f).add(mount);
             }
         }

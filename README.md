@@ -111,7 +111,7 @@ Toutes les armes à feu, munitions et accessoires se fabriquent à la **table d'
 - **C** : coup de crosse (ou de baïonnette).
 - **Double appui sur s'accroupir** (sans viser) : s'allonger / se relever (aussi en sautant), avec ou sans arme.
   Allongé : recul et dispersion divisés par 2.
-- Toutes les touches (R, B, H, G type de munition, T laser, V tir sous le canon, C crosse, Y menu rapide des accessoires, N visière / vision nocturne du casque, O panneau des recettes, X s'allonger, A / E se pencher,
+- Toutes les touches (R, B, H, G type de munition, T laser, L lampe (Maj + L : mode), V tir sous le canon, C crosse, Y menu rapide des accessoires, N visière / vision nocturne du casque, O panneau des recettes, X s'allonger, A / E se pencher,
   Shift stabiliser) se changent dans *Options > Commandes > Mode Minecraft*. Munitions infinies en créatif.
 
 **Dégâts (cahier des charges) :** tête x2 (x2,5 au fusil de précision, avec un « ding » métallique), torse x1,
@@ -345,6 +345,34 @@ Fabrication : table d'armement, onglet **Protections**. Toutes ces pièces sont 
 - **JEI** : si Just Enough Items est installé, nos recettes de la table d'armement et les infos du titane y apparaissent aussi
   (notre panneau est alors masqué par défaut, touche O pour l'afficher).
 
+### Lampes tactiques (rail latéral, touche L)
+Les lampes se montent sur le **rail latéral** (flanc droit du garde-main, avec un contacteur déporté relié par un câble).
+**L** allume / éteint (le bras gauche va presser l'interrupteur, avec un clic sec) ; **Maj + L** change de mode :
+éteinte → continu → stroboscope → infrarouge (selon le modèle). Tant qu'on tient une arme, L n'ouvre pas l'écran des progrès.
+
+| Lampe | Tier | Portée | Particularités | Recette (table d'armement) |
+|---|---|---|---|---|
+| Lampe de fortune scotchée | 1 | 15 blocs, lumière 12 jaune | scintille, -5 % de vitesse de visée | 2 fer + torche de redstone + ficelle (ou boule de slime) |
+| SureFire M600 Scout | 2 | 28 blocs, lumière 15 blanche | aucun malus | 2 lingots d'acier + poudre lumineuse + redstone + vitre |
+| Streamlight TLR-1 HL | 3 | 38 blocs, cône large | **stroboscope** (10 flashs/s) qui éblouit | 2 plaques d'acier + titane + bloc lumineux + 2 redstone |
+| AN/PEQ-15 | 3 | 30 blocs | + **laser vert** (T) ; allumée : précision au jugé +25 %, visée +10 % | 2 plaques de titane + diamant + poudre lumineuse + 2 redstone + colorant vert |
+| MAWL-C1+ IR | 4 | 45 blocs | stroboscope + **infrarouge** | 3 plaques de titane + netherite + améthyste + 2 quartz + 2 redstone |
+
+- **Pile CR123A** (établi : cuivre ou fer + redstone + charbon → 2 piles) : 10 minutes d'éclairage. La charge est affichée
+  par une petite jauge verte / jaune / rouge sous l'icône de l'arme et dans le HUD. Pour changer la pile : clic droit avec
+  la pile (elle va dans l'arme tenue dans l'autre main, sinon dans l'arme à lampe la plus déchargée de la barre), ou
+  dans l'inventaire : prendre la pile et faire un clic droit sur l'arme.
+- **Éclairage réel** : des blocs de lumière invisibles (bloc `minecraft:light`, sans collision) sont posés devant la
+  surface éclairée et tous les 9 blocs le long du faisceau, puis retirés dès qu'il bouge. Ils ne remplacent que de l'air
+  (ou de l'eau), et leur liste est sauvegardée : même après un arrêt brutal, ils sont retirés au redémarrage.
+- **Faisceau volumétrique** visible par tous les joueurs : cône lumineux qui suit le canon, tache de lumière sur les
+  murs, poussière éclairée.
+- **Stroboscope** : toute créature ou tout joueur à moins de 15 blocs, dans un cône de 15° et qui regarde la lampe, est
+  ébloui (monstres : cécité, ralentissement et tirs imprécis ; joueurs : halo blanc pulsant).
+- **Infrarouge** (MAWL) : aucune lumière visible, les autres ne voient pas le faisceau ; il n'apparaît qu'avec des
+  jumelles de vision nocturne baissées (casque Ops-Core FAST XP), et fait briller les créatures invisibles et les Endermen.
+- Une grenade IEM coupe aussi les lampes.
+
 ### Gameplay et progression
 - **Niveaux des armes (1 à 5)** : chaque arme garde ses statistiques (éliminations, tirs à la tête, tirs, ratio)
   et gagne de l'expérience : +10 par élimination, +5 si tir à la tête, +10 pour un gros monstre (50 PV ou plus).
@@ -384,7 +412,7 @@ La table a **7 emplacements** : viseur, bouche, poignée avant, chargeur, poign�
 | Poignée avant (22) | verticale (-15 % de recul), inclinée (+25 % de vitesse de visée), courte, Magpul AFG/RVG/MVG, BCM KAG, Tango Down, butée de main, bois, pliante, carbone, caoutchouc, rubis, lampe, laser, lampe + laser, Grip-Pod, bipied Harris, **baïonnette**, lance-grenades **M203** (M4, M16A4, HK416, Tavor), **M320** (M4, M16A4, HK416), **GP-25** (AK-47, AK-74, AN-94), **AG36** (G36), **FN EGLM** (SCAR-H), **HK79** (G3), fusil à pompe **M26 MASS** (M4, M16A4, HK416) | recul, dispersion, stabilité allongé, gadgets |
 | Chargeur (5) | 24 coups, 36 coups, camembert, **chargeur étendu** (+35 %), **chargeur rapide** (rechargement +25 % plus rapide) | capacité, vitesse de rechargement |
 | Poignée pistolet (20) | Magpul MOE/K2/MIAD, Hogue, BCM Gunfighter, Tango Down, ergonomique, noyer, nacrée, or, rubis, squelette, compacte, compétition, granitée, repose-pouce, Crimson Trace, rangement, empreintes, gel | recul, vitesse de visée, rechargement, sortie de l'arme |
-| Rail latéral (9) | lasers rouge, vert, bleu, violet, jaune, orange, cyan, blanc, **arc-en-ciel** (fusils d'assaut uniquement) | laser visible, dispersion sans viser réduite |
+| Rail latéral (14) | lasers rouge, vert, bleu, violet, jaune, orange, cyan, blanc, **arc-en-ciel** (fusils d'assaut uniquement) ; **5 lampes tactiques** (voir plus bas) | laser visible, dispersion sans viser réduite, éclairage |
 | Crosse (20) | A2, CTR, Magpul PRS, squelette, pliante, filaire, bois, appui-joue, trou de pouce, **sans crosse**, attelle de pistolet (pistolets uniquement), tube tampon, Limbsaver, Knoxx, carbone, monopode, Accuracy International, Zhukov, SCAR, rubis | recul, mobilité, précision |
 
 Fonctions spéciales :

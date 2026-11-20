@@ -76,6 +76,15 @@ public record ResolvedGun(
                 mobility, aimSpeed, drawMul, specials);
     }
 
+    /** Bonus d'une lampe allumée (AN/PEQ-15 : meilleure précision au jugé, visée plus rapide). */
+    public ResolvedGun withLightBonus(float hipSpreadMul, float aimSpeedMul) {
+        if (hipSpreadMul == 1 && aimSpeedMul == 1) {
+            return this;
+        }
+        return new ResolvedGun(damage, magazineSize, reloadTicks, spread * hipSpreadMul, aimSpread, recoil, volume, silenced, sightModes,
+                movingPenalty, steadyRecoil, steadySpread, mobility, aimSpeed * aimSpeedMul, drawMul, specials);
+    }
+
     public boolean has(AttachmentItem.Special special) {
         return specials.contains(special);
     }

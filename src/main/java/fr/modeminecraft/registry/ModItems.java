@@ -729,6 +729,26 @@ public final class ModItems {
     public static final DeferredItem<AttachmentItem> LASER_WHITE = attachment("laser_white", laser(0xFFFFFF));
     public static final DeferredItem<AttachmentItem> LASER_RAINBOW = attachment("laser_rainbow", laser(-1));
 
+    // ---------- Lampes tactiques (rail latéral, touche L / Maj + L) ----------
+    /** Pile CR123A : 10 minutes d'éclairage. Clic droit (ou posée sur l'arme dans l'inventaire) pour changer la pile. */
+    public static final DeferredItem<Item> TACTICAL_BATTERY = ITEMS.register("tactical_battery",
+            () -> new fr.modeminecraft.item.TacticalBatteryItem(new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<AttachmentItem> DUCT_TAPE_FLASHLIGHT = attachment("duct_tape_flashlight",
+            AttachmentItem.Stats.of(AttachmentSlot.SIDE_RAIL).aimSpeed(0.95f)
+                    .light(new AttachmentItem.Light(15, 12, 0xFFD48A, 6, 1, false, false, true, 1, 1)));
+    public static final DeferredItem<AttachmentItem> SUREFIRE_M600 = attachment("surefire_m600",
+            AttachmentItem.Stats.of(AttachmentSlot.SIDE_RAIL)
+                    .light(new AttachmentItem.Light(28, 15, 0xF4F8FF, 7, 2, false, false, false, 1, 1)));
+    public static final DeferredItem<AttachmentItem> STREAMLIGHT_TLR1 = attachment("streamlight_tlr1",
+            AttachmentItem.Stats.of(AttachmentSlot.SIDE_RAIL)
+                    .light(new AttachmentItem.Light(38, 15, 0xFFFFFF, 11, 3, true, false, false, 1, 1)));
+    public static final DeferredItem<AttachmentItem> AN_PEQ15 = attachment("an_peq15",
+            AttachmentItem.Stats.of(AttachmentSlot.SIDE_RAIL).laser(0x30FF40)
+                    .light(new AttachmentItem.Light(30, 15, 0xF0F6FF, 7, 3, false, false, false, 0.75f, 1.1f)));
+    public static final DeferredItem<AttachmentItem> MAWL_C1 = attachment("mawl_c1",
+            AttachmentItem.Stats.of(AttachmentSlot.SIDE_RAIL)
+                    .light(new AttachmentItem.Light(45, 15, 0xEEF4FF, 8, 4, true, true, false, 1, 1)));
+
     // ---------- Silencieux (selon le calibre, comme en vrai) ----------
     public static final DeferredItem<AttachmentItem> OMEGA_9K = attachment("omega_9k", sil().damage(0.95f).calibers("ammo_9mm"));
     public static final DeferredItem<AttachmentItem> OSPREY_45 = attachment("osprey_45",

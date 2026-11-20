@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "attachments",
+  "ingredients": [
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:titanium_ingot",
+      "count": 1
+    },
+    {
+      "item": "minecraft:glowstone",
+      "count": 1
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:streamlight_tlr1",
+    "count": 1
+  }
+}

@@ -130,6 +130,9 @@ public class GunAttackGoal extends Goal {
             double dy = target.getY(0.6) - bullet.getY();
             double dz = target.getZ() - mob.getZ();
             float inaccuracy = (pellets > 1 ? 6 : 2.5f) + (14 - level.getDifficulty().getId() * 4) * 0.4f;
+            if (mob.hasEffect(net.minecraft.world.effect.MobEffects.BLINDNESS)) {
+                inaccuracy *= 4;    // ébloui (lampe en stroboscope) : il tire presque au hasard
+            }
             bullet.shoot(dx, dy, dz, stats.velocity(), inaccuracy);
             level.addFreshEntity(bullet);
         }

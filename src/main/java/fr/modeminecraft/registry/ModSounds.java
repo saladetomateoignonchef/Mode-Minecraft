@@ -61,6 +61,7 @@ public final class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> GRENADE_BEEP = register("gun.grenade_beep");
     public static final DeferredHolder<SoundEvent, SoundEvent> SONAR = register("gun.sonar");
     public static final DeferredHolder<SoundEvent, SoundEvent> FLASH_RING = register("gun.flash_ring");
+    public static final DeferredHolder<SoundEvent, SoundEvent> FLASHLIGHT_CLICK = register("gun.flashlight_switch_click");
 
     private static DeferredHolder<SoundEvent, SoundEvent> register(String name) {
         return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(ModeMinecraft.id(name)));

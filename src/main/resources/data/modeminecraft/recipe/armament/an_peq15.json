@@ -1,0 +1,30 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "attachments",
+  "ingredients": [
+    {
+      "item": "modeminecraft:titanium_plate",
+      "count": 2
+    },
+    {
+      "item": "minecraft:diamond",
+      "count": 1
+    },
+    {
+      "item": "minecraft:glowstone_dust",
+      "count": 1
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 2
+    },
+    {
+      "item": "minecraft:green_dye",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:an_peq15",
+    "count": 1
+  }
+}

@@ -132,6 +132,10 @@ public final class GunPoseHelper {
             if (lens != null) {
                 LaserBeams.drawFirstPerson(player, stack, new Matrix4f(pose.last().pose()).mul(displayMatrix()).transformPosition(lens));
             }
+            Vector3f lamp = FlashlightClient.lensPoint(gun, stack);
+            if (lamp != null) {
+                FlashlightClient.drawFirstPerson(player, stack, new Matrix4f(pose.last().pose()).mul(displayMatrix()).transformPosition(lamp));
+            }
         }
     }
 
@@ -223,7 +227,15 @@ public final class GunPoseHelper {
         Vector3f fore = GunMounts.get(gun, AttachmentSlot.GRIP);
         if (fore != null) {
             boolean vertical = GunItem.getAttachments(stack).get(AttachmentSlot.GRIP).isPresent();
-            return new Vector3f(fore).add(0, (vertical ? -2.6f : -0.5f) / 16f, 0);
+            Vector3f hand = new Vector3f(fore).add(0, (vertical ? -2.6f : -0.5f) / 16f, 0);
+            // Lampe tactique : la main gauche glisse vers l'interrupteur, appuie, puis revient
+            float press = FlashlightClient.pressAmount(stack, now);
+            Vector3f rail = GunMounts.get(gun, AttachmentSlot.SIDE_RAIL);
+            if (press > 0 && rail != null) {
+                Vector3f sw = new Vector3f(rail).add(-1.6f / 16f, -0.4f / 16f, 2.4f / 16f);
+                hand.lerp(sw, press);
+            }
+            return hand;
         }
         // Pistolet : la main gauche enveloppe la droite
         return grip == null ? null : new Vector3f(grip).add(0.2f / 16f, -2.2f / 16f, 0);

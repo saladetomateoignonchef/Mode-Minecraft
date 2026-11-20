@@ -363,3 +363,65 @@ ACCESSORIES.update({
     "p90_round": [zc(-0.45, -0.18, 0.45, 0.18, 0.18, "g"), zc(0.45, -0.1, 0.6, 0.1, 0.1, "m")],
     "belt_link": [box([-0.35, -0.6, -0.15], [0.35, 0.6, 0.15], "g"), box([-0.4, -0.15, -0.2], [0.4, 0.15, 0.2], "k")],
 })
+
+
+# =====================================================================
+# Phase 18 : lampes tactiques (rail latéral, sur le flanc DROIT de l'arme : +Z)
+# Le point de fixation est sur le flanc gauche du garde-main (z = 7,15) : le flanc droit est à z ≈ +1,7.
+# =====================================================================
+def tube(x0, x1, r, c, cz=2.35, cy=0.0):
+    """Tube à section octogonale (deux pavés croisés), axe le long de X."""
+    return [box([x0, cy - r * 0.7, cz - r], [x1, cy + r * 0.7, cz + r], c),
+            box([x0, cy - r, cz - r * 0.7], [x1, cy + r, cz + r * 0.7], c)]
+
+
+def remote_switch(x_tail):
+    """Contacteur à pression déporté à l'arrière du garde-main, relié à la lampe par un câble fin."""
+    return [box([-4.4, -0.55, 1.5], [-3.2, 0.35, 1.95], "d"),
+            box([-4.3, -0.45, 1.95], [-3.3, 0.25, 2.05], "k"),
+            box([-3.2, -0.22, 1.66], [x_tail, -0.08, 1.8], "d")]
+
+
+def clamp(z1=1.5):
+    """Collier Picatinny + bras déporté jusqu'à la lampe."""
+    return [box([-1.0, -0.45, 0.0], [1.0, 0.45, 0.6], "m"), box([-0.6, -0.3, 0.6], [0.6, 0.3, z1], "m")]
+
+
+FLASHLIGHTS = {
+    # Tier 1 : lampe de fortune scotchée (tube gris + bandes de ruban adhésif en relief)
+    "duct_tape_flashlight": tube(-2.0, 2.0, 0.55, "G") + tube(2.0, 2.6, 0.72, "G") + tube(2.6, 2.7, 0.55, "s")
+                            + tube(-2.3, -2.0, 0.4, "k")
+                            + tube(-1.2, -0.6, 0.63, "d") + tube(0.7, 1.3, 0.63, "d")
+                            + [box([-1.2, -0.35, 0.0], [-0.6, 0.35, 1.85], "d"), box([0.7, -0.35, 0.0], [1.3, 0.35, 1.85], "d")],
+    # Tier 2 : SureFire M600 Scout (aluminium noir mat, support déporté, lentille LED)
+    "surefire_m600": clamp(1.85) + tube(-1.9, 1.5, 0.55, "k") + tube(1.5, 2.5, 0.75, "k") + tube(2.5, 2.58, 0.58, "s")
+                     + tube(-2.2, -1.9, 0.45, "m") + remote_switch(-2.2),
+    # Tier 3 : Streamlight TLR-1 HL (boîtier coyote, large réflecteur chromé, double interrupteur arrière)
+    "streamlight_tlr1": clamp(1.45) + [box([-1.6, -0.8, 1.45], [1.9, 0.55, 3.15], "T"),
+                                       box([-1.3, 0.55, 1.75], [1.5, 0.75, 2.85], "T"),
+                                       box([1.9, -0.85, 1.45], [2.5, 0.6, 3.15], "l"),
+                                       box([2.5, -0.7, 1.6], [2.58, 0.45, 3.0], "s"),
+                                       box([-1.95, -0.6, 1.55], [-1.6, -0.15, 2.2], "d"),
+                                       box([-1.95, -0.6, 2.4], [-1.6, -0.15, 3.05], "d")] + remote_switch(-1.95),
+    # Tier 3 : AN/PEQ-15 (boîtier rectangulaire coyote, lentille LED + émetteur laser côte à côte)
+    "an_peq15": clamp(1.5) + [box([-2.0, -0.9, 1.5], [2.0, 0.9, 3.2], "T"),
+                              box([2.0, -0.75, 1.65], [2.1, 0.05, 2.35], "s"),
+                              box([2.0, 0.15, 2.4], [2.12, 0.7, 2.95], "e"),
+                              box([-1.0, 0.9, 2.0], [-0.4, 1.2, 2.6], "k"), box([0.3, 0.9, 2.0], [0.9, 1.2, 2.6], "k"),
+                              box([-2.3, -0.4, 2.0], [-2.0, 0.4, 2.7], "d")] + remote_switch(-2.3),
+    # Tier 4 : MAWL-C1+ IR (composite titane-carbone noir, émetteur IR, sélecteur rotatif à l'arrière)
+    "mawl_c1": clamp(1.5) + [box([-1.8, -0.7, 1.5], [1.6, 0.65, 3.1], "k"), box([-1.4, 0.65, 1.7], [1.2, 0.95, 2.9], "k")]
+               + tube(1.6, 2.6, 0.72, "d", cz=2.3) + tube(2.6, 2.68, 0.55, "s", cz=2.3)
+               + [box([1.6, -1.05, 1.9], [2.4, -0.7, 2.7], "d"), box([2.4, -1.0, 2.0], [2.46, -0.75, 2.6], "o")]
+               + tube(-2.3, -1.8, 0.5, "l", cz=2.3) + [box([-2.5, -0.15, 2.2], [-2.3, 0.6, 2.4], "l")] + remote_switch(-2.5),
+}
+ACCESSORIES.update(FLASHLIGHTS)
+
+# Couleurs propres à certains accessoires (lentille blanche des lampes, boîtiers coyote...)
+ACC_COLORS = {
+    "duct_tape_flashlight": {"s": "#fff1c4"},
+    "surefire_m600": {"s": "#f4fbff"},
+    "streamlight_tlr1": {"s": "#ffffff", "T": "#9e8b6c"},
+    "an_peq15": {"s": "#eef6ff", "T": "#9e8b6c", "e": "#30ff40"},
+    "mawl_c1": {"s": "#eef4ff", "o": "#5a1838"},
+}

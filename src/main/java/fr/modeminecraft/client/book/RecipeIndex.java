@@ -134,6 +134,9 @@ public final class RecipeIndex {
                 caliber(k, id);
             } else if (item instanceof AttachmentItem a) {
                 k.addAll(List.of("attachment", "accessoire", a.slot().getSerializedName()));
+                if (a.stats().light() != null) {
+                    k.addAll(List.of("lampe", "flashlight", "torche", "light", "eclairage"));
+                }
             } else if (item instanceof HelmetItem h) {
                 k.addAll(List.of("helmet", "casque", "armor", "protection"));
                 k.addAll(era(h.stats().tier(), true));
@@ -148,6 +151,8 @@ public final class RecipeIndex {
                 k.addAll(List.of("plate", "plaque", "balistique", "protection"));
             } else if (item instanceof MountedGunItem) {
                 k.addAll(List.of("turret", "tourelle", "mitrailleuse"));
+            } else if (item instanceof fr.modeminecraft.item.TacticalBatteryItem) {
+                k.addAll(List.of("pile", "battery", "batterie", "lampe", "cr123a"));
             } else if (item instanceof BlockItem) {
                 k.addAll(List.of("block", "bloc"));
             } else {
