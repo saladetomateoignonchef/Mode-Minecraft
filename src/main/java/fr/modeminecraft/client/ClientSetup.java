@@ -36,6 +36,7 @@ public final class ClientSetup {
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
+        fr.modeminecraft.update.AutoUpdater.start(); // nouvelle version sur GitHub ? (en arrière-plan)
         event.enqueueWork(() -> {
             // Casques : modèle "visière abaissée / jumelles abaissées" quand le module est actif
             for (var h : ModItems.ITEMS.getEntries()) {

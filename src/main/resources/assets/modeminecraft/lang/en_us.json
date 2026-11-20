@@ -688,5 +688,7 @@
   "subtitles.modeminecraft.helmet_ricochet": "Bullet ricochets off a helmet",
   "subtitles.modeminecraft.helmet_visor": "Visor moves",
   "subtitles.modeminecraft.nvg_on": "Night vision powers up",
-  "subtitles.modeminecraft.helmet_breath": "Muffled breathing"
+  "subtitles.modeminecraft.helmet_breath": "Muffled breathing",
+  "toast.modeminecraft.update.title": "Mode Minecraft update downloaded",
+  "toast.modeminecraft.update.text": "%s → %s: installed when you close the game"
 }

@@ -25,6 +25,8 @@ public class ModeMinecraft {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public ModeMinecraft(IEventBus modEventBus, ModContainer modContainer) {
+        modContainer.registerConfig(net.neoforged.fml.config.ModConfig.Type.COMMON, ModConfigs.COMMON_SPEC);
+        modContainer.registerConfig(net.neoforged.fml.config.ModConfig.Type.CLIENT, ModConfigs.CLIENT_SPEC);
         // L'ordre n'a pas d'importance : NeoForge enregistre chaque registre au bon moment.
         ModBlocks.BLOCKS.register(modEventBus);
         ModArmorMaterials.ARMOR_MATERIALS.register(modEventBus);

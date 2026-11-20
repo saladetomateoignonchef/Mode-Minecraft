@@ -688,5 +688,7 @@
   "subtitles.modeminecraft.helmet_ricochet": "Balle qui ricoche sur un casque",
   "subtitles.modeminecraft.helmet_visor": "Visière qui bouge",
   "subtitles.modeminecraft.nvg_on": "Vision nocturne allumée",
-  "subtitles.modeminecraft.helmet_breath": "Respiration étouffée"
+  "subtitles.modeminecraft.helmet_breath": "Respiration étouffée",
+  "toast.modeminecraft.update.title": "Mise à jour de Mode Minecraft téléchargée",
+  "toast.modeminecraft.update.text": "%s → %s : installée quand tu fermeras le jeu"
 }
