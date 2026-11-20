@@ -65,6 +65,14 @@ public final class ModEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.entity.AreaCloudEntity>> AREA_CLOUD = ENTITY_TYPES.register("area_cloud",
             () -> EntityType.Builder.<fr.modeminecraft.entity.AreaCloudEntity>of(fr.modeminecraft.entity.AreaCloudEntity::new, MobCategory.MISC)
                     .sized(0.5f, 0.5f).clientTrackingRange(10).updateInterval(20).fireImmune().build("area_cloud"));
+    /** Véhicules conduisibles (quad, voiture de police, jeep, camion blindé). */
+    public static final DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.entity.VehicleEntity>> VEHICLE = ENTITY_TYPES.register("vehicle",
+            () -> EntityType.Builder.<fr.modeminecraft.entity.VehicleEntity>of(fr.modeminecraft.entity.VehicleEntity::new, net.minecraft.world.entity.MobCategory.MISC)
+                    .sized(2f, 1.5f).clientTrackingRange(10).updateInterval(1).build("vehicle"));
+    /** Geyser d'une bouche d'incendie détruite. */
+    public static final DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.entity.GeyserEntity>> GEYSER = ENTITY_TYPES.register("geyser",
+            () -> EntityType.Builder.<fr.modeminecraft.entity.GeyserEntity>of(fr.modeminecraft.entity.GeyserEntity::new, net.minecraft.world.entity.MobCategory.MISC)
+                    .sized(0.5f, 0.5f).clientTrackingRange(8).build("geyser"));
     /** Largage aérien (caisse sous parachute). */
     public static final DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.entity.AirdropEntity>> AIRDROP = ENTITY_TYPES.register("airdrop",
             () -> EntityType.Builder.<fr.modeminecraft.entity.AirdropEntity>of(fr.modeminecraft.entity.AirdropEntity::new, net.minecraft.world.entity.MobCategory.MISC)

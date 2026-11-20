@@ -113,6 +113,10 @@ public final class GunModels {
                 geo.parts().forEach(p -> event.register(fr.modeminecraft.client.MountedGunRenderer.part(kind.id, p)));
             }
         }
+        for (var vt : fr.modeminecraft.entity.VehicleEntity.Type.values()) {             // véhicules : carrosserie + roue
+            event.register(fr.modeminecraft.client.VehicleRenderer.part(vt.id, "body"));
+            event.register(fr.modeminecraft.client.VehicleRenderer.part(vt.id, "wheel"));
+        }
         event.register(ModelResourceLocation.standalone(ModeMinecraft.id("item/parts/p90_round")));
         event.register(ModelResourceLocation.standalone(ModeMinecraft.id("item/parts/belt_link")));
         ModItems.ITEMS.getEntries().stream().map(h -> h.get()).filter(i -> i instanceof AttachmentItem)

@@ -22,6 +22,10 @@ public record FlashlightPayload(boolean cycle) implements CustomPacketPayload {
     public static void handle(FlashlightPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
             var player = context.player();
+            if (player.getVehicle() instanceof fr.modeminecraft.entity.VehicleEntity v && v.getControllingPassenger() == player) {
+                v.toggleSiren();                                  // au volant : sirène et gyrophares
+                return;
+            }
             var stack = player.getMainHandItem();
             if (stack.getItem() instanceof GunItem gun) {
                 gun.switchLight(player, stack, payload.cycle());

@@ -23,17 +23,15 @@ final class Deco {
     /** Feu tricolore (rouge, orange, vert) sur son poteau. */
     static void trafficLight(B b, int x, int y, int z) {
         b.fill(x, y, z, x, y + 3, z, Blocks.IRON_BARS);
-        b.set(x, y + 4, z, Blocks.BLACK_CONCRETE);
-        b.set(x, y + 5, z, Blocks.RED_STAINED_GLASS);
-        b.set(x, y + 6, z, Blocks.ORANGE_STAINED_GLASS);
-        b.set(x, y + 7, z, Blocks.LIME_STAINED_GLASS);
-        b.set(x, y + 8, z, Blocks.BLACK_CONCRETE);
+        // deux feux dos à dos sur le poteau, un par axe du carrefour (décalés : l'un est vert quand l'autre est rouge)
+        b.set(x, y + 4, z, B.facing(fr.modeminecraft.registry.ModBlocks.TRAFFIC_LIGHT.get(), Direction.NORTH));
+        b.set(x, y + 5, z, B.facing(fr.modeminecraft.registry.ModBlocks.TRAFFIC_LIGHT.get(), Direction.EAST));
+        b.set(x, y + 6, z, Blocks.IRON_BARS);
     }
 
     /** Bouche d'incendie. */
     static void hydrant(B b, int x, int y, int z) {
-        b.set(x, y, z, Blocks.RED_TERRACOTTA);
-        b.set(x, y + 1, z, Blocks.RED_CANDLE.defaultBlockState());
+        b.set(x, y, z, fr.modeminecraft.registry.ModBlocks.FIRE_HYDRANT.get());
     }
 
     static void bench(B b, int x, int y, int z, Direction facing) {
@@ -141,7 +139,7 @@ final class Deco {
 
     /** Extincteur (explose en nuage de fumée quand on le casse : voir CityEvents). */
     static void extinguisher(B b, int x, int y, int z) {
-        b.set(x, y, z, Blocks.RED_CANDLE.defaultBlockState().setValue(BlockStateProperties.CANDLES, 2));
+        b.set(x, y, z, fr.modeminecraft.registry.ModBlocks.FIRE_EXTINGUISHER.get());
     }
 
     // ------------------------------------------------------------------ défenses militaires

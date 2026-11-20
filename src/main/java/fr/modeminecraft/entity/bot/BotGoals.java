@@ -213,7 +213,7 @@ public final class BotGoals {
             }
             long now = bot.level().getGameTime();
             for (Player p : bot.level().getEntitiesOfClass(Player.class, bot.getBoundingBox().inflate(20))) {
-                if (!p.isCreative() && !p.isSpectator() && armedInHand(p) && !FactionRelations.isHostile(p.getUUID(), bot.faction(), now)
+                if (!p.isCreative() && !p.isSpectator() && armedVisible(p) && !FactionRelations.isHostile(p.getUUID(), bot.faction(), now)
                         && canSee(bot, p, 20)) {
                     suspect = p;
                     return true;
@@ -248,8 +248,8 @@ public final class BotGoals {
         public void tick() {
             bot.getLookControl().setLookAt(suspect, 30, 30);
             long now = bot.level().getGameTime();
-            if (!armedInHand(suspect)) {
-                // arme rangée : on abaisse la sienne
+            if (!armedVisible(suspect)) {
+                // plus aucune arme visible (ni en main, ni dans le dos / à la hanche) : on abaisse la sienne
                 end = 0;
                 cooldownUntil = now + 100;
                 return;
@@ -789,7 +789,7 @@ public final class BotGoals {
         public boolean canUse() {
             BotRole r = bot.role();
             return bot.getTarget() == null && !bot.isPassenger() && bot.squad == null && r != BotRole.SNIPER && r != BotRole.GUNNER
-                    && r != BotRole.TRADER && bot.alertEnd() < bot.level().getGameTime();
+                    && r != BotRole.TRADER && r != BotRole.CONTRACTOR && bot.alertEnd() < bot.level().getGameTime();
         }
 
         @Override

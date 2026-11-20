@@ -153,7 +153,7 @@ def main():
             "spawn_overrides": {}, "terrain_adaptation": "none"})
     write(os.path.join(DATA, "worldgen/structure_set/cities.json"), {
         "structures": [{"structure": f"{MOD}:city_{k}", "weight": 1} for k in BIOMES],
-        "placement": {"type": "minecraft:random_spread", "spacing": 44, "separation": 22, "salt": 77031953}})
+        "placement": {"type": "minecraft:random_spread", "spacing": 75, "separation": 37, "salt": 77031953}})
     for name, t in LOOT.items():
         write(os.path.join(DATA, f"loot_table/chests/{name}.json"), t)
     for name, (lvl, color) in DOORS.items():

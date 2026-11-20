@@ -108,6 +108,10 @@ final class CityGen {
             Deco.parkingMeter(b, spots[3][0], 0, spots[3][1]);
             Deco.hydrant(b, spots[3][0] + (ns ? 0 : 2), 0, spots[3][1] + (ns ? 2 : 0));
         }
+        // voitures de police garées le long du trottoir
+        if (ns != ew && b.chance(0.15f)) {
+            b.vehicle(ns ? 5 : 8, 0, ns ? 8 : 5, fr.modeminecraft.entity.VehicleEntity.Type.POLICE_CAR, ns ? 0 : 90);
+        }
         // égouts sous la chaussée
         sewer(b, ns || !ew, ew || !ns, ns && ew);
         // habitants et police
@@ -212,7 +216,7 @@ final class CityGen {
         b.set(4, 1, 5, B.stairs(Blocks.DARK_OAK_STAIRS, Direction.NORTH));
         b.fill(6, 1, 3, 6, 2, 3, Blocks.IRON_BARS);                                          // portique détecteur de métaux
         b.fill(9, 1, 3, 9, 2, 3, Blocks.IRON_BARS);
-        b.fill(6, 3, 3, 9, 3, 3, Blocks.POLISHED_ANDESITE_SLAB);
+        b.fill(7, 2, 3, 8, 2, 3, fr.modeminecraft.registry.ModBlocks.METAL_DETECTOR.get().defaultBlockState());
         b.set(2, 1, 2, Blocks.POTTED_FERN);
         b.set(13, 1, 2, Blocks.POTTED_FERN);
         Deco.camera(b, 2, 3, 13, Direction.SOUTH);
@@ -544,7 +548,8 @@ final class CityGen {
         b.set(15, -2, 9, Blocks.SEA_LANTERN);
         b.set(15, -5, 9, fr.modeminecraft.registry.ModBlocks.ARMAMENT_TABLE.get());
         // garage et voiture de police
-        policeCar(b, 6, 0, 27);
+        b.vehicle(8, 0, 28, fr.modeminecraft.entity.VehicleEntity.Type.POLICE_CAR, 90);
+        b.vehicle(20, 0, 28, fr.modeminecraft.entity.VehicleEntity.Type.POLICE_CAR, 90);
         // toit : héliport, antenne, sirène
         b.fill(10, 15, 8, 21, 15, 19, Blocks.GRAY_CONCRETE);
         b.fill(13, 15, 11, 18, 15, 16, Blocks.YELLOW_CONCRETE);
@@ -555,6 +560,7 @@ final class CityGen {
         b.pair(14, 1, 10, Faction.POLICE, 16);
         b.pair(18, 6, 12, Faction.POLICE, 16);
         b.bot(16, 1, 1, Faction.POLICE, BotRole.OFFICER, 10);
+        b.bot(15, 1, 8, Faction.CIVILIAN, BotRole.CONTRACTOR, 2);
         b.bot(12, -5, 9, Faction.SWAT, BotRole.SOLDIER, 6);
         b.bot(20, -5, 9, Faction.SWAT, BotRole.SOLDIER, 6);
         b.bot(15, 16, 13, Faction.POLICE, BotRole.SNIPER, 4);

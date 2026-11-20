@@ -112,7 +112,7 @@ public class AirdropEntity extends Entity {
         }
     }
 
-    static Faction localFaction(ServerLevel level, BlockPos pos) {
+    public static Faction localFaction(ServerLevel level, BlockPos pos) {
         var biome = level.getBiome(pos);
         if (biome.is(BiomeTags.IS_BADLANDS)) {
             return Faction.REFINERY;

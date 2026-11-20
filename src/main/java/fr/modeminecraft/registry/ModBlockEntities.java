@@ -12,6 +12,9 @@ public final class ModBlockEntities {
             DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, ModeMinecraft.MODID);
 
     @SuppressWarnings("DataFlowIssue")
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<fr.modeminecraft.block.city.TrafficLightBlockEntity>> TRAFFIC_LIGHT =
+            BLOCK_ENTITIES.register("traffic_light", () -> BlockEntityType.Builder.of(fr.modeminecraft.block.city.TrafficLightBlockEntity::new,
+                    ModBlocks.TRAFFIC_LIGHT.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WeaponRackBlockEntity>> WEAPON_RACK =
             BLOCK_ENTITIES.register("weapon_rack", () -> BlockEntityType.Builder.of(WeaponRackBlockEntity::new,
                     ModBlocks.WEAPON_RACK.get()).build(null));

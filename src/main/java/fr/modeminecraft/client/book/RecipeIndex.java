@@ -59,7 +59,7 @@ public final class RecipeIndex {
 
     /** Les objets d'époque Seconde Guerre mondiale (pour "@wwii"). */
     private static final Set<String> WWII = Set.of("thompson", "ppsh41", "kar98k", "mosin_nagant", "m1_garand", "luger_p08", "colt_m1911",
-            "mg42", "flakvierling", "vickers", "m2_browning", "dshk", "m1_helmet", "stahlhelm_m40", "ssh40", "m12_flak_vest");
+            "mg42", "flakvierling", "vickers", "maxim_m1910", "m2_browning", "dshk", "m1_helmet", "stahlhelm_m40", "ssh40", "m12_flak_vest");
 
     public static String normalize(String s) {
         return Normalizer.normalize(s.toLowerCase(Locale.ROOT), Normalizer.Form.NFD).replaceAll("\\p{M}", "");

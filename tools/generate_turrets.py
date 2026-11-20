@@ -272,6 +272,54 @@ def vickers():
     return finish(t)
 
 
+def maxim():
+    """Maxim M1910 sur affût Sokolov : petites roues en acier, flèche en U, bouclier, manchon à eau à bouchon de remplissage."""
+    t = T(12)
+    g = t.ground
+    t.part("base")
+    for z0 in (1.6, 13.6):                                       # roues (disques en marches)
+        t.add([2.2, g, z0], [5.8, g + 7.0, z0 + 0.8], "k")
+        t.add([1.2, g + 1.0, z0], [6.8, g + 6.0, z0 + 0.8], "k")
+        t.add([3.4, g + 3.0, z0 - 0.2], [4.6, g + 4.0, z0 + 1.0], "m")   # moyeu
+    t.add([3.5, g + 3.1, 2.4], [4.5, g + 3.9, 13.6], "m")        # essieu
+    t.add([-10.0, g, 6.4], [3.6, g + 1.0, 7.2], "u")             # flèche en U
+    t.add([-10.0, g, 8.8], [3.6, g + 1.0, 9.6], "u")
+    t.add([-11.0, g, 6.0], [-10.0, g + 1.4, 10.0], "u")
+    t.add([-11.6, g + 1.4, 7.4], [-10.6, g + 3.2, 8.6], "k")     # anneau de traction
+    t.part("mount")
+    t.zb(3.0, g + 3.9, 5.0, 5.2, 0.9, "u")
+    t.zb(2.4, 5.0, 5.6, 6.0, 1.5, "u")
+    t.part("body")
+    t.zb(-3, 6.0, 6, 10.2, 1.6, "t")                             # boîtier vert
+    t.spade_grips(-4.4, 7.8, 10.4, 1.5, -3.0)
+    t.zb(-2.3, 10.2, -1.9, 11.6, 0.6, "k")                       # hausse
+    t.zb(-2.3, 11.6, -1.9, 12.2, 0.15, "k", z=7.5)
+    t.zb(-2.3, 11.6, -1.9, 12.2, 0.15, "k", z=8.5)
+    t.zb(18.2, 10.0, 18.6, 11.8, 0.15, "k")                      # guidon
+    # bouclier plus petit, légèrement replié sur les côtés
+    t.add([7.2, 2.0, 2.4], [7.6, 10.6, 13.6], "u")
+    t.add([7.2, 10.6, 2.4], [7.6, 12.8, 6.6], "u")
+    t.add([7.2, 10.6, 9.4], [7.6, 12.8, 13.6], "u")
+    t.add([7.2, 12.8, 2.4], [7.6, 13.4, 13.6], "u")
+    t.add([6.4, 2.0, 1.6], [7.2, 12.4, 2.4], "u")
+    t.add([6.4, 2.0, 13.6], [7.2, 12.4, 14.4], "u")
+    t.part("barrel")
+    t.zb(6, 6.0, 18.4, 10.0, 2.1, "t")                           # manchon à eau (lisse sur la Maxim)
+    t.zb(9.0, 10.0, 10.4, 11.0, 0.7, "k")                        # bouchon de remplissage
+    t.zb(17.8, 10.0, 18.4, 11.0, 0.4, "k")                       # tuyau de vapeur
+    t.zb(18.4, 7.7, 21.0, 8.3, 0.3, "k")
+    t.zb(20.2, 7.3, 21.4, 8.7, 0.7, "k")
+    t.part("cover")
+    t.zb(-2.6, 10.2, 5.4, 10.8, 1.4, "t")
+    t.points["cover_hinge"] = [5.4, 10.5, 8]
+    t.part("body")
+    t.ammo_box(-1.0, 5.0, 2.2, 7.2, 1.8, 5.8, c="u")
+    t.belt([2.0, 7.2, 3.8], [2.0, 9.4, 6.4], 1.2, spacing=0.65, count=7)
+    round_model(t, "small")
+    t.points.update(hip_eye=[-14, 13.6, 8], ads_eye=[-10.0, 11.8, 8], muzzles=[[21.4, 8, 8]], steam=[18.1, 11.1, 8])
+    return finish(t)
+
+
 def flakvierling():
     t = T(20)
     g = t.ground
@@ -357,6 +405,7 @@ def mk19():
 
 
 TURRETS = {
+    "maxim_m1910": maxim,
     "m2_browning": m2_browning,
     "dshk": lambda: m2_browning(dshk=True),
     "mg42": mg42,

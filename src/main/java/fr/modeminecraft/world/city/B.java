@@ -229,6 +229,15 @@ public final class B {
         level.addFreshEntityWithPassengers(t);
     }
 
+    /** Véhicule garé (posé seulement par le chunk qui contient sa position). */
+    void vehicle(int x, int y, int z, fr.modeminecraft.entity.VehicleEntity.Type type, float yaw) {
+        if (!inside(x, y, z)) {
+            return;
+        }
+        BlockPos p = pos(x, y, z);
+        level.addFreshEntity(new fr.modeminecraft.entity.VehicleEntity(level.getLevel(), type, p.getX() + 0.5, p.getY(), p.getZ() + 0.5, yaw));
+    }
+
     int nextInt(int n) {
         return r.nextInt(n);
     }

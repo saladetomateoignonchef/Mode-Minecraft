@@ -1,0 +1,34 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "weapons",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_block",
+      "count": 10
+    },
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 6
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 8
+    },
+    {
+      "item": "minecraft:green_dye",
+      "count": 4
+    },
+    {
+      "item": "minecraft:glass_pane",
+      "count": 2
+    },
+    {
+      "item": "minecraft:piston",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:armored_truck",
+    "count": 1
+  }
+}

@@ -171,7 +171,7 @@ final class CityGenRegions2 {
                 b.walls(1, 0, 2, 14, 7, 14, Blocks.IRON_BLOCK.defaultBlockState());
                 b.fill(1, 7, 2, 14, 7, 14, Blocks.IRON_BLOCK);
                 b.fill(4, 1, 14, 11, 5, 14, Blocks.AIR.defaultBlockState());
-                CityGenRegions.jeep(b, 3, 1, 5);                                  // 4x4 blindé
+                b.vehicle(6, 1, 6, fr.modeminecraft.entity.VehicleEntity.Type.JEEP, 0);   // 4x4 blindé
                 for (int x = 3; x <= 12; x += 3) {
                     b.set(x, 1, 12, Blocks.WATER_CAULDRON.defaultBlockState().setValue(BlockStateProperties.LEVEL_CAULDRON, 3));   // cuves chimiques
                     b.set(x, 2, 12, Blocks.LIME_STAINED_GLASS);
@@ -298,6 +298,7 @@ final class CityGenRegions2 {
                 b.chest(x, 0, 4, Direction.SOUTH, "city_shop", true);
             }
             b.bot(7, 0, 10, Faction.TRADER, BotRole.TRADER, 3);
+            b.bot(5, 0, 8, Faction.CIVILIAN, BotRole.CONTRACTOR, 2);
             b.bot(9, 0, 5, Faction.CIVILIAN, BotRole.CIVILIAN, 10);
             return;
         }
@@ -407,6 +408,9 @@ final class CityGenRegions2 {
                     b.set(7, 0, 3, Blocks.SPRUCE_FENCE_GATE);
                     b.set(5, 0, 6, Blocks.HAY_BLOCK);
                     b.set(5, 1, 6, Blocks.HAY_BLOCK);
+                    if (h < 0.25) {
+                        b.vehicle(9, 0, 9, fr.modeminecraft.entity.VehicleEntity.Type.QUAD, 0);
+                    }
                 } else {
                     b.fill(4, 0, 9, 4, 2, 9, Blocks.CACTUS);
                     b.fill(11, 0, 4, 11, 1, 4, Blocks.CACTUS);
@@ -485,6 +489,7 @@ final class CityGenRegions2 {
                 b.set(2, 2, (z0 + z1) / 2 + 1, Blocks.WHITE_BANNER);                         // affiche WANTED
                 b.chest(12, 1, back + in * -1, Direction.WEST, "city_armory", false);
                 b.bot(9, 1, (z0 + z1) / 2 + in, Faction.SHERIFF, BotRole.OFFICER, 10);
+                b.bot(5, 1, (z0 + z1) / 2, Faction.SHERIFF, BotRole.CONTRACTOR, 2);
             }
             case "store" -> {
                 for (int x = 3; x <= 12; x++) {
@@ -603,6 +608,7 @@ final class CityGenRegions2 {
                 b.chest(11, 1, 4, Direction.WEST, "military_crate", false);
                 b.set(7, 3, 7, Blocks.GLOWSTONE);
                 b.bot(7, 1, 8, Faction.REFINERY, BotRole.OFFICER, 10);
+                b.vehicle(7, 0, 15, fr.modeminecraft.entity.VehicleEntity.Type.JEEP, 90);
             }
             default -> {
                 if (h > 0.6) {

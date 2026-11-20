@@ -170,6 +170,9 @@ public final class BotEvents {
             return;
         }
         for (ServerPlayer p : overworld.players()) {
+            if (!p.isSpectator() && overworld.getRandom().nextFloat() < CONVOY_CHANCE) {
+                Convoys.spawn(overworld, p.position());
+            }
             if (!p.isSpectator() && overworld.getRandom().nextFloat() < AIRDROP_CHANCE) {
                 fr.modeminecraft.entity.AirdropEntity.call(overworld, p.position());
             }
@@ -195,6 +198,8 @@ public final class BotEvents {
     public static float FALCON_CHANCE = 0.12f;
     /** Probabilité, par minute et par joueur, d'un largage aérien (environ un toutes les 25 minutes). */
     public static float AIRDROP_CHANCE = 0.04f;
+    /** Probabilité, par minute et par joueur, qu'un convoi de patrouille passe dans les environs. */
+    public static float CONVOY_CHANCE = 0.05f;
 
     static void later(HumanBotEntity bot, int delay, Runnable r) {
         LATER.add(new Object[]{bot.level().getGameTime() + delay, r});

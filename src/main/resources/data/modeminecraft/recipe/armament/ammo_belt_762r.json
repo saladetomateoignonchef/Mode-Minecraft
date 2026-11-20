@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "ammo",
+  "ingredients": [
+    {
+      "item": "minecraft:string",
+      "count": 4
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 10
+    },
+    {
+      "item": "minecraft:copper_ingot",
+      "count": 8
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:ammo_belt_762r",
+    "count": 1
+  }
+}

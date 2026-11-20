@@ -77,6 +77,7 @@ public class MountedGunEntity extends Entity {
         M2("m2_browning",    14f,  550, 100, "ammo_box_50",       100, 1 / 160f, 0.65f, 1, true,  1.2f, Projectile.BULLET, 90, 45, 25, 7.0f, 0.7f, ModSounds.SHOT_HEAVY, 1.0f, 1.3f, 1.1f),
         DSHK("dshk",         13f,  600, 100, "ammo_box_50",       100, 1 / 150f, 0.6f,  1, true,  1.0f, Projectile.BULLET, 90, 45, 25, 7.0f, 0.8f, ModSounds.SHOT_HEAVY, 0.9f, 1.3f, 1.1f),
         MG42("mg42",         6.5f, 1200, 250, "ammo_box_792",     250, 1 / 80f,  0.25f, 0, false, 0,    Projectile.BULLET, 90, 45, 25, 6.0f, 1.3f, ModSounds.SHOT_BATTLE, 1.3f, 1.2f, 1.1f),
+        MAXIM("maxim_m1910", 7.0f, 600, 250, "ammo_belt_762r",   250, 0,        0.3f,  0, false, 0,    Projectile.BULLET, 90, 40, 20, 6.0f, 0.95f, ModSounds.SHOT_RIFLE, 0.8f, 1.3f, 1.2f),
         VICKERS("vickers",   7.5f, 600, 250, "ammo_belt_303",     250, 0,        0.3f,  0, false, 0,    Projectile.BULLET, 90, 45, 25, 6.0f, 0.9f, ModSounds.SHOT_RIFLE, 0.85f, 1.3f, 1.2f),
         FLAK("flakvierling", 16f,  400, 80,  "flak_magazine_20mm", 20, 0,        0.5f,  0, false, 0.6f, Projectile.FLAK,  180, 75, 10, 6.0f, 0.6f, ModSounds.SHOT_HEAVY, 0.7f, 2.4f, 1.9f),
         MK19("mk19",         22f,  250, 32,  "ammo_box_40mm",      32, 0,        0f,    0, false, 0,    Projectile.GRENADE, 90, 45, 25, 1.7f, 1.0f, ModSounds.SHOT_LAUNCHER, 0.9f, 1.3f, 1.1f);
@@ -555,7 +556,7 @@ public class MountedGunEntity extends Entity {
             projectile = new RocketEntity(ModEntities.GRENADE.get(), level, player, 1.75f); // rayon d'explosion ~3,5 blocs
         } else {
             BulletEntity b = new BulletEntity(level, player, kind.damage, kind.pierce, false, AmmoType.STANDARD);
-            b.setCaliberClass(kind == Kind.MG42 || kind == Kind.VICKERS ? 1 : 2);
+            b.setCaliberClass(kind == Kind.MG42 || kind == Kind.VICKERS || kind == Kind.MAXIM ? 1 : 2);
             b.setArmorPenetration(kind.armorPen);
             b.setHeavy(kind.breaksFragile, kind.knockback, kind.projectile == Projectile.FLAK ? 0.75f : 0);
             b.setBallistics(0.002f, 60, 100);
@@ -592,7 +593,7 @@ public class MountedGunEntity extends Entity {
             level.sendParticles(ParticleTypes.CAMPFIRE_COSY_SMOKE, muzzle.x, muzzle.y, muzzle.z, 1, 0.05, 0.05, 0.05, 0.005);
         }
         // Vickers : gros nuages de vapeur par le tuyau du manchon pendant les longues rafales
-        if (kind == Kind.VICKERS && burst() > 30 && shot % 3 == 0 && geo.steam() != null) {
+        if ((kind == Kind.VICKERS || kind == Kind.MAXIM) && burst() > 30 && shot % 3 == 0 && geo.steam() != null) {
             Vec3 s = position().add(TurretGeometry.offset(geo.pivot(), yaw, pitch, geo.steam()));
             level.sendParticles(ParticleTypes.CLOUD, s.x, s.y, s.z, 3, 0.08, 0.1, 0.08, 0.03);
         }
@@ -603,7 +604,7 @@ public class MountedGunEntity extends Entity {
     @SubscribeEvent
     public static void onRiderHurt(LivingIncomingDamageEvent event) {
         var victim = event.getEntity();
-        if (!(victim.getVehicle() instanceof MountedGunEntity gun) || gun.kind() != Kind.VICKERS
+        if (!(victim.getVehicle() instanceof MountedGunEntity gun) || gun.kind() != Kind.VICKERS && gun.kind() != Kind.MAXIM
                 || !(event.getSource().getDirectEntity() instanceof net.minecraft.world.entity.projectile.Projectile proj)) {
             return;
         }

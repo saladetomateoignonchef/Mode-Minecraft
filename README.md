@@ -374,7 +374,7 @@ Les lampes se montent sur le **rail latéral** (flanc droit du garde-main, avec 
 - Une grenade IEM coupe aussi les lampes.
 
 ### Villes, factions et bots (monde vivant)
-Des **villes générées** apparaissent selon le biome (environ une tous les 700 blocs, sur terrain assez plat) :
+Des **villes générées** apparaissent selon le biome (environ une tous les 1 200 blocs, sur terrain assez plat) :
 
 | Biome | Ville (proportion) | Faction | Attitude |
 |---|---|---|---|
@@ -387,7 +387,7 @@ Des **villes générées** apparaissent selon le biome (environ une tous les 700
 
 - **Bots** : corps de joueur, 78 skins 64x64 sur mesure (aucun Steve / Alex), casques / gilets / pantalons / rangers du mod,
   armes à deux mains, recul, rechargement, accroupis à couvert, snipers allongés sur les toits, servants de tourelles.
-- **IA** : sommation de 3,5 s (icône jaune + radio) si on a une arme en main ; on la range = ils se calment, sinon toute
+- **IA** : sommation de 3,5 s (icône jaune + radio) si une arme est visible (en main, dans le dos ou à la hanche) ; on la retire de la barre d'action = ils se calment, sinon toute
   la faction devient hostile (5 min). Vision en cône de 110° (45 blocs, 90 pour les snipers) et ouïe à 10 blocs ;
   coups de feu entendus à 40 blocs (16 avec silencieux) ; coffres pillés sous leurs yeux ; prise de couverture derrière
   un muret, rafales courtes, grenades ; patrouilles en binôme ; **renforts SWAT** en cas de fusillade avec la police.
@@ -403,6 +403,18 @@ Des **villes générées** apparaissent selon le biome (environ une tous les 700
   seringue d'adrénaline (vitesse, force, résistance).
 - **Largages aériens** (≈ toutes les 25 min) : caisse sous parachute, coffre de butin rare et fumée ; les Faucons
   Blancs et la faction locale s'affrontent pour la récupérer.
+- **Véhicules conduisibles** (table d'armement) : quad, voiture de police (L : sirène et gyrophares), jeep militaire,
+  camion blindé (tourelle M2 sur le toit). Z/S/Q/D pour conduire, la direction dépend de la vitesse ; ils montent les
+  marches, prennent des dégâts (blindage) et explosent quand ils sont détruits. Voitures garées dans les villes.
+- **Convois de patrouille** : camion blindé + jeep (ou deux voitures de police sirène hurlante) conduits par des bots,
+  qui traversent la région en évitant murs, ravins et eau ; s'ils repèrent un ennemi, l'équipage descend combattre.
+- **Contrats de chasse** : les donneurs de contrats (commissariat, shérif, souk, QG rebelle, place soviétique,
+  ponton) confient une cible nommée (★) cachée à 200-400 blocs avec ses gardes ; la **boussole de traque** pointe vers
+  elle ; une fois abattue, on revient toucher la prime (émeraudes + bonus).
+- **Décors fonctionnels** : feux tricolores qui changent de couleur (axes décalés aux carrefours), bouches d'incendie qui
+  projettent un geyser une fois détruites (même par balle), extincteurs qui explosent en fumée, portiques détecteurs de
+  métaux qui bipent si l'on est armé.
+- **Maxim M1910** sur affût Sokolov (tourelle refroidie à l'eau, bande de 7,62x54R) sur les tours du palais du désert.
 - Œufs d'apparition de chaque faction (et d'une escouade complète) dans l'onglet créatif.
 
 ### Gameplay et progression
@@ -553,6 +565,7 @@ tools/enhance_icons.py          # icônes 2D et blocs en 32x32 (Scale2x, relief,
 tools/generate_skins.py         # skins 64x64 des bots (15 factions + chevalier) et cape des Faucons Blancs
 tools/generate_city_items.py    # Pourfendeuse de Dragons (3D), cartes d'accès, insigne, soins, œufs
 tools/generate_city_data.py     # structures des villes, biomes, tables de butin, portes blindées
+tools/generate_vehicles.py      # véhicules 3D (carrosserie + roue) : quad, police, jeep, camion blindé
 src/.../world/city/             # génération procédurale des villes (plan, parcelles, décors, bots)
 src/.../entity/bot/             # bots, factions, IA, Faucons Blancs, marché noir
 ```

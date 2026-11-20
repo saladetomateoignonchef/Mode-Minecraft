@@ -8,6 +8,7 @@ public enum BotRole {
     OFFICER,      // chef de patrouille (meilleur équipement)
     CIVILIAN,     // habitant pacifique (fuit les coups de feu)
     TRADER,       // marchand clandestin
+    CONTRACTOR,   // donneur de contrats de chasse
     // Faucons Blancs (100 % corps à corps)
     COMMANDER, CHIEF, SCOUT, LANCER, ASSASSIN, BRUTE;
 

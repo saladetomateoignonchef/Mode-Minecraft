@@ -1,0 +1,30 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "weapons",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_block",
+      "count": 2
+    },
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 6
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 4
+    },
+    {
+      "item": "minecraft:leather",
+      "count": 2
+    },
+    {
+      "item": "minecraft:red_dye",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:quad",
+    "count": 1
+  }
+}

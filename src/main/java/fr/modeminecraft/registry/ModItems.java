@@ -50,6 +50,10 @@ public final class ModItems {
     public static final DeferredItem<BlockItem> RUBIS_ORE = ITEMS.registerSimpleBlockItem(ModBlocks.RUBIS_ORE);
     public static final DeferredItem<BlockItem> DEEPSLATE_RUBIS_ORE = ITEMS.registerSimpleBlockItem(ModBlocks.DEEPSLATE_RUBIS_ORE);
     public static final DeferredItem<BlockItem> RUBIS_BLOCK = ITEMS.registerSimpleBlockItem(ModBlocks.RUBIS_BLOCK);
+    public static final DeferredItem<BlockItem> TRAFFIC_LIGHT = ITEMS.registerSimpleBlockItem(ModBlocks.TRAFFIC_LIGHT);
+    public static final DeferredItem<BlockItem> FIRE_HYDRANT = ITEMS.registerSimpleBlockItem(ModBlocks.FIRE_HYDRANT);
+    public static final DeferredItem<BlockItem> FIRE_EXTINGUISHER = ITEMS.registerSimpleBlockItem(ModBlocks.FIRE_EXTINGUISHER);
+    public static final DeferredItem<BlockItem> METAL_DETECTOR = ITEMS.registerSimpleBlockItem(ModBlocks.METAL_DETECTOR);
 
     // ---------- Outils ----------
     public static final DeferredItem<PickaxeItem> RUBIS_PICKAXE = ITEMS.register("rubis_pickaxe",
@@ -464,11 +468,13 @@ public final class ModItems {
     public static final DeferredItem<Item> DSHK = turret("dshk", fr.modeminecraft.entity.MountedGunEntity.Kind.DSHK);
     public static final DeferredItem<Item> MG42 = turret("mg42", fr.modeminecraft.entity.MountedGunEntity.Kind.MG42);
     public static final DeferredItem<Item> VICKERS = turret("vickers", fr.modeminecraft.entity.MountedGunEntity.Kind.VICKERS);
+    public static final DeferredItem<Item> MAXIM_M1910 = turret("maxim_m1910", fr.modeminecraft.entity.MountedGunEntity.Kind.MAXIM);
     public static final DeferredItem<Item> FLAKVIERLING = turret("flakvierling", fr.modeminecraft.entity.MountedGunEntity.Kind.FLAK);
     public static final DeferredItem<Item> MK19 = turret("mk19", fr.modeminecraft.entity.MountedGunEntity.Kind.MK19);
     public static final DeferredItem<Item> AMMO_BOX_50 = ITEMS.register("ammo_box_50", () -> new fr.modeminecraft.item.TurretAmmoItem(new Item.Properties()));
     public static final DeferredItem<Item> AMMO_BOX_792 = ITEMS.register("ammo_box_792", () -> new fr.modeminecraft.item.TurretAmmoItem(new Item.Properties()));
     public static final DeferredItem<Item> AMMO_BELT_303 = ITEMS.register("ammo_belt_303", () -> new fr.modeminecraft.item.TurretAmmoItem(new Item.Properties()));
+    public static final DeferredItem<Item> AMMO_BELT_762R = ITEMS.register("ammo_belt_762r", () -> new fr.modeminecraft.item.TurretAmmoItem(new Item.Properties()));
     public static final DeferredItem<Item> FLAK_MAGAZINE_20MM = ITEMS.register("flak_magazine_20mm", () -> new fr.modeminecraft.item.TurretAmmoItem(new Item.Properties()));
     public static final DeferredItem<Item> AMMO_BOX_40MM = ITEMS.register("ammo_box_40mm", () -> new fr.modeminecraft.item.TurretAmmoItem(new Item.Properties()));
     /** Clé à molette : Shift + clic droit sur une tourelle pour la démonter. */
@@ -989,6 +995,19 @@ public final class ModItems {
             () -> new fr.modeminecraft.item.MedicalItem(fr.modeminecraft.item.MedicalItem.Kind.FIRST_AID_KIT, new Item.Properties().stacksTo(4)));
     public static final DeferredItem<Item> ADRENALINE_SYRINGE = ITEMS.register("adrenaline_syringe",
             () -> new fr.modeminecraft.item.MedicalItem(fr.modeminecraft.item.MedicalItem.Kind.ADRENALINE, new Item.Properties().stacksTo(4).rarity(Rarity.UNCOMMON)));
+    // Véhicules
+    public static final DeferredItem<Item> QUAD = ITEMS.register("quad",
+            () -> new fr.modeminecraft.item.VehicleItem(fr.modeminecraft.entity.VehicleEntity.Type.QUAD, new Item.Properties()));
+    public static final DeferredItem<Item> POLICE_CAR = ITEMS.register("police_car",
+            () -> new fr.modeminecraft.item.VehicleItem(fr.modeminecraft.entity.VehicleEntity.Type.POLICE_CAR, new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final DeferredItem<Item> JEEP = ITEMS.register("jeep",
+            () -> new fr.modeminecraft.item.VehicleItem(fr.modeminecraft.entity.VehicleEntity.Type.JEEP, new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final DeferredItem<Item> ARMORED_TRUCK = ITEMS.register("armored_truck",
+            () -> new fr.modeminecraft.item.VehicleItem(fr.modeminecraft.entity.VehicleEntity.Type.ARMORED_TRUCK, new Item.Properties().rarity(Rarity.RARE)));
+    public static final DeferredItem<Item> HUNTING_CONTRACT = ITEMS.register("hunting_contract",
+            () -> new fr.modeminecraft.item.HuntingContractItem(new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final DeferredItem<Item> TRACKING_COMPASS = ITEMS.register("tracking_compass",
+            () -> new fr.modeminecraft.item.TrackingCompassItem(new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final DeferredItem<Item> FALCON_INSIGNIA = ITEMS.registerSimpleItem("falcon_insignia", new Item.Properties().rarity(Rarity.RARE));
     // Œufs d'apparition des bots (une faction chacun, rôle tiré au hasard)
     public static final java.util.List<DeferredItem<Item>> BOT_EGGS = new java.util.ArrayList<>();

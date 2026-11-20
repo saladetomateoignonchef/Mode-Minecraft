@@ -75,7 +75,8 @@ public final class FlashlightClient {
         while (ModKeyMappings.FLASHLIGHT.consumeClick()) {
             presses++;
         }
-        if (presses == 0 || mc.player == null || !(mc.player.getMainHandItem().getItem() instanceof GunItem)) {
+        if (presses == 0 || mc.player == null || !(mc.player.getMainHandItem().getItem() instanceof GunItem
+                || mc.player.getVehicle() instanceof fr.modeminecraft.entity.VehicleEntity)) {
             return;
         }
         PacketDistributor.sendToServer(new FlashlightPayload(Screen.hasShiftDown()));

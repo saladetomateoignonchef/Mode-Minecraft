@@ -44,6 +44,22 @@ public final class ModBlocks {
             () -> new DropExperienceBlock(UniformInt.of(0, 2), BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE_GOLD_ORE)));
 
     /** Râtelier d'armes : expose 3 armes à feu contre un mur. */
+    // Décors urbains fonctionnels
+    public static final DeferredBlock<Block> TRAFFIC_LIGHT = BLOCKS.register("traffic_light",
+            () -> new fr.modeminecraft.block.city.TrafficLightBlock(net.minecraft.world.level.block.state.BlockBehaviour.Properties.of()
+                    .mapColor(net.minecraft.world.level.material.MapColor.COLOR_BLACK).strength(3f).noOcclusion().lightLevel(s -> 7)));
+    public static final DeferredBlock<Block> FIRE_HYDRANT = BLOCKS.register("fire_hydrant",
+            () -> new fr.modeminecraft.block.city.BreakableDecoBlock(fr.modeminecraft.block.city.BreakableDecoBlock.Kind.HYDRANT,
+                    net.minecraft.world.level.block.state.BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.COLOR_RED)
+                            .strength(1.5f, 2f).noOcclusion().sound(net.minecraft.world.level.block.SoundType.METAL)));
+    public static final DeferredBlock<Block> FIRE_EXTINGUISHER = BLOCKS.register("fire_extinguisher",
+            () -> new fr.modeminecraft.block.city.BreakableDecoBlock(fr.modeminecraft.block.city.BreakableDecoBlock.Kind.EXTINGUISHER,
+                    net.minecraft.world.level.block.state.BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.COLOR_RED)
+                            .strength(0.5f).noOcclusion().sound(net.minecraft.world.level.block.SoundType.METAL)));
+    public static final DeferredBlock<Block> METAL_DETECTOR = BLOCKS.register("metal_detector",
+            () -> new fr.modeminecraft.block.city.MetalDetectorBlock(net.minecraft.world.level.block.state.BlockBehaviour.Properties.of()
+                    .mapColor(net.minecraft.world.level.material.MapColor.METAL).strength(3f).noOcclusion().noCollission()));
+
     /** Portes blindées de salles fortes (cartes d'accès bleue / rouge / noire). */
     public static final DeferredBlock<Block> VAULT_DOOR_BLUE = BLOCKS.register("vault_door_blue",
             () -> new fr.modeminecraft.block.VaultDoorBlock(1, vaultProps()));

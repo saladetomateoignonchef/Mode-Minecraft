@@ -58,6 +58,7 @@ public final class ClientSetup {
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(fr.modeminecraft.registry.ModBlockEntities.WEAPON_RACK.get(), WeaponRackRenderer::new);
+        event.registerBlockEntityRenderer(fr.modeminecraft.registry.ModBlockEntities.TRAFFIC_LIGHT.get(), TrafficLightRenderer::new);
         event.registerEntityRenderer(ModEntities.BULLET.get(), ctx -> new ThrownItemRenderer<>(ctx, 0.5f, true));
         event.registerEntityRenderer(ModEntities.ROCKET.get(), ctx -> new ThrownItemRenderer<>(ctx, 1.25f, true));
         event.registerEntityRenderer(ModEntities.GRENADE.get(), ctx -> new ThrownItemRenderer<>(ctx, 0.8f, false));
@@ -68,6 +69,8 @@ public final class ClientSetup {
         event.registerEntityRenderer(ModEntities.MOUNTED_GUN.get(), MountedGunRenderer::new);
         event.registerEntityRenderer(ModEntities.HUMAN_BOT.get(), HumanBotRenderer::new);
         event.registerEntityRenderer(ModEntities.AIRDROP.get(), AirdropRenderer::new);
+        event.registerEntityRenderer(ModEntities.GEYSER.get(), net.minecraft.client.renderer.entity.NoopRenderer::new);
+        event.registerEntityRenderer(ModEntities.VEHICLE.get(), VehicleRenderer::new);
         event.registerEntityRenderer(ModEntities.THROWN_GRENADE.get(), ExplosiveRenderers.Grenade::new);
         event.registerEntityRenderer(ModEntities.PLACED_EXPLOSIVE.get(), ExplosiveRenderers.Placed::new);
         event.registerEntityRenderer(ModEntities.AREA_CLOUD.get(), ExplosiveRenderers.Invisible::new);
@@ -105,6 +108,17 @@ public final class ClientSetup {
         event.register(ModKeyMappings.PRONE);
         event.register(ModKeyMappings.SHOW_RECIPE);
         event.register(ModKeyMappings.SHOW_USES);
+    }
+
+    /** Boussole de traque : même aiguille que la boussole, pointée sur la cible du contrat. */
+    @SubscribeEvent
+    public static void compassProperty(net.neoforged.fml.event.lifecycle.FMLClientSetupEvent event) {
+        event.enqueueWork(() -> net.minecraft.client.renderer.item.ItemProperties.register(ModItems.TRACKING_COMPASS.get(),
+                net.minecraft.resources.ResourceLocation.withDefaultNamespace("angle"),
+                new net.minecraft.client.renderer.item.CompassItemPropertyFunction((level, stack, entity) -> {
+                    var t = stack.get(net.minecraft.core.component.DataComponents.LODESTONE_TRACKER);
+                    return t != null ? t.target().orElse(null) : null;
+                })));
     }
 
     /** Couleurs des œufs d'apparition des bots (celle de la faction). */

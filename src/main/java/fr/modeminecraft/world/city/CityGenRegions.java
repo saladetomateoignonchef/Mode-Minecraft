@@ -209,7 +209,7 @@ final class CityGenRegions {
             b.fill(c[0] + 1, 1, c[1] + 1, c[0] + 1, 13, c[1] + 1, B.facing(Blocks.LADDER, Direction.SOUTH));
             b.walls(c[0], 14, c[1], c[0] + 5, 14, c[1] + 5, Blocks.RED_SANDSTONE_WALL.defaultBlockState());
             Deco.searchlight(b, c[0] + 4, 14, c[1] + 4);
-            b.turret(c[0] + 3, 14, c[1] + 3, c[0] < 10 && c[1] < 10 ? MountedGunEntity.Kind.M2 : MountedGunEntity.Kind.VICKERS,
+            b.turret(c[0] + 3, 14, c[1] + 3, c[0] < 10 && c[1] < 10 ? MountedGunEntity.Kind.M2 : MountedGunEntity.Kind.MAXIM,
                     c[1] < 10 ? 180 : 0, Faction.MILITIA);
         }
         // porte d'entrée gardée (sud)
@@ -313,6 +313,7 @@ final class CityGenRegions {
             }
         }
         b.bot(24, 0, 16, Faction.TRADER, BotRole.TRADER, 4);
+        b.bot(12, 0, 10, Faction.CIVILIAN, BotRole.CONTRACTOR, 2);
         b.bot(10, 0, 20, Faction.CIVILIAN, BotRole.CIVILIAN, 16);
         b.bot(35, 0, 10, Faction.CIVILIAN, BotRole.CIVILIAN, 16);
         b.pair(20, 0, 28, Faction.MILITIA, 24);
@@ -399,6 +400,7 @@ final class CityGenRegions {
             Deco.armoryRack(b, 9, DECK + 2, 7, Direction.WEST);
             b.chest(9, DECK + 1, 7, Direction.WEST, "rebel_cache", false);
             b.bot(6, DECK + 1, 7, Faction.REBEL, BotRole.OFFICER, 6);
+            b.bot(8, DECK + 1, 4, Faction.REBEL, BotRole.CONTRACTOR, 2);
         }
         b.bot(4, DECK + 1, 4, Faction.REBEL, BotRole.SOLDIER, 8);
         if (b.chance(0.2f)) {
@@ -440,6 +442,9 @@ final class CityGenRegions {
         b.fill(12, 2, 11, 12, 2, 13, Blocks.GREEN_WOOL);
         b.fill(11, 1, 13, 13, 1, 13, Blocks.GREEN_WOOL);
         b.bot(8, 0, 9, Faction.REBEL, BotRole.SOLDIER, 12);
+        if (h < 0.4) {
+            b.vehicle(4, 0, 12, fr.modeminecraft.entity.VehicleEntity.Type.QUAD, 45);
+        }
         if (h > 0.6) {
             b.bot(5, 0, 8, Faction.REBEL, BotRole.SOLDIER, 12);
         }
@@ -491,8 +496,8 @@ final class CityGenRegions {
                 b.fill(2, 0, 3, 2, 11, 29, Blocks.LIGHT_GRAY_CONCRETE);
                 b.fill(2, 1, 9, 2, 7, 23, Blocks.AIR.defaultBlockState());                      // grande porte
                 b.fill(3, -1, 3, 29, -1, 29, Blocks.GRAY_CONCRETE);
-                jeep(b, 8, 0, 10);
-                jeep(b, 8, 0, 20);
+                b.vehicle(10, 0, 11, fr.modeminecraft.entity.VehicleEntity.Type.JEEP, 90);
+                b.vehicle(11, 0, 21, fr.modeminecraft.entity.VehicleEntity.Type.ARMORED_TRUCK, 90);
                 forklift(b, 20, 0, 14);
                 for (int z = 6; z <= 26; z += 4) {
                     b.chest(27, 0, z, Direction.WEST, "military_crate", false);
@@ -762,6 +767,7 @@ final class CityGenRegions {
                 Deco.lampPost(b, 22, 0, 9, Direction.WEST);
                 Deco.bench(b, 12, 0, 23, Direction.NORTH);
                 b.pair(20, 0, 20, Faction.SOVIET, 16);
+                b.bot(12, 0, 21, Faction.CIVILIAN, BotRole.CONTRACTOR, 2);
             }
             default -> {
             }

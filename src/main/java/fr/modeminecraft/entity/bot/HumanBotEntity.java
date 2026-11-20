@@ -82,6 +82,8 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
     public long lastTargetSeen;
     public int turretFireTicks;   // servant de tourelle : gâchette pressée
     public String debugState = "";
+    /** Équipage d'un convoi (disparaît quand aucun joueur n'est proche). */
+    public boolean convoy;
 
     public HumanBotEntity(EntityType<? extends HumanBotEntity> type, Level level) {
         super(type, level);
@@ -159,7 +161,7 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
             case BRUTE -> 40;
             case SCOUT, LANCER, ASSASSIN -> 30;
             case OFFICER -> 30;
-            case CIVILIAN, TRADER -> 20;
+            case CIVILIAN, TRADER, CONTRACTOR -> 20;
             default -> 24;
         };
         getAttribute(Attributes.MAX_HEALTH).setBaseValue(hp);
@@ -459,7 +461,7 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
 
     @Override
     public boolean removeWhenFarAway(double distance) {
-        return (role().falcon() || faction() == Faction.SWAT) && !isPersistenceRequired();
+        return (role().falcon() || faction() == Faction.SWAT || convoy) && !isPersistenceRequired();
     }
 
     // ------------------------------------------------------------------ sauvegarde
@@ -470,6 +472,7 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
         tag.putString("Role", role().name());
         tag.putInt("Skin", skin());
         tag.putByte("Sword", swordState());
+        tag.putBoolean("Convoy", convoy);
         if (home != null) {
             tag.put("Home", NbtUtils.writeBlockPos(home));
             tag.putInt("HomeRadius", homeRadius);
@@ -497,6 +500,7 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
             }
         }
         entityData.set(SKIN, tag.getInt("Skin"));
+        convoy = tag.getBoolean("Convoy");
         entityData.set(SWORD_STATE, tag.getByte("Sword") == SWORD_DRAWN ? SWORD_DRAWN : SWORD_BACK);
         NbtUtils.readBlockPos(tag, "Home").ifPresent(p -> home = p);
         if (tag.contains("HomeRadius")) {
@@ -517,6 +521,13 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
 
     @Override
     protected net.minecraft.world.InteractionResult mobInteract(Player player, net.minecraft.world.InteractionHand hand) {
+        if (role() == BotRole.CONTRACTOR && isAlive()) {
+            if (!level().isClientSide) {
+                getLookControl().setLookAt(player);
+                Contracts.interact(this, player);
+            }
+            return net.minecraft.world.InteractionResult.sidedSuccess(level().isClientSide);
+        }
         if (role() == BotRole.TRADER && isAlive() && tradingPlayer == null && !player.isSecondaryUseActive()) {
             if (!level().isClientSide) {
                 setTradingPlayer(player);
@@ -586,6 +597,9 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
     /** Nom affiché au-dessus de la tête (rôle et faction). */
     @Override
     protected net.minecraft.network.chat.Component getTypeName() {
+        if (role() == BotRole.CONTRACTOR) {
+            return net.minecraft.network.chat.Component.translatable("entity.modeminecraft.bot.contractor");
+        }
         return net.minecraft.network.chat.Component.translatable("entity.modeminecraft.bot." + faction().id + (role() == BotRole.CHIEF ? ".chief"
                 : role() == BotRole.COMMANDER ? ".commander" : role() == BotRole.SNIPER ? ".sniper" : ""));
     }
