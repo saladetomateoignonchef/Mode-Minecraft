@@ -92,6 +92,9 @@ public final class GunModels {
     public static void registerModels(ModelEvent.RegisterAdditional event) {
         for (GunItem gun : guns()) {
             for (GunSkin skin : GunSkin.values()) {
+                if (!skin.availableFor(name(gun))) {
+                    continue;
+                }
                 event.register(ModelResourceLocation.standalone(skinModel(name(gun), skin)));
                 event.register(ModelResourceLocation.standalone(magModel(name(gun), skin)));
                 event.register(ModelResourceLocation.standalone(slideModel(name(gun), skin)));
@@ -112,6 +115,10 @@ public final class GunModels {
             if (geo != null) {
                 geo.parts().forEach(p -> event.register(fr.modeminecraft.client.MountedGunRenderer.part(kind.id, p)));
             }
+        }
+        for (var dt : fr.modeminecraft.entity.drone.DroneType.values()) {
+            event.register(fr.modeminecraft.client.DroneRenderer.part(dt.id, "body"));
+            event.register(fr.modeminecraft.client.DroneRenderer.part(dt.id, "rotor"));
         }
         for (var vt : fr.modeminecraft.entity.VehicleEntity.Type.values()) {             // véhicules : carrosserie + roue
             event.register(fr.modeminecraft.client.VehicleRenderer.part(vt.id, "body"));
@@ -307,7 +314,8 @@ public final class GunModels {
                                           @Nullable LivingEntity entity, int seed) {
                     // Le RPG-7 n'affiche sa roquette que s'il est chargé
                     boolean loaded = !GunMounts.magNeedsAmmo(gunName) || GunItem.getAmmo(stack) > 0;
-                    Key key = new Key(gunName, GunItem.getSkin(stack), GunItem.getAttachments(stack), loaded,
+                    GunSkin shownSkin = GunItem.getSkin(stack).availableFor(gunName) ? GunItem.getSkin(stack) : GunSkin.DEFAULT;
+                    Key key = new Key(gunName, shownSkin, GunItem.getAttachments(stack), loaded,
                             animationFrame(gunName, stack, entity), magOffset(stack, entity), ammoVisual(gunName, stack));
                     return CACHE.computeIfAbsent(key, GunModels::compose);
                 }

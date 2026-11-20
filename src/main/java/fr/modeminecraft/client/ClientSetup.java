@@ -46,6 +46,11 @@ public final class ClientSetup {
                 }
             }
             registerBowProperties(ModItems.RUBIS_BOW.get());
+            ItemProperties.register(ModItems.BALLISTIC_SHIELD.get(), ResourceLocation.withDefaultNamespace("blocking"), (stack, level, entity, seed) ->
+                    entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1 : 0);
+            // Heaume du Chef des Troupes de Choc : fissuré, yeux rouges en Mode Berserk
+            ItemProperties.register(ModItems.GREAT_HELM.get(), ModeMinecraft.id("berserk"), (stack, level, entity, seed) ->
+                    entity instanceof fr.modeminecraft.entity.bot.HumanBotEntity b && b.berserk() ? 1 : 0);
             // Munitions spéciales : le modèle affiche une marque de couleur selon le type
             ModItems.ITEMS.getEntries().stream().map(h -> h.get())
                     .filter(i -> i instanceof fr.modeminecraft.item.AmmoItem)
@@ -58,6 +63,7 @@ public final class ClientSetup {
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(fr.modeminecraft.registry.ModBlockEntities.WEAPON_RACK.get(), WeaponRackRenderer::new);
+        event.registerBlockEntityRenderer(fr.modeminecraft.registry.ModBlockEntities.TROPHY_RACK.get(), TrophyRackRenderer::new);
         event.registerBlockEntityRenderer(fr.modeminecraft.registry.ModBlockEntities.TRAFFIC_LIGHT.get(), TrafficLightRenderer::new);
         event.registerEntityRenderer(ModEntities.BULLET.get(), ctx -> new ThrownItemRenderer<>(ctx, 0.5f, true));
         event.registerEntityRenderer(ModEntities.ROCKET.get(), ctx -> new ThrownItemRenderer<>(ctx, 1.25f, true));
@@ -71,6 +77,7 @@ public final class ClientSetup {
         event.registerEntityRenderer(ModEntities.AIRDROP.get(), AirdropRenderer::new);
         event.registerEntityRenderer(ModEntities.GEYSER.get(), net.minecraft.client.renderer.entity.NoopRenderer::new);
         event.registerEntityRenderer(ModEntities.VEHICLE.get(), VehicleRenderer::new);
+        event.registerEntityRenderer(ModEntities.DRONE.get(), DroneRenderer::new);
         event.registerEntityRenderer(ModEntities.THROWN_GRENADE.get(), ExplosiveRenderers.Grenade::new);
         event.registerEntityRenderer(ModEntities.PLACED_EXPLOSIVE.get(), ExplosiveRenderers.Placed::new);
         event.registerEntityRenderer(ModEntities.AREA_CLOUD.get(), ExplosiveRenderers.Invisible::new);
@@ -148,6 +155,7 @@ public final class ClientSetup {
         event.registerAbove(VanillaGuiLayers.CROSSHAIR, ModeMinecraft.id("lock_on"), LockOnClient::render);
         event.registerAbove(VanillaGuiLayers.CROSSHAIR, ModeMinecraft.id("grenade_timer"), GunHudLayer::renderGrenadeTimer);
         event.registerAboveAll(ModeMinecraft.id("flashbang"), FlashClient::render);
+        event.registerAboveAll(ModeMinecraft.id("drone_hud"), DroneClient::renderHud);
         event.registerAboveAll(ModeMinecraft.id("strobe_dazzle"), FlashlightClient::renderDazzle);
         event.registerAbove(VanillaGuiLayers.HOTBAR, ModeMinecraft.id("mounted_gun"), GunHudLayer::renderMounted);
     }
@@ -214,6 +222,21 @@ public final class ClientSetup {
             }
         }, ModItems.ITEMS.getEntries().stream().map(h -> h.get())
                 .filter(item -> item instanceof fr.modeminecraft.item.melee.MeleeWeaponItem).toArray(Item[]::new));
+        // Pourfendeuse de Dragons : dégainage par-dessus l'épaule puis tenue à deux mains (3e personne)
+        event.registerItem(new IClientItemExtensions() {
+            @Override
+            public HumanoidModel.ArmPose getArmPose(LivingEntity entity, InteractionHand hand, ItemStack stack) {
+                return hand == InteractionHand.MAIN_HAND && entity instanceof net.minecraft.world.entity.player.Player
+                        ? GreatswordPose.pose() : null;
+            }
+        }, ModItems.DRAGONSLAYER.get());
+        // Télécommande de drone : les deux mains la tiennent devant le torse pendant le pilotage
+        event.registerItem(new IClientItemExtensions() {
+            @Override
+            public HumanoidModel.ArmPose getArmPose(LivingEntity entity, InteractionHand hand, ItemStack stack) {
+                return ControllerPose.pose();
+            }
+        }, ModItems.DRONE_CONTROLLER.get());
         // Grenades : dégoupillage avec l'autre bras, puis lancer en arc de cercle
         event.registerItem(new IClientItemExtensions() {
             @Override

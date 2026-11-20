@@ -1,0 +1,34 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "weapons",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 9
+    },
+    {
+      "tag": "minecraft:planks",
+      "count": 3
+    },
+    {
+      "item": "minecraft:spyglass",
+      "count": 1
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 3
+    },
+    {
+      "item": "minecraft:white_wool",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:rubis",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:vss",
+    "count": 1
+  }
+}

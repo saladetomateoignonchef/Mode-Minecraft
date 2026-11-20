@@ -66,6 +66,8 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
     /** Chef des Troupes de Choc : épée dans le dos / en train de dégainer / en main / en train de rengainer. */
     private static final EntityDataAccessor<Byte> SWORD_STATE = SynchedEntityData.defineId(HumanBotEntity.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Long> SWORD_AT = SynchedEntityData.defineId(HumanBotEntity.class, EntityDataSerializers.LONG);
+    private static final EntityDataAccessor<Boolean> BERSERK = SynchedEntityData.defineId(HumanBotEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final ResourceLocation BERSERK_SPEED = fr.modeminecraft.ModeMinecraft.id("berserk_speed");
 
     public static final byte SWORD_BACK = 0, SWORD_DRAWING = 1, SWORD_DRAWN = 2, SWORD_SHEATHING = 3;
     public static final int DRAW_TICKS = 14, SHEATHE_TICKS = 16;
@@ -84,6 +86,8 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
     public String debugState = "";
     /** Équipage d'un convoi (disparaît quand aucun joueur n'est proche). */
     public boolean convoy;
+    /** Faucon Blanc en embuscade nocturne : silencieux et tapi jusqu'au premier coup. */
+    public boolean ambush;
 
     public HumanBotEntity(EntityType<? extends HumanBotEntity> type, Level level) {
         super(type, level);
@@ -115,6 +119,7 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
         b.define(SHOT_AT, -100L);
         b.define(SWORD_STATE, SWORD_BACK);
         b.define(SWORD_AT, -100L);
+        b.define(BERSERK, false);
     }
 
     public Faction faction() {
@@ -133,6 +138,9 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
         if (role() == BotRole.CHIEF) {
             return fr.modeminecraft.ModeMinecraft.id("textures/entity/bot/falcon_chief_0.png");
         }
+        if (role() == BotRole.BOSS) {
+            return fr.modeminecraft.ModeMinecraft.id("textures/entity/bot/boss_" + faction().id + ".png");
+        }
         Faction f = faction();
         return fr.modeminecraft.ModeMinecraft.id("textures/entity/bot/" + f.id + "_" + Math.floorMod(skin(), f.skins) + ".png");
     }
@@ -145,6 +153,8 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
     public void markShot() { entityData.set(SHOT_AT, level().getGameTime()); }
     public byte swordState() { return entityData.get(SWORD_STATE); }
     public long swordAt() { return entityData.get(SWORD_AT); }
+    /** Chef des Troupes de Choc sous 30 % de ses PV : Mode Berserk. */
+    public boolean berserk() { return entityData.get(BERSERK); }
 
     // ------------------------------------------------------------------ création
     /** Donne faction, rôle, skin, équipement et points de vie. */
@@ -156,6 +166,7 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
             setItemSlot(slot, ItemStack.EMPTY);
         }
         double hp = switch (role) {
+            case BOSS -> 100;
             case CHIEF -> 80;
             case COMMANDER -> 60;
             case BRUTE -> 40;
@@ -175,6 +186,10 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
             FalconSquads.equip(this, role, r);
             return;
         }
+        if (role == BotRole.BOSS) {
+            FactionBosses.equip(this, faction);
+            return;
+        }
         Faction.Loadout l = faction.loadout;
         if (!l.weapons().isEmpty() || !l.sniper().isEmpty()) {
             List<String> pool = role == BotRole.SNIPER && !l.sniper().isEmpty() ? l.sniper() : l.weapons();
@@ -183,6 +198,10 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
                 w = pool.get(0);
             }
             setItemSlot(EquipmentSlot.MAINHAND, armed(w));
+            BotNight.equipLight(getMainHandItem(), faction, r);
+        }
+        if (role == BotRole.DRONE_OPERATOR) {
+            setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(ModItems.DRONE_CONTROLLER.get()));
         }
         boolean geared = role == BotRole.OFFICER || r.nextFloat() < 0.75f;
         if (geared) {
@@ -231,6 +250,7 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
         goalSelector.addGoal(0, new FloatGoal(this));
         goalSelector.addGoal(1, new BotGoals.TurretGunner(this));
         goalSelector.addGoal(1, new BotGoals.Flee(this));
+        goalSelector.addGoal(1, new BotGoals.DroneOperator(this));
         goalSelector.addGoal(2, new BotGoals.GunCombat(this));
         goalSelector.addGoal(2, new BotGoals.MeleeCombat(this));
         goalSelector.addGoal(3, new BotGoals.Warn(this));
@@ -255,6 +275,15 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
         Faction f = faction();
         if (!f.combatant()) {
             return false;
+        }
+        if (t instanceof fr.modeminecraft.entity.drone.DroneEntity d) {
+            // drone d'un joueur en vol : les patrouilles ennemies l'abattent au fusil
+            boolean flying = d.mode() == fr.modeminecraft.entity.drone.DroneEntity.PILOT || d.mode() == fr.modeminecraft.entity.drone.DroneEntity.RTH;
+            boolean enemy = switch (f.attitude) {
+                case HOSTILE, HOSTILE_ALL, HOSTILE_INDOORS, ARMED_HOSTILE -> true;
+                default -> d.owner != null && FactionRelations.isHostile(d.owner, f, level().getGameTime());
+            };
+            return hasGun() && d.botTarget < 0 && flying && enemy;
         }
         if (t instanceof HumanBotEntity other) {
             if (other.faction() == f) {
@@ -310,11 +339,25 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
 
     @Override
     public boolean doHurtTarget(Entity target) {
+        boolean hit;
         if (getMainHandItem().is(ModItems.DRAGONSLAYER.get())) {
-            return fr.modeminecraft.item.DragonslayerItem.cleave(this);
+            hit = fr.modeminecraft.item.DragonslayerItem.cleave(this);
+        } else {
+            swing(net.minecraft.world.InteractionHand.MAIN_HAND);
+            hit = super.doHurtTarget(target);
         }
-        swing(net.minecraft.world.InteractionHand.MAIN_HAND);
-        return super.doHurtTarget(target);
+        if (hit && ambush) {
+            FalconSquads.endAmbush(this);
+        }
+        return hit;
+    }
+
+    /** En embuscade : pas un bruit de pas. */
+    @Override
+    protected void playStepSound(BlockPos pos, net.minecraft.world.level.block.state.BlockState state) {
+        if (!ambush) {
+            super.playStepSound(pos, state);
+        }
     }
 
     @Override
@@ -340,6 +383,9 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
             }
         }
         boolean hurt = super.hurt(source, amount);
+        if (hurt && ambush) {
+            FalconSquads.endAmbush(this);
+        }
         if (hurt && source.getEntity() instanceof Player p && !p.isCreative()) {
             FactionRelations.markHostile(p.getUUID(), faction(), level().getGameTime());
             BotEvents.alertFaction(this, p);
@@ -382,11 +428,119 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
             getNavigation().stop();
             getLookControl().setLookAt(tradingPlayer);
         }
+        BotNight.tick(this);
+        tickBoss();
         if (role() == BotRole.CHIEF) {
             tickSword();
+            if (!berserk() && isAlive() && getHealth() <= getMaxHealth() * 0.3f) {
+                enterBerserk();
+            }
         }
-        if (getPose() == Pose.CROUCHING && getTarget() == null && !isPassenger()) {
+        if (ambush && !fr.modeminecraft.world.night.NightOps.isNight(level())) {
+            ambush = false;                                          // le jour se lève : l'embuscade est levée
+        }
+        if (getPose() == Pose.CROUCHING && getTarget() == null && !isPassenger() && !ambush) {
             setStance(Pose.STANDING);
+        }
+    }
+
+    // ------------------------------------------------------------------ Chefs de Faction : barre de boss
+    private net.minecraft.server.level.ServerBossEvent bossBar;
+    private boolean bossChecked;
+
+    private void tickBoss() {
+        String id = FactionBosses.bossId(this);
+        if (id == null) {
+            return;
+        }
+        if (!bossChecked && level() instanceof net.minecraft.server.level.ServerLevel sl) {
+            bossChecked = true;
+            if (role() == BotRole.BOSS && FactionBosses.alreadyDefeated(sl, id)) {
+                setup(faction(), BotRole.OFFICER, random);    // ce Chef unique est déjà tombé : un simple officier le remplace
+                return;
+            }
+        }
+        if (bossBar == null) {
+            bossBar = new net.minecraft.server.level.ServerBossEvent(getDisplayName(), FactionBosses.color(faction()),
+                    net.minecraft.world.BossEvent.BossBarOverlay.NOTCHED_10);
+        }
+        bossBar.setProgress(getHealth() / getMaxHealth());
+        bossBar.setName(getDisplayName());
+        // visible pour les joueurs proches qui sont en train de se battre (ou repérés)
+        if (tickCount % 10 == 0) {
+            for (var p : java.util.List.copyOf(bossBar.getPlayers())) {
+                if (p.distanceToSqr(this) > 48 * 48 || !p.isAlive() || !isAlive()) {
+                    bossBar.removePlayer(p);
+                }
+            }
+            if (isAlive()) {
+                for (var p : level().players()) {
+                    if (p instanceof net.minecraft.server.level.ServerPlayer sp && sp.distanceToSqr(this) < 32 * 32
+                            && (getTarget() == sp || hasLineOfSight(sp))) {
+                        bossBar.addPlayer(sp);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void die(DamageSource source) {
+        super.die(source);
+        if (!level().isClientSide) {
+            FactionBosses.onDeath(this, source.getEntity() instanceof net.minecraft.server.level.ServerPlayer sp ? sp : null);
+            if (bossBar != null) {
+                bossBar.removeAllPlayers();
+            }
+        }
+    }
+
+    @Override
+    public void stopSeenByPlayer(net.minecraft.server.level.ServerPlayer player) {
+        super.stopSeenByPlayer(player);
+        if (bossBar != null) {
+            bossBar.removePlayer(player);
+        }
+    }
+
+    /**
+     * Mode Berserk : heaume fissuré aux yeux rouges, fumée et étincelles, cri de guerre (40 blocs),
+     * insensible au recul, +40 % de vitesse, coups plus rapprochés (-25 %).
+     */
+    public void enterBerserk() {
+        entityData.set(BERSERK, true);
+        applyBerserk();
+        level().playSound(null, getX(), getY(), getZ(), ModSounds.BERSERK_ROAR.get(), SoundSource.HOSTILE, 2.5f, 0.9f);
+        if (swordState() == SWORD_BACK) {
+            setSword(SWORD_DRAWING, level().getGameTime());
+        }
+        if (level() instanceof net.minecraft.server.level.ServerLevel sl) {
+            sl.sendParticles(net.minecraft.core.particles.ParticleTypes.LARGE_SMOKE, getX(), getY() + 1, getZ(), 30, 0.5, 0.8, 0.5, 0.05);
+        }
+    }
+
+    private void applyBerserk() {
+        getAttribute(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0);
+        var speed = getAttribute(Attributes.MOVEMENT_SPEED);
+        if (!speed.hasModifier(BERSERK_SPEED)) {
+            speed.addPermanentModifier(new net.minecraft.world.entity.ai.attributes.AttributeModifier(BERSERK_SPEED, 0.4,
+                    net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+        }
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (level().isClientSide && berserk() && isAlive()) {
+            // fumée sombre et étincelles rouges autour de l'armure
+            if (random.nextInt(2) == 0) {
+                level().addParticle(net.minecraft.core.particles.ParticleTypes.LARGE_SMOKE, getRandomX(0.6), getRandomY(), getRandomZ(0.6), 0, 0.03, 0);
+            }
+            level().addParticle(new net.minecraft.core.particles.DustParticleOptions(new org.joml.Vector3f(1f, 0.1f, 0.05f), 0.8f),
+                    getRandomX(0.7), getRandomY(), getRandomZ(0.7), 0, 0.05, 0);
+            if (random.nextInt(6) == 0) {
+                level().addParticle(net.minecraft.core.particles.ParticleTypes.LAVA, getRandomX(0.5), getY() + 1.2, getRandomZ(0.5), 0, 0, 0);
+            }
         }
     }
 
@@ -446,6 +600,7 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
     protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean recentlyHit) {
         super.dropCustomDeathLoot(level, source, recentlyHit);
         FalconSquads.dropLoot(this, level);
+        FactionBosses.dropLoot(this);
     }
 
     // ------------------------------------------------------------------ sons
@@ -464,6 +619,14 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
         return (role().falcon() || faction() == Faction.SWAT || convoy) && !isPersistenceRequired();
     }
 
+    @Override
+    public void remove(RemovalReason reason) {
+        if (!level().isClientSide) {
+            fr.modeminecraft.item.gun.FlashlightHandler.clear(this);   // plus de faisceau orphelin
+        }
+        super.remove(reason);
+    }
+
     // ------------------------------------------------------------------ sauvegarde
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
@@ -472,7 +635,9 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
         tag.putString("Role", role().name());
         tag.putInt("Skin", skin());
         tag.putByte("Sword", swordState());
+        tag.putBoolean("Berserk", berserk());
         tag.putBoolean("Convoy", convoy);
+        tag.putBoolean("Ambush", ambush);
         if (home != null) {
             tag.put("Home", NbtUtils.writeBlockPos(home));
             tag.putInt("HomeRadius", homeRadius);
@@ -501,7 +666,12 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
         }
         entityData.set(SKIN, tag.getInt("Skin"));
         convoy = tag.getBoolean("Convoy");
+        ambush = tag.getBoolean("Ambush");
         entityData.set(SWORD_STATE, tag.getByte("Sword") == SWORD_DRAWN ? SWORD_DRAWN : SWORD_BACK);
+        if (tag.getBoolean("Berserk")) {
+            entityData.set(BERSERK, true);
+            applyBerserk();
+        }
         NbtUtils.readBlockPos(tag, "Home").ifPresent(p -> home = p);
         if (tag.contains("HomeRadius")) {
             homeRadius = tag.getInt("HomeRadius");
@@ -599,6 +769,9 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
     protected net.minecraft.network.chat.Component getTypeName() {
         if (role() == BotRole.CONTRACTOR) {
             return net.minecraft.network.chat.Component.translatable("entity.modeminecraft.bot.contractor");
+        }
+        if (role() == BotRole.BOSS) {
+            return net.minecraft.network.chat.Component.translatable("entity.modeminecraft.bot.boss_" + faction().id);
         }
         return net.minecraft.network.chat.Component.translatable("entity.modeminecraft.bot." + faction().id + (role() == BotRole.CHIEF ? ".chief"
                 : role() == BotRole.COMMANDER ? ".commander" : role() == BotRole.SNIPER ? ".sniper" : ""));

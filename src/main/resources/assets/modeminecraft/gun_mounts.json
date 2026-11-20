@@ -713,6 +713,31 @@
       "travel": 1.6
     }
   },
+  "emp_jammer_rifle": {
+    "mounts": {
+      "stock": [
+        3,
+        7.8,
+        8
+      ],
+      "pistol_grip": [
+        5.1,
+        5.8,
+        8
+      ],
+      "sight": [
+        7.5,
+        11.0,
+        8
+      ],
+      "muzzle": [
+        24.6,
+        7.8,
+        8
+      ]
+    },
+    "mag_needs_ammo": false
+  },
   "famas": {
     "mounts": {
       "muzzle": [
@@ -2678,6 +2703,50 @@
     "slide": {
       "style": "fast",
       "travel": 1.2
+    }
+  },
+  "vss": {
+    "mounts": {
+      "stock": [
+        3,
+        7.75,
+        8
+      ],
+      "muzzle": [
+        20.55,
+        7.8,
+        8
+      ],
+      "sight": [
+        6.5,
+        9.0,
+        8
+      ],
+      "pistol_grip": [
+        4.8,
+        6.5,
+        8
+      ],
+      "grip": [
+        10.75,
+        6.7,
+        8
+      ],
+      "magazine": [
+        8.6,
+        6.5,
+        8
+      ],
+      "side_rail": [
+        10.25,
+        7.7,
+        7.15
+      ]
+    },
+    "mag_needs_ammo": false,
+    "slide": {
+      "style": "fast",
+      "travel": 1.6
     }
   }
 }

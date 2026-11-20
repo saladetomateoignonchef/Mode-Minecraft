@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "hanging=false,lit=false": {
+      "model": "modeminecraft:block/street_lantern"
+    },
+    "hanging=false,lit=true": {
+      "model": "minecraft:block/lantern"
+    },
+    "hanging=true,lit=false": {
+      "model": "modeminecraft:block/street_lantern_hanging"
+    },
+    "hanging=true,lit=true": {
+      "model": "minecraft:block/lantern_hanging"
+    }
+  }
+}

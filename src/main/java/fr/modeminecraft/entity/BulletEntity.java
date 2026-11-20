@@ -394,8 +394,10 @@ public class BulletEntity extends ThrowableItemProjectile {
             discard();
             return;
         }
-        if (fr.modeminecraft.block.city.BreakableDecoBlock.shot(level, pos, state, this)) {
-            discard();                                   // bouche d'incendie / extincteur touché
+        if (fr.modeminecraft.block.city.BreakableDecoBlock.shot(level, pos, state, this)
+                || fr.modeminecraft.world.night.TransformerBlock.shot(level, pos, state)
+                || fr.modeminecraft.entity.drone.JammerTowerBlock.shot(level, pos, state)) {
+            discard();                                   // bouche d'incendie / extincteur / transformateur touché
             return;
         }
         if (breaksFragile && isFragile(state) && level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {

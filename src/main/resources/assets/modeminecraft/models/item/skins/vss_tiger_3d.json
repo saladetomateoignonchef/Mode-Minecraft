@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/vss_3d",
+  "textures": {
+    "p": "modeminecraft:item/gun/vss_tiger",
+    "particle": "modeminecraft:item/gun/vss_tiger"
+  }
+}

@@ -560,6 +560,7 @@ final class CityGen {
         b.pair(14, 1, 10, Faction.POLICE, 16);
         b.pair(18, 6, 12, Faction.POLICE, 16);
         b.bot(16, 1, 1, Faction.POLICE, BotRole.OFFICER, 10);
+        b.bot(16, 1, 1, Faction.SWAT, BotRole.BOSS, 8);                       // Commissaire Divisionnaire SWAT
         b.bot(15, 1, 8, Faction.CIVILIAN, BotRole.CONTRACTOR, 2);
         b.bot(12, -5, 9, Faction.SWAT, BotRole.SOLDIER, 6);
         b.bot(20, -5, 9, Faction.SWAT, BotRole.SOLDIER, 6);

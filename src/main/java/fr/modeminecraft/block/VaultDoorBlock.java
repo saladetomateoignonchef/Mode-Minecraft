@@ -62,6 +62,14 @@ public class VaultDoorBlock extends DoorBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
+        if (!world.isClientSide && !isOpen(state) && fr.modeminecraft.world.night.NightOps.blackedOut(world, pos)) {
+            // panne de secteur : la serrure électronique est hors service, la porte se pousse à la main
+            setOpen(player, world, state, pos, true);
+            BlockPos lower = state.getValue(HALF) == DoubleBlockHalf.LOWER ? pos : pos.below();
+            world.scheduleTick(lower, this, 100);
+            player.displayClientMessage(Component.translatable("message.modeminecraft.vault.blackout").withStyle(ChatFormatting.AQUA), true);
+            return InteractionResult.CONSUME;
+        }
         if (!world.isClientSide) {
             player.displayClientMessage(Component.translatable("message.modeminecraft.vault.locked", level).withStyle(ChatFormatting.GOLD), true);
         }

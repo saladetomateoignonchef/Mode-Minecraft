@@ -101,6 +101,10 @@ def make(name):
         c.px(14, 1, BLUE[0]); c.px(13, 0, BLUE[1])
     elif name == "machete":
         c.diag(1, 4, BLACK, 2); c.diag(5, 13, STEEL, 3); c.px(14, 1, STEEL[1])
+    elif name == "golden_machete":
+        c.diag(1, 4, [(40, 30, 20), (28, 20, 14), (18, 12, 8)], 2); c.perp(5, 1, GOLD); c.diag(6, 13, GOLD, 3); c.px(14, 1, GOLD[0])
+        for i in (8, 10, 12):
+            c.px(i + 1, 15 - i, (255, 245, 190))                        # gravures
     elif name == "kukri":
         c.diag(1, 4, WOOD, 2)
         for (x, y) in [(5, 9), (6, 8), (7, 7), (8, 7), (9, 7), (10, 6), (11, 5), (12, 4), (6, 9), (7, 8), (8, 8), (9, 8), (10, 7), (11, 6)]:
@@ -153,7 +157,7 @@ def make(name):
 
 NAMES = ["combat_knife", "karambit", "katana", "mace", "war_hammer", "tomahawk", "stun_baton", "machete", "kukri",
          "wakizashi", "dagger", "claymore", "rapier", "scimitar", "lance", "halberd", "war_scythe", "brass_knuckles",
-         "crowbar", "cutlass"]
+         "crowbar", "cutlass", "golden_machete"]
 
 
 def main():

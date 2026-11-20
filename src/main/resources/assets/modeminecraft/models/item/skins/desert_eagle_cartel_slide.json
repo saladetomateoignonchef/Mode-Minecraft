@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/desert_eagle_slide",
+  "textures": {
+    "p": "modeminecraft:item/gun/desert_eagle_cartel",
+    "particle": "modeminecraft:item/gun/desert_eagle_cartel"
+  }
+}

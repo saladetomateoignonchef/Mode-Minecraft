@@ -37,12 +37,23 @@ public final class BackGunsHandler {
                 back = s;
             }
         }
+        // La Pourfendeuse de Dragons rangée dans la barre d'action passe avant tout : en diagonale dans le dos
+        for (int i = 0; i < 9; i++) {
+            ItemStack s = player.getInventory().items.get(i);
+            if (i != player.getInventory().selected && s.is(fr.modeminecraft.registry.ModItems.DRAGONSLAYER.get())) {
+                back = s;
+                break;
+            }
+        }
         return new ItemStack[]{back.copyWithCount(1), hip.copyWithCount(1)};
     }
 
     /** Clé qui ne change que si l'apparence change (pas à chaque balle tirée). */
     private static String key(ItemStack s) {
-        return s.isEmpty() ? "-" : s.getItem() + "|" + GunItem.getSkin(s) + "|" + GunItem.getAttachments(s);
+        if (s.isEmpty() || !(s.getItem() instanceof GunItem)) {
+            return s.isEmpty() ? "-" : s.getItem().toString();
+        }
+        return s.getItem() + "|" + GunItem.getSkin(s) + "|" + GunItem.getAttachments(s);
     }
 
     private static BackGunsPayload payload(Player player) {

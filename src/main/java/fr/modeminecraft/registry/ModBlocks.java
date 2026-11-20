@@ -60,6 +60,23 @@ public final class ModBlocks {
             () -> new fr.modeminecraft.block.city.MetalDetectorBlock(net.minecraft.world.level.block.state.BlockBehaviour.Properties.of()
                     .mapColor(net.minecraft.world.level.material.MapColor.METAL).strength(3f).noOcclusion().noCollission()));
 
+    /** Éclairage de ville (allumé la nuit, éteint par les pannes de secteur) et transformateur haute tension. */
+    public static final DeferredBlock<Block> CITY_LAMP = BLOCKS.register("city_lamp",
+            () -> new fr.modeminecraft.world.night.CityLightBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.REDSTONE_LAMP)));
+    public static final DeferredBlock<Block> CITY_NEON = BLOCKS.register("city_neon",
+            () -> new fr.modeminecraft.world.night.CityLightBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SEA_LANTERN)));
+    public static final DeferredBlock<Block> STREET_LANTERN = BLOCKS.register("street_lantern",
+            () -> new fr.modeminecraft.world.night.StreetLanternBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN)));
+    public static final DeferredBlock<Block> HIGH_VOLTAGE_TRANSFORMER = BLOCKS.register("high_voltage_transformer",
+            () -> new fr.modeminecraft.world.night.TransformerBlock(BlockBehaviour.Properties.of()
+                    .mapColor(net.minecraft.world.level.material.MapColor.COLOR_GRAY).strength(4f, 1f).noOcclusion()
+                    .sound(net.minecraft.world.level.block.SoundType.METAL)));
+
+    public static final DeferredBlock<Block> JAMMER_TOWER = BLOCKS.register("jammer_tower_block",
+            () -> new fr.modeminecraft.entity.drone.JammerTowerBlock(BlockBehaviour.Properties.of()
+                    .mapColor(net.minecraft.world.level.material.MapColor.COLOR_GRAY).strength(5f, 2f).noOcclusion()
+                    .sound(net.minecraft.world.level.block.SoundType.METAL).lightLevel(s -> 4)));
+
     /** Portes blindées de salles fortes (cartes d'accès bleue / rouge / noire). */
     public static final DeferredBlock<Block> VAULT_DOOR_BLUE = BLOCKS.register("vault_door_blue",
             () -> new fr.modeminecraft.block.VaultDoorBlock(1, vaultProps()));
@@ -76,6 +93,10 @@ public final class ModBlocks {
 
     public static final DeferredBlock<Block> WEAPON_RACK = BLOCKS.register("weapon_rack",
             () -> new fr.modeminecraft.block.WeaponRackBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_PLANKS).noOcclusion()));
+
+    /** Râtelier à trophées mural (armes des Chefs de Faction). */
+    public static final DeferredBlock<Block> TROPHY_WEAPON_RACK = BLOCKS.register("trophy_weapon_rack",
+            () -> new fr.modeminecraft.block.TrophyRackBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.DARK_OAK_PLANKS).noOcclusion()));
 
     /** Cible de tir : score de 0 à 10, distance et total de la série. */
     public static final DeferredBlock<Block> SHOOTING_TARGET = BLOCKS.register("shooting_target",

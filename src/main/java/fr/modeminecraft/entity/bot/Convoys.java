@@ -17,6 +17,9 @@ import net.minecraft.world.phys.Vec3;
  * les véhicules s'arrêtent et l'équipage descend combattre.
  */
 public final class Convoys {
+    /** Probabilité qu'un convoi nocturne tombe dans une embuscade des Faucons Blancs. */
+    public static float AMBUSH_CHANCE = 0.35f;
+
     public static void spawn(ServerLevel level, Vec3 near) {
         var r = level.getRandom();
         double a = r.nextDouble() * Math.PI * 2;
@@ -52,6 +55,13 @@ public final class Convoys {
             follow.toggleSiren();
         }
         fr.modeminecraft.ModeMinecraft.LOGGER.info("Convoi ({}) en route de {} vers {}", f.id, start, dest);
+        // la nuit, les Faucons Blancs guettent parfois les convois sur leur itinéraire
+        if (fr.modeminecraft.world.night.NightOps.isNight(level) && r.nextFloat() < AMBUSH_CHANCE) {
+            BlockPos site = surface(level, near.add(dir.scale(35)).add(perp.scale(9)));
+            if (level.isLoaded(site)) {
+                FalconSquads.spawnAmbush(level, site, dir);
+            }
+        }
     }
 
     private static VehicleEntity vehicle(ServerLevel level, VehicleEntity.Type type, BlockPos pos, float yaw, Faction f, int crew) {

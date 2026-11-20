@@ -89,6 +89,72 @@ public final class FalconSquads {
         return out;
     }
 
+    /**
+     * Embuscade nocturne : l'escouade se poste en silence le long de l'itinéraire (route, passage d'un convoi),
+     * chacun accroupi derrière un rocher, un arbre ou un mur, et attend que la proie arrive à portée.
+     * @param approach direction d'où arrive la proie
+     */
+    public static List<HumanBotEntity> spawnAmbush(ServerLevel level, BlockPos center, net.minecraft.world.phys.Vec3 approach) {
+        List<HumanBotEntity> squad = spawnSquad(level, center);
+        net.minecraft.world.phys.Vec3 dir = approach.normalize();
+        for (HumanBotEntity bot : squad) {
+            bot.ambush = true;
+            BlockPos hide = hidingSpot(level, bot.blockPosition(), dir);
+            if (hide != null) {
+                bot.moveTo(hide.getX() + 0.5, hide.getY(), hide.getZ() + 0.5, (float) (net.minecraft.util.Mth.atan2(-dir.x, dir.z) * net.minecraft.util.Mth.RAD_TO_DEG) + 180, 0);
+            }
+            bot.setStance(net.minecraft.world.entity.Pose.CROUCHING);
+        }
+        fr.modeminecraft.ModeMinecraft.LOGGER.info("Faucons Blancs : embuscade tendue en {}", center);
+        return squad;
+    }
+
+    /** Un point au sol, près d'ici, avec un obstacle (rocher, tronc, feuillage, mur) entre lui et la proie. */
+    static BlockPos hidingSpot(ServerLevel level, BlockPos near, net.minecraft.world.phys.Vec3 approach) {
+        int sx = (int) Math.signum(Math.round(-approach.x * 2) / 2.0), sz = (int) Math.signum(Math.round(-approach.z * 2) / 2.0);
+        BlockPos best = null;
+        double bestD = Double.MAX_VALUE;
+        for (int dx = -6; dx <= 6; dx++) {
+            for (int dz = -6; dz <= 6; dz++) {
+                int x = near.getX() + dx, z = near.getZ() + dz;
+                int y = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z);
+                BlockPos p = new BlockPos(x, y, z);
+                if (!level.getBlockState(p).isAir() || !level.getBlockState(p.above()).isAir() || !level.getFluidState(p.below()).isEmpty()) {
+                    continue;
+                }
+                // l'obstacle doit être du côté d'où vient la proie
+                BlockPos front = p.offset(sx, 0, sz);
+                var fs = level.getBlockState(front);
+                boolean cover = !fs.isAir() && (fs.isSolid() || fs.is(net.minecraft.tags.BlockTags.LEAVES) || fs.is(net.minecraft.tags.BlockTags.LOGS));
+                if (!cover) {
+                    continue;
+                }
+                double d = dx * dx + dz * dz;
+                if (d < bestD) {
+                    bestD = d;
+                    best = p;
+                }
+            }
+        }
+        return best;
+    }
+
+    /** Premier coup porté (ou reçu) : fini le silence, le cor sonne la charge et toute l'escouade attaque. */
+    static void endAmbush(HumanBotEntity bot) {
+        if (!bot.ambush || bot.squad == null) {
+            return;
+        }
+        for (HumanBotEntity o : bot.level().getEntitiesOfClass(HumanBotEntity.class, bot.getBoundingBox().inflate(64),
+                o -> bot.squad.equals(o.squad))) {
+            o.ambush = false;
+            o.setStance(net.minecraft.world.entity.Pose.STANDING);
+            if (o.getTarget() == null && bot.getTarget() != null) {
+                o.setTarget(bot.getTarget());
+            }
+        }
+        BotEvents.horn(bot);
+    }
+
     /** Butin : la Pourfendeuse de Dragons, les Cartes d'Accès Rouges et l'Insigne du Faucon Blanc. */
     static void dropLoot(HumanBotEntity bot, ServerLevel level) {
         if (bot.faction() != Faction.FALCON) {

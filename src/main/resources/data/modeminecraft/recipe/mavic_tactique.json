@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "modeminecraft:steel_plate"
+    },
+    {
+      "item": "modeminecraft:steel_plate"
+    },
+    {
+      "item": "modeminecraft:steel_plate"
+    },
+    {
+      "item": "modeminecraft:titanium_ingot"
+    },
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:piston"
+    },
+    {
+      "item": "modeminecraft:tactical_battery"
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:mavic_tactique",
+    "count": 1
+  }
+}

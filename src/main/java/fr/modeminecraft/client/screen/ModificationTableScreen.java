@@ -55,7 +55,7 @@ public class ModificationTableScreen extends AbstractContainerScreen<Modificatio
         for (int i = 1; i <= SLOT_HINTS.length; i++) {
             Slot slot = menu.slots.get(i);
             if (!slot.hasItem() && isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY)) {
-                g.renderTooltip(font, Component.translatable(SLOT_HINTS[i - 1]), mouseX, mouseY);
+                g.renderTooltip(font, Component.translatable(hint(i)), mouseX, mouseY);
             }
         }
     }
@@ -86,12 +86,22 @@ public class ModificationTableScreen extends AbstractContainerScreen<Modificatio
                 }
             } else if (!menu.slots.get(i).hasItem()) {
                 // Lettre d'indice dans la case vide
-                String hint = Component.translatable(SLOT_HINTS[i - 1]).getString().substring(0, 1);
+                String hint = Component.translatable(hint(i)).getString().substring(0, 1);
                 Slot s = menu.slots.get(i);
                 g.drawString(font, hint, leftPos + s.x + 5, topPos + s.y + 4, 0xFF6F6F6F, false);
             }
         }
         GuiDraw.inset(g, leftPos + STATS_X - 2, topPos + 12, imageWidth - STATS_X - 6, 60);
+    }
+
+    private static final String[] DRONE_HINTS = {"gui.modeminecraft.slot.drone_ventral", "gui.modeminecraft.slot.drone_rotors",
+            "gui.modeminecraft.slot.drone_battery"};
+
+    private String hint(int i) {
+        if (menu.droneMode()) {
+            return i <= 3 ? DRONE_HINTS[i - 1] : SLOT_HINTS[i - 1];
+        }
+        return SLOT_HINTS[i - 1];
     }
 
     /** Écrit une ligne en la réduisant si elle dépasse la largeur disponible. */
@@ -111,6 +121,22 @@ public class ModificationTableScreen extends AbstractContainerScreen<Modificatio
 
         ItemStack stack = menu.gunStack();
         int x = STATS_X + 1, y = 15;
+        if (stack.getItem() instanceof fr.modeminecraft.entity.drone.DroneItem drone) {
+            var t = drone.type();
+            var d = fr.modeminecraft.entity.drone.DroneData.read(stack);
+            int bat = (d.getBoolean("HighCap") ? 10 : 5);
+            Component[] lines = {
+                    Component.translatable("item.modeminecraft." + t.id),
+                    Component.translatable("gui.modeminecraft.drone.stat_range", t.range),
+                    Component.translatable("gui.modeminecraft.drone.stat_battery", bat),
+                    Component.translatable("gui.modeminecraft.drone.stat_noise", t == fr.modeminecraft.entity.drone.DroneType.HORNET ? t.noise
+                            : d.getBoolean("Silent") ? 7 : t.noise),
+                    Component.translatable(d.getBoolean("Cargo") ? "gui.modeminecraft.drone.cargo" : "gui.modeminecraft.drone.stat_armed")};
+            for (int i = 0; i < lines.length; i++) {
+                drawFitted(g, lines[i], x, y + i * 9, imageWidth - STATS_X - 12, i == 0 ? 0xFFD84A : 0xE0E0E0);
+            }
+            return;
+        }
         if (!(stack.getItem() instanceof GunItem gun)) {
             g.drawWordWrap(font, Component.translatable("gui.modeminecraft.place_gun"), x, y + 4, imageWidth - STATS_X - 10, 0xFFFFFF);
             return;

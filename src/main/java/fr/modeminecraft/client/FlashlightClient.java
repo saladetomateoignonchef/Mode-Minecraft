@@ -87,6 +87,23 @@ public final class FlashlightClient {
         }
     }
 
+    /** Joueurs et bots proches qui tiennent une arme (porteurs potentiels d'une lampe allumée). */
+    private static java.util.List<net.minecraft.world.entity.LivingEntity> holders(Minecraft mc, Vec3 around, double range) {
+        java.util.List<net.minecraft.world.entity.LivingEntity> out = new java.util.ArrayList<>(mc.level.players());
+        out.addAll(mc.level.getEntitiesOfClass(fr.modeminecraft.entity.bot.HumanBotEntity.class,
+                new net.minecraft.world.phys.AABB(around, around).inflate(range), b -> b.getMainHandItem().getItem() instanceof GunItem));
+        return out;
+    }
+
+    /** Côté droit de l'arme (penché ou non pour les joueurs). */
+    private static Vec3 right(net.minecraft.world.entity.LivingEntity e, Vec3 look) {
+        if (e instanceof Player p) {
+            return LeanHandler.right(p);
+        }
+        Vec3 r = look.cross(new Vec3(0, 1, 0));
+        return r.lengthSqr() < 1.0E-6 ? new Vec3(1, 0, 0) : r.normalize();
+    }
+
     /** Grains de poussière éclairés dans les faisceaux visibles. */
     @SubscribeEvent
     public static void onTickPost(ClientTickEvent.Post event) {
@@ -94,7 +111,7 @@ public final class FlashlightClient {
         if (mc.level == null || mc.player == null || mc.isPaused()) {
             return;
         }
-        for (Player p : mc.level.players()) {
+        for (net.minecraft.world.entity.LivingEntity p : holders(mc, mc.player.position(), 48)) {
             ItemStack stack = p.getMainHandItem();
             if (!(stack.getItem() instanceof GunItem) || p.distanceToSqr(mc.player) > 48 * 48) {
                 continue;
@@ -108,7 +125,7 @@ public final class FlashlightClient {
             Vec3 look = p.getLookAngle();
             double d = 1.5 + p.getRandom().nextDouble() * Math.min(12, l.range() * 0.5);
             double r = d * Math.tan(Math.toRadians(l.cone())) * p.getRandom().nextDouble();
-            Vec3 right = LeanHandler.right(p);
+            Vec3 right = right(p, look);
             Vec3 up = right.cross(look).normalize();
             double a = p.getRandom().nextDouble() * Math.PI * 2;
             Vec3 pos = eye.add(look.scale(d)).add(right.scale(Math.cos(a) * r)).add(up.scale(Math.sin(a) * r));
@@ -133,7 +150,7 @@ public final class FlashlightClient {
     }
 
     /** Le faisceau de cette arme est-il visible pour nous à cet instant ? (clignotement, infrarouge, IEM) */
-    private static boolean shows(Player owner, ItemStack stack, float time) {
+    private static boolean shows(net.minecraft.world.entity.LivingEntity owner, ItemStack stack, float time) {
         LightMode m = GunItem.activeLightMode(stack);
         if (m == LightMode.OFF || owner.hasEffect(ModEffects.EMP)) {
             return false;
@@ -205,7 +222,7 @@ public final class FlashlightClient {
         PoseStack pose = event.getPoseStack();
         MultiBufferSource.BufferSource buffers = mc.renderBuffers().bufferSource();
         VertexConsumer vc = null;
-        for (Player p : mc.level.players()) {
+        for (net.minecraft.world.entity.LivingEntity p : holders(mc, cam, 96)) {
             ItemStack stack = p.getMainHandItem();
             if (!(stack.getItem() instanceof GunItem) || p.distanceToSqr(cam) > 128 * 128) {
                 continue;
@@ -226,7 +243,7 @@ public final class FlashlightClient {
             Matrix4f m = new Matrix4f(pose.last().pose());
             boolean firstPerson = p == mc.player && mc.options.getCameraType().isFirstPerson();
             if (!firstPerson) {
-                Vec3 right = LeanHandler.right(p);
+                Vec3 right = right(p, look);
                 Vec3 up = right.cross(look).normalize();
                 Vec3 from = eye.add(look.scale(0.85)).add(right.scale(0.3)).add(up.scale(-0.28));
                 Vec3 to = eye.add(look.scale(dist));

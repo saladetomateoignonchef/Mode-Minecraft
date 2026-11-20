@@ -62,6 +62,11 @@ public final class ModDataComponents {
                     .networkSynchronized(fr.modeminecraft.item.gun.LightMode.STREAM_CODEC));
 
     /** Lampe tactique : heure (jeu) du dernier appui sur l'interrupteur (animation du bras gauche). */
+    /** Arme unique d'un Chef de Faction. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<fr.modeminecraft.item.gun.Legendary>> LEGENDARY =
+            DATA_COMPONENTS.registerComponentType("legendary", b -> b.persistent(fr.modeminecraft.item.gun.Legendary.CODEC)
+                    .networkSynchronized(fr.modeminecraft.item.gun.Legendary.STREAM_CODEC));
+
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> LIGHT_SWITCH_AT =
             DATA_COMPONENTS.registerComponentType("light_switch_at", b -> b.networkSynchronized(ByteBufCodecs.VAR_LONG));
 

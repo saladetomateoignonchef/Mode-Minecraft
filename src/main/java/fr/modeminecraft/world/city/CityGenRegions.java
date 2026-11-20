@@ -274,6 +274,7 @@ final class CityGenRegions {
         Deco.explosiveBarrel(b, 4, 0, 21);
         // garnison
         b.bot(23, 1, pz0 + 4, Faction.MILITIA, BotRole.OFFICER, 8);
+        b.bot(23, 1, pz0 + 4, Faction.MILITIA, BotRole.BOSS, 8);              // Général Suprême de la Milice
         b.pair(23, 0, 40, Faction.MILITIA, 18);
         b.pair(14, 0, 30, Faction.MILITIA, 18);
         b.pair(30, 6, 18, Faction.MILITIA, 10);
@@ -600,6 +601,8 @@ final class CityGenRegions {
         Deco.desk(b, 4, -6, 4, Direction.SOUTH);
         Deco.desk(b, 7, -6, 4, Direction.SOUTH);
         b.bot(6, -6, 8, Faction.GARRISON, BotRole.OFFICER, 5);
+        b.bot(6, -6, 8, Faction.GARRISON, BotRole.BOSS, 5);                   // Commandant des Forces Spéciales
+        b.bot(6, -6, 8, Faction.GARRISON, BotRole.DRONE_OPERATOR, 5);
         // niveau 2 : dortoir et armurerie
         for (int x = 3; x <= 11; x += 2) {
             Deco.bed(b, x, -12, 2, Direction.SOUTH, Blocks.GREEN_BED);
@@ -748,6 +751,7 @@ final class CityGenRegions {
                 b.chest(27, 1, 27, Direction.WEST, "military_crate", false);
                 b.pair(15, 1, 12, Faction.SOVIET, 12);
                 b.bot(20, 1, 20, Faction.SOVIET, BotRole.OFFICER, 10);
+                b.bot(20, 1, 20, Faction.SOVIET, BotRole.BOSS, 8);            // Maréchal de l'Est
             }
             case "plaza" -> {
                 b.ground(0, 0, 31, 31, Blocks.SNOW_BLOCK.defaultBlockState(), Blocks.STONE.defaultBlockState(), 20);

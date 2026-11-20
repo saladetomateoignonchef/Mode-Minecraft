@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/vss_stock",
+  "textures": {
+    "p": "modeminecraft:item/gun/vss_gold",
+    "particle": "modeminecraft:item/gun/vss_gold"
+  }
+}

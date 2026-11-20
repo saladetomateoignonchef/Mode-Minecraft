@@ -1,0 +1,163 @@
+{
+  "parent": "modeminecraft:item/parts/part_base",
+  "textures": {
+    "p": "modeminecraft:item/gun/emp_jammer_rifle_default",
+    "particle": "modeminecraft:item/gun/emp_jammer_rifle_default"
+  },
+  "elements": [
+    {
+      "from": [
+        4.63,
+        2.3,
+        7.3
+      ],
+      "to": [
+        5.57,
+        5.8,
+        8.7
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            12.5625,
+            4.75,
+            12.75,
+            7.25
+          ],
+          "texture": "#p"
+        },
+        "south": {
+          "uv": [
+            12.875,
+            4.75,
+            13.0625,
+            7.25
+          ],
+          "texture": "#p"
+        },
+        "east": {
+          "uv": [
+            11.8125,
+            4.75,
+            12.0625,
+            7.25
+          ],
+          "texture": "#p"
+        },
+        "west": {
+          "uv": [
+            12.1875,
+            4.75,
+            12.4375,
+            7.25
+          ],
+          "texture": "#p"
+        },
+        "up": {
+          "uv": [
+            1.0,
+            12.5,
+            1.1875,
+            13.5
+          ],
+          "texture": "#p"
+        },
+        "down": {
+          "uv": [
+            1.3125,
+            12.5,
+            1.5,
+            13.5
+          ],
+          "texture": "#p"
+        }
+      },
+      "rotation": {
+        "angle": -22.5,
+        "axis": "z",
+        "origin": [
+          5.1,
+          5.8,
+          8
+        ]
+      }
+    },
+    {
+      "from": [
+        4.3,
+        2.32,
+        7.63
+      ],
+      "to": [
+        5.9,
+        5.78,
+        8.37
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            10.0625,
+            4.75,
+            10.375,
+            7.25
+          ],
+          "texture": "#p"
+        },
+        "south": {
+          "uv": [
+            10.5,
+            4.75,
+            10.8125,
+            7.25
+          ],
+          "texture": "#p"
+        },
+        "east": {
+          "uv": [
+            13.1875,
+            4.75,
+            13.3125,
+            7.25
+          ],
+          "texture": "#p"
+        },
+        "west": {
+          "uv": [
+            13.4375,
+            4.75,
+            13.5625,
+            7.25
+          ],
+          "texture": "#p"
+        },
+        "up": {
+          "uv": [
+            4.9375,
+            14.0,
+            5.25,
+            14.5
+          ],
+          "texture": "#p"
+        },
+        "down": {
+          "uv": [
+            5.375,
+            14.0,
+            5.6875,
+            14.5
+          ],
+          "texture": "#p"
+        }
+      },
+      "rotation": {
+        "angle": -22.5,
+        "axis": "z",
+        "origin": [
+          5.1,
+          5.8,
+          8
+        ]
+      }
+    }
+  ]
+}

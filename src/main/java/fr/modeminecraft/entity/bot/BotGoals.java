@@ -121,8 +121,16 @@ public final class BotGoals {
             double range = bot.faction().sightRange(bot.role());
             LivingEntity best = null;
             double bestD = Double.MAX_VALUE;
+            if (bot.ambush) {
+                range = Math.min(range, 13);              // embuscade : on laisse la proie approcher
+            }
             for (LivingEntity e : bot.level().getEntitiesOfClass(LivingEntity.class, bot.getBoundingBox().inflate(range))) {
-                if (!bot.shouldAttack(e) || !canSee(bot, e, range)) {
+                if (e instanceof fr.modeminecraft.entity.drone.DroneEntity drone) {
+                    // un drone s'entend avant de se voir : les bots lèvent la tête et l'identifient comme menace
+                    if (!bot.shouldAttack(e) || bot.distanceTo(drone) > drone.noiseRadius() || !bot.hasLineOfSight(drone)) {
+                        continue;
+                    }
+                } else if (!bot.shouldAttack(e) || !canSee(bot, e, BotNight.sightRange(bot, e, range))) {
                     continue;
                 }
                 double d = bot.distanceToSqr(e);
@@ -213,13 +221,31 @@ public final class BotGoals {
             }
             long now = bot.level().getGameTime();
             for (Player p : bot.level().getEntitiesOfClass(Player.class, bot.getBoundingBox().inflate(20))) {
-                if (!p.isCreative() && !p.isSpectator() && armedVisible(p) && !FactionRelations.isHostile(p.getUUID(), bot.faction(), now)
+                if (!p.isCreative() && !p.isSpectator() && (armedVisible(p) || curfew(p)) && !FactionRelations.isHostile(p.getUUID(), bot.faction(), now)
                         && canSee(bot, p, 20)) {
                     suspect = p;
+                    curfewWarning = !armedVisible(p);
                     return true;
                 }
             }
             return false;
+        }
+
+        private boolean curfewWarning;
+
+        /**
+         * Couvre-feu nocturne de la police (métropoles) : sprinter à moins de 12 blocs d'un agent, ou entrer
+         * dans une zone restreinte (abords du commissariat gardés par un agent en faction).
+         */
+        private boolean curfew(Player p) {
+            if (!bot.faction().group.equals("police") || !fr.modeminecraft.world.night.NightOps.isNight(bot.level())) {
+                return false;
+            }
+            if (p.isSprinting() && p.distanceTo(bot) < 12) {
+                return true;
+            }
+            return bot.home != null && bot.homeRadius > 0 && bot.homeRadius <= 16
+                    && p.blockPosition().distSqr(bot.home) < (double) bot.homeRadius * bot.homeRadius;
         }
 
         @Override
@@ -230,8 +256,8 @@ public final class BotGoals {
             bot.setAggressive(true);
             bot.getNavigation().stop();
             bot.level().playSound(null, bot.getX(), bot.getY(), bot.getZ(), ModSounds.POLICE_FREEZE_WARNING.get(), SoundSource.HOSTILE, 1.6f, 1f);
-            suspect.displayClientMessage(Component.translatable("message.modeminecraft.bot.warn." + bot.faction().group)
-                    .withStyle(net.minecraft.ChatFormatting.YELLOW), true);
+            suspect.displayClientMessage(Component.translatable(curfewWarning ? "message.modeminecraft.bot.warn.curfew"
+                    : "message.modeminecraft.bot.warn." + bot.faction().group).withStyle(net.minecraft.ChatFormatting.YELLOW), true);
         }
 
         @Override
@@ -248,8 +274,9 @@ public final class BotGoals {
         public void tick() {
             bot.getLookControl().setLookAt(suspect, 30, 30);
             long now = bot.level().getGameTime();
-            if (!armedVisible(suspect)) {
-                // plus aucune arme visible (ni en main, ni dans le dos / à la hanche) : on abaisse la sienne
+            if (!armedVisible(suspect) && !curfew(suspect)) {
+                // plus aucune arme visible (ni en main, ni dans le dos / à la hanche), on marche, on quitte la zone
+                // restreinte : on abaisse la sienne
                 end = 0;
                 cooldownUntil = now + 100;
                 return;
@@ -670,7 +697,7 @@ public final class BotGoals {
 
         private int cooldownTicks() {
             if (bot.getMainHandItem().is(ModItems.DRAGONSLAYER.get())) {
-                return 32;
+                return bot.berserk() ? 24 : 32;                    // Berserk : délai entre deux coups -25 %
             }
             if (bot.getMainHandItem().getItem() instanceof MeleeWeaponItem m) {
                 return Math.max(8, Math.round(20 / Math.max(0.4f, m.stats().speed())));
@@ -739,6 +766,78 @@ public final class BotGoals {
 
     // =====================================================================================================
     /** Civils et marchands : fuient les coups de feu et les agresseurs. */
+    /**
+     * Opérateur de drones : dès que l'alarme est déclenchée, il se met à couvert, sort sa télécommande et déploie
+     * un micro-drone de reconnaissance (qui marque l'ennemi en rouge pour tous les snipers) ou un drone kamikaze FPV.
+     */
+    static final class DroneOperator extends Goal {
+        private final HumanBotEntity bot;
+        private fr.modeminecraft.entity.drone.DroneEntity drone;
+        private long nextLaunch;
+        private boolean scoutSent;
+
+        DroneOperator(HumanBotEntity bot) {
+            this.bot = bot;
+            setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
+        }
+
+        @Override
+        public boolean canUse() {
+            LivingEntity t = bot.getTarget();
+            return bot.role() == BotRole.DRONE_OPERATOR && t instanceof Player && t.isAlive() && bot.distanceTo(t) < 64
+                    && bot.level().getGameTime() >= nextLaunch && !bot.isPassenger();
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return drone != null && drone.isAlive() && bot.isAlive();
+        }
+
+        @Override
+        public void start() {
+            if (!(bot.level() instanceof net.minecraft.server.level.ServerLevel level)) {
+                return;
+            }
+            bot.getNavigation().stop();
+            bot.setStance(Pose.CROUCHING);                              // à couvert, télécommande en main
+            LivingEntity target = bot.getTarget();
+            var type = !scoutSent || bot.getRandom().nextFloat() < 0.3f
+                    ? fr.modeminecraft.entity.drone.DroneType.HORNET : fr.modeminecraft.entity.drone.DroneType.FPV;
+            scoutSent = true;
+            drone = fr.modeminecraft.registry.ModEntities.DRONE.get().create(level);
+            if (drone == null) {
+                return;
+            }
+            drone.setDroneType(type);
+            if (type == fr.modeminecraft.entity.drone.DroneType.FPV) {
+                var tag = new net.minecraft.nbt.CompoundTag();
+                tag.putString("DroneType", type.id);
+                tag.put("Payload", new ItemStack(ModItems.FRAG_GRENADE.get()).save(level.registryAccess()));
+                drone.loadDrone(tag);
+            }
+            drone.moveTo(bot.getX(), bot.getY() + 1.6, bot.getZ(), bot.getYRot(), 0);
+            drone.launchBy(bot, target);
+            level.addFreshEntity(drone);
+            level.playSound(null, bot.getX(), bot.getY(), bot.getZ(), fr.modeminecraft.registry.ModSounds.DRONE_PAIRED.get(),
+                    SoundSource.HOSTILE, 0.8f, 1f);
+        }
+
+        @Override
+        public void tick() {
+            bot.getNavigation().stop();
+            if (drone != null) {
+                bot.getLookControl().setLookAt(drone, 30, 30);
+            }
+        }
+
+        @Override
+        public void stop() {
+            bot.setStance(Pose.STANDING);
+            nextLaunch = bot.level().getGameTime() + 400;
+            drone = null;
+        }
+    }
+
     static final class Flee extends Goal {
         private final HumanBotEntity bot;
 
@@ -842,6 +941,11 @@ public final class BotGoals {
 
         @Override
         public void tick() {
+            if (bot.ambush) {
+                bot.getNavigation().stop();             // embuscade : on reste tapi derrière son couvert
+                bot.setStance(Pose.CROUCHING);
+                return;
+            }
             if (bot.squadLeader) {
                 if (bot.march == null || bot.distanceToSqr(Vec3.atBottomCenterOf(bot.march)) < 36 || bot.tickCount % 1200 == 0) {
                     double a = bot.getRandom().nextDouble() * Math.PI * 2, d = 60 + bot.getRandom().nextInt(60);

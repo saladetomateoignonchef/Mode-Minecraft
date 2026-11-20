@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "modeminecraft:steel_ingot"
+    },
+    {
+      "item": "modeminecraft:steel_ingot"
+    },
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:glass_pane"
+    },
+    {
+      "item": "modeminecraft:tactical_battery"
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:black_hornet",
+    "count": 1
+  }
+}

@@ -6,6 +6,7 @@ license="${mod_license}"
 modId="${mod_id}"
 version="${mod_version}"
 displayName="${mod_name}"
+enumExtensions="META-INF/enumextensions.json"
 description='''
 Le mod avec tout ce qu'on a toujours voulu dans Minecraft :
 nouveau minerai, armes de mêlée, armes à distance, armes magiques et armure.

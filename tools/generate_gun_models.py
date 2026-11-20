@@ -107,6 +107,26 @@ SKINS = {
     },
 }
 
+# Skins légendaires des armes uniques des Chefs de Faction : générés uniquement pour leur arme
+NO_SKINS = {"emp_jammer_rifle"}   # objets dessinés comme des armes mais sans skins (pas des GunItem)
+LEGENDARY = {"prestige": "glock18", "souverain": "ak47", "fantome": "vss", "hiver": "pkm", "cartel": "desert_eagle"}
+SKINS.update({
+    # Glock 18C « Prestige » : culasse dorée, carcasse polymère noire
+    "prestige": {"k": "#141414", "m": "#d8a826", "l": "#f6dc6a", "t": "#1c1c1c", "T": "#2a2a2a", "u": "#101010", "r": "#f6dc6a"},
+    # AK-47 « Souverain » : gravures or, crosse et garde-main en ivoire
+    "souverain": {"k": "#6a4c08", "m": ["#c9971a", "#e8bc3a", "#a8780e"], "l": "#f2cf4a", "w": ["#efe6cf", "#e2d6b8", "#f6efdc"],
+                  "W": ["#e8dcc0", "#d8caa8"], "u": "#5a4008", "r": "#c8223b"},
+    # VSS Vintorez « Fantôme » : noir mat et vert nuit
+    "fantome": {"k": ["#101412", "#18201a"], "m": ["#1c2420", "#141a16"], "l": "#3a4a40", "w": ["#1a221c", "#222c24"],
+                "W": ["#202a22", "#161c18"], "t": "#1a221c", "T": "#24302a", "u": "#0c100e", "r": "#3aff9a"},
+    # PKM « Hiver » : acier bleuté et blanc d'hiver
+    "hiver": {"k": ["#9aa8b6", "#c8d4de", "#7a8896"], "m": ["#d8e2ea", "#b4c2ce"], "l": "#f2f6fa", "w": ["#c8d4de", "#e8eef4"],
+              "W": ["#e8eef4", "#ffffff"], "t": "#c8d4de", "T": "#e8eef4", "u": "#8a98a6", "r": "#4aa8e8"},
+    # Desert Eagle « Cartel » : chromé gravé, détails dorés
+    "cartel": {"k": "#8a929a", "m": ["#dfe4e8", "#c4cad0", "#f4f6f8"], "l": "#ffffff", "w": "#3a2410", "W": "#5a3a1c",
+               "t": "#9aa2aa", "T": "#c4cad0", "u": "#6a727a", "r": "#dba521"},
+})
+
 
 def hexc(h):
     h = h.lstrip("#")
@@ -330,7 +350,8 @@ def main():
         for part in ("mag", "slide", "grip", "stock"):
             write(os.path.join(models, f"{name}_{part}.json"), {"parent": f"{MOD}:item/parts/part_base",
                   "textures": {"p": tex_default, "particle": tex_default}, "elements": vb.elements(baked, part)})
-        for skin in SKINS:
+        skins = ["default"] if name in NO_SKINS else [k for k in SKINS if k not in LEGENDARY or LEGENDARY[k] == name]
+        for skin in skins:
             atlas = vb.paint(baked, painter(skin))
             atlas.save(os.path.join(textures, "gun", f"{name}_{skin}.png"))
             tex = f"{MOD}:item/gun/{name}_{skin}"

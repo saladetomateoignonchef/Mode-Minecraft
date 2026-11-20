@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=true": {
+      "model": "modeminecraft:block/city_neon_on"
+    },
+    "lit=false": {
+      "model": "modeminecraft:block/city_neon"
+    }
+  }
+}

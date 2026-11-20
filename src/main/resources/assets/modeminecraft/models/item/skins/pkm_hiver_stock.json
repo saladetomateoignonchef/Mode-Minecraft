@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/pkm_stock",
+  "textures": {
+    "p": "modeminecraft:item/gun/pkm_hiver",
+    "particle": "modeminecraft:item/gun/pkm_hiver"
+  }
+}

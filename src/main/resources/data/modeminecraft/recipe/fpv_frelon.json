@@ -1,0 +1,28 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "modeminecraft:steel_plate"
+    },
+    {
+      "item": "modeminecraft:steel_plate"
+    },
+    {
+      "item": "modeminecraft:steel_plate"
+    },
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "modeminecraft:tactical_battery"
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:fpv_frelon",
+    "count": 1
+  }
+}

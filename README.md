@@ -80,7 +80,7 @@ Toutes se fabriquent à la table d'armement (onglet Armes).
 - **Arc en rubis** : flèches plus puissantes (+1.5 dégâts de base), 768 de durabilité.
 - **Bâton de feu** : clic droit pour lancer une boule de feu.
 
-### Armes à feu (77 armes + 6 tourelles à poser)
+### Armes à feu (79 armes + 7 tourelles à poser)
 Toutes les armes à feu, munitions et accessoires se fabriquent à la **table d'armement**.
 
 | Catégorie | Armes (calibre) |
@@ -417,6 +417,50 @@ Des **villes générées** apparaissent selon le biome (environ une tous les 1 2
 - **Maxim M1910** sur affût Sokolov (tourelle refroidie à l'eau, bande de 7,62x54R) sur les tours du palais du désert.
 - Œufs d'apparition de chaque faction (et d'une escouade complète) dans l'onglet créatif.
 
+### Faucons Blancs, nuit et Chefs de Faction
+
+- **Mode Berserk** du Chef des Troupes de Choc (sous 30 % de ses PV) : heaume fissuré aux yeux rouges lumineux,
+  fumée et étincelles, cri de guerre (40 blocs), insensible au recul, +40 % de vitesse, coups 25 % plus rapprochés.
+- **La Pourfendeuse de Dragons entre vos mains** : rangée dans la barre d'action, elle se porte en diagonale dans le dos ;
+  la sélectionner joue un dégainage de 0,6 s par-dessus l'épaule. -15 % de vitesse en main, 26 dégâts, ignore 60 % de
+  l'armure, brise les boucliers (5 s) et arrache 25 % de durabilité aux plaques balistiques.
+- **La nuit** (13 000 à 23 000) : lampadaires, néons et projecteurs des villes s'allument tout seuls (l'éclairage
+  intérieur reste allumé le jour) ; les patrouilles allument la lampe tactique de leur arme (vrais faisceaux, vrai
+  éclairage) et repèrent deux fois moins loin dans le noir ; la police impose un **couvre-feu** (sommation si l'on
+  sprinte à moins de 12 blocs d'un agent ou si l'on entre aux abords du commissariat).
+- **Transformateurs haute tension** dans chaque quartier : C4, grenade ou 6 balles et c'est le court-circuit — panne de
+  secteur de 60 blocs pendant 5 minutes (lumières éteintes, serrures électroniques des portes blindées hors service).
+- **Embuscades nocturnes** des Faucons Blancs : postés en silence derrière rochers, arbres et murs sur la route du joueur
+  ou d'un convoi, sans bruit de pas ni cor de guerre avant le premier coup porté.
+- **La chasse aux 6 Chefs de Faction** (100 PV, barre de boss, uniques par monde) : Commissaire Divisionnaire SWAT
+  (Glock 18C « Prestige » + bouclier balistique lourd), Général Suprême de la Milice (AK-47 « Souverain »),
+  Commandant des Forces Spéciales (VSS Vintorez « Fantôme » : aucun bruit, lunette thermique), Maréchal de l'Est
+  (PKM « Hiver » : 150 balles perforantes), El Patrón (Desert Eagle « Cartel » + machette en or) et le Chef des Troupes
+  de Choc (Pourfendeuse de Dragons). Progression « Chefs vaincus : n / 6 ».
+- **Râtelier à trophées** (4 planches de chêne noir, 2 lingots d'acier, 1 pépite d'or) : expose n'importe quelle arme en
+  relief ; un trophée de Chef reçoit une plaque nominative dorée et un éclairage.
+
+### Drones de combat et guerre électronique
+
+- **Télécommande tactique** (2 lingots d'acier, 2 redstone, 1 vitre, 1 pile CR123A) : Maj + clic droit sur un drone posé
+  pour l'associer, clic droit pour le piloter en **caméra FPV** (Z/Q/S/D, Espace / Ctrl, souris ; clic gauche : action,
+  clic droit : zoom x2,5 ou thermique ; Maj ou R : retour automatique). Le pilote reste immobile et vulnérable.
+- **Retour automatique (RTH)** : prise d'altitude, ligne droite, atterrissage aux pieds du pilote — aussi en cas de perte
+  de signal. Batterie de 5 min (10 avec la LiPo-Titan), rechargée avec une pile CR123A.
+- **5 drones** : micro-drone *Black Hornet* (marque les ennemis à travers les murs), kamikaze FPV *Frelon* (n'importe
+  quel explosif du mod), bombardier *Mavic Tactique* (2 grenades), *Wasp-MG* (60 balles, 600 coups/min, 6 PV, laser),
+  *Reaper-X* (4 mini-roquettes guidées de 24 PV, optique thermique).
+- **Modules** sur la table de modification (3 emplacements) : charge / grenades / module cargo (soute de 9 cases),
+  hélices silencieuses en carbone (-70 % de bruit), batterie haute capacité.
+- **Guerre électronique** : les patrouilles ennemies entendent les drones (22 blocs, 7 avec hélices silencieuses) et les
+  abattent ; des **opérateurs de drones** (bases secrètes, cartels, raffineries, escouades SWAT) lancent un micro-drone
+  qui vous marque pour leurs snipers ou un drone kamikaze qui fonce sur vous ; **fusil brouilleur EMP** (80 blocs : le
+  drone touché atterrit, désactivé 15 s) ; **tours de brouillage** sur les toits (palais, bases, stations polaires) :
+  neige analogique dans un rayon de 50 blocs, perte de contrôle à moins de 15.
+- **Équilibrage balistique** : PM 800-1 100 coups/min et 4,5-6 PV ; 5,56 750-850 coups/min et 7-8 PV ; 7,62 9,5-12 PV
+  mais plus lents (AK-47 : 600) ; snipers à verrou 35-50 coups/min, semi-automatiques 120-180, 18-38 PV ;
+  mitrailleuses 650-850 coups/min, 8-14 PV, gros recul debout.
+
 ### Gameplay et progression
 - **Niveaux des armes (1 à 5)** : chaque arme garde ses statistiques (éliminations, tirs à la tête, tirs, ratio)
   et gagne de l'expérience : +10 par élimination, +5 si tir à la tête, +10 pour un gros monstre (50 PV ou plus).
@@ -566,6 +610,8 @@ tools/generate_skins.py         # skins 64x64 des bots (15 factions + chevalier)
 tools/generate_city_items.py    # Pourfendeuse de Dragons (3D), cartes d'accès, insigne, soins, œufs
 tools/generate_city_data.py     # structures des villes, biomes, tables de butin, portes blindées
 tools/generate_vehicles.py      # véhicules 3D (carrosserie + roue) : quad, police, jeep, camion blindé
+tools/generate_drones.py        # drones 3D (corps + hélice), télécommande, icônes des modules
+tools/generate_night_blocks.py  # éclairage de ville (allumé / éteint), transformateur haute tension
 src/.../world/city/             # génération procédurale des villes (plan, parcelles, décors, bots)
 src/.../entity/bot/             # bots, factions, IA, Faucons Blancs, marché noir
 ```

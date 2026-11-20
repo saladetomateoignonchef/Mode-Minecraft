@@ -1,0 +1,28 @@
+{
+ "variants": {
+  "hits=0": {
+   "model": "modeminecraft:block/jammer_tower_block"
+  },
+  "hits=1": {
+   "model": "modeminecraft:block/jammer_tower_block"
+  },
+  "hits=2": {
+   "model": "modeminecraft:block/jammer_tower_block"
+  },
+  "hits=3": {
+   "model": "modeminecraft:block/jammer_tower_block"
+  },
+  "hits=4": {
+   "model": "modeminecraft:block/jammer_tower_block"
+  },
+  "hits=5": {
+   "model": "modeminecraft:block/jammer_tower_block"
+  },
+  "hits=6": {
+   "model": "modeminecraft:block/jammer_tower_block"
+  },
+  "hits=7": {
+   "model": "modeminecraft:block/jammer_tower_block"
+  }
+ }
+}

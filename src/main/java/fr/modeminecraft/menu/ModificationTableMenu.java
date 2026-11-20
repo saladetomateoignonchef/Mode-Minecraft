@@ -80,8 +80,59 @@ public class ModificationTableMenu extends AbstractContainerMenu {
         return container.getItem(0);
     }
 
+    /** Drone posé sur la table : 3 emplacements de modules (soute ventrale, hélices, batterie). */
+    public boolean droneMode() {
+        return gunStack().getItem() instanceof fr.modeminecraft.entity.drone.DroneItem;
+    }
+
+    private net.minecraft.core.HolderLookup.Provider registries() {
+        return player.level().registryAccess();
+    }
+
+    private void loadDrone() {
+        loading = true;
+        for (int i = 1; i < TABLE_SLOTS; i++) {
+            container.setItem(i, ItemStack.EMPTY);
+        }
+        var d = fr.modeminecraft.entity.drone.DroneData.read(gunStack());
+        if (d.getBoolean("Cargo")) {
+            container.setItem(1, new ItemStack(fr.modeminecraft.registry.ModItems.CARGO_MODULE.get()));
+        } else {
+            container.setItem(1, fr.modeminecraft.entity.drone.DroneData.payload(d, registries()));
+        }
+        if (d.getBoolean("Silent")) {
+            container.setItem(2, new ItemStack(fr.modeminecraft.registry.ModItems.SILENT_ROTORS.get()));
+        }
+        if (d.getBoolean("HighCap")) {
+            container.setItem(3, new ItemStack(fr.modeminecraft.registry.ModItems.HIGH_CAP_BATTERY.get()));
+        }
+        loading = false;
+    }
+
+    private void saveDrone() {
+        ItemStack stack = gunStack();
+        var d = fr.modeminecraft.entity.drone.DroneData.read(stack);
+        ItemStack ventral = container.getItem(1);
+        boolean cargo = ventral.is(fr.modeminecraft.registry.ModItems.CARGO_MODULE.get());
+        d.putBoolean("Cargo", cargo);
+        fr.modeminecraft.entity.drone.DroneData.setPayload(d, cargo ? ItemStack.EMPTY : ventral.copy(), registries());
+        d.putBoolean("Silent", !container.getItem(2).isEmpty());
+        boolean high = !container.getItem(3).isEmpty();
+        d.putBoolean("HighCap", high);
+        int max = high ? fr.modeminecraft.entity.drone.DroneEntity.BATTERY * 2 : fr.modeminecraft.entity.drone.DroneEntity.BATTERY;
+        d.putInt("Battery", Math.min(max, d.contains("Battery") ? d.getInt("Battery") : fr.modeminecraft.entity.drone.DroneEntity.BATTERY));
+        if (!d.contains("DroneType")) {
+            d.putString("DroneType", ((fr.modeminecraft.entity.drone.DroneItem) stack.getItem()).type().id);
+        }
+        fr.modeminecraft.entity.drone.DroneData.write(stack, d);
+    }
+
     /** L'arme a changé : on affiche ses accessoires dans les emplacements 1 à 4. */
     private void loadAttachments() {
+        if (droneMode()) {
+            loadDrone();
+            return;
+        }
         loading = true;
         ItemStack gun = gunStack();
         GunAttachments attachments = gun.getItem() instanceof GunItem ? GunItem.getAttachments(gun) : GunAttachments.EMPTY;
@@ -93,6 +144,10 @@ public class ModificationTableMenu extends AbstractContainerMenu {
 
     /** Un accessoire a été ajouté/retiré : on l'écrit dans l'arme. */
     private void saveAttachments() {
+        if (!loading && droneMode()) {
+            saveDrone();
+            return;
+        }
         if (loading || !(gunStack().getItem() instanceof GunItem gun)) {
             return;
         }
@@ -128,6 +183,9 @@ public class ModificationTableMenu extends AbstractContainerMenu {
         if (!(stack.getItem() instanceof GunItem)) {
             return false;
         }
+        if (fr.modeminecraft.item.gun.Legendary.of(stack) != null && (id == BUTTON_PREVIOUS_SKIN || id == BUTTON_NEXT_SKIN)) {
+            return false;                                    // arme légendaire : son skin est gravé dans le métal
+        }
         if (id == BUTTON_PREVIOUS_SKIN) {
             GunItem.setSkin(stack, GunItem.getSkin(stack).cycle(-1, GunItem.getProgress(stack).level()));
         } else if (id == BUTTON_NEXT_SKIN) {
@@ -154,11 +212,12 @@ public class ModificationTableMenu extends AbstractContainerMenu {
             if (!moveItemStackTo(stack, TABLE_SLOTS, inventoryEnd, true)) {
                 return ItemStack.EMPTY;
             }
-        } else if (stack.getItem() instanceof GunItem) {
+        } else if (stack.getItem() instanceof GunItem || stack.getItem() instanceof fr.modeminecraft.entity.drone.DroneItem) {
             if (!moveItemStackTo(stack, 0, 1, false)) {
                 return ItemStack.EMPTY;
             }
-        } else if (stack.getItem() instanceof AttachmentItem) {
+        } else if (stack.getItem() instanceof AttachmentItem || stack.getItem() instanceof fr.modeminecraft.entity.drone.DroneModuleItem
+                || droneMode() && (fr.modeminecraft.entity.drone.DroneData.fpvCharge(stack))) {
             if (!moveItemStackTo(stack, 1, TABLE_SLOTS, false)) {
                 return ItemStack.EMPTY;
             }
@@ -208,7 +267,7 @@ public class ModificationTableMenu extends AbstractContainerMenu {
 
         @Override
         public boolean mayPlace(ItemStack stack) {
-            return stack.getItem() instanceof GunItem;
+            return stack.getItem() instanceof GunItem || stack.getItem() instanceof fr.modeminecraft.entity.drone.DroneItem;
         }
 
         @Override
@@ -234,11 +293,36 @@ public class ModificationTableMenu extends AbstractContainerMenu {
 
         /** L'arme posée a-t-elle cet emplacement ? (sert aussi à griser la case dans l'écran) */
         public boolean isAvailable() {
+            if (gunStack().getItem() instanceof fr.modeminecraft.entity.drone.DroneItem drone) {
+                return getContainerSlot() == 2 || getContainerSlot() == 3
+                        || getContainerSlot() == 1 && drone.type() != fr.modeminecraft.entity.drone.DroneType.HORNET;
+            }
             return gunStack().getItem() instanceof GunItem gun && gun.stats().slots().contains(type);
         }
 
         @Override
+        public int getMaxStackSize(ItemStack stack) {
+            return getContainerSlot() == 1 && gunStack().getItem() instanceof fr.modeminecraft.entity.drone.DroneItem d
+                    && d.type() == fr.modeminecraft.entity.drone.DroneType.MAVIC
+                    && stack.getItem() instanceof fr.modeminecraft.item.explosive.GrenadeItem ? 2 : 1;
+        }
+
+        @Override
         public boolean mayPlace(ItemStack stack) {
+            if (gunStack().getItem() instanceof fr.modeminecraft.entity.drone.DroneItem drone) {
+                if (!isAvailable()) {
+                    return false;
+                }
+                var t = drone.type();
+                return switch (getContainerSlot()) {
+                    case 1 -> stack.is(fr.modeminecraft.registry.ModItems.CARGO_MODULE.get())
+                            || t == fr.modeminecraft.entity.drone.DroneType.FPV && fr.modeminecraft.entity.drone.DroneData.fpvCharge(stack)
+                            || t == fr.modeminecraft.entity.drone.DroneType.MAVIC && stack.getItem() instanceof fr.modeminecraft.item.explosive.GrenadeItem;
+                    case 2 -> stack.is(fr.modeminecraft.registry.ModItems.SILENT_ROTORS.get());
+                    case 3 -> stack.is(fr.modeminecraft.registry.ModItems.HIGH_CAP_BATTERY.get());
+                    default -> false;
+                };
+            }
             return gunStack().getItem() instanceof GunItem gun
                     && stack.getItem() instanceof AttachmentItem attachment
                     && attachment.slot() == type

@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/glock18_grip",
+  "textures": {
+    "p": "modeminecraft:item/gun/glock18_prestige",
+    "particle": "modeminecraft:item/gun/glock18_prestige"
+  }
+}

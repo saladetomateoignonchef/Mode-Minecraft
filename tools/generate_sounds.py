@@ -308,6 +308,62 @@ def bot_sound(name, seed):
         whoosh = band(noise(len(t), rng), lo=200, hi=1800) * np.sin(np.clip(t / 0.25, 0, 1) * np.pi) * 0.9
         ring = sum(np.sin(2 * np.pi * f * t) * w for f, w in [(410, 1), (980, 0.6), (1650, 0.35), (2470, 0.2)]) * env(t - 0.2, 0.001, 0.35) * (t > 0.2)
         return normalize(whoosh + ring * 0.8 + click(rng, t, 0.2, 600, 0.02, 1.2, 100, 4000), 0.85)
+    if name == "berserk_roar_clang":
+        # cri de guerre grave et métallique : grondement guttural + résonance d'armure
+        t = t_axis(2.4)
+        f0 = 70 + 25 * np.sin(np.clip(t / 2.2, 0, 1) * np.pi)
+        ph = 2 * np.pi * np.cumsum(f0 * (1 + 0.04 * np.sin(2 * np.pi * 11 * t))) / SR
+        growl = sum(np.sin(k * ph) / k for k in range(1, 12)) * (0.7 + 0.3 * band(noise(len(t), rng), lo=20, hi=60) * 8)
+        growl = band(growl, lo=50, hi=2500) * np.clip(t / 0.15, 0, 1) * np.clip((2.3 - t) / 0.5, 0, 1)
+        ring = sum(np.sin(2 * np.pi * f * t) * w for f, w in [(310, 1), (745, 0.6), (1290, 0.4), (2050, 0.25)]) * env(t, 0.002, 0.9)
+        x = echo(growl * 0.9 + ring * 0.5 + click(rng, t, 0.0, 500, 0.03, 1.4, 80, 3000), [0.21, 0.45], [0.35, 0.18])
+        return normalize(x, 0.9)
+    if name == "transformer_short_circuit":
+        # arc électrique : bourdonnement 50 Hz, crépitements, puis détonation sourde
+        t = t_axis(2.2)
+        hum = (np.sign(np.sin(2 * np.pi * 50 * t)) * 0.3 + np.sin(2 * np.pi * 100 * t) * 0.4) * np.clip((0.9 - t) / 0.2, 0, 1) * 0.5
+        crackle = np.zeros(len(t))
+        for _ in range(60):
+            at = rng.uniform(0.05, 1.6)
+            crackle += click(rng, t, at, rng.uniform(1500, 6000), 0.004, rng.uniform(0.3, 1.0), 800, 9000)
+        boom = band(noise(len(t), rng), lo=30, hi=500) * env(t - 0.9, 0.002, 0.35) * (t > 0.9) * 1.6
+        return normalize(hum + crackle * 0.6 + boom, 0.9)
+    if name == "drone_paired":
+        t = t_axis(0.5)
+        x = np.zeros(len(t))
+        for at, f in [(0.0, 1760), (0.14, 2350)]:
+            m = (t >= at) & (t < at + 0.1)
+            x[m] += np.sin(2 * np.pi * f * t[m]) * 0.8
+        return normalize(x, 0.6)
+    if name == "drone_motor":
+        # bourdonnement d'hélices (boucle de 1 s) : fréquence de pale + harmoniques + souffle
+        t = t_axis(1.0)
+        f = 190
+        ph = 2 * np.pi * f * t
+        tone = sum(np.sin(k * ph + rng.uniform(0, 6)) / k ** 1.2 for k in range(1, 10))
+        tone *= 0.8 + 0.2 * np.sin(2 * np.pi * 4 * t)
+        x = tone * 0.6 + band(noise(len(t), rng), lo=300, hi=5000) * 0.35
+        return normalize(x, 0.6)
+    if name == "fpv_incoming_buzz":
+        # moteur de drone de course qui approche : aigu, nerveux, effet Doppler montant
+        t = t_axis(1.6)
+        f = 380 + 260 * (t / 1.6) ** 2
+        ph = 2 * np.pi * np.cumsum(f) / SR
+        tone = sum(np.sign(np.sin(k * ph)) * 0.4 / k + np.sin(k * ph) / k for k in range(1, 7))
+        x = tone * np.clip(t / 1.2, 0.05, 1) ** 1.5 + band(noise(len(t), rng), lo=1500, hi=7000) * 0.2
+        return normalize(x, 0.75)
+    if name == "emp_jammer":
+        # impulsion électromagnétique : montée de charge aiguë puis souffle grave et grésillement
+        t = t_axis(1.2)
+        f = 600 + 3000 * np.clip(t / 0.35, 0, 1) ** 2
+        charge = np.sin(2 * np.pi * np.cumsum(f) / SR) * (t < 0.35) * 0.5
+        pulse = band(noise(len(t), rng), lo=60, hi=900) * env(t - 0.35, 0.001, 0.25) * (t > 0.35) * 1.2
+        fizz = band(noise(len(t), rng), lo=3000, hi=9000) * env(t - 0.35, 0.01, 0.5) * (t > 0.35) * 0.4
+        return normalize(charge + pulse + fizz, 0.85)
+    if name == "drone_jammed":
+        t = t_axis(0.8)
+        x = band(noise(len(t), rng), lo=800, hi=6000) * (0.5 + 0.5 * np.sign(np.sin(2 * np.pi * 13 * t))) * env(t, 0.01, 0.6)
+        return normalize(x, 0.6)
     raise ValueError(name)
 
 
@@ -364,7 +420,9 @@ def write_ogg(path, x):
     os.remove(wav_path)
 
 
-BOT_SOUNDS = ["police_freeze_warning", "falcon_horn_charge", "dragonslayer_unsheathe", "dragonslayer_sheathe", "dragonslayer_clang"]
+BOT_SOUNDS = ["police_freeze_warning", "falcon_horn_charge", "dragonslayer_unsheathe", "dragonslayer_sheathe", "dragonslayer_clang",
+              "berserk_roar_clang", "transformer_short_circuit", "drone_paired", "drone_motor", "fpv_incoming_buzz", "emp_jammer",
+              "drone_jammed"]
 
 
 def main():

@@ -478,6 +478,81 @@ def knight(seed):
     return img
 
 
+def bosses():
+    """Les 5 Chefs de Faction uniques (le 6e, le Chef des Troupes de Choc, est le chevalier ci-dessus)."""
+    out = {}
+    gold = (230, 190, 60)
+
+    # --- Commissaire Divisionnaire SWAT : tenue tactique noire d'élite, insignes dorés
+    rng = random.Random(101)
+    p = person(rng)
+    p.update(beard="stubble", glasses=False, hair_style="buzz")
+    black = "#15171b"
+    insignia = lambda f, x, y: gold if f == "front" and ((y == 1 and x in (1, 2, 5, 6)) or (x == 5 and y in (3, 4))) else \
+        (240, 240, 240) if f == "back" and 2 <= y <= 4 and 1 <= x <= 6 and (x + y) % 2 == 0 else None
+    shoulder = lambda f, x, y, W, H: gold if y == 0 and f in ("top", "front", "back") else None
+    out["swat"] = skin(p, {"top": with_details(cloth(black, seed=1), combine(insignia, belt("#2a2c30", "#d0b040"))),
+                           "sleeve": cloth(black, seed=1), "arm_over": shoulder, "pants": cloth("#1c1f24", seed=1),
+                           "boots": "#0a0a0a", "gloves": "#0e0e0e", "laces": "#d0b040"}, 101)
+
+    # --- Général Suprême de la Milice : uniforme de parade sable et rouge, casquette à visière dorée, décorations
+    rng = random.Random(102)
+    p = person(rng, SKIN_TONES[1:4])
+    p.update(beard="mustache", glasses=False, hair_style="short")
+    medals = lambda f, x, y: [(200, 40, 40), gold, (40, 90, 160), (40, 140, 60)][(x + y) % 4] if f == "front" and x in (5, 6) and 2 <= y <= 4 else \
+        gold if f == "front" and x == 2 and y in (2, 4, 6, 8) else None
+    sash = lambda f, x, y: (170, 30, 30) if f == "front" and (x == y - 2 or x == y - 3) and y <= 10 else None
+    out["militia"] = skin(p, {"top": with_details(cloth("#c8b48a", seed=2), combine(medals, sash, belt("#5a1a14", "#d8b040"))),
+                              "sleeve": with_details(cloth("#c8b48a", seed=2), lambda f, x, y: (170, 30, 30) if y in (9, 10) else None),
+                              "pants": with_details(cloth("#b8a47a", seed=2), lambda f, x, y: (170, 30, 30) if f in ("left", "right") and x == 1 else None),
+                              "boots": "#1a120c", "boot_h": 4,
+                              "head_over": cap("#c8b48a", "#a01e1e", "#d8b040", "#e8c860")}, 102)
+
+    # --- Commandant des Forces Spéciales : tenue Ghillie forêt, cagoule sombre
+    rng = random.Random(103)
+    p = person(rng)
+    ghillie = camo(["#3a4a22", "#5a6a2a", "#2a3418", "#6a5a34", "#4a5a2a"], 103, scale=1)
+
+    def strands(face, x, y, W, H):
+        if rnd(103, "g", face, x, y) < 0.55:
+            return ghillie(face, x, y)
+        return None
+    out["garrison"] = skin(p, {"top": cloth("#3a4a22", ghillie, 3), "sleeve": cloth("#3a4a22", ghillie, 4),
+                               "pants": cloth("#3a4a22", ghillie, 5), "boots": "#14140e", "gloves": "#1e2216",
+                               "top_over": strands, "arm_over": strands, "leg_over": strands,
+                               "head_over": mask_lower("#1a1c18", 103, top_row=0) if False else
+                               (lambda f, x, y, W, H: None if f == "front" and y == 4 and 1 <= x <= 6 else (26, 28, 24) if f != "bottom" else None)}, 103)
+
+    # --- Maréchal de l'Est : long manteau d'officier gris acier, chapka fourrée, plastron blindé
+    rng = random.Random(104)
+    p = person(rng, SKIN_TONES[:2])
+    p.update(beard="full", hair="#c8c8c8", hair_style="short")
+    coat = "#5a646e"
+    epaulets = lambda f, x, y: gold if f == "front" and y == 0 else None
+    plastron = lambda f, x, y: (70, 72, 76) if f == "front" and 2 <= x <= 5 and 2 <= y <= 7 and not (x in (2, 5) and y == 7) else None
+    stars = lambda f, x, y: (200, 30, 30) if f == "front" and x in (3, 4) and y == 4 else None
+    out["soviet"] = skin(p, {"top": with_details(cloth(coat, seed=6), combine(epaulets, stars, plastron, belt("#2a1e14", "#d0b040", 8))),
+                             "sleeve": with_details(cloth(coat, seed=6), lambda f, x, y: gold if y == 10 else None),
+                             "pants": cloth(coat, seed=6), "boots": "#141210", "boot_h": 5, "gloves": "#2a2420",
+                             "top_over": lambda f, x, y, W, H: hexc(coat) if y >= 8 else None,
+                             "leg_over": lambda f, x, y, W, H: hexc(coat) if y <= 6 and f != "bottom" else None,
+                             "head_over": chapka("#4a4a50", "#6a5a48")}, 104)
+
+    # --- El Patrón : costume blanc tropical ouvert sur un gilet pare-balles, lunettes teintées, chaînes en or
+    rng = random.Random(105)
+    p = person(rng, SKIN_TONES[1:4])
+    p.update(beard="stubble", glasses=False, hair="#1a1410", hair_style="side")
+    vest = lambda f, x, y: (58, 62, 52) if f == "front" and 2 <= x <= 5 and 1 <= y <= 9 else None
+    chains = lambda f, x, y: gold if f == "front" and ((y == 1 and 2 <= x <= 5) or (y == 2 and x in (2, 5)) or (y == 3 and x in (3, 4))) else None
+    shades = lambda f, x, y, W, H: ((30, 20, 14) if 1 <= x <= 6 and x not in (3, 4) else gold) if f == "front" and y == 4 else \
+        gold if f in ("left", "right") and y == 4 and x >= 4 else None
+    suit = cloth("#f0ece0", tropical("#f0ece0", "#f0a020", "#2a8a3a", 105), 105)
+    out["cartel"] = skin(p, {"top": with_details(suit, combine(chains, vest)), "sleeve": suit,
+                             "pants": cloth("#ece8dc", seed=7), "boots": "#e8e4d8", "tattoo": "#2a3a5a",
+                             "head_over": shades}, 105)
+    return out
+
+
 def falcon_cape():
     """Cape blanche déchirée ornée du faucon blanc (format cape 64x32 : pavé 10x16x1 en (0, 0))."""
     img = Image.new("RGBA", (64, 32), (0, 0, 0, 0))
@@ -524,6 +599,9 @@ def main():
     k.save(os.path.join(OUT, "falcon_chief_0.png"))
     previews.append(k)
     falcon_cape().save(os.path.join(OUT, "falcon_cape.png"))
+    for faction, img in bosses().items():
+        img.save(os.path.join(OUT, f"boss_{faction}.png"))
+        previews.append(img)
     # aperçu (pour vérifier à l'œil)
     sheet = Image.new("RGBA", (12 * 68, ((len(previews) + 11) // 12) * 68), (90, 90, 90, 255))
     for i, im in enumerate(previews):

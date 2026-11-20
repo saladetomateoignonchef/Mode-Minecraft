@@ -35,7 +35,16 @@ public class BackGunsLayer extends RenderLayer<AbstractClientPlayer, PlayerModel
             return;
         }
         var renderer = Minecraft.getInstance().getItemRenderer();
-        if (!guns[0].isEmpty()) {
+        if (guns[0].is(fr.modeminecraft.registry.ModItems.DRAGONSLAYER.get())) {
+            // épée géante en diagonale : de l'épaule droite (poignée) à la hanche gauche, plat de la lame vers l'arrière
+            pose.pushPose();
+            getParentModel().body.translateAndRotate(pose);
+            pose.translate(0, 0.23, 0.3);
+            pose.mulPose(Axis.ZP.rotationDegrees(-30));
+            renderer.renderStatic(player, guns[0], ItemDisplayContext.FIXED, false, pose, buffers, player.level(), light,
+                    OverlayTexture.NO_OVERLAY, player.getId());
+            pose.popPose();
+        } else if (!guns[0].isEmpty()) {
             pose.pushPose();
             getParentModel().body.translateAndRotate(pose);
             pose.translate(0.0, 0.38, 0.19);           // milieu du dos, juste derrière le corps

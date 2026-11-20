@@ -1,0 +1,22 @@
+{
+  "entries": [
+    {
+      "enum": "net/minecraft/client/model/HumanoidModel$ArmPose",
+      "name": "MODEMINECRAFT_GREATSWORD",
+      "constructor": "(ZLnet/neoforged/neoforge/client/IArmPoseTransformer;)V",
+      "parameters": {
+        "class": "fr/modeminecraft/client/GreatswordPose",
+        "field": "ENUM_PARAMS"
+      }
+    },
+    {
+      "enum": "net/minecraft/client/model/HumanoidModel$ArmPose",
+      "name": "MODEMINECRAFT_DRONE_CONTROLLER",
+      "constructor": "(ZLnet/neoforged/neoforge/client/IArmPoseTransformer;)V",
+      "parameters": {
+        "class": "fr/modeminecraft/client/ControllerPose",
+        "field": "ENUM_PARAMS"
+      }
+    }
+  ]
+}

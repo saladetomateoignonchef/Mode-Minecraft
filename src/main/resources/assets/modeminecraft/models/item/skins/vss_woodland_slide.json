@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/vss_slide",
+  "textures": {
+    "p": "modeminecraft:item/gun/vss_woodland",
+    "particle": "modeminecraft:item/gun/vss_woodland"
+  }
+}

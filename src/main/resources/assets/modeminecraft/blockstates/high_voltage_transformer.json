@@ -1,0 +1,184 @@
+{
+  "variants": {
+    "broken=false,facing=north,hits=0": {
+      "model": "modeminecraft:block/high_voltage_transformer"
+    },
+    "broken=false,facing=north,hits=1": {
+      "model": "modeminecraft:block/high_voltage_transformer"
+    },
+    "broken=false,facing=north,hits=2": {
+      "model": "modeminecraft:block/high_voltage_transformer"
+    },
+    "broken=false,facing=north,hits=3": {
+      "model": "modeminecraft:block/high_voltage_transformer"
+    },
+    "broken=false,facing=north,hits=4": {
+      "model": "modeminecraft:block/high_voltage_transformer"
+    },
+    "broken=false,facing=north,hits=5": {
+      "model": "modeminecraft:block/high_voltage_transformer"
+    },
+    "broken=true,facing=north,hits=0": {
+      "model": "modeminecraft:block/high_voltage_transformer_broken"
+    },
+    "broken=true,facing=north,hits=1": {
+      "model": "modeminecraft:block/high_voltage_transformer_broken"
+    },
+    "broken=true,facing=north,hits=2": {
+      "model": "modeminecraft:block/high_voltage_transformer_broken"
+    },
+    "broken=true,facing=north,hits=3": {
+      "model": "modeminecraft:block/high_voltage_transformer_broken"
+    },
+    "broken=true,facing=north,hits=4": {
+      "model": "modeminecraft:block/high_voltage_transformer_broken"
+    },
+    "broken=true,facing=north,hits=5": {
+      "model": "modeminecraft:block/high_voltage_transformer_broken"
+    },
+    "broken=false,facing=east,hits=0": {
+      "model": "modeminecraft:block/high_voltage_transformer",
+      "y": 90
+    },
+    "broken=false,facing=east,hits=1": {
+      "model": "modeminecraft:block/high_voltage_transformer",
+      "y": 90
+    },
+    "broken=false,facing=east,hits=2": {
+      "model": "modeminecraft:block/high_voltage_transformer",
+      "y": 90
+    },
+    "broken=false,facing=east,hits=3": {
+      "model": "modeminecraft:block/high_voltage_transformer",
+      "y": 90
+    },
+    "broken=false,facing=east,hits=4": {
+      "model": "modeminecraft:block/high_voltage_transformer",
+      "y": 90
+    },
+    "broken=false,facing=east,hits=5": {
+      "model": "modeminecraft:block/high_voltage_transformer",
+      "y": 90
+    },
+    "broken=true,facing=east,hits=0": {
+      "model": "modeminecraft:block/high_voltage_transformer_broken",
+      "y": 90
+    },
+    "broken=true,facing=east,hits=1": {
+      "model": "modeminecraft:block/high_voltage_transformer_broken",
+      "y": 90
+    },
+    "broken=true,facing=east,hits=2": {
+      "model": "modeminecraft:block/high_voltage_transformer_broken",
+      "y": 90
+    },
+    "broken=true,facing=east,hits=3": {
+      "model": "modeminecraft:block/high_voltage_transformer_broken",
+      "y": 90
+    },
+    "broken=true,facing=east,hits=4": {
+      "model": "modeminecraft:block/high_voltage_transformer_broken",
+      "y": 90
+    },
+    "broken=true,facing=east,hits=5": {
+      "model": "modeminecraft:block/high_voltage_transformer_broken",
+      "y": 90
+    },
+    "broken=false,facing=south,hits=0": {
+      "model": "modeminecraft:block/high_voltage_transformer",
+      "y": 180
+    },
+    "broken=false,facing=south,hits=1": {
+      "model": "modeminecraft:block/high_voltage_transformer",
+      "y": 180
+    },
+    "broken=false,facing=south,hits=2": {
+      "model": "modeminecraft:block/high_voltage_transformer",
+      "y": 180
+    },
+    "broken=false,facing=south,hits=3": {
+      "model": "modeminecraft:block/high_voltage_transformer",
+      "y": 180
+    },
+    "broken=false,facing=south,hits=4": {
+      "model": "modeminecraft:block/high_voltage_transformer",
+      "y": 180
+    },
+    "broken=false,facing=south,hits=5": {
+      "model": "modeminecraft:block/high_voltage_transformer",
+      "y": 180
+    },
+    "broken=true,facing=south,hits=0": {
+      "model": "modeminecraft:block/high_voltage_transformer_broken",
+      "y": 180
+    },
+    "broken=true,facing=south,hits=1": {
+      "model": "modeminecraft:block/high_voltage_transformer_broken",
+      "y": 180
+    },
+    "broken=true,facing=south,hits=2": {
+      "model": "modeminecraft:block/high_voltage_transformer_broken",
+      "y": 180
+    },
+    "broken=true,facing=south,hits=3": {
+      "model": "modeminecraft:block/high_voltage_transformer_broken",
+      "y": 180
+    },
+    "broken=true,facing=south,hits=4": {
+      "model": "modeminecraft:block/high_voltage_transformer_broken",
+      "y": 180
+    },
+    "broken=true,facing=south,hits=5": {
+      "model": "modeminecraft:block/high_voltage_transformer_broken",
+      "y": 180
+    },
+    "broken=false,facing=west,hits=0": {
+      "model": "modeminecraft:block/high_voltage_transformer",
+      "y": 270
+    },
+    "broken=false,facing=west,hits=1": {
+      "model": "modeminecraft:block/high_voltage_transformer",
+      "y": 270
+    },
+    "broken=false,facing=west,hits=2": {
+      "model": "modeminecraft:block/high_voltage_transformer",
+      "y": 270
+    },
+    "broken=false,facing=west,hits=3": {
+      "model": "modeminecraft:block/high_voltage_transformer",
+      "y": 270
+    },
+    "broken=false,facing=west,hits=4": {
+      "model": "modeminecraft:block/high_voltage_transformer",
+      "y": 270
+    },
+    "broken=false,facing=west,hits=5": {
+      "model": "modeminecraft:block/high_voltage_transformer",
+      "y": 270
+    },
+    "broken=true,facing=west,hits=0": {
+      "model": "modeminecraft:block/high_voltage_transformer_broken",
+      "y": 270
+    },
+    "broken=true,facing=west,hits=1": {
+      "model": "modeminecraft:block/high_voltage_transformer_broken",
+      "y": 270
+    },
+    "broken=true,facing=west,hits=2": {
+      "model": "modeminecraft:block/high_voltage_transformer_broken",
+      "y": 270
+    },
+    "broken=true,facing=west,hits=3": {
+      "model": "modeminecraft:block/high_voltage_transformer_broken",
+      "y": 270
+    },
+    "broken=true,facing=west,hits=4": {
+      "model": "modeminecraft:block/high_voltage_transformer_broken",
+      "y": 270
+    },
+    "broken=true,facing=west,hits=5": {
+      "model": "modeminecraft:block/high_voltage_transformer_broken",
+      "y": 270
+    }
+  }
+}

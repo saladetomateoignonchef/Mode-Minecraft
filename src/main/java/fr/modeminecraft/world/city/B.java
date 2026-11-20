@@ -67,7 +67,14 @@ public final class B {
 
     void set(int x, int y, int z, BlockState s) {
         if (inside(x, y, z)) {
-            level.setBlock(pos(x, y, z), s, 2);
+            s = fr.modeminecraft.world.night.NightOps.cityLight(s);   // éclairage qui s'allume la nuit
+            BlockPos p = pos(x, y, z);
+            level.setBlock(p, s, 2);
+            if (fr.modeminecraft.world.night.NightOps.isCityLight(s)) {
+                level.scheduleTick(p, s.getBlock(), 1 + er.nextInt(20));
+            } else if (s.getBlock() instanceof fr.modeminecraft.entity.drone.JammerTowerBlock) {
+                level.scheduleTick(p, s.getBlock(), 20);
+            }
         }
     }
 

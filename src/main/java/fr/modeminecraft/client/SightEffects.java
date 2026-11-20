@@ -91,13 +91,16 @@ public final class SightEffects {
         // Vision thermique / nocturne : effet d'image tant que l'on vise
         boolean emp = player.hasEffect(fr.modeminecraft.registry.ModEffects.EMP);
         String wanted = mode == null || emp ? null : mode.overlay().postEffect;
+        if (DroneClient.thermalActive()) {
+            wanted = fr.modeminecraft.item.gun.SightOverlay.THERMAL.postEffect;       // optique thermique du Reaper-X
+        }
         if (wanted == null) {
             clearPost(mc);
         } else if (!wanted.equals(activePostEffect)) {
             mc.gameRenderer.loadEffect(ModeMinecraft.id("shaders/post/" + wanted + ".json"));
             activePostEffect = wanted;
         }
-        thermal = aim != null && !emp && aim.has(AttachmentItem.Special.THERMAL);
+        thermal = aim != null && !emp && aim.has(AttachmentItem.Special.THERMAL) || DroneClient.thermalActive();
 
         // Ce que l'on vise (lunette numérique, télémètre, rubis)
         aimedAt = aim == null ? null : pick(player, SIGHT_RANGE);
@@ -141,12 +144,12 @@ public final class SightEffects {
     }
 
     /** Ce que touche le regard de ce joueur (utilisé par le faisceau laser). */
-    public static HitResult pickFor(Player player, double range) {
+    public static HitResult pickFor(net.minecraft.world.entity.LivingEntity player, double range) {
         return pick(player, range);
     }
 
-    /** Lancer de rayon depuis les yeux du joueur : bloc ou entité touché. */
-    private static HitResult pick(Player player, double range) {
+    /** Lancer de rayon depuis les yeux du joueur (ou d'un bot) : bloc ou entité touché. */
+    private static HitResult pick(net.minecraft.world.entity.LivingEntity player, double range) {
         Vec3 eye = player.getEyePosition();
         Vec3 end = eye.add(player.getLookAngle().scale(range));
         HitResult block = player.level().clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));

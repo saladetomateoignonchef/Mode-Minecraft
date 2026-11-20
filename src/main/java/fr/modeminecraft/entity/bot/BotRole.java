@@ -10,9 +10,13 @@ public enum BotRole {
     TRADER,       // marchand clandestin
     CONTRACTOR,   // donneur de contrats de chasse
     // Faucons Blancs (100 % corps à corps)
-    COMMANDER, CHIEF, SCOUT, LANCER, ASSASSIN, BRUTE;
+    COMMANDER, CHIEF, SCOUT, LANCER, ASSASSIN, BRUTE,
+    /** Chef unique d'une faction (100 PV, arme légendaire). */
+    BOSS,
+    /** Opérateur de drones : déploie un micro-drone de reconnaissance ou un drone kamikaze dès que l'alarme sonne. */
+    DRONE_OPERATOR;
 
     public boolean falcon() {
-        return ordinal() >= COMMANDER.ordinal();
+        return ordinal() >= COMMANDER.ordinal() && ordinal() <= BRUTE.ordinal();
     }
 }

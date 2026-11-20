@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/emp_jammer_rifle_3d",
+  "textures": {
+    "p": "modeminecraft:item/gun/emp_jammer_rifle_default",
+    "particle": "modeminecraft:item/gun/emp_jammer_rifle_default"
+  }
+}

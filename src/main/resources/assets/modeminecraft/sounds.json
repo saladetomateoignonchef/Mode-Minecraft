@@ -357,5 +357,47 @@
     "sounds": [
       "modeminecraft:bot/dragonslayer_clang"
     ]
+  },
+  "bot.berserk_roar_clang": {
+    "subtitle": "subtitles.modeminecraft.berserk_roar_clang",
+    "sounds": [
+      "modeminecraft:bot/berserk_roar_clang"
+    ]
+  },
+  "bot.transformer_short_circuit": {
+    "subtitle": "subtitles.modeminecraft.transformer_short_circuit",
+    "sounds": [
+      "modeminecraft:bot/transformer_short_circuit"
+    ]
+  },
+  "bot.drone_paired": {
+    "subtitle": "subtitles.modeminecraft.drone_paired",
+    "sounds": [
+      "modeminecraft:bot/drone_paired"
+    ]
+  },
+  "bot.drone_motor": {
+    "subtitle": "subtitles.modeminecraft.drone_motor",
+    "sounds": [
+      "modeminecraft:bot/drone_motor"
+    ]
+  },
+  "bot.fpv_incoming_buzz": {
+    "subtitle": "subtitles.modeminecraft.fpv_incoming_buzz",
+    "sounds": [
+      "modeminecraft:bot/fpv_incoming_buzz"
+    ]
+  },
+  "bot.emp_jammer": {
+    "subtitle": "subtitles.modeminecraft.emp_jammer",
+    "sounds": [
+      "modeminecraft:bot/emp_jammer"
+    ]
+  },
+  "bot.drone_jammed": {
+    "subtitle": "subtitles.modeminecraft.drone_jammed",
+    "sounds": [
+      "modeminecraft:bot/drone_jammed"
+    ]
   }
 }

@@ -14,6 +14,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.VanillaGameEvent;
@@ -45,6 +46,7 @@ public final class BotEvents {
     @SubscribeEvent
     public static void attributes(EntityAttributeCreationEvent event) {
         event.put(ModEntities.HUMAN_BOT.get(), HumanBotEntity.createAttributes().build());
+        event.put(ModEntities.DRONE.get(), fr.modeminecraft.entity.drone.DroneEntity.createAttributes().build());
     }
 
     /** Toute la faction (même groupe, 40 blocs) se retourne contre ce joueur. */
@@ -82,7 +84,7 @@ public final class BotEvents {
                 continue;
             }
             swat.moveTo(x + 0.5, y, z + 0.5, 0, 0);
-            swat.setup(Faction.SWAT, i == 0 ? BotRole.OFFICER : BotRole.SOLDIER, r);
+            swat.setup(Faction.SWAT, i == 0 ? BotRole.OFFICER : i == 1 ? BotRole.DRONE_OPERATOR : BotRole.SOLDIER, r);
             swat.finalizeSpawn(level, level.getCurrentDifficultyAt(swat.blockPosition()), MobSpawnType.EVENT, null);
             swat.setTarget(player);
             level.addFreshEntity(swat);
@@ -97,14 +99,20 @@ public final class BotEvents {
         if (bot.faction() != Faction.FALCON || bot.squad == null) {
             return;
         }
-        long now = bot.level().getGameTime();
-        if (HORN_COOLDOWN.getOrDefault(bot.squad, -1000L) < now) {
-            HORN_COOLDOWN.put(bot.squad, now + 600);
-            bot.level().playSound(null, bot.getX(), bot.getY(), bot.getZ(), ModSounds.FALCON_HORN_CHARGE.get(), SoundSource.HOSTILE, 3f, 1f);
+        if (!bot.ambush) {
+            horn(bot);                                    // en embuscade : silence jusqu'au premier coup
         }
         for (HumanBotEntity o : bot.level().getEntitiesOfClass(HumanBotEntity.class, bot.getBoundingBox().inflate(40),
                 o -> bot.squad.equals(o.squad) && o.getTarget() == null)) {
             o.setTarget(target);
+        }
+    }
+
+    static void horn(HumanBotEntity bot) {
+        long now = bot.level().getGameTime();
+        if (HORN_COOLDOWN.getOrDefault(bot.squad, -1000L) < now) {
+            HORN_COOLDOWN.put(bot.squad, now + 600);
+            bot.level().playSound(null, bot.getX(), bot.getY(), bot.getZ(), ModSounds.FALCON_HORN_CHARGE.get(), SoundSource.HOSTILE, 3f, 1f);
         }
     }
 
@@ -181,6 +189,17 @@ public final class BotEvents {
             }
             boolean near = !overworld.getEntitiesOfClass(HumanBotEntity.class, p.getBoundingBox().inflate(160), b -> b.faction() == Faction.FALCON).isEmpty();
             if (near) {
+                continue;
+            }
+            if (fr.modeminecraft.world.night.NightOps.isNight(overworld)) {
+                // la nuit : embuscade silencieuse en travers de la route que suit le joueur
+                Vec3 move = new Vec3(p.getDeltaMovement().x, 0, p.getDeltaMovement().z);
+                Vec3 dir = move.lengthSqr() > 1.0E-4 ? move.normalize() : Vec3.directionFromRotation(0, p.getYRot());
+                int x = (int) (p.getX() + dir.x * 55 - dir.z * 5), z = (int) (p.getZ() + dir.z * 55 + dir.x * 5);
+                BlockPos c = new BlockPos(x, overworld.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, x, z), z);
+                if (overworld.isLoaded(c) && overworld.getFluidState(c.below()).isEmpty()) {
+                    FalconSquads.spawnAmbush(overworld, c, dir.reverse());
+                }
                 continue;
             }
             double a = overworld.getRandom().nextDouble() * Math.PI * 2;

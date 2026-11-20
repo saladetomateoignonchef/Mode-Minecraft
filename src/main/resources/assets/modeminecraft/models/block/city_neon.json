@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "modeminecraft:block/city_neon_off"
+  }
+}

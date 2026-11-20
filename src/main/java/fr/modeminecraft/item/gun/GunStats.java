@@ -79,7 +79,7 @@ public record GunStats(
     public enum Category { PISTOL, SMG, ASSAULT, SNIPER, SHOTGUN, MACHINE_GUN, LAUNCHER }
 
     /** Type de projectile tiré. */
-    public enum ProjectileKind { BULLET, ROCKET, GRENADE, MISSILE, BOLT, TASER, RAIL, PLASMA }
+    public enum ProjectileKind { BULLET, ROCKET, GRENADE, MISSILE, BOLT, TASER, RAIL, PLASMA, EMP }
 
     /** Mode de tir d'une arme neuve : le plus "rapide" disponible. */
     public FireMode defaultMode() {

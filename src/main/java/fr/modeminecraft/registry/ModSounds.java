@@ -67,6 +67,13 @@ public final class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> DRAGONSLAYER_UNSHEATHE = register("bot.dragonslayer_unsheathe");
     public static final DeferredHolder<SoundEvent, SoundEvent> DRAGONSLAYER_SHEATHE = register("bot.dragonslayer_sheathe");
     public static final DeferredHolder<SoundEvent, SoundEvent> DRAGONSLAYER_CLANG = register("bot.dragonslayer_clang");
+    public static final DeferredHolder<SoundEvent, SoundEvent> BERSERK_ROAR = register("bot.berserk_roar_clang");
+    public static final DeferredHolder<SoundEvent, SoundEvent> TRANSFORMER_SHORT = register("bot.transformer_short_circuit");
+    public static final DeferredHolder<SoundEvent, SoundEvent> DRONE_PAIRED = register("bot.drone_paired");
+    public static final DeferredHolder<SoundEvent, SoundEvent> DRONE_MOTOR = register("bot.drone_motor");
+    public static final DeferredHolder<SoundEvent, SoundEvent> FPV_BUZZ = register("bot.fpv_incoming_buzz");
+    public static final DeferredHolder<SoundEvent, SoundEvent> EMP_JAMMER = register("bot.emp_jammer");
+    public static final DeferredHolder<SoundEvent, SoundEvent> DRONE_JAMMED = register("bot.drone_jammed");
 
     private static DeferredHolder<SoundEvent, SoundEvent> register(String name) {
         return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(ModeMinecraft.id(name)));

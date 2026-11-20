@@ -1130,6 +1130,42 @@ def design_plasma_rifle():
     return g
 
 
+def design_vss():
+    """VSS Vintorez : fusil de précision silencieux, gros silencieux intégré, crosse squelette en bois, lunette PSO-1."""
+    g = rifle(stock="thumbhole", stock_c="W", rear=-3, x0=3, x1=10, x2=11.5, x3=12.5, rc="m", ry0=6.5, ry1=9.0,
+              hc="W", hy0=6.7, hy1=8.6, bore=7.8, br=0.4, grip_c="W", mag=("straight", 8.6, 2.6, "k"),
+              muzzle=None, fsight=False, rail=False, scope=(3.0, 9.5), rsight=False)
+    g.zb(11.0, 6.6, 20.5, 9.0, 1.05, "k")                         # silencieux intégré (gros tube)
+    for i in range(6):                                            # perforations du manchon
+        g.zb(12.0 + i * 1.3, 7.5, 12.6 + i * 1.3, 8.1, 1.08, "d")
+    g.zb(20.45, 7.3, 20.55, 8.3, 0.5, "d")
+    g.mount("muzzle", 20.55, 7.8)
+    return g
+
+
+def design_emp_jammer_rifle():
+    """Fusil brouilleur anti-drone : boîtier massif, antennes Yagi directionnelles, batterie dorsale bleue lumineuse."""
+    g = Gun()
+    g.stock("polymer", -3, 3, 6.0, 9.6, "k", 8.0)
+    g.zb(3, 5.8, 12, 10.2, 1.3, "m")                              # boîtier électronique
+    g.zb(4, 10.2, 11, 11.0, 1.0, "k")                             # poignée de transport / rail
+    g.zb(-1.5, 9.0, 3.0, 11.6, 1.2, "e")                          # batterie dorsale bleue
+    g.zb(-1.2, 9.3, 2.7, 11.3, 1.25, "s")
+    for i in range(3):                                            # ailettes de dissipation
+        g.zb(5 + i * 1.6, 6.2, 5.6 + i * 1.6, 9.8, 1.35, "k")
+    g.zb(12, 7.4, 24.5, 8.2, 0.35, "l")                           # mât de l'antenne Yagi
+    for i, x in enumerate((13.5, 15.5, 17.5, 19.5, 21.5, 23.5)):  # éléments directeurs, de plus en plus courts
+        h = 2.6 - i * 0.25
+        g.zb(x, 7.8 - h, x + 0.3, 7.8 + h, 0.15, "l")
+        g.zb(x, 7.65, x + 0.3, 7.95, h, "l")
+    g.zb(12.0, 6.4, 12.6, 9.2, 1.0, "e")                          # émetteur
+    g.grip(4.3, 5.8, "k")
+    g.trigger(6.0, 5.8)
+    g.mount("sight", 7.5, 11.0)
+    g.mount("muzzle", 24.6, 7.8)
+    return g
+
+
 # Mitrailleuses lourdes posées : voir tools/generate_turrets.py
 
 

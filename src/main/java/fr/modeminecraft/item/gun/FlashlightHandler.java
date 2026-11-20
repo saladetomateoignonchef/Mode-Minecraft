@@ -111,7 +111,12 @@ public final class FlashlightHandler {
     }
 
     // ------------------------------------------------------------------ blocs de lumière
-    private static void update(ServerPlayer player, ServerLevel level, AttachmentItem.Light light, long time) {
+    /** Bots de patrouille : leur lampe éclaire aussi (sans user de pile). */
+    public static void updateBot(LivingEntity bot, ServerLevel level, AttachmentItem.Light light) {
+        update(bot, level, light, level.getGameTime());
+    }
+
+    private static void update(LivingEntity player, ServerLevel level, AttachmentItem.Light light, long time) {
         if (LEVEL_OF.get(player.getUUID()) != null && LEVEL_OF.get(player.getUUID()) != level) {
             clear(player);                                   // changement de dimension
         }
@@ -180,7 +185,7 @@ public final class FlashlightHandler {
     }
 
     /** Retire toute la lumière posée par ce joueur. */
-    public static void clear(ServerPlayer player) {
+    public static void clear(LivingEntity player) {
         Set<BlockPos> set = PLACED.remove(player.getUUID());
         ServerLevel level = LEVEL_OF.remove(player.getUUID());
         if (set == null || level == null) {

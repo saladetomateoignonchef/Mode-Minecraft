@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/vss_mag",
+  "textures": {
+    "p": "modeminecraft:item/gun/vss_urban",
+    "particle": "modeminecraft:item/gun/vss_urban"
+  }
+}

@@ -279,6 +279,10 @@ public class GunItem extends Item {
     /** Statistiques finales (accessoires compris). */
     public ResolvedGun resolve(ItemStack stack) {
         ResolvedGun r = ResolvedGun.of(stats, getAttachments(stack)).withLevel(getProgress(stack).level());
+        Legendary legendary = Legendary.of(stack);
+        if (legendary != null) {
+            r = legendary.apply(r);                          // arme unique d'un Chef de Faction
+        }
         AttachmentItem.Light l = light(stack);
         if (l != null && activeLightMode(stack) != LightMode.OFF) {
             r = r.withLightBonus(l.onHipSpread(), l.onAimSpeed());
@@ -693,6 +697,10 @@ public class GunItem extends Item {
             ejectCasing(level, player, null);
             // Recul : la caméra remonte un peu (uniquement côté client, le serveur suit)
             float recoil = (aiming ? gun.recoil() * 0.6f : gun.recoil()) * stability * type.recoilMul * steadyRecoil;
+            // Mitrailleuses : très fort recul debout (s'accroupir, s'allonger ou poser le bipied pour la tenir)
+            if (stats.category() == GunStats.Category.MACHINE_GUN && !player.isCrouching() && !ProneHandler.isProne(player) && !steady) {
+                recoil *= 1.7f;
+            }
             player.setXRot(Mth.clamp(player.getXRot() - recoil, -90f, 90f));
             player.setYRot(player.getYRot() + (player.getRandom().nextFloat() - 0.5f) * recoil * 0.5f);
             return;
@@ -712,6 +720,9 @@ public class GunItem extends Item {
             pellets = 0;
         } else if (stats.projectile() == GunStats.ProjectileKind.RAIL) {
             railShot((ServerLevel) level, player, gun.damage());
+            pellets = 0;
+        } else if (stats.projectile() == GunStats.ProjectileKind.EMP) {
+            fr.modeminecraft.entity.drone.Jamming.empShot((ServerLevel) level, player);
             pellets = 0;
         }
         float damage = shells ? type.pelletDamage(gun.damage(), stats.pellets()) : gun.damage() * type.damageMul;
@@ -840,7 +851,7 @@ public class GunItem extends Item {
             }
             case BOLT -> new fr.modeminecraft.entity.BoltEntity(level, player, damage / 2.0, type);
             case PLASMA -> new fr.modeminecraft.entity.PlasmaEntity(level, player, damage);
-            case TASER, RAIL -> throw new IllegalStateException("arme sans projectile");
+            case TASER, RAIL, EMP -> throw new IllegalStateException("arme sans projectile");
             case GRENADE -> new RocketEntity(ModEntities.GRENADE.get(), level, player, stats.explosionPower());
             case BULLET -> {
                 String caliber = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stats.ammo().get()).getPath();
@@ -849,7 +860,8 @@ public class GunItem extends Item {
                         stats.pierce() + (type == AmmoType.ARMOR_PIERCING ? 1 : 0) + (big ? 1 : 0),
                         type == AmmoType.ARMOR_PIERCING, type);
                 float pen = ARMOR_PEN.getOrDefault(caliber, 0.1f) + (type == AmmoType.ARMOR_PIERCING ? 0.5f : 0)
-                        + (stats.armorPiercing() ? 0.3f : 0);
+                        + (stats.armorPiercing() ? 0.3f : 0)
+                        + (Legendary.of(player.getMainHandItem()) instanceof Legendary l && l.armorPiercing ? 0.4f : 0);
                 bullet.setArmorPenetration(pen);
                 bullet.setHeadshotMultiplier(stats.category() == GunStats.Category.SNIPER ? 2.5f : 2.0f);
                 bullet.setBallistics(stats.falloff(), stats.noDropBlocks(), stats.bulletLife());
@@ -891,7 +903,9 @@ public class GunItem extends Item {
             return;
         }
         // heatPerShot = chaleur NETTE par tir : on compense le refroidissement entre deux tirs
-        float heat = Math.min(100, current + stats.heatPerShot() + COOLING_PER_TICK * stats.fireDelay());
+        Legendary legendary = Legendary.of(stack);
+        float perShot = stats.heatPerShot() * (legendary != null ? legendary.heatMul : 1);
+        float heat = Math.min(100, current + perShot + COOLING_PER_TICK * stats.fireDelay());
         stack.set(ModDataComponents.HEAT.get(), heat);
         stack.set(ModDataComponents.HEAT_TIME.get(), player.level().getGameTime());
         if (heat >= 100) {
@@ -1225,6 +1239,12 @@ public class GunItem extends Item {
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         ResolvedGun gun = resolve(stack);
+        Legendary legendary = Legendary.of(stack);
+        if (legendary != null) {
+            tooltip.add(Component.translatable("tooltip.modeminecraft.legendary." + legendary.id).withStyle(ChatFormatting.YELLOW));
+            tooltip.add(Component.translatable("tooltip.modeminecraft.legendary.trophy",
+                    Component.translatable("entity.modeminecraft.bot." + legendary.boss)).withStyle(ChatFormatting.GOLD, ChatFormatting.ITALIC));
+        }
         tooltip.add(Component.translatable("tooltip.modeminecraft.gun.ammo", getAmmo(stack), gun.magazineSize())
                 .withStyle(ChatFormatting.GOLD));
         if (stats.chamber()) {

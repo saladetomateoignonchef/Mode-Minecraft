@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "weapons",
+  "ingredients": [
+    {
+      "item": "modeminecraft:titanium_plate",
+      "count": 3
+    },
+    {
+      "item": "minecraft:redstone_block",
+      "count": 2
+    },
+    {
+      "item": "minecraft:amethyst_shard",
+      "count": 1
+    },
+    {
+      "item": "minecraft:copper_ingot",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:emp_jammer_rifle",
+    "count": 1
+  }
+}

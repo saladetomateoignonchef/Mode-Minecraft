@@ -1,0 +1,15 @@
+{
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "base": {
+    "parent": "modeminecraft:item/skins/vss_gold_3d"
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "modeminecraft:item/skins/vss_gold_icon"
+    },
+    "fixed": {
+      "parent": "modeminecraft:item/skins/vss_gold_icon"
+    }
+  }
+}

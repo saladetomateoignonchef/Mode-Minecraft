@@ -768,7 +768,38 @@ def helmet_models():
             model["overrides"] = [{"predicate": {f"{MOD}:module": 1}, "model": f"{MOD}:item/{name}_module"}]
             write(os.path.join(ASSETS, f"models/item/{name}_module.json"),
                   {"textures": tex, "render_type": "minecraft:translucent", "display": DISPLAY, "elements": vb.elements(baked, "mod")})
+        if name == "great_helm":
+            # Mode Berserk du Chef des Troupes de Choc : heaume fissuré, deux yeux rouges lumineux dans la fente
+            model["overrides"] = [{"predicate": {f"{MOD}:berserk": 1}, "model": f"{MOD}:item/{name}_berserk"}]
+            write(os.path.join(ASSETS, f"models/item/{name}_berserk.json"),
+                  {"textures": dict(tex, e="minecraft:block/red_concrete", c="minecraft:block/black_concrete"),
+                   "render_type": "minecraft:translucent", "display": DISPLAY,
+                   "elements": vb.elements(baked, "m") + berserk_elements()})
         write(os.path.join(ASSETS, f"models/item/{name}.json"), model)
+
+
+def berserk_elements():
+    def box(a, b, t, glow=False):
+        faces = {f: {"uv": [0, 0, 1, 1], "texture": t} for f in ("north", "south", "east", "west", "up", "down")}
+        e = {"from": a, "to": b, "shade": not glow, "faces": faces}
+        if glow:
+            e["neoforge_data"] = {"block_light": 15, "sky_light": 15, "ambient_occlusion": False}
+        return e
+    els = [box([3.4, 6.65, 1.5], [6.2, 7.55, 1.58], "#e", True),       # yeux dans la fente oculaire
+           box([9.8, 6.65, 1.5], [12.6, 7.55, 1.58], "#e", True)]
+    # fissures : segments sombres en zigzag sur la face avant, quelques-uns rougeoyants
+    cracks = [((2.0, 13.8), (3.4, 12.0)), ((3.4, 12.0), (2.8, 10.6)), ((2.8, 10.4), (4.6, 8.4)),
+              ((12.8, 14.6), (11.6, 12.4)), ((11.6, 12.4), (12.6, 10.6)), ((12.4, 6.4), (13.8, 4.2)),
+              ((13.8, 4.2), (12.9, 2.2)), ((4.2, 6.2), (3.0, 4.0)), ((3.0, 4.0), (4.0, 1.6))]
+    for i, ((x0, y0), (x1, y1)) in enumerate(cracks):
+        n = max(2, int(max(abs(x1 - x0), abs(y1 - y0)) / 0.4))
+        for k in range(n):
+            x = x0 + (x1 - x0) * k / n
+            y = y0 + (y1 - y0) * k / n
+            glow = i % 3 == 1
+            els.append(box([round(x, 2), round(y, 2), 0.9], [round(x + 0.45, 2), round(y + 0.45, 2), 1.0],
+                           "#e" if glow else "#c", glow))
+    return els
 
 
 # ------------------------------------------------------------------ contours d'écran (vue à la 1re personne)

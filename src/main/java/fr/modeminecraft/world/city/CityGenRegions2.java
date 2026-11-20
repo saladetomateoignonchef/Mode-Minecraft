@@ -268,6 +268,8 @@ final class CityGenRegions2 {
         // terrasse : mitrailleuse et gardes
         b.turret(8, 11, 8, MountedGunEntity.Kind.M2, 180, Faction.CARTEL);
         b.bot(15, 1, 15, Faction.CARTEL, BotRole.OFFICER, 10);
+        b.bot(15, 1, 15, Faction.CARTEL, BotRole.BOSS, 8);                    // El Patrón
+        b.bot(15, 1, 15, Faction.CARTEL, BotRole.DRONE_OPERATOR, 8);
         b.pair(12, 1, 20, Faction.CARTEL, 12);
         b.pair(16, 0, 30, Faction.CARTEL, 16);
         b.bot(24, 11, 24, Faction.CARTEL, BotRole.SNIPER, 3);
@@ -608,6 +610,7 @@ final class CityGenRegions2 {
                 b.chest(11, 1, 4, Direction.WEST, "military_crate", false);
                 b.set(7, 3, 7, Blocks.GLOWSTONE);
                 b.bot(7, 1, 8, Faction.REFINERY, BotRole.OFFICER, 10);
+                b.bot(7, 1, 8, Faction.REFINERY, BotRole.DRONE_OPERATOR, 8);
                 b.vehicle(7, 0, 15, fr.modeminecraft.entity.VehicleEntity.Type.JEEP, 90);
             }
             default -> {

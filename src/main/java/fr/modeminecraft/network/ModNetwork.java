@@ -12,6 +12,8 @@ public final class ModNetwork {
     public static void register(RegisterPayloadHandlersEvent event) {
         event.registrar("1")
                 .playToServer(ReloadPayload.TYPE, ReloadPayload.STREAM_CODEC, ReloadPayload::handle)
+                .playToServer(DroneControlPayload.TYPE, DroneControlPayload.STREAM_CODEC, DroneControlPayload::handle)
+                .playToClient(DronePilotPayload.TYPE, DronePilotPayload.STREAM_CODEC, DronePilotPayload::handle)
                 .playToServer(GiveItemPayload.TYPE, GiveItemPayload.STREAM_CODEC, GiveItemPayload::handle)
                 .playToServer(PlaceRecipePayload.TYPE, PlaceRecipePayload.STREAM_CODEC, PlaceRecipePayload::handle)
                 .playToServer(HelmetModulePayload.TYPE, HelmetModulePayload.STREAM_CODEC, HelmetModulePayload::handle)

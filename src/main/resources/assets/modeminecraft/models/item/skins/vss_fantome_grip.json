@@ -1,0 +1,7 @@
+{
+  "parent": "modeminecraft:item/vss_grip",
+  "textures": {
+    "p": "modeminecraft:item/gun/vss_fantome",
+    "particle": "modeminecraft:item/gun/vss_fantome"
+  }
+}

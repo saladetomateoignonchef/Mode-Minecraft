@@ -19,5 +19,9 @@ public final class ModBlockEntities {
             BLOCK_ENTITIES.register("weapon_rack", () -> BlockEntityType.Builder.of(WeaponRackBlockEntity::new,
                     ModBlocks.WEAPON_RACK.get()).build(null));
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<fr.modeminecraft.block.TrophyRackBlockEntity>> TROPHY_RACK =
+            BLOCK_ENTITIES.register("trophy_weapon_rack", () -> BlockEntityType.Builder.of(fr.modeminecraft.block.TrophyRackBlockEntity::new,
+                    ModBlocks.TROPHY_WEAPON_RACK.get()).build(null));
+
     private ModBlockEntities() {}
 }
