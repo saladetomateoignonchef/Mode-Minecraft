@@ -47,6 +47,16 @@ neoForge {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
+// JEI (Just Enough Items) : facultatif. On compile seulement contre son API ; si JEI est installé,
+// il trouve tout seul notre plugin (fr.modeminecraft.compat.jei), sinon rien ne se passe.
+repositories {
+    maven { url = 'https://maven.blamejared.com' }
+}
+
+dependencies {
+    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
+}
+
 // Remplace les ${...} dans neoforge.mods.toml par les valeurs de gradle.properties
 tasks.named('processResources', ProcessResources).configure {
     var replaceProperties = [

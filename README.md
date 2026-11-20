@@ -2,7 +2,19 @@
 
 Mod **NeoForge** pour **Minecraft 1.21.1** : tout ce qu'on a toujours voulu dans Minecraft.
 
-## Contenu (v0.1.0)
+## Installation et mises à jour automatiques
+1. **Une seule fois** : télécharge le dernier `.jar` sur la page
+   [Releases](https://github.com/saladetomateoignonchef/Mode-Minecraft/releases/latest) et mets-le dans le dossier `mods`
+   de ton profil NeoForge 1.21.1 (supprime l'ancienne version du mod si tu en as une).
+2. **Ensuite, plus rien à faire** : à chaque lancement du jeu, le mod regarde s'il existe une version plus récente sur GitHub.
+   Si oui, il la télécharge pendant que tu joues (une notification s'affiche) et la met à la place de l'ancienne
+   **quand tu fermes le jeu**. Au lancement suivant, tu as la nouvelle version.
+- Chaque fois que du code est envoyé sur GitHub, une nouvelle version (`v0.2.N`) est compilée et publiée automatiquement
+  (`.github/workflows/release.yml`).
+- Pour désactiver les mises à jour automatiques : `config/modeminecraft-client.toml` → `autoUpdate = false`.
+- Si un jour la mise à jour automatique échoue (antivirus, dossier protégé...), il suffit de refaire l'étape 1.
+
+## Contenu
 
 ### Minerai de rubis
 - **Minerai de rubis** (pierre + abîmes) : généré dans l'Overworld entre Y=-64 et Y=32 (pic vers Y=-16).
@@ -99,7 +111,7 @@ Toutes les armes à feu, munitions et accessoires se fabriquent à la **table d'
 - **C** : coup de crosse (ou de baïonnette).
 - **Double appui sur s'accroupir** (sans viser) : s'allonger / se relever (aussi en sautant), avec ou sans arme.
   Allongé : recul et dispersion divisés par 2.
-- Toutes les touches (R, B, H, G type de munition, T laser, V tir sous le canon, C crosse, Y menu rapide des accessoires, N visière / vision nocturne du casque, A / E se pencher,
+- Toutes les touches (R, B, H, G type de munition, T laser, V tir sous le canon, C crosse, Y menu rapide des accessoires, N visière / vision nocturne du casque, O panneau des recettes, A / E se pencher,
   Shift stabiliser) se changent dans *Options > Commandes > Mode Minecraft*. Munitions infinies en créatif.
 
 **Dégâts (cahier des charges) :** tête x2 (x2,5 au fusil de précision, avec un « ding » métallique), torse x1,
@@ -292,6 +304,25 @@ Nouveaux matériaux : **tissu Cordura** (4 ficelles + 2 cuirs + 1 colorant vert,
   4 lingots → 2 **plaques d'acier**.
 - **Kevlar** : ficelle + laine + boule de slime + charbon → 2 **fibres d'aramide** ; 4 fibres + 1 lingot d'acier (ou de fer)
   → **plaque de kevlar** ; 2 plaques de kevlar + 1 plaque de titane + 1 cuir → **kevlar multicouche**.
+
+### Livre des recettes et encyclopédie (façon Not Enough Items)
+- **Manuel d'armement & d'ingénierie militaire** : offert à la première connexion (désactivable :
+  `config/modeminecraft-common.toml` → `giveManualOnFirstJoin`), ou 1 livre + 1 lingot de fer (ou 1 poudre à canon).
+  Clic droit : les mains ouvrent le livre, avec une page d'accueil par catégories (armes, munitions, tourelles, casques, gilets...).
+- **Panneau latéral** à droite de l'inventaire, de l'établi, des fours, de la table d'armement et de la table de modification
+  (touche **O** pour l'afficher / le masquer) : tous les objets du mod, page par page, avec une **recherche** par nom,
+  par `@catégorie` (`@sniper`, `@wwii`, `@kevlar`, `@casque`, `@gilet`, `@tourelle`...) ou par calibre (`9mm`, `556`...).
+- Sur n'importe quel objet survolé (panneau ou inventaire) : **R** ou clic gauche = sa recette, **U** ou clic droit = ses utilisations,
+  **Retour arrière** = page précédente.
+- Onglets par station : **Établi 3x3**, **Établi d'armurier** (ingrédients + quantités + modèle 3D de l'objet), **Fonderie**
+  (four / haut-fourneau, durée et XP), **Génération naturelle** (couches du minerai, meilleure couche, outil) et
+  **Fiche technique** (dégâts en PV et en cœurs, multiplicateur tête, cadence, calibre, chargeur, pénétration d'armure ;
+  époque, armure et protections des casques / gilets ; munitions, angles et surchauffe des tourelles).
+- Bouton **[+]** (ouvert depuis un établi, un four ou la table d'armement) : place les ingrédients ; ceux qui manquent sont en rouge.
+- **Mode triche** (créatif ou opérateur) : `[Triche]` dans le panneau, puis clic gauche = une pile, clic droit = un objet.
+- Les recettes sont lues en direct dans le jeu : une recette changée par un datapack est à jour dans le livre.
+- **JEI** : si Just Enough Items est installé, nos recettes de la table d'armement et les infos du titane y apparaissent aussi
+  (notre panneau est alors masqué par défaut, touche O pour l'afficher).
 
 ### Gameplay et progression
 - **Niveaux des armes (1 à 5)** : chaque arme garde ses statistiques (éliminations, tirs à la tête, tirs, ratio)

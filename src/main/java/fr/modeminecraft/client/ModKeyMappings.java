@@ -45,6 +45,14 @@ public final class ModKeyMappings {
     public static final KeyMapping HELMET_MODULE = new KeyMapping("key.modeminecraft.helmet_module",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_N, CATEGORY);
 
+    // Livre des recettes (dans les interfaces : pas de conflit avec R = recharger en jeu)
+    public static final KeyMapping ITEM_PANEL = new KeyMapping("key.modeminecraft.item_panel",
+            net.neoforged.neoforge.client.settings.KeyConflictContext.GUI, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_O, CATEGORY);
+    public static final KeyMapping SHOW_RECIPE = new KeyMapping("key.modeminecraft.show_recipe",
+            net.neoforged.neoforge.client.settings.KeyConflictContext.GUI, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_R, CATEGORY);
+    public static final KeyMapping SHOW_USES = new KeyMapping("key.modeminecraft.show_uses",
+            net.neoforged.neoforge.client.settings.KeyConflictContext.GUI, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_U, CATEGORY);
+
     public static final KeyMapping MELEE = new KeyMapping("key.modeminecraft.melee",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_C, CATEGORY);
 

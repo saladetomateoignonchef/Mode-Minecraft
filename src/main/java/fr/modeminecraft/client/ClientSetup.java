@@ -98,6 +98,9 @@ public final class ClientSetup {
         event.register(ModKeyMappings.MELEE);
         event.register(ModKeyMappings.QUICK_ATTACH);
         event.register(ModKeyMappings.HELMET_MODULE);
+        event.register(ModKeyMappings.ITEM_PANEL);
+        event.register(ModKeyMappings.SHOW_RECIPE);
+        event.register(ModKeyMappings.SHOW_USES);
     }
 
     @SubscribeEvent

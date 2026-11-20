@@ -12,6 +12,8 @@ public final class ModNetwork {
     public static void register(RegisterPayloadHandlersEvent event) {
         event.registrar("1")
                 .playToServer(ReloadPayload.TYPE, ReloadPayload.STREAM_CODEC, ReloadPayload::handle)
+                .playToServer(GiveItemPayload.TYPE, GiveItemPayload.STREAM_CODEC, GiveItemPayload::handle)
+                .playToServer(PlaceRecipePayload.TYPE, PlaceRecipePayload.STREAM_CODEC, PlaceRecipePayload::handle)
                 .playToServer(HelmetModulePayload.TYPE, HelmetModulePayload.STREAM_CODEC, HelmetModulePayload::handle)
                 .playToServer(QuickAttachPayload.TYPE, QuickAttachPayload.STREAM_CODEC, QuickAttachPayload::handle)
                 .playToServer(FireModePayload.TYPE, FireModePayload.STREAM_CODEC, FireModePayload::handle)

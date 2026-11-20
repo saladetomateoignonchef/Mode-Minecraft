@@ -99,6 +99,11 @@ public class GunItem extends Item {
     }
 
     /** Part de l'armure ignorée selon le calibre (9 mm faible, 7,62 et .50 BMG de 40 à 70 %). */
+    /** Part de l'armure ignorée par une balle de ce calibre (livre des recettes : fiche technique). */
+    public static float armorPenetration(String caliber) {
+        return ARMOR_PEN.getOrDefault(caliber, 0.1f);
+    }
+
     private static final java.util.Map<String, Float> ARMOR_PEN = java.util.Map.ofEntries(
             java.util.Map.entry("ammo_9mm", 0.1f), java.util.Map.entry("ammo_45acp", 0.1f), java.util.Map.entry("ammo_357", 0.2f),
             java.util.Map.entry("ammo_50ae", 0.25f), java.util.Map.entry("ammo_57", 0.5f), java.util.Map.entry("ammo_46", 0.5f),

@@ -67,6 +67,22 @@ public class ArmamentTableScreen extends AbstractContainerScreen<ArmamentTableMe
                 .build());
     }
 
+    /** Livre des recettes, bouton [+] : sélectionne cette recette (onglet, filtre et défilement). */
+    public void selectRecipe(ArmamentRecipe recipe) {
+        List<RecipeHolder<ArmamentRecipe>> all = menu.recipes();
+        for (int i = 0; i < all.size(); i++) {
+            if (all.get(i).value() == recipe || all.get(i).value().equals(recipe)) {
+                category = recipe.category();
+                filter = null;
+                selected = i;
+                List<Integer> rows = visible();
+                int row = rows.indexOf(i);
+                scroll = Math.max(0, Math.min(row - ROWS / 2, rows.size() - ROWS));
+                return;
+            }
+        }
+    }
+
     /** Calibres présents dans l'onglet "Spéciales". */
     private List<net.minecraft.world.item.Item> specialCalibers() {
         return menu.recipes().stream().map(r -> r.value())

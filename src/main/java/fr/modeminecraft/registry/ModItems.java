@@ -848,6 +848,10 @@ public final class ModItems {
     public static final DeferredItem<Item> JUGGERNAUT_HELMET = helmet("juggernaut_helmet", Rarity.EPIC,
             new HelmetItem.Stats(4, 6.0, 0.85f, 0.85f, 0, 0, 0, 900, HelmetItem.Module.NONE, -0.08, () -> ModItems.CERAMIC_TITANIUM_COMPOSITE.get()));
 
+    /** Manuel d'armement & d'ingénierie militaire : ouvre le livre des recettes. */
+    public static final DeferredItem<Item> MILITARY_FIELD_MANUAL = ITEMS.register("military_field_manual",
+            () -> new fr.modeminecraft.item.FieldManualItem(new Item.Properties().stacksTo(1)));
+
     // ---------- Gilets pare-balles 3D : matériaux, plaques balistiques, gilets ----------
     public static final DeferredItem<Item> BALLISTIC_NYLON = ITEMS.registerSimpleItem("ballistic_nylon");
     public static final DeferredItem<Item> TACTICAL_STRAP = ITEMS.registerSimpleItem("tactical_strap");

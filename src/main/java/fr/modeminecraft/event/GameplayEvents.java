@@ -50,6 +50,25 @@ public final class GameplayEvents {
     private static final List<String> SKELETON_GUNS = List.of("mosin_nagant", "kar98k", "m1_garand", "m24");
     private static final List<String> PILLAGER_GUNS = List.of("ak47", "ak74", "remington_870", "uzi", "mp5", "thompson", "ppsh41");
 
+    /** Manuel d'armement offert à la première connexion (désactivable : config/modeminecraft-common.toml). */
+    @SubscribeEvent
+    public static void onLogin(net.neoforged.neoforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent event) {
+        Player player = event.getEntity();
+        if (player.level().isClientSide || !fr.modeminecraft.ModConfigs.GIVE_MANUAL.get()) {
+            return;
+        }
+        var data = player.getPersistentData();
+        var persisted = data.getCompound(Player.PERSISTED_NBT_TAG);
+        if (!persisted.getBoolean("modeminecraft_manual")) {
+            persisted.putBoolean("modeminecraft_manual", true);
+            data.put(Player.PERSISTED_NBT_TAG, persisted);
+            ItemStack manual = new ItemStack(ModItems.MILITARY_FIELD_MANUAL.get());
+            if (!player.getInventory().add(manual)) {
+                player.drop(manual, false);
+            }
+        }
+    }
+
     @SubscribeEvent
     public static void onJoin(EntityJoinLevelEvent event) {
         if (event.getLevel().isClientSide() || !(event.getEntity() instanceof Mob mob)) {

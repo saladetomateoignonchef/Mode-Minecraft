@@ -728,6 +728,28 @@ def ballistic_plate(pal, edge):
     return img
 
 
+def field_manual():
+    """Manuel d'armement : couverture vert olive, tranche des pages, étoile au pochoir."""
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    cover = [hexc(c) for c in ("#2A3020", "#3E4630", "#4B5335", "#5E6844")]
+    for y in range(2, 15):
+        for x in range(3, 14):
+            img.putpixel((x, y), cover[2] if (x + y) % 5 else cover[3])
+    for y in range(2, 15):
+        img.putpixel((3, y), cover[0])
+        img.putpixel((13, y), hexc("#E8E2CC"))                                       # pages
+        img.putpixel((12, y), hexc("#C8C0A4"))
+    for x in range(3, 14):
+        img.putpixel((x, 2), cover[3])
+        img.putpixel((x, 14), cover[0])
+    for (x, y) in [(8, 5), (7, 6), (8, 6), (9, 6), (5, 7), (6, 7), (7, 7), (8, 7), (9, 7), (10, 7), (11, 7), (6, 8), (7, 8), (8, 8),
+                   (9, 8), (10, 8), (7, 9), (9, 9), (6, 10), (10, 10)]:
+        img.putpixel((x, y), hexc("#D8C878"))                                         # étoile
+    for x in range(5, 11):
+        img.putpixel((x, 12), hexc("#A09060"))
+    return img
+
+
 def materials():
     tex = os.path.join(ASSETS, "textures")
     ore(21, STONE).save(os.path.join(tex, "block/titanium_ore.png"))
@@ -737,7 +759,7 @@ def materials():
         "ceramic_titanium_composite": composite(), "composite_preform": preform(),
         "steel_ingot": ingot(ST), "carburized_iron": ingot(FE, specks=hexc("#1A1A1A")), "steel_plate": plate(ST),
         "kevlar_fiber": fiber(), "kevlar_plate": plate(KV, woven), "multilayer_kevlar": multilayer(),
-        "ballistic_nylon": nylon(), "tactical_strap": strap(),
+        "ballistic_nylon": nylon(), "tactical_strap": strap(), "military_field_manual": field_manual(),
         "steel_ballistic_plate": ballistic_plate(ST, ST[0]),
         "ceramic_ballistic_plate": ballistic_plate(CE, KV[1]),
         "netherite_ballistic_plate": ballistic_plate([hexc(c) for c in ("#2A2426", "#443A3C", "#5A4E50", "#7A6C6E")], TI[2]),
