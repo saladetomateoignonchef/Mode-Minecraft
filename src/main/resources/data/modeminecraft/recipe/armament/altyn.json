@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "helmets",
+  "ingredients": [
+    {
+      "item": "modeminecraft:titanium_plate",
+      "count": 4
+    },
+    {
+      "item": "minecraft:diamond",
+      "count": 2
+    },
+    {
+      "item": "minecraft:tinted_glass",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:kevlar_plate",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:altyn",
+    "count": 1
+  }
+}

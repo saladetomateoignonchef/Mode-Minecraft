@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "TT",
+    "TT"
+  ],
+  "key": {
+    "T": {
+      "item": "modeminecraft:titanium_ingot"
+    }
+  },
+  "result": {
+    "id": "modeminecraft:titanium_plate",
+    "count": 2
+  }
+}

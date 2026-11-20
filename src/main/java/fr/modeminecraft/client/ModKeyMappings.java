@@ -41,6 +41,10 @@ public final class ModKeyMappings {
     public static final KeyMapping QUICK_ATTACH = new KeyMapping("key.modeminecraft.quick_attach",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_Y, CATEGORY);
 
+    /** Casque : visière blindée / jumelles de vision nocturne. */
+    public static final KeyMapping HELMET_MODULE = new KeyMapping("key.modeminecraft.helmet_module",
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_N, CATEGORY);
+
     public static final KeyMapping MELEE = new KeyMapping("key.modeminecraft.melee",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_C, CATEGORY);
 

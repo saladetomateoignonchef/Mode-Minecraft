@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "ingredient": {
+    "item": "modeminecraft:raw_titanium"
+  },
+  "result": {
+    "id": "modeminecraft:titanium_ingot"
+  },
+  "experience": 1.0,
+  "cookingtime": 200
+}

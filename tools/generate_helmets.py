@@ -1,0 +1,547 @@
+#!/usr/bin/env python3
+"""
+Casques militaires 3D (cahier des charges "casques") + nouveaux matériaux (titane, acier, kevlar).
+
+Génère :
+- textures/item/helmet_palette.png : palette 64x64 (cases 8x8) aux teintes militaires mates, légèrement usées,
+  avec les camouflages (Woodland, MultiCam) dessinés dans leur case ;
+- models/item/<casque>.json : vrai modèle 3D voxel porté sur la tête (rendu "head" de Minecraft),
+  + <casque>_module.json pour la visière abaissée (Altyn) et les jumelles de vision nocturne abaissées (FAST) ;
+- textures/misc/helmet_*.png : contours d'écran (heaume, fente de visière, jumelles, visière numérique) ;
+- les textures des minerais et matériaux (titane, acier, kevlar...).
+
+Repère des casques (pixels de modèle) : la tête occupe le cube [1,6 ; 14,4] (sur la tête, le modèle est réduit
+à 0,625), le visage est du côté -Z, le haut vers +Y. Les yeux sont vers y = 6,4 à 8.
+Utilisation : python3 tools/generate_helmets.py
+"""
+import json
+import math
+import os
+import random
+import zlib
+
+from PIL import Image, ImageDraw
+
+ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+ASSETS = os.path.join(ROOT, "src/main/resources/assets/modeminecraft")
+MOD = "modeminecraft"
+
+# ------------------------------------------------------------------ palette
+COLORS = {
+    "iron_ox": "#6E6A62", "bronze": "#8C6A3A", "bronze_d": "#6E5230", "steel_d": "#3A3C40", "steel": "#5B5F66",
+    "brass": "#B08D3C", "leather": "#6B4A2B", "leather_d": "#4A321E", "canvas": "#6B6447", "horizon": "#5C6B73",
+    "horizon_d": "#4A5860", "khaki": "#5A5E4B", "khaki_d": "#484B3C", "moss": "#3B4433", "olive": "#4B5335",
+    "olive_d": "#3C432A", "feldgrau": "#4D564D", "feldgrau_d": "#3E463E", "soviet": "#3E4E38", "soviet_d": "#323F2D",
+    "rivet": "#8A8E92", "net": "#2F3324", "nato": "#4A5A3A", "titan_g": "#3B4737", "titan_g_d": "#2F392C",
+    "glass": "#7FA8B8", "visor_d": "#1E2226", "coyote": "#9E8B6C", "coyote_d": "#85745A", "ranger": "#485143",
+    "ranger_d": "#3A4236", "black": "#222426", "rail": "#2A2C2E", "velcro": "#5C6352", "jugg": "#2A3028",
+    "lens": "#2E6B3A", "nvg": "#1A1C1E", "red": "#C8223B", "cyan": "#3FC8D8", "padding": "#3A3A3A",
+    "comtac": "#1F2124", "white": "#D8D8D0", "dark_glass": "#2A3A44",
+}
+CAMO = {
+    "woodland": ["#4B5A2A", "#5A4630", "#1E2416", "#6B7D3A"],
+    "multicam": ["#9E8B6C", "#7A6B4E", "#5A6B45", "#C2B08A", "#4A3C2A"],
+}
+KEYS = list(COLORS) + list(CAMO)
+assert len(KEYS) <= 64
+TRANSLUCENT = {"glass": 150, "dark_glass": 200}
+
+
+def hexc(h, a=255):
+    h = h.lstrip("#")
+    return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4)) + (a,)
+
+
+def palette_image():
+    img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
+    rng = random.Random(7)
+    for k, key in enumerate(KEYS):
+        cx, cy = (k % 8) * 8, (k // 8) * 8
+        for y in range(8):
+            for x in range(8):
+                if key in CAMO:
+                    r2 = random.Random(zlib.crc32(repr((key, x // 2, y // 2)).encode()))
+                    c = hexc(r2.choice(CAMO[key]))
+                else:
+                    c = hexc(COLORS[key], TRANSLUCENT.get(key, 255))
+                # usure mate : légères variations, sans reflets
+                f = 1 + rng.uniform(-0.07, 0.05)
+                img.putpixel((cx + x, cy + y), tuple(max(0, min(255, int(v * f))) for v in c[:3]) + (c[3],))
+    return img
+
+
+def uv(key):
+    k = KEYS.index(key)
+    cx, cy = (k % 8) * 2, (k // 8) * 2
+    return [cx + 0.15, cy + 0.15, cx + 1.85, cy + 1.85]
+
+
+def box(frm, to, key, rot=None):
+    u = uv(key)
+    el = {"from": [round(v, 3) for v in frm], "to": [round(v, 3) for v in to],
+          "faces": {f: {"uv": u, "texture": "#p"} for f in ("north", "east", "south", "west", "up", "down")}}
+    if rot:
+        axis, angle, origin = rot
+        el["rotation"] = {"angle": angle, "axis": axis, "origin": origin}
+    return el
+
+
+class H:
+    def __init__(self):
+        self.els = []
+
+    def add(self, frm, to, key, rot=None):
+        self.els.append(box(frm, to, key, rot))
+        return self
+
+    def dome(self, y0, y1, rx, rz, n, key, cz=8.0, cx=8.0):
+        """Calotte en couches : presque droite sur les côtés (elle couvre la tête cubique), arrondie en haut."""
+        for i in range(n):
+            f = (i + 0.5) / n
+            s = 1 - 0.62 * f ** 4
+            a = y0 + (y1 - y0) * i / n
+            b = y0 + (y1 - y0) * (i + 1) / n
+            self.add([cx - rx * s, a, cz - rz * s], [cx + rx * s, b, cz + rz * s], key)
+        return self
+
+    def mirror(self, frm, to, key):
+        """Pièce + son symétrique (gauche / droite)."""
+        self.add(frm, to, key)
+        self.add([16 - to[0], frm[1], frm[2]], [16 - frm[0], to[1], to[2]], key)
+        return self
+
+    def strap(self, key="leather"):
+        """Jugulaire : le long des joues puis sous le menton."""
+        self.mirror([0.9, 2.0, 6.8], [1.3, 9.6, 7.8], key)
+        self.add([1.3, 1.1, 6.8], [14.7, 1.5, 7.8], key)
+        return self
+
+
+# ------------------------------------------------------------------ les 12 casques
+def galea():
+    h = H().dome(10.6, 17.2, 7.4, 7.4, 7, "bronze")
+    h.add([0.8, 10.0, 0.8], [15.2, 10.8, 15.2], "iron_ox")                 # bandeau
+    h.add([2.0, 10.0, -0.2], [14.0, 10.6, 0.8], "iron_ox")                 # visière frontale
+    h.mirror([0.5, 3.6, 1.2], [1.3, 10.2, 8.2], "bronze")                 # protège-joues
+    h.mirror([0.3, 9.2, 3.6], [0.6, 9.8, 4.4], "brass")                   # charnières
+    h.add([1.3, 6.4, 15.0], [14.7, 10.2, 15.8], "bronze")                 # couvre-nuque
+    h.add([0.9, 5.8, 15.6], [15.1, 6.5, 17.0], "bronze_d")
+    h.add([7.4, 17.1, 7.4], [8.6, 18.0, 8.6], "brass")                    # bouton sommital
+    return h
+
+
+def great_helm():
+    h = H()
+    k = "steel_d"
+    h.add([1.0, 15.2, 1.0], [15.0, 16.0, 15.0], k).add([1.0, 1.0, 14.4], [15.0, 15.2, 15.0], k)
+    h.add([1.0, 1.0, 1.0], [1.6, 15.2, 14.4], k).add([14.4, 1.0, 1.0], [15.0, 15.2, 14.4], k)
+    # face avant percée d'une fente oculaire en croix
+    z0, z1 = 1.0, 1.6
+    h.add([1.0, 1.0, z0], [15.0, 3.0, z1], k)
+    h.add([1.0, 3.0, z0], [7.4, 6.6, z1], k).add([8.6, 3.0, z0], [15.0, 6.6, z1], k)
+    h.add([1.0, 6.6, z0], [2.6, 7.6, z1], k).add([13.4, 6.6, z0], [15.0, 7.6, z1], k)
+    h.add([1.0, 7.6, z0], [7.4, 10.4, z1], k).add([8.6, 7.6, z0], [15.0, 10.4, z1], k)
+    h.add([1.0, 10.4, z0], [15.0, 15.2, z1], k)
+    h.add([1.6, 3.0, 1.6], [14.4, 10.4, 1.7], "visor_d")                  # intérieur sombre derrière les fentes
+    # renforts en croix (laiton) et trous de respiration
+    h.add([1.0, 10.4, 0.7], [15.0, 11.2, 1.0], "brass")
+    h.add([6.8, 1.0, 0.7], [7.4, 6.6, 1.0], "brass").add([8.6, 1.0, 0.7], [9.2, 6.6, 1.0], "brass")
+    for x in (10.6, 11.8, 13.0):
+        for y in (3.6, 4.8):
+            h.add([x, y, 0.95], [x + 0.6, y + 0.6, 1.0], "visor_d")
+    return h
+
+
+def adrian():
+    h = H().dome(10.4, 16.6, 7.2, 7.4, 7, "horizon")
+    h.add([7.4, 15.6, 2.6], [8.6, 17.6, 13.4], "horizon_d")                # cimier
+    h.add([2.0, 9.9, -0.8], [14.0, 10.5, 1.6], "horizon")                  # visière avant
+    h.add([2.0, 9.6, 14.4], [14.0, 10.2, 16.6], "horizon")                 # visière arrière
+    h.add([0.6, 9.9, 1.4], [15.4, 10.5, 14.6], "horizon_d")                # bord
+    h.add([7.2, 11.4, 0.4], [8.8, 13.2, 0.8], "brass")                     # insigne
+    return h.strap()
+
+
+def brodie():
+    h = H()
+    h.add([-1.6, 10.8, -1.6], [17.6, 11.4, 17.6], "khaki")                # large bord en assiette
+    h.add([-1.8, 10.5, -1.8], [17.8, 10.8, 17.8], "khaki_d")
+    h.dome(11.4, 16.4, 7.0, 7.0, 5, "khaki")
+    return h.strap()
+
+
+def m1():
+    h = H().dome(9.4, 17.0, 7.6, 7.6, 7, "olive")
+    h.add([0.3, 9.0, 0.3], [15.7, 9.6, 15.7], "olive_d")                  # rebord
+    # filet de camouflage en relief
+    for y in (11.0, 13.0, 15.0):
+        s = 1 - 0.62 * ((y - 9.4) / 7.6) ** 4
+        r = 7.6 * s + 0.15
+        h.add([8 - r, y, 8 - r], [8 + r, y + 0.3, 8 + r], "net")
+    for z in (3.0, 8.0, 13.0):
+        h.mirror([0.25, 9.6, z - 0.15], [0.45, 14.8, z + 0.15], "net")
+    for x in (4.0, 8.0, 12.0):
+        h.add([x - 0.15, 9.6, 0.25], [x + 0.15, 14.8, 0.45], "net").add([x - 0.15, 9.6, 15.55], [x + 0.15, 14.8, 15.75], "net")
+    return h.strap("canvas")
+
+
+def stahlhelm():
+    h = H().dome(10.0, 17.0, 7.4, 7.6, 7, "feldgrau")
+    h.mirror([0.2, 5.2, 3.0], [1.0, 10.0, 15.0], "feldgrau")              # jupe évasée
+    h.mirror([-0.4, 4.6, 4.0], [0.4, 5.6, 15.6], "feldgrau_d")
+    h.add([1.0, 5.2, 15.0], [15.0, 10.0, 15.8], "feldgrau")
+    h.add([0.4, 4.6, 15.6], [15.6, 5.6, 16.4], "feldgrau_d")
+    h.add([1.2, 9.6, -0.2], [14.8, 10.4, 0.8], "feldgrau")                # avancée frontale
+    h.mirror([0.0, 11.8, 7.2], [0.7, 12.6, 8.0], "steel")                 # aérateurs
+    return h.strap()
+
+
+def ssh40():
+    h = H().dome(9.8, 17.0, 7.6, 7.6, 7, "soviet")
+    h.add([0.2, 9.4, 0.2], [15.8, 10.0, 15.8], "soviet_d")
+    for z in (4.0, 8.0, 12.0):                                              # rivets en relief
+        h.mirror([-0.1, 11.0, z - 0.3], [0.5, 11.6, z + 0.3], "rivet")
+    h.add([7.7, 11.0, -0.1], [8.3, 11.6, 0.5], "rivet")
+    return h.strap()
+
+
+def pasgt():
+    h = H().dome(10.0, 17.0, 7.4, 7.6, 7, "woodland")
+    h.mirror([0.2, 5.4, 3.0], [1.0, 10.0, 15.0], "woodland")
+    h.add([1.0, 5.4, 15.0], [15.0, 10.0, 15.8], "woodland")
+    h.add([1.8, 9.6, -0.8], [14.2, 10.2, 1.2], "woodland")                # légère visière frontale
+    s = 1 - 0.62 * ((11.6 - 10.0) / 7.0) ** 4
+    h.add([8 - 7.4 * s - 0.2, 11.6, 8 - 7.6 * s - 0.2], [8 + 7.4 * s + 0.2, 12.3, 8 + 7.6 * s + 0.2], "olive_d")  # bande élastique
+    return h.strap("canvas")
+
+
+def altyn(down):
+    h = H().dome(8.6, 17.6, 7.8, 7.8, 8, "titan_g")
+    h.mirror([0.2, 4.0, 3.0], [1.0, 9.0, 15.0], "titan_g")
+    h.add([1.0, 4.0, 15.0], [15.0, 9.0, 15.8], "titan_g")
+    h.mirror([-0.2, 10.6, 3.6], [0.4, 11.6, 4.6], "brass")                # charnières de la visière
+    h.mirror([0.0, 10.7, -1.0], [0.6, 11.5, 4.0], "titan_g_d")             # bras de la visière
+    vk = "titan_g_d"
+    if down:
+        z0, z1 = -1.4, -0.4
+        h.add([1.0, 3.0, z0], [15.0, 7.2, z1], vk).add([1.0, 9.6, z0], [15.0, 12.6, z1], vk)
+        h.add([1.0, 7.2, z0], [4.4, 9.6, z1], vk).add([11.6, 7.2, z0], [15.0, 9.6, z1], vk)
+        h.add([4.4, 7.2, -1.2], [11.6, 9.6, -0.6], "glass")               # fenêtre en verre blindé
+    else:
+        # visière relevée sur le front
+        r = ("x", -22.5, [8, 11.2, -0.9])
+        z0, z1 = -1.4, -0.4
+        dy = 8.6
+        h.add([1.0, 3.0 + dy, z0], [15.0, 7.2 + dy, z1], vk, r).add([1.0, 9.6 + dy, z0], [15.0, 12.6 + dy, z1], vk, r)
+        h.add([1.0, 7.2 + dy, z0], [4.4, 9.6 + dy, z1], vk, r).add([11.6, 7.2 + dy, z0], [15.0, 9.6 + dy, z1], vk, r)
+        h.add([4.4, 7.2 + dy, -1.2], [11.6, 9.6 + dy, -0.6], "glass", r)
+    return h
+
+
+def mich():
+    h = H().dome(9.8, 17.2, 7.4, 7.4, 7, "coyote")
+    h.mirror([0.6, 7.6, 3.0], [1.4, 10.0, 14.4], "coyote")
+    h.add([1.4, 6.4, 14.6], [14.6, 10.0, 15.4], "coyote")
+    h.add([1.4, 9.4, 0.6], [14.6, 10.0, 1.4], "coyote_d")                  # bord avant (pas de visière)
+    for s in (0, 1):                                                        # rails Picatinny latéraux
+        x0, x1 = (0.0, 0.6) if s == 0 else (15.4, 16.0)
+        h.add([x0, 10.4, 4.0], [x1, 11.4, 12.0], "rail")
+        for i in range(6):
+            z = 4.4 + i * 1.3
+            xa, xb = (x0 - 0.2, x0) if s == 0 else (x1, x1 + 0.2)
+            h.add([xa, 10.5, z], [xb, 11.3, z + 0.6], "rail")
+    h.add([6.6, 11.6, 0.0], [9.4, 13.8, 1.2], "rail")                      # support frontal
+    return h.strap("canvas")
+
+
+def fast(down):
+    h = H().dome(10.6, 17.2, 7.4, 7.6, 7, "ranger")
+    h.mirror([0.6, 9.6, 3.0], [1.4, 11.0, 14.0], "ranger")                 # coupe haute : oreilles dégagées
+    h.add([1.4, 7.6, 14.6], [14.6, 10.8, 15.4], "ranger")
+    h.mirror([-0.1, 11.2, 4.0], [0.5, 12.0, 12.0], "rail")                 # rails ARC
+    h.add([4.6, 17.15, 5.0], [11.4, 17.45, 11.0], "velcro")                # velcro
+    # casque antibruit ComTac
+    h.mirror([-1.2, 4.6, 5.4], [0.6, 9.4, 10.6], "comtac")
+    h.mirror([0.6, 5.0, 5.8], [1.4, 9.0, 10.2], "padding")
+    h.add([-0.9, 4.8, 2.0], [-0.5, 5.2, 5.4], "comtac").add([-1.0, 4.6, 1.4], [-0.2, 5.4, 2.2], "padding")  # micro
+    h.add([5.6, 11.6, 15.4], [10.4, 14.8, 16.6], "nvg")                    # batterie (contrepoids)
+    h.add([6.6, 12.0, -0.1], [9.4, 14.4, 1.2], "rail")                      # support NVG
+    # Jumelles de vision nocturne quadritubes GPNVG-18
+    if down:
+        h.add([7.2, 9.6, -1.6], [8.8, 12.4, 0.2], "nvg")
+        h.add([3.0, 7.6, -2.8], [13.0, 9.8, -1.0], "nvg")
+        for x0 in (5.4, 8.6):
+            h.add([x0, 7.2, -6.6], [x0 + 2.0, 9.2, -2.8], "nvg").add([x0 + 0.3, 7.5, -6.8], [x0 + 1.7, 8.9, -6.6], "lens")
+        for x0, ang in ((2.0, 22.5), (12.0, -22.5)):
+            r = ("y", ang, [x0 + 1.0, 8.4, -2.8])
+            h.add([x0, 7.6, -5.6], [x0 + 2.0, 9.4, -2.8], "nvg", r).add([x0 + 0.3, 7.9, -5.8], [x0 + 1.7, 9.1, -5.6], "lens", r)
+    else:
+        h.add([7.2, 13.6, -1.6], [8.8, 15.6, 0.2], "nvg")
+        h.add([3.0, 15.2, -1.8], [13.0, 17.2, 0.0], "nvg")
+        for x0 in (5.4, 8.6):
+            h.add([x0, 17.2, -1.6], [x0 + 2.0, 21.0, 0.4], "nvg").add([x0 + 0.3, 21.0, -1.3], [x0 + 1.7, 21.2, 0.1], "lens")
+        for x0, ang in ((2.0, -22.5), (12.0, 22.5)):
+            r = ("z", ang, [x0 + 1.0, 17.2, -0.6])
+            h.add([x0, 17.2, -1.6], [x0 + 2.0, 20.2, 0.4], "nvg", r).add([x0 + 0.3, 20.2, -1.3], [x0 + 1.7, 20.4, 0.1], "lens", r)
+    return h
+
+
+def juggernaut():
+    h = H().dome(8.8, 17.8, 7.9, 7.9, 8, "jugg")
+    h.add([2.0, 17.0, 3.0], [14.0, 18.2, 13.0], "black")                   # plaque sommitale
+    h.mirror([0.1, 1.6, 1.0], [0.9, 9.0, 15.0], "jugg")
+    h.add([0.9, 1.6, 15.0], [15.1, 9.0, 15.9], "jugg")
+    h.mirror([0.6, 0.6, 0.0], [2.0, 8.0, 6.0], "black")                    # plaques de joues
+    h.add([1.2, 0.6, -0.6], [14.8, 5.6, 0.8], "black")                     # mandibule balistique
+    for x in (4.0, 6.0, 8.0, 10.0, 12.0):
+        h.add([x - 0.4, 1.4, -0.7], [x + 0.4, 4.4, -0.6], "visor_d")
+    h.add([1.4, 5.6, -0.4], [14.6, 9.4, 0.6], "dark_glass")                # visière numérique blindée
+    h.add([2.0, 8.6, -0.5], [14.0, 8.8, -0.4], "cyan")
+    h.add([2.4, 6.0, -0.5], [3.0, 6.6, -0.4], "red").add([13.0, 6.0, -0.5], [13.6, 6.6, -0.4], "red")
+    h.add([1.0, 9.4, -0.8], [15.0, 11.2, 0.8], "black")                     # front blindé
+    return h
+
+
+HELMETS = {
+    "galea": galea, "great_helm": great_helm, "adrian_m15": adrian, "brodie_mk1": brodie,
+    "m1_helmet": m1, "stahlhelm_m40": stahlhelm, "ssh40": ssh40,
+    "pasgt": pasgt, "altyn": lambda: altyn(False), "mich_2000": mich,
+    "ops_core_fast": lambda: fast(False), "juggernaut_helmet": juggernaut,
+}
+MODULES = {"altyn": lambda: altyn(True), "ops_core_fast": lambda: fast(True)}
+
+DISPLAY = {
+    "head": {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": [1, 1, 1]},
+    "gui": {"rotation": [18, 200, 0], "translation": [0, -1.5, 0], "scale": [0.62, 0.62, 0.62]},
+    "ground": {"rotation": [0, 0, 0], "translation": [0, 2, 0], "scale": [0.4, 0.4, 0.4]},
+    "fixed": {"rotation": [0, 180, 0], "translation": [0, 0, 0], "scale": [0.6, 0.6, 0.6]},
+    "thirdperson_righthand": {"rotation": [0, 45, 0], "translation": [0, 2, 1], "scale": [0.35, 0.35, 0.35]},
+    "firstperson_righthand": {"rotation": [0, 225, 0], "translation": [2, 3, 0], "scale": [0.4, 0.4, 0.4]},
+}
+
+
+def write(path, data):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, separators=(",", ":"))
+
+
+def check(name, els):
+    for e in els:
+        for v in e["from"] + e["to"]:
+            assert -16 <= v <= 32, f"{name} hors limites : {e['from']} {e['to']}"
+
+
+def helmet_models():
+    tex = {"p": f"{MOD}:item/helmet_palette", "particle": f"{MOD}:item/helmet_palette"}
+    for name, fn in HELMETS.items():
+        els = fn().els
+        check(name, els)
+        model = {"textures": tex, "render_type": "minecraft:translucent", "display": DISPLAY, "elements": els}
+        if name in MODULES:
+            model["overrides"] = [{"predicate": {f"{MOD}:module": 1}, "model": f"{MOD}:item/{name}_module"}]
+            mels = MODULES[name]().els
+            check(name, mels)
+            write(os.path.join(ASSETS, f"models/item/{name}_module.json"),
+                  {"textures": tex, "render_type": "minecraft:translucent", "display": DISPLAY, "elements": mels})
+        write(os.path.join(ASSETS, f"models/item/{name}.json"), model)
+
+
+# ------------------------------------------------------------------ contours d'écran (vue à la 1re personne)
+def overlay(name, fn, w=320, h=180):
+    img = Image.new("RGBA", (w, h))
+    px = img.load()
+    for y in range(h):
+        for x in range(w):
+            px[x, y] = fn(x / w, y / h)
+    img.save(os.path.join(ASSETS, "textures/misc", f"helmet_{name}.png"))
+
+
+def vignette(strength, inner=0.62):
+    def f(u, v):
+        d = math.hypot((u - 0.5) * 1.6, v - 0.5) / 0.75
+        a = max(0.0, min(1.0, (d - inner) / (1.0 - inner)))
+        return (8, 8, 10, int(255 * strength * a ** 1.6))
+    return f
+
+
+def visor_slit(u, v):
+    # fenêtre blindée : rectangle arrondi au centre, le reste est la visière (sombre)
+    dx, dy = abs(u - 0.5) / 0.34, abs(v - 0.47) / 0.21
+    d = (dx ** 6 + dy ** 6) ** (1 / 6)
+    if d < 0.94:
+        return (60, 90, 100, 28)                                          # léger reflet du verre
+    if d < 1.0:
+        return (20, 24, 26, 235)                                          # cadre
+    return (34, 42, 32, 250)
+
+
+def nvg(u, v):
+    # jumelles quadritubes : deux grands champs ronds qui se chevauchent (vue panoramique)
+    ax = (u - 0.5) * 16 / 9
+    d = min(math.hypot(ax + 0.36, v - 0.5), math.hypot(ax - 0.36, v - 0.5)) / 0.47
+    a = max(0.0, min(1.0, (d - 0.92) / 0.08))
+    return (0, 0, 0, int(255 * a))
+
+
+def jugg_hud(u, v):
+    # visière numérique : bords sombres + coins et lignes cyan discrets
+    base = vignette(0.55, 0.7)(u, v)
+    edge = min(u, 1 - u, v, 1 - v)
+    cyan = (63, 200, 216)
+    corner = (min(u, 1 - u) < 0.12 and min(v, 1 - v) < 0.012 + 0.0) or (min(v, 1 - v) < 0.2 and min(u, 1 - u) < 0.007)
+    if 0.04 < edge and corner and min(u, 1 - u) > 0.03 and min(v, 1 - v) > 0.05:
+        return cyan + (170,)
+    if abs(v - 0.9) < 0.003 and 0.35 < u < 0.65:
+        return cyan + (110,)
+    return base
+
+
+def overlays():
+    os.makedirs(os.path.join(ASSETS, "textures/misc"), exist_ok=True)
+    overlay("great_helm", vignette(0.92, 0.45))
+    overlay("heavy", vignette(0.45, 0.72))
+    overlay("visor", visor_slit)
+    overlay("nvg", nvg)
+    overlay("juggernaut", jugg_hud)
+
+
+# ------------------------------------------------------------------ minerais et matériaux (16x16)
+TI = [hexc(c) for c in ("#5E6874", "#8C98A6", "#B4C0CC", "#DCE4EE")]       # titane
+ST = [hexc(c) for c in ("#2E3238", "#4A5058", "#646B74", "#8A929C")]       # acier
+FE = [hexc(c) for c in ("#5A5A5A", "#8C8C8C", "#BDBDBD", "#E2E2E2")]       # fer
+KV = [hexc(c) for c in ("#7A5E1C", "#B48C2C", "#D9B44A", "#F0D27A")]       # kevlar
+CE = [hexc(c) for c in ("#8A8070", "#C2B8A4", "#E2DACA", "#F4F0E6")]       # céramique
+STONE = [hexc(c) for c in ("#6e6e6e", "#7a7a7a", "#858585", "#8f8f8f", "#7f7f7f")]
+DEEP = [hexc(c) for c in ("#3a3a40", "#46464d", "#4f4f57", "#5a5a62", "#424249")]
+
+
+def ore(seed, base):
+    rng = random.Random(seed)
+    img = Image.new("RGBA", (16, 16))
+    for y in range(16):
+        for x in range(16):
+            img.putpixel((x, y), base[rng.randrange(len(base))])
+    for cx, cy in [(2, 3), (10, 2), (12, 10), (4, 11), (8, 7), (13, 5)]:
+        cells = [(cx, cy), (cx + 1, cy), (cx, cy + 1), (cx + 1, cy + 1), (cx + 2, cy + 1)]
+        for i, (x, y) in enumerate(cells):
+            if 0 <= x < 16 and 0 <= y < 16 and rng.random() < 0.85:
+                img.putpixel((x, y), TI[1 + (i % 3)])
+        img.putpixel((cx, cy), TI[3])
+        if cy + 1 < 16:
+            img.putpixel((cx + 1, cy + 1), TI[0])
+    return img
+
+
+def ingot(pal, specks=None):
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    d.polygon([(1, 10), (5, 6), (15, 6), (11, 10)], fill=pal[2])          # dessus
+    d.polygon([(1, 10), (11, 10), (11, 13), (1, 13)], fill=pal[1])        # face
+    d.polygon([(11, 10), (15, 6), (15, 9), (11, 13)], fill=pal[0])        # côté
+    d.line([(5, 7), (13, 7)], fill=pal[3])
+    d.line([(1, 10), (11, 10)], fill=pal[3])
+    if specks:
+        rng = random.Random(3)
+        for _ in range(7):
+            img.putpixel((rng.randrange(2, 11), rng.randrange(7, 13)), specks)
+    return img
+
+
+def plate(pal, pattern=None):
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    for y in range(2, 14):
+        for x in range(2, 14):
+            c = pal[2]
+            if pattern:
+                c = pattern(x, y) or c
+            if x == 2 or y == 2:
+                c = pal[3]
+            if x == 13 or y == 13:
+                c = pal[0]
+            img.putpixel((x, y), c)
+    for x, y in ((4, 4), (11, 4), (4, 11), (11, 11)):
+        img.putpixel((x, y), pal[1])
+    return img
+
+
+def raw_lump(pal):
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    rng = random.Random(11)
+    for y in range(16):
+        for x in range(16):
+            if math.hypot((x - 7.5) / 6.2, (y - 8.5) / 5.4) < 1 and rng.random() > 0.05:
+                img.putpixel((x, y), pal[rng.choice([0, 1, 1, 2, 2, 3])])
+    return img
+
+
+def fiber():
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    for s in range(4):
+        for x in range(1, 15):
+            y = int(4 + s * 2.6 + math.sin(x * 0.9 + s) * 1.2)
+            img.putpixel((x, y), KV[2 if (x + s) % 3 else 3])
+            if y + 1 < 16:
+                img.putpixel((x, y + 1), KV[1])
+    return img
+
+
+def woven(x, y):
+    return KV[3] if (x // 2 + y // 2) % 2 == 0 else KV[1]
+
+
+def multilayer():
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    for i, (pal, pat) in enumerate(((KV, woven), (TI, None), (KV, woven))):
+        y0 = 3 + i * 3
+        for y in range(y0, y0 + 3):
+            for x in range(2 + i, 15 - (2 - i)):
+                c = pat(x, y) if pat else pal[2]
+                if y == y0:
+                    c = pal[3]
+                img.putpixel((x, y), c)
+    for x in range(4, 15):
+        img.putpixel((x, 12), hexc("#6B4A2B"))                            # cuir
+        img.putpixel((x, 13), hexc("#4A321E"))
+    return img
+
+
+def composite():
+    return plate(TI, lambda x, y: CE[3] if (x % 4 != 1 and y % 4 != 1) else CE[1])
+
+
+def preform():
+    img = raw_lump([hexc("#8A4A2A"), hexc("#B0623A"), TI[1], hexc("#E0A040")])
+    return img
+
+
+def materials():
+    tex = os.path.join(ASSETS, "textures")
+    ore(21, STONE).save(os.path.join(tex, "block/titanium_ore.png"))
+    ore(22, DEEP).save(os.path.join(tex, "block/deepslate_titanium_ore.png"))
+    items = {
+        "raw_titanium": raw_lump(TI), "titanium_ingot": ingot(TI), "titanium_plate": plate(TI),
+        "ceramic_titanium_composite": composite(), "composite_preform": preform(),
+        "steel_ingot": ingot(ST), "carburized_iron": ingot(FE, specks=hexc("#1A1A1A")), "steel_plate": plate(ST),
+        "kevlar_fiber": fiber(), "kevlar_plate": plate(KV, woven), "multilayer_kevlar": multilayer(),
+    }
+    for name, img in items.items():
+        img.save(os.path.join(tex, f"item/{name}.png"))
+        write(os.path.join(ASSETS, f"models/item/{name}.json"), {"parent": "minecraft:item/generated",
+                                                                "textures": {"layer0": f"{MOD}:item/{name}"}})
+    for b in ("titanium_ore", "deepslate_titanium_ore"):
+        write(os.path.join(ASSETS, f"blockstates/{b}.json"), {"variants": {"": {"model": f"{MOD}:block/{b}"}}})
+        write(os.path.join(ASSETS, f"models/block/{b}.json"), {"parent": "minecraft:block/cube_all", "textures": {"all": f"{MOD}:block/{b}"}})
+        write(os.path.join(ASSETS, f"models/item/{b}.json"), {"parent": f"{MOD}:block/{b}"})
+
+
+def main():
+    palette_image().save(os.path.join(ASSETS, "textures/item/helmet_palette.png"))
+    helmet_models()
+    overlays()
+    materials()
+    print(f"{len(HELMETS)} casques ({len(KEYS)} couleurs), {len(MODULES)} variantes, contours et matériaux générés")
+
+
+if __name__ == "__main__":
+    main()

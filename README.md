@@ -99,7 +99,7 @@ Toutes les armes à feu, munitions et accessoires se fabriquent à la **table d'
 - **C** : coup de crosse (ou de baïonnette).
 - **Double appui sur s'accroupir** (sans viser) : s'allonger / se relever (aussi en sautant), avec ou sans arme.
   Allongé : recul et dispersion divisés par 2.
-- Toutes les touches (R, B, H, G type de munition, T laser, V tir sous le canon, C crosse, Y menu rapide des accessoires, A / E se pencher,
+- Toutes les touches (R, B, H, G type de munition, T laser, V tir sous le canon, C crosse, Y menu rapide des accessoires, N visière / vision nocturne du casque, A / E se pencher,
   Shift stabiliser) se changent dans *Options > Commandes > Mode Minecraft*. Munitions infinies en créatif.
 
 **Dégâts (cahier des charges) :** tête x2 (x2,5 au fusil de précision, avec un « ding » métallique), torse x1,
@@ -226,6 +226,40 @@ On ne peut pas les tenir à la main : ce sont des entités fixes qu'on déploie.
   Les munitions restantes sont gardées dans l'objet.
 - Fabrication : tourelles et caisses à la table d'armement (lingots et blocs de fer, redstone, pistons...) ; clé à molette aussi à l'établi.
 
+### Casques militaires 3D (12, de l'Antiquité à aujourd'hui)
+Chaque casque a un **vrai modèle 3D voxel** sur la tête (reliefs, jugulaires, rebords, accessoires), aux teintes militaires mates.
+On le met au **clic droit** : les deux bras le posent sur la tête (bruit de jugulaire). Fabrication : table d'armement, onglet **Casques**.
+
+| Époque | Casque | Armure | Tir à la tête | Particularité |
+|---|---|---|---|---|
+| Antiquité / Moyen-Âge / 14-18 | Galea romain | 2 | -15 % | mêlée -10 % |
+| | Heaume médiéval | 3 | -25 % | mêlée -20 %, vision périphérique assombrie |
+| | Adrian M15 | 2,5 | -20 % | éclats de grenade -30 % |
+| | Brodie Mk I | 2,5 | -20 % | éclats -35 % |
+| Seconde Guerre mondiale | M1 américain | 3 | -35 % | explosions -15 % |
+| | Stahlhelm M40 | 3,5 | -40 % | protège la nuque (bonus des coups dans le dos divisé par 2) |
+| | SSh-40 soviétique | 3,5 | -38 % | très grande durabilité |
+| Guerre froide | PASGT (kevlar, Woodland) | 4 | -50 % | 9 mm et .45 ACP : jamais de coup critique à la tête |
+| | Altyn / K6-3 (titane) | 5 | -50 % / **-75 %** visière baissée | touche **N** : visière blindée (vision réduite, respiration étouffée) |
+| Moderne | MICH 2000 / ACH | 4,5 | -60 % | pas de malus de vitesse de visée avec les lunettes de sniper |
+| | Ops-Core FAST XP | 5 | -65 % | touche **N** : jumelles **GPNVG-18** (vision nocturne verte sans potion, pas des monstres amplifiés) |
+| | Juggernaut | 6 | **-85 %** | survit à une .50 dans la tête, immunisé aux flashbangs et au gaz, -8 % de vitesse |
+
+- Formule : dégâts = dégâts de base x multiplicateur tête x (1 - réduction du casque). Le casque s'use selon les dégâts absorbés ;
+  à partir de -50 %, la balle ricoche (étincelles + bruit métallique).
+- Touche **N** (modifiable) : le bras gauche monte sur le côté de la tête et abaisse la visière ou les jumelles.
+- Les casques fermés affichent un contour à l'écran (heaume, fente de visière, tubes des jumelles, visière numérique), sans gêner le centre.
+- Réparation à l'enclume (fer, acier, plaques de kevlar / titane, kevlar multicouche ou composite selon l'époque).
+
+### Nouveaux minerais et matériaux
+- **Titane** : minerai (et minerai des abîmes) entre Y = -64 et Y = 16, aussi rare que l'or, pioche en fer minimum.
+  Titane brut → four / haut-fourneau → **lingot de titane** ; 4 lingots → 2 **plaques de titane**.
+- **Composite céramique-titane** : plaque de titane + terre cuite + poudre de blaze + quartz → préforme → haut-fourneau.
+- **Acier** : 1 lingot de fer + 2 charbons → **fer carburé** → haut-fourneau (ou four, plus lent) → **lingot d'acier** ;
+  4 lingots → 2 **plaques d'acier**.
+- **Kevlar** : ficelle + laine + boule de slime + charbon → 2 **fibres d'aramide** ; 4 fibres + 1 lingot d'acier (ou de fer)
+  → **plaque de kevlar** ; 2 plaques de kevlar + 1 plaque de titane + 1 cuir → **kevlar multicouche**.
+
 ### Gameplay et progression
 - **Niveaux des armes (1 à 5)** : chaque arme garde ses statistiques (éliminations, tirs à la tête, tirs, ratio)
   et gagne de l'expérience : +10 par élimination, +5 si tir à la tête, +10 pour un gros monstre (50 PV ou plus).
@@ -342,6 +376,7 @@ tools/generate_gun_models.py    # génère modèles 3D, icônes, skins, accessoi
 tools/generate_ammo.py          # munitions spéciales : pastilles, modèles, recettes
 tools/generate_melee.py         # icônes des 20 armes blanches
 tools/generate_explosives.py    # modèles 3D des grenades et explosifs
+tools/generate_helmets.py       # casques 3D, palette militaire, contours d'écran, textures titane / acier / kevlar
 tools/generate_turrets.py       # tourelles en pièces (trépied, arme, capot, bande, viseurs WWII) + turrets.json
 ```
 

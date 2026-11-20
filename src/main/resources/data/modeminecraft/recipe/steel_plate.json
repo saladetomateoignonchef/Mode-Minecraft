@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SS",
+    "SS"
+  ],
+  "key": {
+    "S": {
+      "item": "modeminecraft:steel_ingot"
+    }
+  },
+  "result": {
+    "id": "modeminecraft:steel_plate",
+    "count": 2
+  }
+}

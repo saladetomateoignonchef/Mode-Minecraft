@@ -50,7 +50,7 @@ public class ArmamentTableScreen extends AbstractContainerScreen<ArmamentTableMe
                 category = c;
                 scroll = 0;
                 selected = -1;
-            }).bounds(leftPos + 8 + i * 60, topPos + 14, 58, 16).build();
+            }).bounds(leftPos + 8 + i * (240 / categories.length), topPos + 14, 240 / categories.length - 2, 16).build();
             tabs.add(addRenderableWidget(tab));
         }
         // Onglet "Spéciales" : filtre par calibre (sinon la liste serait très longue)

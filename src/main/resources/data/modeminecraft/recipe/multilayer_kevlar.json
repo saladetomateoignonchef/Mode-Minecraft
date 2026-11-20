@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "modeminecraft:kevlar_plate"
+    },
+    {
+      "item": "modeminecraft:kevlar_plate"
+    },
+    {
+      "item": "modeminecraft:titanium_plate"
+    },
+    {
+      "item": "minecraft:leather"
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:multilayer_kevlar",
+    "count": 1
+  }
+}

@@ -249,5 +249,35 @@
     "sounds": [
       "modeminecraft:gun/dry_fire_0"
     ]
+  },
+  "gun.helmet_strap_click": {
+    "subtitle": "subtitles.modeminecraft.helmet_strap_click",
+    "sounds": [
+      "modeminecraft:gun/helmet_strap_click_0"
+    ]
+  },
+  "gun.helmet_ricochet": {
+    "subtitle": "subtitles.modeminecraft.helmet_ricochet",
+    "sounds": [
+      "modeminecraft:gun/helmet_ricochet_0"
+    ]
+  },
+  "gun.helmet_visor": {
+    "subtitle": "subtitles.modeminecraft.helmet_visor",
+    "sounds": [
+      "modeminecraft:gun/helmet_visor_0"
+    ]
+  },
+  "gun.nvg_on": {
+    "subtitle": "subtitles.modeminecraft.nvg_on",
+    "sounds": [
+      "modeminecraft:gun/nvg_on_0"
+    ]
+  },
+  "gun.helmet_breath": {
+    "subtitle": "subtitles.modeminecraft.helmet_breath",
+    "sounds": [
+      "modeminecraft:gun/helmet_breath_0"
+    ]
   }
 }

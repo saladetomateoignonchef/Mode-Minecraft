@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "modeminecraft:rubis_ore",
-    "modeminecraft:deepslate_rubis_ore"
+    "modeminecraft:deepslate_rubis_ore",
+    "modeminecraft:titanium_ore",
+    "modeminecraft:deepslate_titanium_ore"
   ]
 }

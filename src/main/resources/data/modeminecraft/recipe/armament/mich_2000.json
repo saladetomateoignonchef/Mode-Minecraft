@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "helmets",
+  "ingredients": [
+    {
+      "item": "modeminecraft:multilayer_kevlar",
+      "count": 4
+    },
+    {
+      "item": "modeminecraft:titanium_plate",
+      "count": 2
+    },
+    {
+      "item": "minecraft:diamond",
+      "count": 2
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:mich_2000",
+    "count": 1
+  }
+}

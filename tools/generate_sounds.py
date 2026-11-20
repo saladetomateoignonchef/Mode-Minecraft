@@ -150,6 +150,30 @@ def mechanical(name, seed):
         t = t_axis(0.12)
         x = np.sign(np.sin(2 * np.pi * f * t)) * 0.4 * np.clip(t / 0.005, 0, 1) * np.clip((0.12 - t) / 0.01, 0, 1)
         x = band(x, hi=6000)
+    elif name == "helmet_strap_click":
+        # boucle de jugulaire qui se ferme : clic sec + petit frottement de sangle
+        t = t_axis(0.3)
+        x = scrape(rng, t, 0.0, 0.08, 0.2, 1200, 5000) + click(rng, t, 0.09, 3800, 0.006, 1.0, 1500, 9000) \
+            + click(rng, t, 0.11, 2200, 0.01, 0.5, 800, 6000)
+    elif name == "helmet_ricochet":
+        # balle qui ricoche sur l'acier : impact lourd + sifflement descendant
+        t = t_axis(0.9)
+        x = click(rng, t, 0.0, 1600, 0.03, 1.0, 300, 7000) + np.sin(2 * np.pi * 220 * t) * env(t, 0.001, 0.08) * 0.6
+        f = 3400 - 1800 * t
+        x = x + np.sin(2 * np.pi * np.cumsum(f) / SR) * env(t - 0.02, 0.01, 0.25) * (t > 0.02) * 0.45
+    elif name == "helmet_visor":
+        t = t_axis(0.55)
+        x = scrape(rng, t, 0.0, 0.3, 0.3, 600, 3500) + click(rng, t, 0.32, 900, 0.05, 1.0, 200, 4000)
+    elif name == "nvg_on":
+        # électronique : clic puis sifflement aigu qui monte
+        t = t_axis(1.0)
+        f = 6000 + 4000 * np.clip(t / 0.6, 0, 1)
+        x = click(rng, t, 0.0, 3000, 0.008, 0.8, 1000, 9000) + np.sin(2 * np.pi * np.cumsum(f) / SR) * env(t - 0.05, 0.1, 0.5) * (t > 0.05) * 0.25
+    elif name == "helmet_breath":
+        # respiration étouffée sous la visière : souffle grave filtré (inspiration puis expiration)
+        t = t_axis(2.2)
+        n = band(noise(len(t), rng), 150, 900)
+        x = n * (np.exp(-((t - 0.5) / 0.28) ** 2) * 0.6 + np.exp(-((t - 1.45) / 0.35) ** 2))
     elif name == "turret_deploy":
         # trépied qui s'ouvre puis se verrouille au sol : chocs métalliques lourds
         t = t_axis(0.95)
@@ -285,7 +309,8 @@ def main():
     write_ogg(os.path.join(sounds_dir, "shot", "launcher_1.ogg"), launcher(seed + 4))
     add("shot.launcher", ["shot/launcher_0", "shot/launcher_1"], "shot_launcher")
     for name in ["mag_out", "mag_in", "rack", "bolt", "pump", "shell_insert", "empty_click", "casing", "shell_casing", "hitmarker", "headshot", "garand_ping", "lock_search", "lock_tone",
-                 "grenade_pin", "grenade_bounce", "grenade_beep", "sonar", "flash_ring", "turret_deploy", "turret_reload", "dry_fire"]:
+                 "grenade_pin", "grenade_bounce", "grenade_beep", "sonar", "flash_ring", "turret_deploy", "turret_reload", "dry_fire",
+                 "helmet_strap_click", "helmet_ricochet", "helmet_visor", "nvg_on", "helmet_breath"]:
         files = []
         for v in range(2 if name in ("casing", "mag_in", "rack") else 1):
             write_ogg(os.path.join(sounds_dir, "gun", f"{name}_{v}.ogg"), mechanical(name, seed))

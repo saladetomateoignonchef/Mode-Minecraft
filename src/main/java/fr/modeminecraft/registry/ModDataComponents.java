@@ -92,6 +92,13 @@ public final class ModDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> TURRET_AMMO =
             DATA_COMPONENTS.registerComponentType("turret_ammo", b -> b.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT));
 
+    /** Casques : visière abaissée / jumelles de vision nocturne actives. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> HELMET_MODULE =
+            DATA_COMPONENTS.registerComponentType("helmet_module", b -> b.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
+    /** Casques : moment où on l'a mis / où on a basculé la visière (animations des bras, vues par tous). */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> HELMET_EQUIP_TIME = timestamp("helmet_equip_time");
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> HELMET_MODULE_TIME = timestamp("helmet_module_time");
+
     private static DeferredHolder<DataComponentType<?>, DataComponentType<Long>> timestamp(String name) {
         // Non sauvegardé sur le disque : ne sert qu'aux animations
         return DATA_COMPONENTS.registerComponentType(name, b -> b.networkSynchronized(ByteBufCodecs.VAR_LONG));

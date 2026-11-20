@@ -3,6 +3,8 @@
   "values": [
     "modeminecraft:rubis_ore",
     "modeminecraft:deepslate_rubis_ore",
-    "modeminecraft:rubis_block"
+    "modeminecraft:rubis_block",
+    "modeminecraft:titanium_ore",
+    "modeminecraft:deepslate_titanium_ore"
   ]
 }

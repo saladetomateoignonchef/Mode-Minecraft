@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "ingredient": {
+    "item": "modeminecraft:composite_preform"
+  },
+  "result": {
+    "id": "modeminecraft:ceramic_titanium_composite"
+  },
+  "experience": 1.5,
+  "cookingtime": 200
+}

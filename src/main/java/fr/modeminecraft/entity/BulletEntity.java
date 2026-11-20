@@ -69,6 +69,34 @@ public class BulletEntity extends ThrowableItemProjectile {
                 || state.is(Tags.Blocks.FENCES_WOODEN) || state.is(net.minecraft.world.level.block.Blocks.SCAFFOLDING);
     }
 
+    /**
+     * Casque militaire : Dégâts = Dégâts de base x Multiplicateur tête x (1 - réduction du casque).
+     * Le casque s'use selon les dégâts absorbés ; à partir de -50 % : étincelles et bruit de ricochet.
+     * PASGT : les calibres de pistolet (9 mm, .45 ACP) ne font pas de coup critique à la tête.
+     */
+    private float helmetProtection(ServerLevel level, LivingEntity target, float damage) {
+        var helm = target.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD);
+        if (!(helm.getItem() instanceof fr.modeminecraft.item.HelmetItem h)) {
+            return damage;
+        }
+        if (h == fr.modeminecraft.registry.ModItems.PASGT.get() && weapon.getItem() instanceof fr.modeminecraft.item.gun.GunItem gun) {
+            String caliber = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(gun.stats().ammo().get()).getPath();
+            if (caliber.equals("ammo_9mm") || caliber.equals("ammo_45acp")) {
+                damage /= headshotMultiplier;
+            }
+        }
+        float reduction = h.headshotReduction(helm);
+        float absorbed = damage * reduction;
+        helm.hurtAndBreak(Math.max(1, Math.round(absorbed / 2)), target, net.minecraft.world.entity.EquipmentSlot.HEAD);
+        if (reduction >= 0.5f) {
+            level.playSound(null, target.getX(), target.getEyeY(), target.getZ(), fr.modeminecraft.registry.ModSounds.HELMET_RICOCHET.get(),
+                    net.minecraft.sounds.SoundSource.PLAYERS, 1.2f, 0.9f + random.nextFloat() * 0.2f);
+            level.sendParticles(ParticleTypes.CRIT, target.getX(), target.getEyeY() + 0.25, target.getZ(), 14, 0.15, 0.1, 0.15, 0.35);
+            level.sendParticles(ParticleTypes.ELECTRIC_SPARK, target.getX(), target.getEyeY() + 0.3, target.getZ(), 6, 0.1, 0.1, 0.1, 0.2);
+        }
+        return damage - absorbed;
+    }
+
     public void setWeapon(net.minecraft.world.item.ItemStack stack) {
         weapon = stack;
     }
@@ -223,6 +251,7 @@ public class BulletEntity extends ThrowableItemProjectile {
         if (headshot) {
             finalDamage *= headshotMultiplier;
             level.sendParticles(ParticleTypes.CRIT, target.getX(), target.getEyeY(), target.getZ(), 8, 0.2, 0.2, 0.2, 0.2);
+            finalDamage = helmetProtection(level, (LivingEntity) target, finalDamage);
         }
 
         AmmoType type = ammoType();

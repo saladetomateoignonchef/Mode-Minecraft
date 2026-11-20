@@ -37,6 +37,13 @@ public final class ClientSetup {
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
+            // Casques : modèle "visière abaissée / jumelles abaissées" quand le module est actif
+            for (var h : ModItems.ITEMS.getEntries()) {
+                if (h.get() instanceof fr.modeminecraft.item.HelmetItem) {
+                    net.minecraft.client.renderer.item.ItemProperties.register(h.get(), ModeMinecraft.id("module"),
+                            (stack, level, entity, seed) -> fr.modeminecraft.item.HelmetItem.isModuleActive(stack) ? 1 : 0);
+                }
+            }
             registerBowProperties(ModItems.RUBIS_BOW.get());
             // Munitions spéciales : le modèle affiche une marque de couleur selon le type
             ModItems.ITEMS.getEntries().stream().map(h -> h.get())
@@ -89,12 +96,14 @@ public final class ClientSetup {
         event.register(ModKeyMappings.HOLD_BREATH);
         event.register(ModKeyMappings.MELEE);
         event.register(ModKeyMappings.QUICK_ATTACH);
+        event.register(ModKeyMappings.HELMET_MODULE);
     }
 
     @SubscribeEvent
     public static void registerGuiLayers(RegisterGuiLayersEvent event) {
         event.registerAbove(VanillaGuiLayers.HOTBAR, ModeMinecraft.id("gun_ammo"), GunHudLayer.AMMO);
         event.registerBelow(VanillaGuiLayers.HOTBAR, ModeMinecraft.id("gun_sight"), GunHudLayer.SIGHT_OVERLAY);
+        event.registerAbove(VanillaGuiLayers.CAMERA_OVERLAYS, ModeMinecraft.id("helmet_overlay"), HelmetClient::renderOverlay);
         event.registerAbove(VanillaGuiLayers.CROSSHAIR, ModeMinecraft.id("hit_marker"), GunFx::renderHitMarker);
         event.registerAbove(VanillaGuiLayers.CROSSHAIR, ModeMinecraft.id("lock_on"), LockOnClient::render);
         event.registerAbove(VanillaGuiLayers.CROSSHAIR, ModeMinecraft.id("grenade_timer"), GunHudLayer::renderGrenadeTimer);

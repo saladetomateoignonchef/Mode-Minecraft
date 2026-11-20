@@ -174,6 +174,9 @@ public final class Detonations {
             if (!visible || d > 20) {
                 continue;
             }
+            if (e.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD).is(fr.modeminecraft.registry.ModItems.JUGGERNAUT_HELMET.get())) {
+                continue; // visière numérique : immunisé contre l'aveuglement
+            }
             if (e instanceof ServerPlayer player) {
                 double facing = player.getLookAngle().dot(p.subtract(player.getEyePosition()).normalize());
                 float strength = (float) Math.max(0, Math.min(1, (1.2 - d / 20) * (facing > 0.3 ? 1 : 0.35)));

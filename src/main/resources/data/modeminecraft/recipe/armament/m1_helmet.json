@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "helmets",
+  "ingredients": [
+    {
+      "item": "modeminecraft:steel_ingot",
+      "count": 5
+    },
+    {
+      "item": "minecraft:string",
+      "count": 2
+    },
+    {
+      "item": "minecraft:green_dye",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:m1_helmet",
+    "count": 1
+  }
+}

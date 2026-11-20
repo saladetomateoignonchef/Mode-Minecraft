@@ -44,7 +44,7 @@ public final class GunPoseHelper {
         }
         return optic ? 0.2f : 0.18f; // l'œil tout près du viseur : grande fenêtre, comme dans un FPS
     }
-    private static final Vector3f RIGHT_SHOULDER = new Vector3f(0.36f, -0.62f, 0.12f);
+    static final Vector3f RIGHT_SHOULDER = new Vector3f(0.36f, -0.62f, 0.12f);
     static final Vector3f LEFT_SHOULDER = new Vector3f(-0.34f, -0.62f, 0.05f);
 
     private static float aim, aimPrev;
@@ -59,7 +59,11 @@ public final class GunPoseHelper {
         aimPrev = aim;
         var gun = GunClientEvents.aiming(player);
         float target = gun != null ? 1 : 0;
-        float speed = 0.22f * (gun != null ? gun.aimSpeed() : 1.5f);
+        float aimSpeed = gun != null ? gun.aimSpeed() : 1.5f;
+        if (gun != null && player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD).is(fr.modeminecraft.registry.ModItems.MICH_2000.get())) {
+            aimSpeed = Math.max(1.0f, aimSpeed); // casque MICH sans visière : pas de malus de visée avec les lunettes
+        }
+        float speed = 0.22f * aimSpeed;
         aim = target > aim ? Math.min(target, aim + speed) : Math.max(target, aim - speed);
     }
 

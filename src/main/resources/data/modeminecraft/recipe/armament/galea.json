@@ -1,0 +1,18 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "helmets",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 4
+    },
+    {
+      "item": "minecraft:leather",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:galea",
+    "count": 1
+  }
+}

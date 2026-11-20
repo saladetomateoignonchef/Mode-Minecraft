@@ -192,7 +192,12 @@ public final class GunClientEvents {
     public static void onComputeFov(ComputeFovModifierEvent event) {
         ResolvedGun aim = aiming(event.getPlayer());
         float target = aim == null ? 1.0f : SightEffects.currentMode(aim).zoom();
-        float speed = aim == null ? 0.4f : Math.min(1.0f, 0.3f * aim.aimSpeed());
+        float aimSpeed = aim == null ? 1 : aim.aimSpeed();
+        if (aim != null && Minecraft.getInstance().player != null && Minecraft.getInstance().player
+                .getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD).is(fr.modeminecraft.registry.ModItems.MICH_2000.get())) {
+            aimSpeed = Math.max(1.0f, aimSpeed);
+        }
+        float speed = aim == null ? 0.4f : Math.min(1.0f, 0.3f * aimSpeed);
         currentZoom += (target - currentZoom) * speed;
         if (Math.abs(currentZoom - 1.0f) > 0.002f) {
             event.setNewFovModifier(event.getNewFovModifier() * currentZoom);

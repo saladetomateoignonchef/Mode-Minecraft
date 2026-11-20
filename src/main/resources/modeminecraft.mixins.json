@@ -6,7 +6,8 @@
   "client": [
     "client.MinecraftMixin",
     "client.EntityMixin",
-    "client.CameraMixin"
+    "client.CameraMixin",
+    "client.HumanoidModelMixin"
   ],
   "injectors": {
     "defaultRequire": 1

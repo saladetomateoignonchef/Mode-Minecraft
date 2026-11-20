@@ -116,7 +116,9 @@ public class AreaCloudEntity extends Entity {
             case GAS -> {
                 if (tickCount % 20 == 0) {
                     for (LivingEntity e : level().getEntitiesOfClass(LivingEntity.class, box)) {
-                        boolean mask = e.getItemBySlot(EquipmentSlot.HEAD).is(fr.modeminecraft.registry.ModItems.GAS_MASK.get());
+                        var head = e.getItemBySlot(EquipmentSlot.HEAD);
+                        boolean mask = head.is(fr.modeminecraft.registry.ModItems.GAS_MASK.get())
+                                || head.is(fr.modeminecraft.registry.ModItems.JUGGERNAUT_HELMET.get()); // casque intégral
                         if (!mask && contains(e.position())) {
                             e.addEffect(new MobEffectInstance(MobEffects.POISON, 60, 1));
                             e.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 100));

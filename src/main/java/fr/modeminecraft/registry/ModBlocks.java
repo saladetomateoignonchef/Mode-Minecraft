@@ -37,6 +37,12 @@ public final class ModBlocks {
             () -> new WorkbenchBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SMITHING_TABLE),
                     Component.translatable("container.modeminecraft.modification_table"), ModificationTableMenu::new));
 
+    /** Minerai de titane : entre Y = -64 et Y = 16, aussi rare que l'or ; pioche en fer au minimum. */
+    public static final DeferredBlock<Block> TITANIUM_ORE = BLOCKS.register("titanium_ore",
+            () -> new DropExperienceBlock(UniformInt.of(0, 2), BlockBehaviour.Properties.ofFullCopy(Blocks.GOLD_ORE)));
+    public static final DeferredBlock<Block> DEEPSLATE_TITANIUM_ORE = BLOCKS.register("deepslate_titanium_ore",
+            () -> new DropExperienceBlock(UniformInt.of(0, 2), BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE_GOLD_ORE)));
+
     /** Râtelier d'armes : expose 3 armes à feu contre un mur. */
     public static final DeferredBlock<Block> WEAPON_RACK = BLOCKS.register("weapon_rack",
             () -> new fr.modeminecraft.block.WeaponRackBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_PLANKS).noOcclusion()));

@@ -4,6 +4,7 @@ import fr.modeminecraft.ModeMinecraft;
 import fr.modeminecraft.item.AmmoItem;
 import fr.modeminecraft.item.EnderBladeItem;
 import fr.modeminecraft.item.FireStaffItem;
+import fr.modeminecraft.item.HelmetItem;
 import fr.modeminecraft.item.MagicSwordItem;
 import fr.modeminecraft.item.RubisBowItem;
 import fr.modeminecraft.item.ThunderHammerItem;
@@ -804,6 +805,52 @@ public final class ModItems {
     public static final DeferredItem<BlockItem> MODIFICATION_TABLE = ITEMS.registerSimpleBlockItem(ModBlocks.MODIFICATION_TABLE);
     public static final DeferredItem<BlockItem> WEAPON_RACK = ITEMS.registerSimpleBlockItem(ModBlocks.WEAPON_RACK);
     public static final DeferredItem<BlockItem> SHOOTING_TARGET = ITEMS.registerSimpleBlockItem(ModBlocks.SHOOTING_TARGET);
+
+    // ---------- Nouveaux matériaux : titane, acier, kevlar ----------
+    public static final DeferredItem<BlockItem> TITANIUM_ORE = ITEMS.registerSimpleBlockItem(ModBlocks.TITANIUM_ORE);
+    public static final DeferredItem<BlockItem> DEEPSLATE_TITANIUM_ORE = ITEMS.registerSimpleBlockItem(ModBlocks.DEEPSLATE_TITANIUM_ORE);
+    public static final DeferredItem<Item> RAW_TITANIUM = ITEMS.registerSimpleItem("raw_titanium");
+    public static final DeferredItem<Item> TITANIUM_INGOT = ITEMS.registerSimpleItem("titanium_ingot");
+    public static final DeferredItem<Item> TITANIUM_PLATE = ITEMS.registerSimpleItem("titanium_plate");
+    public static final DeferredItem<Item> COMPOSITE_PREFORM = ITEMS.registerSimpleItem("composite_preform");
+    public static final DeferredItem<Item> CERAMIC_TITANIUM_COMPOSITE = ITEMS.registerSimpleItem("ceramic_titanium_composite");
+    public static final DeferredItem<Item> CARBURIZED_IRON = ITEMS.registerSimpleItem("carburized_iron");
+    public static final DeferredItem<Item> STEEL_INGOT = ITEMS.registerSimpleItem("steel_ingot");
+    public static final DeferredItem<Item> STEEL_PLATE = ITEMS.registerSimpleItem("steel_plate");
+    public static final DeferredItem<Item> KEVLAR_FIBER = ITEMS.registerSimpleItem("kevlar_fiber");
+    public static final DeferredItem<Item> KEVLAR_PLATE = ITEMS.registerSimpleItem("kevlar_plate");
+    public static final DeferredItem<Item> MULTILAYER_KEVLAR = ITEMS.registerSimpleItem("multilayer_kevlar");
+
+    // ---------- Casques militaires 3D (par époque) ----------
+    //                                                           époque armure tête  visière mêlée éclats explos. durab. module        vitesse réparation
+    public static final DeferredItem<Item> GALEA = helmet("galea", Rarity.COMMON,
+            new HelmetItem.Stats(1, 2.0, 0.15f, 0.15f, 0.10f, 0, 0, 180, HelmetItem.Module.NONE, 0, () -> net.minecraft.world.item.Items.IRON_INGOT));
+    public static final DeferredItem<Item> GREAT_HELM = helmet("great_helm", Rarity.COMMON,
+            new HelmetItem.Stats(1, 3.0, 0.25f, 0.25f, 0.20f, 0, 0, 240, HelmetItem.Module.NONE, 0, () -> net.minecraft.world.item.Items.IRON_INGOT));
+    public static final DeferredItem<Item> ADRIAN_M15 = helmet("adrian_m15", Rarity.COMMON,
+            new HelmetItem.Stats(1, 2.5, 0.20f, 0.20f, 0, 0.30f, 0, 200, HelmetItem.Module.NONE, 0, () -> net.minecraft.world.item.Items.IRON_INGOT));
+    public static final DeferredItem<Item> BRODIE_MK1 = helmet("brodie_mk1", Rarity.COMMON,
+            new HelmetItem.Stats(1, 2.5, 0.20f, 0.20f, 0, 0.35f, 0, 200, HelmetItem.Module.NONE, 0, () -> net.minecraft.world.item.Items.IRON_INGOT));
+    public static final DeferredItem<Item> M1_HELMET = helmet("m1_helmet", Rarity.UNCOMMON,
+            new HelmetItem.Stats(2, 3.0, 0.35f, 0.35f, 0, 0, 0.15f, 330, HelmetItem.Module.NONE, 0, () -> ModItems.STEEL_INGOT.get()));
+    public static final DeferredItem<Item> STAHLHELM_M40 = helmet("stahlhelm_m40", Rarity.UNCOMMON,
+            new HelmetItem.Stats(2, 3.5, 0.40f, 0.40f, 0, 0, 0, 330, HelmetItem.Module.NONE, 0, () -> ModItems.STEEL_INGOT.get()));
+    public static final DeferredItem<Item> SSH40 = helmet("ssh40", Rarity.UNCOMMON,
+            new HelmetItem.Stats(2, 3.5, 0.38f, 0.38f, 0, 0, 0, 600, HelmetItem.Module.NONE, 0, () -> ModItems.STEEL_INGOT.get()));
+    public static final DeferredItem<Item> PASGT = helmet("pasgt", Rarity.RARE,
+            new HelmetItem.Stats(3, 4.0, 0.50f, 0.50f, 0, 0, 0, 420, HelmetItem.Module.NONE, 0, () -> ModItems.KEVLAR_PLATE.get()));
+    public static final DeferredItem<Item> ALTYN = helmet("altyn", Rarity.RARE,
+            new HelmetItem.Stats(3, 5.0, 0.50f, 0.75f, 0, 0, 0, 520, HelmetItem.Module.VISOR, 0, () -> ModItems.TITANIUM_PLATE.get()));
+    public static final DeferredItem<Item> MICH_2000 = helmet("mich_2000", Rarity.EPIC,
+            new HelmetItem.Stats(4, 4.5, 0.60f, 0.60f, 0, 0, 0, 520, HelmetItem.Module.NONE, 0, () -> ModItems.MULTILAYER_KEVLAR.get()));
+    public static final DeferredItem<Item> OPS_CORE_FAST = helmet("ops_core_fast", Rarity.EPIC,
+            new HelmetItem.Stats(4, 5.0, 0.65f, 0.65f, 0, 0, 0, 560, HelmetItem.Module.NVG, 0, () -> ModItems.MULTILAYER_KEVLAR.get()));
+    public static final DeferredItem<Item> JUGGERNAUT_HELMET = helmet("juggernaut_helmet", Rarity.EPIC,
+            new HelmetItem.Stats(4, 6.0, 0.85f, 0.85f, 0, 0, 0, 900, HelmetItem.Module.NONE, -0.08, () -> ModItems.CERAMIC_TITANIUM_COMPOSITE.get()));
+
+    private static DeferredItem<Item> helmet(String name, Rarity rarity, HelmetItem.Stats stats) {
+        return ITEMS.register(name, () -> new HelmetItem(stats, new Item.Properties().rarity(rarity)));
+    }
 
     private static DeferredItem<GunItem> gun(String name, Rarity rarity, GunStats.Builder stats) {
         return ITEMS.register(name, () -> new GunItem(stats.build(), new Item.Properties().rarity(rarity)));

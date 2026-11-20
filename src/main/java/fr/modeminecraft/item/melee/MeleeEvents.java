@@ -148,7 +148,9 @@ public final class MeleeEvents {
             amount *= 1.25f; // 3e coup du combo
         }
         if (s.light() && isBehind(target, player)) {
-            amount *= s.backstab(); // coup dans le dos
+            // coup dans le dos (le Stahlhelm protège aussi la nuque : bonus divisé par deux)
+            boolean neckGuard = target.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.HEAD).is(fr.modeminecraft.registry.ModItems.STAHLHELM_M40.get());
+            amount *= neckGuard ? 1 + (s.backstab() - 1) / 2 : s.backstab();
             if (player.level() instanceof ServerLevel sl) {
                 sl.sendParticles(ParticleTypes.DAMAGE_INDICATOR, target.getX(), target.getEyeY(), target.getZ(), 6, 0.2, 0.2, 0.2, 0.1);
             }
