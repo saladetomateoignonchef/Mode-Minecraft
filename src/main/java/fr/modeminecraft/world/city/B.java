@@ -123,7 +123,10 @@ public final class B {
         int az = Math.max(z0, clip.minZ() - oz), bz = Math.min(z1, clip.maxZ() - oz);
         for (int x = ax; x <= bx; x++) {
             for (int z = az; z <= bz; z++) {
-                for (int y = 0; y <= clear; y++) {
+                // tout ce qui dépasse le niveau de la rue est rasé, jusqu'au sommet de la colline (60 blocs au plus)
+                int top = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.WORLD_SURFACE_WG, ox + x, oz + z) - oy;
+                int limit = Math.max(clear, Math.min(60, top));
+                for (int y = 0; y <= limit; y++) {
                     BlockPos p = pos(x, y, z);
                     if (!level.getBlockState(p).isAir()) {
                         level.setBlock(p, Blocks.AIR.defaultBlockState(), 2);

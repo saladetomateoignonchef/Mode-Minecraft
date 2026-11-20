@@ -40,6 +40,10 @@ public class CityPiece extends StructurePiece {
         seed = tag.getLong("Seed");
     }
 
+    public String variant() {
+        return variant;
+    }
+
     @Override
     protected void addAdditionalSaveData(StructurePieceSerializationContext ctx, CompoundTag tag) {
         tag.putString("Variant", variant);

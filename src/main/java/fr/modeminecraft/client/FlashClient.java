@@ -29,7 +29,10 @@ public final class FlashClient {
             return;
         }
         float t = mc.level.getGameTime() - start + delta.getGameTimeDeltaPartialTick(false);
-        if (t > 120) {
+        if (t < 0 || t > 120) {                                        // < 0 : flash vécu dans un autre monde
+            if (t < 0) {
+                start = -1000;
+            }
             return;
         }
         int alpha;

@@ -384,7 +384,10 @@ public final class FlashlightClient {
             return;
         }
         float t = mc.level.getGameTime() - dazzleStart + delta.getGameTimeDeltaPartialTick(false);
-        if (t > 14) {
+        if (t < 0 || t > 14) {
+            if (t < 0) {
+                dazzleStart = -1000;
+            }
             return;
         }
         float pulse = 0.55f + 0.45f * Mth.cos(t * (float) Math.PI);

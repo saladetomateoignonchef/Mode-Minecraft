@@ -102,7 +102,13 @@ public class CityStructure extends Structure {
                 return Optional.empty();
             }
         } else {
-            if (water > 2 || center <= sea || max - min > (variant.equals("mine") ? 40 : 26)) {
+            int rough = switch (variant) {
+                case "mine" -> 55;
+                case "frontier", "refinery" -> 45;                    // badlands : relief tourmenté
+                case "metropolis", "desert", "soviet" -> 34;
+                default -> 40;
+            };
+            if (water > 3 || center <= sea || max - min > rough) {
                 return Optional.empty();                      // trop accidenté ou dans l'eau
             }
             base = variant.equals("mine") ? min + 1 : center;

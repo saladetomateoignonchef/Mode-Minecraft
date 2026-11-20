@@ -133,6 +133,7 @@ public final class GunFx {
     @SubscribeEvent
     public static void onUnload(LevelEvent.Unload event) {
         LIT.clear();
+        hitTime = -100;
     }
 
     // ------------------------------------------------------------------ hit marker
@@ -157,7 +158,10 @@ public final class GunFx {
             return;
         }
         float age = mc.level.getGameTime() - hitTime + delta.getGameTimeDeltaPartialTick(false);
-        if (age > 8) {
+        if (age < 0 || age > 8) {                                      // < 0 : souvenir d'un autre monde
+            if (age < 0) {
+                hitTime = -100;
+            }
             return;
         }
         int alpha = (int) (255 * (1 - age / 8f));

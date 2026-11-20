@@ -16,9 +16,10 @@ MOD = "modeminecraft"
 
 BIOMES = {
     "plains": ["minecraft:plains", "minecraft:sunflower_plains", "minecraft:meadow"],
-    "desert": ["minecraft:desert"],
+    "desert": ["minecraft:desert", "minecraft:savanna", "minecraft:savanna_plateau"],
     "forest": ["minecraft:forest", "minecraft:birch_forest", "minecraft:dark_forest", "minecraft:old_growth_birch_forest",
-               "minecraft:taiga", "minecraft:old_growth_pine_taiga", "minecraft:old_growth_spruce_taiga", "minecraft:flower_forest"],
+               "minecraft:taiga", "minecraft:old_growth_pine_taiga", "minecraft:old_growth_spruce_taiga", "minecraft:flower_forest",
+               "minecraft:cherry_grove"],
     "snow": ["minecraft:snowy_plains", "minecraft:ice_spikes", "minecraft:snowy_taiga", "minecraft:grove", "minecraft:snowy_slopes"],
     "jungle": ["minecraft:jungle", "minecraft:sparse_jungle", "minecraft:bamboo_jungle", "minecraft:swamp", "minecraft:mangrove_swamp"],
     "mesa": ["minecraft:badlands", "minecraft:wooded_badlands", "minecraft:eroded_badlands"],
@@ -149,11 +150,11 @@ def main():
     for kind, biomes in BIOMES.items():
         write(os.path.join(DATA, f"tags/worldgen/biome/has_city/{kind}.json"), {"values": biomes})
         write(os.path.join(DATA, f"worldgen/structure/city_{kind}.json"), {
-            "type": f"{MOD}:city", "kind": kind, "biomes": f"#{MOD}:has_city/{kind}", "step": "surface_structures",
+            "type": f"{MOD}:city", "kind": kind, "biomes": f"#{MOD}:has_city/{kind}", "step": "top_layer_modification",
             "spawn_overrides": {}, "terrain_adaptation": "none"})
     write(os.path.join(DATA, "worldgen/structure_set/cities.json"), {
         "structures": [{"structure": f"{MOD}:city_{k}", "weight": 1} for k in BIOMES],
-        "placement": {"type": "minecraft:random_spread", "spacing": 75, "separation": 37, "salt": 77031953}})
+        "placement": {"type": "minecraft:random_spread", "spacing": 28, "separation": 16, "salt": 77031953}})
     for name, t in LOOT.items():
         write(os.path.join(DATA, f"loot_table/chests/{name}.json"), t)
     for name, (lvl, color) in DOORS.items():
