@@ -399,5 +399,11 @@
     "sounds": [
       "modeminecraft:bot/drone_jammed"
     ]
+  },
+  "bot.vehicle_engine": {
+    "subtitle": "subtitles.modeminecraft.vehicle_engine",
+    "sounds": [
+      "modeminecraft:bot/vehicle_engine"
+    ]
   }
 }

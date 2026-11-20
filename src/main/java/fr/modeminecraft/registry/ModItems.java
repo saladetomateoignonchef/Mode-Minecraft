@@ -1031,6 +1031,9 @@ public final class ModItems {
             () -> new fr.modeminecraft.item.VehicleItem(fr.modeminecraft.entity.VehicleEntity.Type.JEEP, new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final DeferredItem<Item> ARMORED_TRUCK = ITEMS.register("armored_truck",
             () -> new fr.modeminecraft.item.VehicleItem(fr.modeminecraft.entity.VehicleEntity.Type.ARMORED_TRUCK, new Item.Properties().rarity(Rarity.RARE)));
+    /** Sac à dos tactique : 18 cases, porté dans la case « sac à dos » de l'inventaire. */
+    public static final DeferredItem<Item> TACTICAL_BACKPACK = ITEMS.register("tactical_backpack",
+            () -> new fr.modeminecraft.item.tactical.BackpackItem(new Item.Properties().rarity(Rarity.UNCOMMON)));
     // Drones de combat et guerre électronique
     public static final DeferredItem<Item> DRONE_CONTROLLER = ITEMS.register("drone_controller",
             () -> new fr.modeminecraft.entity.drone.DroneControllerItem(new Item.Properties().rarity(Rarity.UNCOMMON)));

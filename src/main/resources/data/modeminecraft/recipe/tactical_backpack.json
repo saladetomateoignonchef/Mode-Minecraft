@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "NSN",
+    "NCN",
+    "NNN"
+  ],
+  "key": {
+    "N": {
+      "item": "modeminecraft:ballistic_nylon"
+    },
+    "S": {
+      "item": "modeminecraft:tactical_strap"
+    },
+    "C": {
+      "item": "minecraft:chest"
+    }
+  },
+  "result": {
+    "id": "modeminecraft:tactical_backpack",
+    "count": 1
+  }
+}

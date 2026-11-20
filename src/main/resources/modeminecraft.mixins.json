@@ -7,13 +7,15 @@
     "client.MinecraftMixin",
     "client.EntityMixin",
     "client.CameraMixin",
-    "client.HumanoidModelMixin"
+    "client.HumanoidModelMixin",
+    "client.CreativeScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "mixins": [
     "PlayerExhaustionMixin",
-    "EntityStepMixin"
+    "EntityStepMixin",
+    "InventoryMenuMixin"
   ]
 }

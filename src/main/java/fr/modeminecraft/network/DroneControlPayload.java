@@ -8,7 +8,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-/** Client -> serveur : commandes du pilote (20 fois par seconde). buttons : 1 = tir, 2 = quitter (retour auto). */
+/** Client -> serveur : commandes du pilote (20 fois par seconde). buttons : 1 = tir, 2 = quitter (retour auto), 4 = touche N (explosion du FPV). */
 public record DroneControlPayload(int droneId, float forward, float strafe, float vertical, float yaw, float pitch, byte buttons)
         implements CustomPacketPayload {
     public static final Type<DroneControlPayload> TYPE = new Type<>(ModeMinecraft.id("drone_control"));
@@ -33,7 +33,8 @@ public record DroneControlPayload(int droneId, float forward, float strafe, floa
     public static void handle(DroneControlPayload p, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (context.player() instanceof ServerPlayer sp && sp.level().getEntity(p.droneId) instanceof DroneEntity drone) {
-                drone.applyInput(sp, p.forward, p.strafe, p.vertical, p.yaw, p.pitch, (p.buttons & 1) != 0, (p.buttons & 2) != 0);
+                drone.applyInput(sp, p.forward, p.strafe, p.vertical, p.yaw, p.pitch, (p.buttons & 1) != 0, (p.buttons & 2) != 0,
+                        (p.buttons & 4) != 0);
             }
         });
     }

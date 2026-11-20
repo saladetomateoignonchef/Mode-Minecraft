@@ -34,6 +34,8 @@ public final class ModNetwork {
                 .playToClient(HitMarkerPayload.TYPE, HitMarkerPayload.STREAM_CODEC, HitMarkerPayload::handle)
                 .playToClient(ImpactPayload.TYPE, ImpactPayload.STREAM_CODEC, ImpactPayload::handle)
                 .playToClient(BackGunsPayload.TYPE, BackGunsPayload.STREAM_CODEC, BackGunsPayload::handle)
+                .playToClient(TacticalSyncPayload.TYPE, TacticalSyncPayload.STREAM_CODEC, TacticalSyncPayload::handle)
+                .playToServer(OpenBackpackPayload.TYPE, OpenBackpackPayload.STREAM_CODEC, OpenBackpackPayload::handle)
                 .playToClient(FlashPayload.TYPE, FlashPayload.STREAM_CODEC, FlashPayload::handle)
                 .playToClient(DazzlePayload.TYPE, DazzlePayload.STREAM_CODEC, DazzlePayload::handle);
     }

@@ -64,5 +64,9 @@ public final class ModKeyMappings {
     public static final KeyMapping MELEE = new KeyMapping("key.modeminecraft.melee",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_C, CATEGORY);
 
+    /** Ouvrir le sac à dos porté. */
+    public static final KeyMapping BACKPACK = new KeyMapping("key.modeminecraft.backpack",
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_K, CATEGORY);
+
     private ModKeyMappings() {}
 }

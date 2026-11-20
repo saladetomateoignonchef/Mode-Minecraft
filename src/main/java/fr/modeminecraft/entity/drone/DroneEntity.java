@@ -248,8 +248,8 @@ public class DroneEntity extends LivingEntity {
     @Override public boolean isPushable() { return mode() == IDLE; }
     @Override protected void doPush(net.minecraft.world.entity.Entity e) {}
     @Override public boolean causeFallDamage(float d, float m, DamageSource s) { return false; }
-    @Override protected net.minecraft.sounds.SoundEvent getHurtSound(DamageSource s) { return SoundEvents.IRON_GOLEM_HURT; }
-    @Override protected net.minecraft.sounds.SoundEvent getDeathSound() { return SoundEvents.GENERIC_EXPLODE.value(); }
+    @Override protected net.minecraft.sounds.SoundEvent getHurtSound(DamageSource s) { return null; }      // aucun bruit
+    @Override protected net.minecraft.sounds.SoundEvent getDeathSound() { return null; }
 
     // ------------------------------------------------------------------ pilotage
     public boolean powered() {
@@ -278,8 +278,13 @@ public class DroneEntity extends LivingEntity {
     }
 
     /** Commande du pilote (envoyée 20 fois par seconde). */
-    public void applyInput(ServerPlayer player, float forward, float strafe, float vertical, float yaw, float pitch, boolean fire, boolean exit) {
+    public void applyInput(ServerPlayer player, float forward, float strafe, float vertical, float yaw, float pitch, boolean fire, boolean exit,
+                           boolean detonateKey) {
         if (player.getId() != pilotId() || mode() != PILOT) {
+            return;
+        }
+        if (detonateKey && droneType() == DroneType.FPV && level() instanceof ServerLevel sl) {
+            detonate(sl);                                             // touche N : le drone kamikaze explose
             return;
         }
         if (exit) {
@@ -353,7 +358,7 @@ public class DroneEntity extends LivingEntity {
         if (isRemoved()) {
             return;
         }
-        if (droneType() == DroneType.FPV && (mode() == PILOT || botTarget >= 0) && !jammed()) {
+        if (droneType() == DroneType.FPV && botTarget >= 0 && !jammed()) {          // FPV ennemi (IA) : explose au contact
             double speed = getDeltaMovement().length();
             // kamikaze : explose au contact d'une cible, ou en percutant un mur / le sol à pleine vitesse
             if (speed > 0.2 && touchesEnemy() || (horizontalCollision || verticalCollision) && lastSpeed > 0.45) {
@@ -535,9 +540,7 @@ public class DroneEntity extends LivingEntity {
                 }
             }
             case FPV -> {
-                if (pressed) {
-                    detonate(level);
-                }
+                // le FPV du joueur n'explose que sur la touche N (voir detonateInput)
             }
             case MAVIC -> {
                 if (pressed && fireCooldown <= 0) {
@@ -709,8 +712,8 @@ public class DroneEntity extends LivingEntity {
     public void die(DamageSource source) {
         if (level() instanceof ServerLevel sl) {
             startRth("destroyed");
-            if (droneType() == DroneType.FPV && !payload().isEmpty()) {
-                detonate(sl);
+            if (droneType() == DroneType.FPV && botTarget >= 0 && !payload().isEmpty()) {
+                detonate(sl);                                         // drone kamikaze ennemi abattu : sa charge saute
                 return;
             }
             sl.sendParticles(ParticleTypes.LARGE_SMOKE, getX(), getY() + 0.2, getZ(), 12, 0.3, 0.2, 0.3, 0.02);

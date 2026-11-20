@@ -42,7 +42,7 @@ public final class DragonslayerEvents {
         float keep = 1 - ARMOR_IGNORED;
         event.addReductionModifier(DamageContainer.Reduction.ARMOR, (container, reduction) -> reduction * keep);
         LivingEntity target = event.getEntity();
-        ItemStack vest = target.getItemBySlot(EquipmentSlot.CHEST);
+        ItemStack vest = fr.modeminecraft.item.tactical.TacticalSlots.vest(target);
         if (vest.getItem() instanceof VestItem v && v.stats().plates()) {
             for (boolean front : new boolean[]{true, false}) {
                 VestItem.Plate p = VestItem.plate(vest, front);

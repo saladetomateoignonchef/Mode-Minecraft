@@ -15,11 +15,12 @@ ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 ASSETS = os.path.join(ROOT, "src/main/resources/assets/modeminecraft")
 MOD = "modeminecraft"
 
-COLORS = {"grey": "#6e737a", "grey_d": "#4a4e54", "carbon": "#1a1c1f", "carbon_l": "#30343a", "tac": "#485143", "tac_d": "#343b30",
+COLORS = {"bag": "#5a6438", "bag_d": "#434a2a", "strap": "#2e3320", "buckle": "#1c1c1c", "zip": "#8a8f94",
+          "grey": "#6e737a", "grey_d": "#4a4e54", "carbon": "#1a1c1f", "carbon_l": "#30343a", "tac": "#485143", "tac_d": "#343b30",
           "titan": "#8c9196", "titan_d": "#5c6166", "stealth": "#2a2d31", "stealth_l": "#3c4046", "lens": "#203a52", "led_g": "#40ff60",
           "led_r": "#ff3030", "orange": "#e07020", "prop": "#22252a", "gun": "#2a2c30", "rocket": "#c8ccd0", "warhead": "#b03020",
           "laser": "#40ff60", "bay": "#2a2f26"}
-MATERIAL = {"lens": "glass", "led_g": "flat", "led_r": "flat", "laser": "flat", "prop": "polymer", "carbon": "polymer",
+MATERIAL = {"bag": "fabric", "bag_d": "fabric", "strap": "fabric", "lens": "glass", "led_g": "flat", "led_r": "flat", "laser": "flat", "prop": "polymer", "carbon": "polymer",
             "carbon_l": "polymer", "tac": "paint", "tac_d": "paint", "stealth": "paint", "stealth_l": "paint", "orange": "paint"}
 
 
@@ -192,6 +193,19 @@ def main():
             f, separators=(",", ":"))
 
 
+def backpack():
+    """Sac à dos tactique, dans le repère du corps (y vers le haut, cou en y = 14, dos en z = 10)."""
+    e = [b(4.2, 3.0, 10.1, 11.8, 13.0, 14.0, "bag"),              # poche principale
+         b(4.6, 12.6, 10.4, 11.4, 13.6, 13.6, "bag_d"),          # rabat
+         b(5.0, 4.0, 14.0, 11.0, 9.5, 15.4, "bag_d"),            # poche avant
+         b(5.4, 9.5, 14.0, 10.6, 9.9, 15.4, "zip"),              # fermeture
+         b(3.2, 4.5, 10.6, 4.2, 10.5, 13.4, "bag_d"), b(11.8, 4.5, 10.6, 12.8, 10.5, 13.4, "bag_d"),   # poches latérales
+         b(5.0, 5.0, 15.4, 11.0, 5.6, 15.8, "strap"), b(5.0, 7.6, 15.4, 11.0, 8.2, 15.8, "strap"),    # sangles MOLLE
+         b(7.6, 8.2, 15.4, 8.4, 8.8, 15.9, "buckle"),
+         b(4.8, 13.0, 9.6, 5.8, 14.2, 10.4, "strap"), b(10.2, 13.0, 9.6, 11.2, 14.2, 10.4, "strap")]  # bretelles
+    return e
+
+
 def module_icons():
     """Icônes 16x16 des modules : hélices silencieuses en carbone, batterie LiPo-Titan, caisson cargo."""
     from PIL import Image
@@ -233,6 +247,22 @@ def module_icons():
     save("cargo_module", px)
 
 
+def backpack_model():
+    painter = vb.Painter(COLORS, lambda k: MATERIAL.get(k, "metal"), {}, seed="backpack")
+    baked = vb.bake({"m": backpack()}, skip_chamfer=("zip",))
+    vb.paint(baked, painter).save(os.path.join(ASSETS, "textures/item/drone/tactical_backpack.png"))
+    tex = {"p": f"{MOD}:item/drone/tactical_backpack", "particle": f"{MOD}:item/drone/tactical_backpack"}
+    with open(os.path.join(ASSETS, "models/item/tactical_backpack.json"), "w", encoding="utf-8") as f:
+        json.dump({"textures": tex, "elements": vb.elements(baked, "m"), "display": {
+            "gui": {"rotation": [20, 200, 0], "translation": [0, 0, -3], "scale": [1.1, 1.1, 1.1]},
+            "ground": {"rotation": [0, 0, 0], "translation": [0, 2, 0], "scale": [0.6, 0.6, 0.6]},
+            "fixed": {"rotation": [0, 180, 0], "translation": [0, 0, -3], "scale": [1, 1, 1]},
+            "thirdperson_righthand": {"rotation": [0, 0, 0], "translation": [0, 1, -3], "scale": [0.6, 0.6, 0.6]},
+            "firstperson_righthand": {"rotation": [0, 160, 0], "translation": [0, 2, -2], "scale": [0.6, 0.6, 0.6]}}},
+            f, separators=(",", ":"))
+
+
 if __name__ == "__main__":
     main()
     module_icons()
+    backpack_model()

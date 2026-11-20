@@ -360,6 +360,19 @@ def bot_sound(name, seed):
         pulse = band(noise(len(t), rng), lo=60, hi=900) * env(t - 0.35, 0.001, 0.25) * (t > 0.35) * 1.2
         fizz = band(noise(len(t), rng), lo=3000, hi=9000) * env(t - 0.35, 0.01, 0.5) * (t > 0.35) * 0.4
         return normalize(charge + pulse + fizz, 0.85)
+    if name == "vehicle_engine":
+        # moteur thermique (boucle de 2 s, sans couture) : allumages à 30 Hz, harmoniques, grondement d'échappement
+        t = t_axis(2.0)
+        f = 30.0
+        ph = 2 * np.pi * f * t
+        tone = sum(np.sin(k * ph + 0.7 * k) / k ** 0.9 * (1.3 if k % 2 == 0 else 1) for k in range(1, 24))
+        pulses = (0.5 + 0.5 * np.sin(ph)) ** 6                       # explosions dans les cylindres
+        rumble = band(noise(len(t), rng), lo=40, hi=420) * (0.6 + 0.8 * pulses)
+        x = tone * 0.5 + rumble * 0.9 + band(noise(len(t), rng), lo=900, hi=3000) * 0.06
+        fade = int(0.05 * SR)                                         # raccord fin -> début
+        x[:fade] = x[:fade] * np.linspace(0, 1, fade) + x[-fade:] * np.linspace(1, 0, fade)
+        x = x[:len(x) - fade]
+        return normalize(x, 0.7)
     if name == "drone_jammed":
         t = t_axis(0.8)
         x = band(noise(len(t), rng), lo=800, hi=6000) * (0.5 + 0.5 * np.sign(np.sin(2 * np.pi * 13 * t))) * env(t, 0.01, 0.6)
@@ -422,7 +435,7 @@ def write_ogg(path, x):
 
 BOT_SOUNDS = ["police_freeze_warning", "falcon_horn_charge", "dragonslayer_unsheathe", "dragonslayer_sheathe", "dragonslayer_clang",
               "berserk_roar_clang", "transformer_short_circuit", "drone_paired", "drone_motor", "fpv_incoming_buzz", "emp_jammer",
-              "drone_jammed"]
+              "drone_jammed", "vehicle_engine"]
 
 
 def main():

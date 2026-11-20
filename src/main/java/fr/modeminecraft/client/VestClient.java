@@ -129,7 +129,7 @@ public final class VestClient {
 
     /** Vue à la 3e personne : bras pendant l'équipement et l'insertion d'une plaque (mixin du modèle). */
     public static void poseArms(LivingEntity entity, HumanoidModel<?> model) {
-        ItemStack vest = entity.getItemBySlot(EquipmentSlot.CHEST);
+        ItemStack vest = fr.modeminecraft.item.tactical.TacticalSlots.vest(entity);
         if (!(vest.getItem() instanceof VestItem)) {
             return;
         }
@@ -159,7 +159,7 @@ public final class VestClient {
         if (player == null || mc.options.hideGui || player.isSpectator() || (mc.gameMode != null && !mc.gameMode.canHurtPlayer())) {
             return;
         }
-        ItemStack vest = player.getItemBySlot(EquipmentSlot.CHEST);
+        ItemStack vest = fr.modeminecraft.item.tactical.TacticalSlots.vest(player);
         if (!(vest.getItem() instanceof VestItem v) || !v.stats().plates()) {
             return;
         }

@@ -139,7 +139,7 @@ public class VestItem extends Item implements Equipable {
     }
 
     public static VestItem worn(LivingEntity entity) {
-        return entity.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof VestItem v ? v : null;
+        return fr.modeminecraft.item.tactical.TacticalSlots.vest(entity).getItem() instanceof VestItem v ? v : null;
     }
 
     public static Plate plate(ItemStack vest, boolean front) {
@@ -174,7 +174,7 @@ public class VestItem extends Item implements Equipable {
      * @param front la balle arrive par devant
      */
     public static float protect(ServerLevel level, LivingEntity target, float damage, int caliberClass, boolean front) {
-        ItemStack vest = target.getItemBySlot(EquipmentSlot.CHEST);
+        ItemStack vest = fr.modeminecraft.item.tactical.TacticalSlots.vest(target);
         if (!(vest.getItem() instanceof VestItem v) || damage <= 0) {
             return damage;
         }
@@ -223,7 +223,18 @@ public class VestItem extends Item implements Equipable {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (player.getItemBySlot(EquipmentSlot.CHEST).isEmpty()) {
+        ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+        var tactical = fr.modeminecraft.item.tactical.TacticalSlots.of(player);
+        if (!chest.isEmpty() && !(chest.getItem() instanceof VestItem) && tactical.getStackInSlot(fr.modeminecraft.item.tactical.TacticalSlots.VEST).isEmpty()) {
+            // un plastron est déjà porté : le gilet va dans la case « gilet », par-dessus
+            if (!level.isClientSide) {
+                tactical.setStackInSlot(fr.modeminecraft.item.tactical.TacticalSlots.VEST, stack.copyWithCount(1));
+                stack.shrink(1);
+                level.playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.VEST_EQUIP.value(), net.minecraft.sounds.SoundSource.PLAYERS, 1f, 1f);
+            }
+            return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+        }
+        if (chest.isEmpty()) {
             // Animation : les deux bras se rejoignent devant le torse et serrent le gilet (fermeture éclair, velcros)
             stack.set(ModDataComponents.VEST_EQUIP_TIME.get(), level.getGameTime());
             if (level.isClientSide) {

@@ -29,6 +29,7 @@ public class ModeMinecraft {
         modContainer.registerConfig(net.neoforged.fml.config.ModConfig.Type.CLIENT, ModConfigs.CLIENT_SPEC);
         // L'ordre n'a pas d'importance : NeoForge enregistre chaque registre au bon moment.
         ModBlocks.BLOCKS.register(modEventBus);
+        fr.modeminecraft.registry.ModAttachments.ATTACHMENTS.register(modEventBus);
         ModArmorMaterials.ARMOR_MATERIALS.register(modEventBus);
         ModDataComponents.DATA_COMPONENTS.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);

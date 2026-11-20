@@ -36,7 +36,7 @@ public class BallisticPlateItem extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack plate = player.getItemInHand(hand);
-        ItemStack vest = player.getItemBySlot(EquipmentSlot.CHEST);
+        ItemStack vest = fr.modeminecraft.item.tactical.TacticalSlots.vest(player);
         if (!(vest.getItem() instanceof VestItem v) || !v.stats().plates()) {
             if (!level.isClientSide) {
                 player.displayClientMessage(Component.translatable("message.modeminecraft.plate.no_carrier").withStyle(ChatFormatting.RED), true);

@@ -74,6 +74,7 @@ public final class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> FPV_BUZZ = register("bot.fpv_incoming_buzz");
     public static final DeferredHolder<SoundEvent, SoundEvent> EMP_JAMMER = register("bot.emp_jammer");
     public static final DeferredHolder<SoundEvent, SoundEvent> DRONE_JAMMED = register("bot.drone_jammed");
+    public static final DeferredHolder<SoundEvent, SoundEvent> VEHICLE_ENGINE = register("bot.vehicle_engine");
 
     private static DeferredHolder<SoundEvent, SoundEvent> register(String name) {
         return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(ModeMinecraft.id(name)));

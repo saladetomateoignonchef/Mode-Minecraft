@@ -83,13 +83,18 @@ public class AreaCloudEntity extends Entity {
         float r = radius();
         Type type = cloudType();
         if (level().isClientSide) {
-            int n = type == Type.SMOKE ? 14 : 6;
+            int n = type == Type.SMOKE ? 48 : 6;                     // fumigène : nuage très dense
             for (int i = 0; i < n; i++) {
                 double a = random.nextDouble() * Math.PI * 2, d = Math.sqrt(random.nextDouble()) * r;
                 double x = getX() + Math.cos(a) * d, z = getZ() + Math.sin(a) * d;
                 switch (type) {
-                    case SMOKE -> level().addAlwaysVisibleParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, true, x,
-                            getY() + random.nextDouble() * r * 0.8, z, 0, 0.005, 0);
+                    case SMOKE -> {
+                        level().addAlwaysVisibleParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, true, x,
+                                getY() + random.nextDouble() * r * 0.8, z, (random.nextDouble() - 0.5) * 0.01, 0.003, (random.nextDouble() - 0.5) * 0.01);
+                        if (i % 3 == 0) {
+                            level().addParticle(ParticleTypes.LARGE_SMOKE, x, getY() + random.nextDouble() * 1.5, z, 0, 0.01, 0);
+                        }
+                    }
                     case GAS -> level().addParticle(new DustParticleOptions(new Vector3f(0.7f, 0.85f, 0.2f), 2.5f), x,
                             getY() + random.nextDouble() * 1.2, z, 0, 0, 0);
                     case FIRE -> level().addParticle(random.nextFloat() < 0.3f ? ParticleTypes.LAVA : ParticleTypes.FLAME, x,

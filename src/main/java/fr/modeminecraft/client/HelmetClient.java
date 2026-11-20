@@ -70,7 +70,7 @@ public final class HelmetClient {
     public static void onTick(ClientTickEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
         var player = mc.player;
-        while (ModKeyMappings.HELMET_MODULE.consumeClick()) {
+        while (!DroneClient.piloting() && ModKeyMappings.HELMET_MODULE.consumeClick()) {
             if (helmet().getItem() instanceof HelmetItem h && h.stats().module() != HelmetItem.Module.NONE) {
                 PacketDistributor.sendToServer(HelmetModulePayload.INSTANCE);
             }

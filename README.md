@@ -440,11 +440,23 @@ Des **villes générées** apparaissent selon le biome (environ une tous les 1 2
 - **Râtelier à trophées** (4 planches de chêne noir, 2 lingots d'acier, 1 pépite d'or) : expose n'importe quelle arme en
   relief ; un trophée de Chef reçoit une plaque nominative dorée et un éclairage.
 
+### Cases « gilet » et « sac à dos » de l'inventaire
+
+- Deux cases en plus à droite du personnage (aussi dans l'inventaire créatif) : un **gilet pare-balles** porté
+  par-dessus un plastron (diamant, netherite...) avec toute sa protection et ses plaques, et le **sac à dos tactique**
+  (18 cases, 8 nylon balistique + 1 sangle + 1 coffre), visible dans le dos. **Touche K** pour l'ouvrir quand il est
+  porté (ou clic droit en main). Ils tombent à la mort, sauf avec keepInventory.
+- Balles en **vrai 3D** (douille en laiton, ogive en cuivre, plombs pour la chevrotine) qui sortent du canon et filent
+  droit vers le réticule ; fumigènes beaucoup plus denses (brouillard gris quand on est dedans) ; **bruit de moteur**
+  des véhicules (plus aigu en accélérant).
+
 ### Drones de combat et guerre électronique
 
 - **Télécommande tactique** (2 lingots d'acier, 2 redstone, 1 vitre, 1 pile CR123A) : Maj + clic droit sur un drone posé
-  pour l'associer, clic droit pour le piloter en **caméra FPV** (Z/Q/S/D, Espace / Ctrl, souris ; clic gauche : action,
-  clic droit : zoom x2,5 ou thermique ; Maj ou R : retour automatique). Le pilote reste immobile et vulnérable.
+  pour l'associer (Maj + clic droit dans le vide pour la dissocier), clic droit pour le piloter en **caméra FPV**
+  (Z/Q/S/D, Espace / Ctrl, souris ; clic gauche : action, **N : explosion du drone kamikaze**, clic droit : zoom x2,5 ou
+  thermique ; Maj ou R : retour automatique). Le pilote reste immobile et vulnérable. Les drones ne font aucun bruit
+  quand on les frappe.
 - **Retour automatique (RTH)** : prise d'altitude, ligne droite, atterrissage aux pieds du pilote — aussi en cas de perte
   de signal. Batterie de 5 min (10 avec la LiPo-Titan), rechargée avec une pile CR123A.
 - **5 drones** : micro-drone *Black Hornet* (marque les ennemis à travers les murs), kamikaze FPV *Frelon* (n'importe

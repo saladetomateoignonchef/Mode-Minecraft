@@ -38,6 +38,16 @@ public class DroneControllerItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
+            // Maj + clic droit dans le vide : on dissocie la télécommande de son drone
+            if (linked(stack) != null) {
+                if (!level.isClientSide) {
+                    stack.remove(net.minecraft.core.component.DataComponents.CUSTOM_DATA);
+                    level.playSound(null, player.getX(), player.getY(), player.getZ(), fr.modeminecraft.registry.ModSounds.DRONE_PAIRED.get(),
+                            net.minecraft.sounds.SoundSource.PLAYERS, 0.8f, 0.6f);
+                    player.displayClientMessage(Component.translatable("message.modeminecraft.drone.unpaired").withStyle(ChatFormatting.GRAY), true);
+                }
+                return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+            }
             return InteractionResultHolder.pass(stack);
         }
         if (level instanceof ServerLevel sl && player instanceof ServerPlayer sp) {

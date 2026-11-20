@@ -35,11 +35,12 @@ public class BackGunsLayer extends RenderLayer<AbstractClientPlayer, PlayerModel
             return;
         }
         var renderer = Minecraft.getInstance().getItemRenderer();
+        double bag = fr.modeminecraft.item.tactical.TacticalSlots.backpack(player).isEmpty() ? 0 : 0.2;   // par-dessus le sac à dos
         if (guns[0].is(fr.modeminecraft.registry.ModItems.DRAGONSLAYER.get())) {
             // épée géante en diagonale : de l'épaule droite (poignée) à la hanche gauche, plat de la lame vers l'arrière
             pose.pushPose();
             getParentModel().body.translateAndRotate(pose);
-            pose.translate(0, 0.23, 0.3);
+            pose.translate(0, 0.23, 0.3 + bag);
             pose.mulPose(Axis.ZP.rotationDegrees(-30));
             renderer.renderStatic(player, guns[0], ItemDisplayContext.FIXED, false, pose, buffers, player.level(), light,
                     OverlayTexture.NO_OVERLAY, player.getId());
@@ -47,7 +48,7 @@ public class BackGunsLayer extends RenderLayer<AbstractClientPlayer, PlayerModel
         } else if (!guns[0].isEmpty()) {
             pose.pushPose();
             getParentModel().body.translateAndRotate(pose);
-            pose.translate(0.0, 0.38, 0.19);           // milieu du dos, juste derrière le corps
+            pose.translate(0.0, 0.38, 0.19 + bag);     // milieu du dos, juste derrière le corps
             pose.mulPose(Axis.ZP.rotationDegrees(180 + 40)); // en travers, canon vers le haut à droite
             pose.scale(0.9f, 0.9f, 0.9f);
             renderer.renderStatic(player, guns[0], ItemDisplayContext.NONE, false, pose, buffers, player.level(), light,

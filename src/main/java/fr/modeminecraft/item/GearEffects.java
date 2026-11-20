@@ -80,7 +80,7 @@ public final class GearEffects {
     /** Les 4 pièces (casque, gilet, pantalon, rangers) sont de la même époque. */
     public static boolean setBonus(LivingEntity e) {
         int[] tiers = new int[4];
-        ItemStack head = e.getItemBySlot(EquipmentSlot.HEAD), chest = e.getItemBySlot(EquipmentSlot.CHEST);
+        ItemStack head = e.getItemBySlot(EquipmentSlot.HEAD), chest = fr.modeminecraft.item.tactical.TacticalSlots.vest(e);
         if (!(head.getItem() instanceof HelmetItem h) || !(chest.getItem() instanceof VestItem v)) {
             return false;
         }

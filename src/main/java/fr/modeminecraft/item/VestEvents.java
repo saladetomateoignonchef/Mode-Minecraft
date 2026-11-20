@@ -39,7 +39,7 @@ public final class VestEvents {
     @SubscribeEvent
     public static void onIncoming(LivingIncomingDamageEvent event) {
         LivingEntity target = event.getEntity();
-        ItemStack vest = target.getItemBySlot(EquipmentSlot.CHEST);
+        ItemStack vest = fr.modeminecraft.item.tactical.TacticalSlots.vest(target);
         if (!(vest.getItem() instanceof VestItem v) || !(target.level() instanceof ServerLevel level)) {
             return;
         }

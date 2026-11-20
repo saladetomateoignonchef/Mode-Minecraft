@@ -60,7 +60,9 @@ public class DroneRenderer extends EntityRenderer<DroneEntity> {
         if (t == DroneType.FPV) {
             pose.mulPose(Axis.YP.rotationDegrees(45));           // cadre en X
         }
-        pose.translate(-0.5, 0, -0.5);
+        // le rendu d'objet recentre le modèle (-0,5 sur chaque axe) : on le remonte pour que ses patins touchent le sol
+        float lift = t == DroneType.WASP ? 1.5f / 16 : 0;          // tourelle ventrale sous le moyeu
+        pose.translate(0, 0.5 + lift, 0);
         mc.getItemRenderer().render(DUMMY, ItemDisplayContext.NONE, false, pose, buffers, light, OverlayTexture.NO_OVERLAY,
                 mc.getModelManager().getModel(part(t.id, "body")));
         var rotor = mc.getModelManager().getModel(part(t.id, "rotor"));
@@ -68,9 +70,8 @@ public class DroneRenderer extends EntityRenderer<DroneEntity> {
         float[][] rs = rotors(t);
         for (int i = 0; i < rs.length; i++) {
             pose.pushPose();
-            pose.translate(rs[i][0] / 16f, rs[i][1] / 16f, rs[i][2] / 16f);
+            pose.translate(rs[i][0] / 16f - 0.5, rs[i][1] / 16f, rs[i][2] / 16f - 0.5);
             pose.mulPose(Axis.YP.rotationDegrees((i % 2 == 0 ? spin : -spin) + i * 37));
-            pose.translate(-0.5, 0, -0.5);
             mc.getItemRenderer().render(DUMMY, ItemDisplayContext.NONE, false, pose, buffers, light, OverlayTexture.NO_OVERLAY, rotor);
             pose.popPose();
         }

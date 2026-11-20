@@ -33,7 +33,7 @@ public final class DroneClient {
     private static int droneId = -1;
     private static CameraType previousCamera;
     private static boolean zoom, thermal, useWasDown;
-    private static boolean fire, exit;
+    private static boolean fire, exit, detonate;
     private static final RandomSource NOISE = RandomSource.create();
 
     public static void onPilot(int id, boolean start) {
@@ -103,6 +103,10 @@ public final class DroneClient {
         }
         useWasDown = use;
         exit = !screen && (o.keyShift.isDown() || ModKeyMappings.RELOAD.consumeClick());
+        // touche N (module de casque) : pendant le pilotage, elle déclenche la charge du drone kamikaze
+        while (ModKeyMappings.HELMET_MODULE.consumeClick()) {
+            detonate = !screen;
+        }
         while (o.keyAttack.consumeClick()) { /* pas de coup de poing pendant le pilotage */ }
         while (o.keyUse.consumeClick()) { /* ni d'utilisation d'objet */ }
         while (o.keyPickItem.consumeClick()) { /* ni de choix de bloc */ }
@@ -128,7 +132,8 @@ public final class DroneClient {
         float forward = screen ? 0 : (o.keyUp.isDown() ? 1 : 0) - (o.keyDown.isDown() ? 1 : 0);
         float strafe = screen ? 0 : (o.keyLeft.isDown() ? 1 : 0) - (o.keyRight.isDown() ? 1 : 0);
         float vertical = screen ? 0 : (o.keyJump.isDown() ? 1 : 0) - (o.keySprint.isDown() ? 1 : 0);
-        byte buttons = (byte) ((fire ? 1 : 0) | (exit ? 2 : 0));
+        byte buttons = (byte) ((fire ? 1 : 0) | (exit ? 2 : 0) | (detonate ? 4 : 0));
+        detonate = false;
         PacketDistributor.sendToServer(new DroneControlPayload(droneId, forward, strafe, vertical, mc.player.getYRot(), mc.player.getXRot(), buttons));
         if (exit) {
             stop();                                                // le drone rentre seul (RTH)
@@ -237,7 +242,7 @@ public final class DroneClient {
         // armement
         Component arms = switch (t) {
             case HORNET -> Component.translatable("gui.modeminecraft.drone.mark");
-            case FPV -> Component.translatable(d.payload().isEmpty() ? "gui.modeminecraft.drone.no_charge" : "gui.modeminecraft.drone.charge",
+            case FPV -> Component.translatable(d.payload().isEmpty() ? "gui.modeminecraft.drone.no_charge" : "gui.modeminecraft.drone.charge_n",
                     d.payload().getHoverName());
             case MAVIC -> Component.translatable("gui.modeminecraft.drone.grenades", d.arms());
             case WASP -> Component.translatable("gui.modeminecraft.drone.rounds", d.arms());

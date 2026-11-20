@@ -65,7 +65,7 @@ public final class ClientSetup {
         event.registerBlockEntityRenderer(fr.modeminecraft.registry.ModBlockEntities.WEAPON_RACK.get(), WeaponRackRenderer::new);
         event.registerBlockEntityRenderer(fr.modeminecraft.registry.ModBlockEntities.TROPHY_RACK.get(), TrophyRackRenderer::new);
         event.registerBlockEntityRenderer(fr.modeminecraft.registry.ModBlockEntities.TRAFFIC_LIGHT.get(), TrafficLightRenderer::new);
-        event.registerEntityRenderer(ModEntities.BULLET.get(), ctx -> new ThrownItemRenderer<>(ctx, 0.5f, true));
+        event.registerEntityRenderer(ModEntities.BULLET.get(), BulletRenderer::new);
         event.registerEntityRenderer(ModEntities.ROCKET.get(), ctx -> new ThrownItemRenderer<>(ctx, 1.25f, true));
         event.registerEntityRenderer(ModEntities.GRENADE.get(), ctx -> new ThrownItemRenderer<>(ctx, 0.8f, false));
         event.registerEntityRenderer(ModEntities.MISSILE.get(), ctx -> new ThrownItemRenderer<>(ctx, 1.4f, true));
@@ -111,6 +111,7 @@ public final class ClientSetup {
         event.register(ModKeyMappings.MELEE);
         event.register(ModKeyMappings.QUICK_ATTACH);
         event.register(ModKeyMappings.HELMET_MODULE);
+        event.register(ModKeyMappings.BACKPACK);
         event.register(ModKeyMappings.ITEM_PANEL);
         event.register(ModKeyMappings.PRONE);
         event.register(ModKeyMappings.SHOW_RECIPE);
@@ -168,6 +169,7 @@ public final class ClientSetup {
             var renderer = event.getSkin(skin);
             if (renderer instanceof net.minecraft.client.renderer.entity.player.PlayerRenderer player) {
                 player.addLayer(new BackGunsLayer(player));
+                player.addLayer(new BackpackLayer(player));
                 player.addLayer(new VestLayer<>(player));
                 player.addLayer(new GearLayer<>(player));
             }
