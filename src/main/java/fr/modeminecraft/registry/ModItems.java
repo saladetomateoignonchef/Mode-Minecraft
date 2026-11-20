@@ -976,6 +976,19 @@ public final class ModItems {
             () -> new fr.modeminecraft.item.AccessCardItem(2, new Item.Properties().stacksTo(16).rarity(Rarity.RARE)));
     public static final DeferredItem<Item> BLACK_ACCESS_CARD = ITEMS.register("black_access_card",
             () -> new fr.modeminecraft.item.AccessCardItem(3, new Item.Properties().stacksTo(16).rarity(Rarity.EPIC)));
+    public static final DeferredItem<Item> VAULT_DOOR_BLUE = ITEMS.register("vault_door_blue",
+            () -> new net.minecraft.world.item.DoubleHighBlockItem(ModBlocks.VAULT_DOOR_BLUE.get(), new Item.Properties()));
+    public static final DeferredItem<Item> VAULT_DOOR_RED = ITEMS.register("vault_door_red",
+            () -> new net.minecraft.world.item.DoubleHighBlockItem(ModBlocks.VAULT_DOOR_RED.get(), new Item.Properties()));
+    public static final DeferredItem<Item> VAULT_DOOR_BLACK = ITEMS.register("vault_door_black",
+            () -> new net.minecraft.world.item.DoubleHighBlockItem(ModBlocks.VAULT_DOOR_BLACK.get(), new Item.Properties()));
+    // Soins tactiques
+    public static final DeferredItem<Item> BANDAGE = ITEMS.register("bandage",
+            () -> new fr.modeminecraft.item.MedicalItem(fr.modeminecraft.item.MedicalItem.Kind.BANDAGE, new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<Item> FIRST_AID_KIT = ITEMS.register("first_aid_kit",
+            () -> new fr.modeminecraft.item.MedicalItem(fr.modeminecraft.item.MedicalItem.Kind.FIRST_AID_KIT, new Item.Properties().stacksTo(4)));
+    public static final DeferredItem<Item> ADRENALINE_SYRINGE = ITEMS.register("adrenaline_syringe",
+            () -> new fr.modeminecraft.item.MedicalItem(fr.modeminecraft.item.MedicalItem.Kind.ADRENALINE, new Item.Properties().stacksTo(4).rarity(Rarity.UNCOMMON)));
     public static final DeferredItem<Item> FALCON_INSIGNIA = ITEMS.registerSimpleItem("falcon_insignia", new Item.Properties().rarity(Rarity.RARE));
     // Œufs d'apparition des bots (une faction chacun, rôle tiré au hasard)
     public static final java.util.List<DeferredItem<Item>> BOT_EGGS = new java.util.ArrayList<>();

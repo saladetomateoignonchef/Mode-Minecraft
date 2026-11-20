@@ -84,6 +84,31 @@ def main():
     for name in ("blue_access_card", "red_access_card", "black_access_card", "falcon_insignia"):
         with open(os.path.join(ASSETS, f"models/item/{name}.json"), "w", encoding="utf-8") as f:
             json.dump({"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{name}"}}, f, indent=2)
+    # soins tactiques
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    d.ellipse([3, 4, 12, 12], fill="#e8e2d4", outline="#b8b0a0")              # rouleau de bandage
+    d.ellipse([6, 7, 9, 9], fill="#c8c0b0")
+    d.rectangle([11, 9, 14, 11], fill="#e8e2d4")
+    d.line([(4, 8), (11, 8)], fill="#c02028")
+    img.save(os.path.join(ASSETS, "textures/item/bandage.png"))
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    d.rectangle([2, 4, 13, 13], fill="#c02028", outline="#801018")            # trousse
+    d.rectangle([6, 2, 9, 4], outline="#401010")
+    d.rectangle([7, 6, 8, 11], fill="#f0f0f0")
+    d.rectangle([5, 8, 10, 9], fill="#f0f0f0")
+    img.save(os.path.join(ASSETS, "textures/item/first_aid_kit.png"))
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    d.line([(3, 12), (11, 4)], fill="#d8dee4", width=3)                       # seringue
+    d.line([(4, 11), (9, 6)], fill="#f0c020", width=1)
+    d.line([(11, 4), (14, 1)], fill="#a0a8b0")
+    d.line([(2, 11), (4, 13)], fill="#606870", width=2)
+    img.save(os.path.join(ASSETS, "textures/item/adrenaline_syringe.png"))
+    for name in ("bandage", "first_aid_kit", "adrenaline_syringe"):
+        with open(os.path.join(ASSETS, f"models/item/{name}.json"), "w", encoding="utf-8") as f:
+            json.dump({"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{name}"}}, f, indent=2)
     # œufs d'apparition
     factions = ["police", "swat", "militia", "rebel", "garrison", "soviet", "arctic", "mine_security", "cartel", "gang",
                 "sheriff", "refinery", "civilian", "trader", "falcon", "falcon_chief", "falcon_squad"]

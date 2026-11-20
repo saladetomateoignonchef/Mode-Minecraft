@@ -109,6 +109,11 @@ public final class BotGoals {
                 return false;
             }
             scan = 10;
+            // économie : sans joueur à moins de 64 blocs, seuls les Faucons cherchent des cibles (les autres factions)
+            if (bot.faction() != Faction.FALCON && bot.level().getNearestPlayer(bot, 64) == null) {
+                scan = 40;
+                return false;
+            }
             LivingEntity cur = bot.getTarget();
             if (cur != null && cur.isAlive()) {
                 return false;

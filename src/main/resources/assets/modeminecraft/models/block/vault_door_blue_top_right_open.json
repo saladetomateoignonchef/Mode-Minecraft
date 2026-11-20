@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_top_right_open",
+  "textures": {
+    "bottom": "modeminecraft:block/vault_door_blue_bottom",
+    "top": "modeminecraft:block/vault_door_blue_top"
+  }
+}

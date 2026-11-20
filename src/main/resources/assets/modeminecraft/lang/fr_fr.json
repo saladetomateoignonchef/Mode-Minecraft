@@ -959,5 +959,19 @@
   "subtitles.modeminecraft.falcon_horn_charge": "Cor de charge des Faucons Blancs",
   "subtitles.modeminecraft.dragonslayer_unsheathe": "Une épée géante est dégainée",
   "subtitles.modeminecraft.dragonslayer_sheathe": "Une épée géante est rengainée",
-  "subtitles.modeminecraft.dragonslayer_clang": "Coup d'épée géante"
+  "subtitles.modeminecraft.dragonslayer_clang": "Coup d'épée géante",
+  "item.modeminecraft.bandage": "Bandage",
+  "item.modeminecraft.first_aid_kit": "Trousse de premiers secours",
+  "item.modeminecraft.adrenaline_syringe": "Seringue d'adrénaline",
+  "tooltip.modeminecraft.medical.bandage": "+4 PV, arrête le saignement (1,6 s)",
+  "tooltip.modeminecraft.medical.first_aid_kit": "+12 PV, retire tous les effets négatifs (3 s)",
+  "tooltip.modeminecraft.medical.adrenaline": "+6 PV, vitesse II, force et résistance pendant 15 s",
+  "block.modeminecraft.vault_door_blue": "Porte blindée (carte bleue)",
+  "block.modeminecraft.vault_door_red": "Porte blindée (carte rouge)",
+  "block.modeminecraft.vault_door_black": "Porte blindée (carte noire)",
+  "message.modeminecraft.vault.locked": "Salle forte verrouillée : carte d'accès de niveau %s requise",
+  "message.modeminecraft.vault.denied": "Accès refusé : il faut une carte de niveau %s",
+  "message.modeminecraft.vault.granted": "Accès autorisé",
+  "message.modeminecraft.airdrop": "✈ Largage aérien repéré vers X %s, Z %s ! Les Faucons Blancs et la faction locale vont se le disputer.",
+  "entity.modeminecraft.airdrop": "Largage aérien"
 }

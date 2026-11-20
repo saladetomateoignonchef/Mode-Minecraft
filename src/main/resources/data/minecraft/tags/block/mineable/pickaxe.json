@@ -5,6 +5,9 @@
     "modeminecraft:deepslate_rubis_ore",
     "modeminecraft:rubis_block",
     "modeminecraft:titanium_ore",
-    "modeminecraft:deepslate_titanium_ore"
+    "modeminecraft:deepslate_titanium_ore",
+    "modeminecraft:vault_door_blue",
+    "modeminecraft:vault_door_red",
+    "modeminecraft:vault_door_black"
   ]
 }

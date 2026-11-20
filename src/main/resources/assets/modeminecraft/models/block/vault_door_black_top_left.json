@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_top_left",
+  "textures": {
+    "bottom": "modeminecraft:block/vault_door_black_bottom",
+    "top": "modeminecraft:block/vault_door_black_top"
+  }
+}

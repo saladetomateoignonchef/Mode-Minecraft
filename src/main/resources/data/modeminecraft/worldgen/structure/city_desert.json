@@ -1,0 +1,8 @@
+{
+  "type": "modeminecraft:city",
+  "kind": "desert",
+  "biomes": "#modeminecraft:has_city/desert",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none"
+}

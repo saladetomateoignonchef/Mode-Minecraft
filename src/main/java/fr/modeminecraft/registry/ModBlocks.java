@@ -44,6 +44,20 @@ public final class ModBlocks {
             () -> new DropExperienceBlock(UniformInt.of(0, 2), BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE_GOLD_ORE)));
 
     /** Râtelier d'armes : expose 3 armes à feu contre un mur. */
+    /** Portes blindées de salles fortes (cartes d'accès bleue / rouge / noire). */
+    public static final DeferredBlock<Block> VAULT_DOOR_BLUE = BLOCKS.register("vault_door_blue",
+            () -> new fr.modeminecraft.block.VaultDoorBlock(1, vaultProps()));
+    public static final DeferredBlock<Block> VAULT_DOOR_RED = BLOCKS.register("vault_door_red",
+            () -> new fr.modeminecraft.block.VaultDoorBlock(2, vaultProps()));
+    public static final DeferredBlock<Block> VAULT_DOOR_BLACK = BLOCKS.register("vault_door_black",
+            () -> new fr.modeminecraft.block.VaultDoorBlock(3, vaultProps()));
+
+    private static net.minecraft.world.level.block.state.BlockBehaviour.Properties vaultProps() {
+        return net.minecraft.world.level.block.state.BlockBehaviour.Properties.of().mapColor(net.minecraft.world.level.material.MapColor.METAL)
+                .requiresCorrectToolForDrops().strength(50f, 1200f).noOcclusion()
+                .sound(net.minecraft.world.level.block.SoundType.NETHERITE_BLOCK).pushReaction(net.minecraft.world.level.material.PushReaction.BLOCK);
+    }
+
     public static final DeferredBlock<Block> WEAPON_RACK = BLOCKS.register("weapon_rack",
             () -> new fr.modeminecraft.block.WeaponRackBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SPRUCE_PLANKS).noOcclusion()));
 

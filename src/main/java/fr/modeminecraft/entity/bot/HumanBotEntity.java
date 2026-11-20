@@ -53,7 +53,7 @@ import java.util.UUID;
  * IA (voir {@link BotGoals}) : sommations, hostilité de faction, prise de couverture, rafales, snipers allongés,
  * servants de tourelles, patrouilles en binôme, escouades nomades des Faucons Blancs.
  */
-public class HumanBotEntity extends PathfinderMob {
+public class HumanBotEntity extends PathfinderMob implements net.minecraft.world.item.trading.Merchant {
     private static final EntityDataAccessor<Integer> FACTION = SynchedEntityData.defineId(HumanBotEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> ROLE = SynchedEntityData.defineId(HumanBotEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> SKIN = SynchedEntityData.defineId(HumanBotEntity.class, EntityDataSerializers.INT);
@@ -372,6 +372,14 @@ public class HumanBotEntity extends PathfinderMob {
         if (level().isClientSide) {
             return;
         }
+        if (tradingPlayer != null && (!tradingPlayer.isAlive() || !(tradingPlayer.containerMenu instanceof net.minecraft.world.inventory.MerchantMenu)
+                || tradingPlayer.distanceToSqr(this) > 64)) {
+            tradingPlayer = null;
+        }
+        if (tradingPlayer != null) {
+            getNavigation().stop();
+            getLookControl().setLookAt(tradingPlayer);
+        }
         if (role() == BotRole.CHIEF) {
             tickSword();
         }
@@ -501,6 +509,78 @@ public class HumanBotEntity extends PathfinderMob {
             squad = tag.getUUID("Squad");
             squadLeader = tag.getBoolean("SquadLeader");
         }
+    }
+
+    // ------------------------------------------------------------------ marché noir (marchands clandestins)
+    private Player tradingPlayer;
+    private net.minecraft.world.item.trading.MerchantOffers offers;
+
+    @Override
+    protected net.minecraft.world.InteractionResult mobInteract(Player player, net.minecraft.world.InteractionHand hand) {
+        if (role() == BotRole.TRADER && isAlive() && tradingPlayer == null && !player.isSecondaryUseActive()) {
+            if (!level().isClientSide) {
+                setTradingPlayer(player);
+                openTradingScreen(player, getDisplayName(), 1);
+            }
+            return net.minecraft.world.InteractionResult.sidedSuccess(level().isClientSide);
+        }
+        return super.mobInteract(player, hand);
+    }
+
+    @Override
+    public void setTradingPlayer(Player player) {
+        tradingPlayer = player;
+    }
+
+    @Override
+    public Player getTradingPlayer() {
+        return tradingPlayer;
+    }
+
+    @Override
+    public net.minecraft.world.item.trading.MerchantOffers getOffers() {
+        if (offers == null) {
+            offers = BlackMarket.offers(random);
+        }
+        return offers;
+    }
+
+    @Override
+    public void overrideOffers(net.minecraft.world.item.trading.MerchantOffers o) {
+    }
+
+    @Override
+    public void notifyTrade(net.minecraft.world.item.trading.MerchantOffer offer) {
+        offer.increaseUses();
+        playSound(SoundEvents.UI_STONECUTTER_TAKE_RESULT, 0.6f, 1.2f);
+    }
+
+    @Override
+    public void notifyTradeUpdated(ItemStack stack) {
+    }
+
+    @Override
+    public int getVillagerXp() {
+        return 0;
+    }
+
+    @Override
+    public void overrideXp(int xp) {
+    }
+
+    @Override
+    public boolean showProgressBar() {
+        return false;
+    }
+
+    @Override
+    public SoundEvent getNotifyTradeSound() {
+        return SoundEvents.UI_STONECUTTER_TAKE_RESULT;
+    }
+
+    @Override
+    public boolean isClientSide() {
+        return level().isClientSide;
     }
 
     /** Nom affiché au-dessus de la tête (rôle et faction). */

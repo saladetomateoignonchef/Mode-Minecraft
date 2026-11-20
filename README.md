@@ -373,6 +373,38 @@ Les lampes se montent sur le **rail latéral** (flanc droit du garde-main, avec 
   jumelles de vision nocturne baissées (casque Ops-Core FAST XP), et fait briller les créatures invisibles et les Endermen.
 - Une grenade IEM coupe aussi les lampes.
 
+### Villes, factions et bots (monde vivant)
+Des **villes générées** apparaissent selon le biome (environ une tous les 700 blocs, sur terrain assez plat) :
+
+| Biome | Ville (proportion) | Faction | Attitude |
+|---|---|---|---|
+| Plaine | **Métropole** 15 x 15 chunks : gratte-ciel de 35 à 75 blocs (hall en marbre, portique, open-spaces, salle de réunion, penthouse, héliport), Central Park, commissariat (cellules, armurerie blindée), commerces, station-service, égouts | Police (+ SWAT) | sommation |
+| Désert | **Cité sous dictature** : riads à patio et toits-terrasses reliés (parkour), avenue à toiles d'ombrage, Grand Souk, palais fortifié (tourelles, salle forte rouge), portraits du Dictateur | Milice | hostile à vue |
+| Forêt / taïga | **Bastion rebelle** (50 %) : cabanes dans les arbres à 12 blocs, ponts suspendus, caches sous trappes ; **base secrète** (50 %) : double grillage, miradors MG-42, hangars, radar, Flakvierling, bunker sur 3 niveaux | Rebelles / Garnison d'Élite | neutres / hostile |
+| Neige | **Cité soviétique** (70 %) : khrouchtchevkas, gare enneigée, usine sidérurgique, statue ; **station polaire** (15 %) : dômes géodésiques, tunnels, labos, cultures UV ; **avant-poste minier** (15 %) : galeries de titane | Soviétiques / mercenaires arctiques / sécurité | hostile dedans / hostile / sommation |
+| Jungle / marais | **Villa de cartel** (80 %) : hacienda, billard, coffre derrière un tableau, piscine, piste clandestine ; **pilotis** (20 %) : cabanes en tôle, pontons illuminés | Cartel / gangs | hostile / hostile si arme sortie |
+| Badlands | **Ville frontière** (50 %) : saloon, banque à chambre forte, shérif, gare, château d'eau ; **raffinerie** (50 %) : cuves, chevalets de pompage, pipelines, torchère, Mk 19 | Shérifs / milice privée | sommation / hostile |
+
+- **Bots** : corps de joueur, 78 skins 64x64 sur mesure (aucun Steve / Alex), casques / gilets / pantalons / rangers du mod,
+  armes à deux mains, recul, rechargement, accroupis à couvert, snipers allongés sur les toits, servants de tourelles.
+- **IA** : sommation de 3,5 s (icône jaune + radio) si on a une arme en main ; on la range = ils se calment, sinon toute
+  la faction devient hostile (5 min). Vision en cône de 110° (45 blocs, 90 pour les snipers) et ouïe à 10 blocs ;
+  coups de feu entendus à 40 blocs (16 avec silencieux) ; coffres pillés sous leurs yeux ; prise de couverture derrière
+  un muret, rafales courtes, grenades ; patrouilles en binôme ; **renforts SWAT** en cas de fusillade avec la police.
+- **Faucons Blancs** : escouades nomades de 15 (commandant, Chef des Troupes de Choc, 5 éclaireurs au katana qui
+  « dashent » sous les tirs, 4 lanciers, 2 assassins aux tomahawks, 2 brutes), cape blanche à l'emblème, cor de charge,
+  hostiles à tous. Le **Chef** (80 PV, x1,15) porte la **Pourfendeuse de Dragons** dans le dos et la dégaine à deux mains
+  (26 dégâts, balayage 160° / 4 blocs, brise les boucliers, impossible à enchanter) ; il la lâche avec une carte rouge
+  et l'Insigne du Faucon Blanc.
+- **Salles fortes** : portes blindées à carte d'accès bleue / rouge / noire (fermeture auto après 5 s).
+- **Marchands clandestins** (égouts, souk, saloon, pontons) : achètent armes et butin, vendent munitions, soins, piles,
+  cartes d'accès (la carte noire contre un Insigne du Faucon Blanc).
+- **Soins** : bandage (+4 PV, arrête le saignement), trousse de premiers secours (+12 PV, retire les effets négatifs),
+  seringue d'adrénaline (vitesse, force, résistance).
+- **Largages aériens** (≈ toutes les 25 min) : caisse sous parachute, coffre de butin rare et fumée ; les Faucons
+  Blancs et la faction locale s'affrontent pour la récupérer.
+- Œufs d'apparition de chaque faction (et d'une escouade complète) dans l'onglet créatif.
+
 ### Gameplay et progression
 - **Niveaux des armes (1 à 5)** : chaque arme garde ses statistiques (éliminations, tirs à la tête, tirs, ratio)
   et gagne de l'expérience : +10 par élimination, +5 si tir à la tête, +10 pour un gros monstre (50 PV ou plus).
@@ -518,6 +550,11 @@ tools/generate_helmets.py       # casques 3D, palette militaire, contours d'écr
 tools/generate_turrets.py       # tourelles en pièces (trépied, arme, capot, bande, viseurs WWII) + turrets.json
 tools/voxel_bake.py             # textures détaillées des modèles 3D (arrondi en marches, matières, icônes 32x32)
 tools/enhance_icons.py          # icônes 2D et blocs en 32x32 (Scale2x, relief, contour, grain)
+tools/generate_skins.py         # skins 64x64 des bots (15 factions + chevalier) et cape des Faucons Blancs
+tools/generate_city_items.py    # Pourfendeuse de Dragons (3D), cartes d'accès, insigne, soins, œufs
+tools/generate_city_data.py     # structures des villes, biomes, tables de butin, portes blindées
+src/.../world/city/             # génération procédurale des villes (plan, parcelles, décors, bots)
+src/.../entity/bot/             # bots, factions, IA, Faucons Blancs, marché noir
 ```
 
 ### Ajouter une nouvelle arme magique

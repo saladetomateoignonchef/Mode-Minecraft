@@ -34,6 +34,8 @@ public class ModeMinecraft {
         ModItems.ITEMS.register(modEventBus);
         fr.modeminecraft.registry.ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         ModEntities.ENTITY_TYPES.register(modEventBus);
+        fr.modeminecraft.registry.ModStructures.TYPES.register(modEventBus);
+        fr.modeminecraft.registry.ModStructures.PIECES.register(modEventBus);
         fr.modeminecraft.registry.ModEffects.EFFECTS.register(modEventBus);
         ModMenus.MENUS.register(modEventBus);
         ModParticles.PARTICLES.register(modEventBus);

@@ -67,6 +67,7 @@ public final class ClientSetup {
         event.registerEntityRenderer(ModEntities.TOMAHAWK.get(), ctx -> new ThrownItemRenderer<>(ctx, 1.2f, false));
         event.registerEntityRenderer(ModEntities.MOUNTED_GUN.get(), MountedGunRenderer::new);
         event.registerEntityRenderer(ModEntities.HUMAN_BOT.get(), HumanBotRenderer::new);
+        event.registerEntityRenderer(ModEntities.AIRDROP.get(), AirdropRenderer::new);
         event.registerEntityRenderer(ModEntities.THROWN_GRENADE.get(), ExplosiveRenderers.Grenade::new);
         event.registerEntityRenderer(ModEntities.PLACED_EXPLOSIVE.get(), ExplosiveRenderers.Placed::new);
         event.registerEntityRenderer(ModEntities.AREA_CLOUD.get(), ExplosiveRenderers.Invisible::new);

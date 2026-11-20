@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "modeminecraft:bandage"
+    },
+    {
+      "item": "modeminecraft:bandage"
+    },
+    {
+      "item": "minecraft:red_dye"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "item": "minecraft:glistering_melon_slice"
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:first_aid_kit",
+    "count": 1
+  }
+}

@@ -959,5 +959,19 @@
   "subtitles.modeminecraft.falcon_horn_charge": "White Falcons war horn",
   "subtitles.modeminecraft.dragonslayer_unsheathe": "Giant sword unsheathed",
   "subtitles.modeminecraft.dragonslayer_sheathe": "Giant sword sheathed",
-  "subtitles.modeminecraft.dragonslayer_clang": "Giant sword swing"
+  "subtitles.modeminecraft.dragonslayer_clang": "Giant sword swing",
+  "item.modeminecraft.bandage": "Bandage",
+  "item.modeminecraft.first_aid_kit": "First Aid Kit",
+  "item.modeminecraft.adrenaline_syringe": "Adrenaline Syringe",
+  "tooltip.modeminecraft.medical.bandage": "+4 HP, stops bleeding (1.6 s)",
+  "tooltip.modeminecraft.medical.first_aid_kit": "+12 HP, removes all harmful effects (3 s)",
+  "tooltip.modeminecraft.medical.adrenaline": "+6 HP, Speed II, Strength and Resistance for 15 s",
+  "block.modeminecraft.vault_door_blue": "Vault Door (blue card)",
+  "block.modeminecraft.vault_door_red": "Vault Door (red card)",
+  "block.modeminecraft.vault_door_black": "Vault Door (black card)",
+  "message.modeminecraft.vault.locked": "Vault locked: level %s access card required",
+  "message.modeminecraft.vault.denied": "Access denied: level %s card required",
+  "message.modeminecraft.vault.granted": "Access granted",
+  "message.modeminecraft.airdrop": "✈ Airdrop spotted near X %s, Z %s! The White Falcons and the local faction will fight for it.",
+  "entity.modeminecraft.airdrop": "Airdrop"
 }

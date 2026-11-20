@@ -1,0 +1,8 @@
+{
+  "type": "modeminecraft:city",
+  "kind": "mesa",
+  "biomes": "#modeminecraft:has_city/mesa",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none"
+}

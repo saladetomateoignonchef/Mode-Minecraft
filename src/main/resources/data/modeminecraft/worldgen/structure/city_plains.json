@@ -1,0 +1,8 @@
+{
+  "type": "modeminecraft:city",
+  "kind": "plains",
+  "biomes": "#modeminecraft:has_city/plains",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none"
+}

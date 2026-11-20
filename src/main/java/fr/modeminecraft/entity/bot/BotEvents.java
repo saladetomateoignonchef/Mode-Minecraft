@@ -170,6 +170,9 @@ public final class BotEvents {
             return;
         }
         for (ServerPlayer p : overworld.players()) {
+            if (!p.isSpectator() && overworld.getRandom().nextFloat() < AIRDROP_CHANCE) {
+                fr.modeminecraft.entity.AirdropEntity.call(overworld, p.position());
+            }
             if (p.isSpectator() || overworld.getRandom().nextFloat() > FALCON_CHANCE) {
                 continue;
             }
@@ -190,6 +193,8 @@ public final class BotEvents {
 
     /** Probabilité, par minute et par joueur, qu'une escouade de Faucons Blancs arrive (s'il n'y en a pas déjà). */
     public static float FALCON_CHANCE = 0.12f;
+    /** Probabilité, par minute et par joueur, d'un largage aérien (environ un toutes les 25 minutes). */
+    public static float AIRDROP_CHANCE = 0.04f;
 
     static void later(HumanBotEntity bot, int delay, Runnable r) {
         LATER.add(new Object[]{bot.level().getGameTime() + delay, r});
