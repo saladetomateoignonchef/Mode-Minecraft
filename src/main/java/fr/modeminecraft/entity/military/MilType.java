@@ -133,14 +133,23 @@ public enum MilType {
             List.of(w("s500_tubes", Kind.SAM, 0, 30, 0, 90, 2, 0, MilAmmo.S500_77N6, MilAmmo.S500_40N6))),
     ISKANDER("iskander", Side.SOVIET, Chassis.WHEELS, 60, 170, 0.8f, 0.8f, 0.8f, 500, 0, Flag.STRATEGIC,
             List.of(seat(Role.DRIVER, true), seat(Role.OPERATOR, true)),
-            List.of(w("9m723", Kind.ROCKETS, 0, 200, 0, 85, 2, 0, MilAmmo.ISK_HE, MilAmmo.ISK_CLUSTER, MilAmmo.ISK_EMP)));
+            List.of(w("9m723", Kind.ROCKETS, 0, 200, 0, 85, 2, 0, MilAmmo.ISK_HE, MilAmmo.ISK_CLUSTER, MilAmmo.ISK_EMP))),
+    // ------------------------------------------------------------ bombardier stratégique (soute : voir MilVehicleEntity.bombBay)
+    B29_SUPERFORTRESS("b29_superfortress", Side.US, Chassis.PLANE, 210, 950, 0.7f, 0.7f, 0.75f, 1800, 0, Flag.NONE,
+            List.of(seat(Role.PILOT, true), seat(Role.BOMBARDIER, true), seat(Role.GUNNER, true, 0), seat(Role.GUNNER, true, 1),
+                    seat(Role.GUNNER, true, 2), seat(Role.GUNNER, true, 3)),
+            List.of(free("m2_dorsal_front", Kind.MG, 0, 2, -8, 85, 1000, MilAmmo.MG_127),
+                    free("m2_dorsal_rear", Kind.MG, 1, 2, -8, 85, 1000, MilAmmo.MG_127),
+                    free("m2_ventral", Kind.MG, 2, 2, -85, 8, 1000, MilAmmo.MG_127),
+                    free("m2_tail", Kind.MG, 3, 2, -40, 40, 1000, MilAmmo.MG_127)));
 
     public enum Side { SOVIET, US }
 
-    public enum Chassis { WHEELS, TRACKS, HELI }
+    /** HELI : hélicoptère ; PLANE : avion à voilure fixe (vitesse de sustentation, piste, train d'atterrissage). */
+    public enum Chassis { WHEELS, TRACKS, HELI, PLANE }
 
     /** Rôle d'une place. */
-    public enum Role { DRIVER, PILOT, GUNNER, COMMANDER, PASSENGER, DOOR_GUNNER, GRENADIER, OPERATOR }
+    public enum Role { DRIVER, PILOT, GUNNER, COMMANDER, PASSENGER, DOOR_GUNNER, GRENADIER, OPERATOR, BOMBARDIER }
 
     public enum Kind { MG, AUTOCANNON, CANNON, GRENADE, ROCKETS, ATGM, SAM }
 
@@ -192,7 +201,7 @@ public enum MilType {
 
     /** Vitesse maximale en blocs / tick (85 km/h ≈ 0,94). */
     public float maxSpeed() {
-        return kmh * (chassis == Chassis.HELI ? 0.0095f : 0.0111f);
+        return kmh * (chassis == Chassis.HELI || chassis == Chassis.PLANE ? 0.0095f : 0.0111f);
     }
 
     public MilGeometry.Geo geo() {
@@ -203,8 +212,14 @@ public enum MilType {
         return chassis == Chassis.TRACKS;
     }
 
+    /** Aéronef (hélicoptère ou avion) : vol, crash en vol, cible des radars. */
     public boolean heli() {
-        return chassis == Chassis.HELI;
+        return chassis == Chassis.HELI || chassis == Chassis.PLANE;
+    }
+
+    /** Avion à voilure fixe (B-29). */
+    public boolean plane() {
+        return chassis == Chassis.PLANE;
     }
 
     /** Pas de blindage digne de ce nom (camions, 4x4 non blindés) : le moteur avant est fragile, les roues aussi. */

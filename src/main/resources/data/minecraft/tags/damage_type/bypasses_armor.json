@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "modeminecraft:bullet_ap"
+    "modeminecraft:bullet_ap",
+    "modeminecraft:radiation"
   ]
 }

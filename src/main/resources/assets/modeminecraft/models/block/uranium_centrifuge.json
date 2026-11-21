@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "side": "modeminecraft:block/uranium_centrifuge_side",
+    "end": "modeminecraft:block/uranium_centrifuge_top"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "artillery",
+  "ingredients": [
+    {
+      "item": "modeminecraft:enriched_uranium_core",
+      "count": 4
+    },
+    {
+      "item": "minecraft:netherite_ingot",
+      "count": 4
+    },
+    {
+      "item": "modeminecraft:titanium_plate",
+      "count": 8
+    },
+    {
+      "item": "modeminecraft:precision_detonator",
+      "count": 2
+    },
+    {
+      "item": "minecraft:diamond_block",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:strategic_nuclear_bomb",
+    "count": 1
+  }
+}

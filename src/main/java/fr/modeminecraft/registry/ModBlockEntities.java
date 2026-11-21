@@ -12,6 +12,9 @@ public final class ModBlockEntities {
             DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, ModeMinecraft.MODID);
 
     @SuppressWarnings("DataFlowIssue")
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<fr.modeminecraft.nuclear.CentrifugeBlockEntity>> CENTRIFUGE =
+            BLOCK_ENTITIES.register("uranium_centrifuge", () -> BlockEntityType.Builder.of(fr.modeminecraft.nuclear.CentrifugeBlockEntity::new,
+                    ModBlocks.CENTRIFUGE.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<fr.modeminecraft.block.city.TrafficLightBlockEntity>> TRAFFIC_LIGHT =
             BLOCK_ENTITIES.register("traffic_light", () -> BlockEntityType.Builder.of(fr.modeminecraft.block.city.TrafficLightBlockEntity::new,
                     ModBlocks.TRAFFIC_LIGHT.get()).build(null));

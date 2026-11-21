@@ -30,6 +30,8 @@ public final class ModNetwork {
                 .playToServer(MilControlPayload.TYPE, MilControlPayload.STREAM_CODEC, MilControlPayload::handle)
                 .playToServer(MilAimPayload.TYPE, MilAimPayload.STREAM_CODEC, MilAimPayload::handle)
                 .playToServer(LauncherPayload.TYPE, LauncherPayload.STREAM_CODEC, LauncherPayload::handle)
+                .playToClient(fr.modeminecraft.nuclear.RadiationPayload.TYPE, fr.modeminecraft.nuclear.RadiationPayload.STREAM_CODEC, fr.modeminecraft.nuclear.RadiationPayload::handle)
+                .playToClient(fr.modeminecraft.nuclear.FlashPayload.TYPE, fr.modeminecraft.nuclear.FlashPayload.STREAM_CODEC, fr.modeminecraft.nuclear.FlashPayload::handle)
                 .playToServer(RobPayload.TYPE, RobPayload.STREAM_CODEC, RobPayload::handle)
                 .playToServer(LeanPayload.TYPE, LeanPayload.STREAM_CODEC, LeanPayload::handle)
                 .playToServer(TriggerPayload.TYPE, TriggerPayload.STREAM_CODEC, TriggerPayload::handle)

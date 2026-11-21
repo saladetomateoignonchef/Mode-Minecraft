@@ -1,0 +1,34 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "vehicles",
+  "ingredients": [
+    {
+      "item": "modeminecraft:aircraft_engine",
+      "count": 4
+    },
+    {
+      "item": "modeminecraft:pressurized_cockpit",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:titanium_plate",
+      "count": 24
+    },
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 16
+    },
+    {
+      "item": "modeminecraft:fire_control_module",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:wheel_set",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:b29_superfortress",
+    "count": 1
+  }
+}

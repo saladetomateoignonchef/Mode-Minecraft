@@ -68,6 +68,13 @@ public final class ModEntities {
                     .sized(0.3f, 0.3f).clientTrackingRange(8).updateInterval(2).build("plasma"));
 
     /** Mitrailleuse lourde posée au sol (M2 Browning, DShK). */
+    /** Bombes d'aviation (B-29) et champignon atomique. */
+    public static final DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.nuclear.BombEntity>> BOMB = ENTITY_TYPES.register("aerial_bomb",
+            () -> EntityType.Builder.<fr.modeminecraft.nuclear.BombEntity>of(fr.modeminecraft.nuclear.BombEntity::new, MobCategory.MISC)
+                    .sized(0.7f, 0.7f).clientTrackingRange(16).updateInterval(1).build("aerial_bomb"));
+    public static final DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.nuclear.NukeCloudEntity>> NUKE_CLOUD = ENTITY_TYPES.register("nuke_cloud",
+            () -> EntityType.Builder.<fr.modeminecraft.nuclear.NukeCloudEntity>of(fr.modeminecraft.nuclear.NukeCloudEntity::new, MobCategory.MISC)
+                    .sized(4f, 4f).clientTrackingRange(32).updateInterval(40).fireImmune().build("nuke_cloud"));
     /** Lance-roquettes statiques : trépied Type 63 (4 x 107 mm) et batterie fixe de 12 x 122 mm. */
     public static final DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.entity.military.RocketLauncherEntity>> ROCKET_LAUNCHER = ENTITY_TYPES.register("rocket_launcher",
             () -> EntityType.Builder.<fr.modeminecraft.entity.military.RocketLauncherEntity>of(fr.modeminecraft.entity.military.RocketLauncherEntity::new, MobCategory.MISC)

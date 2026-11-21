@@ -110,6 +110,12 @@ public final class CityLayout {
                 if (dx == 0 && dz == 0) {
                     return Plot.of("bunker", 10, dx, dz);
                 }
+                if (in(dx, dz, -4, 3, 1, 4)) {
+                    return multi("airstrip", 16, -4, 3, 6, 2);                     // piste d'atterrissage (96 m)
+                }
+                if (in(dx, dz, 2, 2, 4, 4)) {
+                    return multi("aircraft_hangar", 18, 2, 2, 3, 3);              // méga-hangar à avions
+                }
                 if (Math.abs(dx) == rad && Math.abs(dz) == rad) {
                     return Plot.of("mirador", 16, dx, dz);
                 }
@@ -130,6 +136,12 @@ public final class CityLayout {
             case "soviet" -> {
                 if (dz == rad) {
                     return Plot.of("station", 10, dx, dz);
+                }
+                if (in(dx, dz, 2, 8, 8, 9)) {
+                    return multi("airstrip", 16, 2, 8, 7, 2);                      // aérodrome militaire (112 m)
+                }
+                if (in(dx, dz, 9, 7, 11, 9)) {
+                    return multi("aircraft_hangar", 18, 9, 7, 3, 3);
                 }
                 if (in(dx, dz, 4, -5, 5, -4)) {
                     return multi("factory", 28, 4, -5, 2, 2);

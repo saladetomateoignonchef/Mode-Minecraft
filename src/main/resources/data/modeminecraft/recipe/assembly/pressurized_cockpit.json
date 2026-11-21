@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "vehicle_parts",
+  "ingredients": [
+    {
+      "item": "modeminecraft:titanium_plate",
+      "count": 4
+    },
+    {
+      "item": "minecraft:glass",
+      "count": 8
+    },
+    {
+      "item": "modeminecraft:fire_control_module",
+      "count": 1
+    },
+    {
+      "item": "minecraft:redstone_block",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:pressurized_cockpit",
+    "count": 1
+  }
+}

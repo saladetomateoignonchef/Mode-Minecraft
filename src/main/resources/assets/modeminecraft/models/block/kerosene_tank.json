@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "side": "modeminecraft:block/kerosene_tank_side",
+    "end": "modeminecraft:block/kerosene_tank_top"
+  }
+}

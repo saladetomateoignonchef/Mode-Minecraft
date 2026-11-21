@@ -658,5 +658,49 @@
     "sounds": [
       "modeminecraft:mil/aircraft_crash_alarm_0"
     ]
+  },
+  "mil.bomb_bay_release": {
+    "subtitle": "subtitles.modeminecraft.bomb_bay_release",
+    "sounds": [
+      "modeminecraft:mil/bomb_bay_release_0"
+    ]
+  },
+  "mil.bomb_bay_doors": {
+    "subtitle": "subtitles.modeminecraft.bomb_bay_doors",
+    "sounds": [
+      "modeminecraft:mil/bomb_bay_doors_0"
+    ]
+  },
+  "mil.bomb_whistle": {
+    "subtitle": "subtitles.modeminecraft.bomb_whistle",
+    "sounds": [
+      "modeminecraft:mil/bomb_whistle_0"
+    ]
+  },
+  "mil.nuclear_detonation": {
+    "subtitle": "subtitles.modeminecraft.nuclear_detonation",
+    "sounds": [
+      "modeminecraft:mil/nuclear_detonation_0"
+    ]
+  },
+  "mil.nuclear_detonation_rumble": {
+    "subtitle": "subtitles.modeminecraft.nuclear_rumble",
+    "sounds": [
+      "modeminecraft:mil/nuclear_detonation_rumble_0"
+    ]
+  },
+  "mil.geiger_clicks": {
+    "subtitle": "subtitles.modeminecraft.geiger",
+    "sounds": [
+      "modeminecraft:mil/geiger_clicks_0",
+      "modeminecraft:mil/geiger_clicks_1",
+      "modeminecraft:mil/geiger_clicks_2"
+    ]
+  },
+  "mil.prop_engine_loop": {
+    "subtitle": "subtitles.modeminecraft.prop_engine",
+    "sounds": [
+      "modeminecraft:mil/prop_engine_loop_0"
+    ]
   }
 }

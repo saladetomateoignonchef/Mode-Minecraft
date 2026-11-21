@@ -40,7 +40,7 @@ public final class ModCreativeTabs {
             "missile_77n6n", "missile_40n6m", "iskander_he", "iskander_cluster", "iskander_emp");
     /** Drones, véhicules et ce qui va avec (brouilleur EMP, clé à molette, bidons). */
     private static final Set<String> DRONE_IDS = Set.of("emp_jammer_rifle", "wrench", "jerrycan", "vehicle_engine", "gas_turbine", "track_set",
-            "wheel_set", "cannon_barrel", "autocannon_mount", "fire_control_module", "rotor_assembly", "launcher_module", "type63_launcher", "iron_pipe");
+            "wheel_set", "cannon_barrel", "autocannon_mount", "fire_control_module", "rotor_assembly", "launcher_module", "type63_launcher", "iron_pipe", "aircraft_engine", "pressurized_cockpit");
     /** Objets présents dans deux onglets (le pied-de-biche est une arme ET un outil d'effraction). */
     private static final Set<String> ALSO_TOOLS = Set.of("crowbar");
 
@@ -66,12 +66,13 @@ public final class ModCreativeTabs {
         }
         if (AMMO_IDS.contains(path) || item instanceof fr.modeminecraft.item.AmmoItem || item instanceof fr.modeminecraft.item.TurretAmmoItem
                 || item instanceof fr.modeminecraft.item.explosive.GrenadeItem || item instanceof fr.modeminecraft.item.explosive.PlaceableExplosiveItem
-                || item instanceof fr.modeminecraft.item.explosive.DetonatorItem) {
+                || item instanceof fr.modeminecraft.item.explosive.DetonatorItem || item instanceof fr.modeminecraft.nuclear.BombItem) {
             return Tab.AMMO;
         }
         if (item instanceof fr.modeminecraft.item.HelmetItem || item instanceof fr.modeminecraft.item.VestItem
                 || item instanceof fr.modeminecraft.item.GearItem || item instanceof ArmorItem || item instanceof fr.modeminecraft.item.BallisticPlateItem
-                || item instanceof fr.modeminecraft.item.tactical.BackpackItem || item instanceof fr.modeminecraft.item.explosive.GasMaskItem) {
+                || item instanceof fr.modeminecraft.item.tactical.BackpackItem || item instanceof fr.modeminecraft.item.explosive.GasMaskItem
+                || item instanceof fr.modeminecraft.nuclear.HazmatKitItem) {
             return Tab.EQUIPMENT;
         }
         if (item instanceof SwordItem || item instanceof ShieldItem || item instanceof BowItem || item instanceof fr.modeminecraft.item.melee.MeleeWeaponItem

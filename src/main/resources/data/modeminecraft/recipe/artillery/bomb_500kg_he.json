@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "artillery",
+  "ingredients": [
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 4
+    },
+    {
+      "item": "minecraft:tnt",
+      "count": 8
+    },
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:bomb_500kg_he",
+    "count": 1
+  }
+}

@@ -114,6 +114,21 @@ public class MilVehicleRenderer extends EntityRenderer<MilVehicleEntity> {
         }
         // rotors, radar
         float rot = Mth.lerp(partial, v.rotorAngleO, v.rotorAngle);
+        if (geo.props().length > 0) {
+            // avion : hélices (autour de l'axe X), trappes de soute, train d'atterrissage
+            BakedModel prop = mc.getModelManager().getModel(part(t.id, "prop"));
+            for (float[] q : geo.props()) {
+                pose.pushPose();
+                pose.translate(q[0] / s + (geo.ox() - 8) / 16f, q[1] / s, q[2] / s);
+                pose.mulPose(Axis.XP.rotationDegrees(rot * (q[2] > 0 ? 1 : -1)));
+                mc.getItemRenderer().render(stack, ItemDisplayContext.NONE, false, pose, buffers, light, OverlayTexture.NO_OVERLAY, prop);
+                pose.popPose();
+            }
+            draw(mc, pose, buffers, light, t, v.is(MilVehicleEntity.BAY_OPEN) ? "bay_open" : "bay", null, 0, (char) 0);
+            if (!v.is(MilVehicleEntity.GEAR_UP)) {
+                draw(mc, pose, buffers, light, t, "gear", null, 0, (char) 0);
+            }
+        }
         if (geo.rotor() != null) {
             draw(mc, pose, buffers, light, t, "rotor", geo.rotor(), rot, 'y');
         }

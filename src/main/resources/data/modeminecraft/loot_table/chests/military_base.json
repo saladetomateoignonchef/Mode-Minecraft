@@ -112,6 +112,36 @@
               }
             }
           ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "modeminecraft:geiger_counter",
+          "weight": 3
+        },
+        {
+          "type": "minecraft:item",
+          "name": "modeminecraft:nbc_filter",
+          "weight": 6,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 4
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "modeminecraft:bomb_500kg_he",
+          "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "modeminecraft:hazmat_kit",
+          "weight": 2
         }
       ]
     },

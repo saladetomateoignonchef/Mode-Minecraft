@@ -493,6 +493,8 @@ final class CityGenRegions {
             if (dz == rad && dx != 0) b.mine(k, 0, 13 + (k % 2), false);
         }
         switch (type) {
+            case "airstrip" -> Airfields.airstrip(b, 96, Faction.GARRISON);
+            case "aircraft_hangar" -> Airfields.megaHangar(b, Faction.GARRISON, 0.45f);
             case "mirador" -> {
                 Deco.watchtower(b, 6, 6, 9, Blocks.SPRUCE_LOG, Blocks.SPRUCE_PLANKS);
                 b.turret(8, 10, 8, MountedGunEntity.Kind.MG42, dz < 0 ? 180 : 0, Faction.GARRISON);
@@ -826,6 +828,8 @@ final class CityGenRegions {
                 }
             }
             case "mil_hangar" -> Hangars.soviet(b);
+            case "airstrip" -> Airfields.airstrip(b, 112, Faction.SOVIET);
+            case "aircraft_hangar" -> Airfields.megaHangar(b, Faction.SOVIET, 0.3f);
             case "factory" -> {
                 int n = 31;
                 b.ground(0, 0, n, n, Blocks.GRAY_CONCRETE.defaultBlockState(), Blocks.STONE.defaultBlockState(), 28);

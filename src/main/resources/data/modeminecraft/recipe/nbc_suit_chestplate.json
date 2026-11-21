@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "modeminecraft:hazmat_suit_chestplate"
+    },
+    {
+      "item": "modeminecraft:titanium_plate"
+    },
+    {
+      "item": "modeminecraft:titanium_plate"
+    },
+    {
+      "item": "modeminecraft:lead_ingot"
+    },
+    {
+      "item": "modeminecraft:nbc_filter"
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:nbc_suit_chestplate",
+    "count": 1
+  }
+}

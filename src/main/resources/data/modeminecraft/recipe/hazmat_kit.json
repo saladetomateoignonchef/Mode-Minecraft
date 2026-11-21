@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "CCC",
+    "LGL",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "modeminecraft:rubberized_canvas"
+    },
+    "L": {
+      "item": "modeminecraft:lead_ingot"
+    },
+    "G": {
+      "item": "minecraft:glass"
+    }
+  },
+  "result": {
+    "id": "modeminecraft:hazmat_kit",
+    "count": 1
+  }
+}

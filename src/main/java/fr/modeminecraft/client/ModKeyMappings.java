@@ -76,5 +76,9 @@ public final class ModKeyMappings {
     public static final KeyMapping VEHICLE_ZOOM = new KeyMapping("key.modeminecraft.vehicle_zoom",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_Z, CATEGORY);
 
+    /** B-29 : trappes de la soute à bombes. */
+    public static final KeyMapping BOMB_BAY = new KeyMapping("key.modeminecraft.bomb_bay",
+            net.neoforged.neoforge.client.settings.KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_O, CATEGORY);
+
     private ModKeyMappings() {}
 }

@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "artillery",
+  "ingredients": [
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 2
+    },
+    {
+      "item": "minecraft:tnt",
+      "count": 3
+    },
+    {
+      "item": "minecraft:blaze_powder",
+      "count": 6
+    },
+    {
+      "item": "minecraft:fire_charge",
+      "count": 4
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:bomb_incendiary_napalm",
+    "count": 1
+  }
+}

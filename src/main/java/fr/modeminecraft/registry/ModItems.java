@@ -1153,6 +1153,53 @@ public final class ModItems {
 
     /** Bidon de carburant militaire (diesel) : +25 % de réservoir. */
     public static final DeferredItem<Item> JERRYCAN = ammoItem("jerrycan", 4);
+
+    // ------------------------------------------------------------------ B-29, bombes, nucléaire (phase 25)
+    public static final DeferredItem<Item> BOMB_HE = ITEMS.register("bomb_500kg_he",
+            () -> new fr.modeminecraft.nuclear.BombItem(fr.modeminecraft.nuclear.BombItem.Kind.HE, new Item.Properties().stacksTo(4)));
+    public static final DeferredItem<Item> BOMB_NAPALM = ITEMS.register("bomb_incendiary_napalm",
+            () -> new fr.modeminecraft.nuclear.BombItem(fr.modeminecraft.nuclear.BombItem.Kind.NAPALM, new Item.Properties().stacksTo(4)));
+    public static final DeferredItem<Item> NUCLEAR_BOMB = ITEMS.register("strategic_nuclear_bomb",
+            () -> new fr.modeminecraft.nuclear.BombItem(fr.modeminecraft.nuclear.BombItem.Kind.NUKE, new Item.Properties().stacksTo(1)
+                    .rarity(Rarity.EPIC).fireResistant()));
+    public static final DeferredItem<BlockItem> LEAD_ORE = ITEMS.registerSimpleBlockItem(ModBlocks.LEAD_ORE);
+    public static final DeferredItem<BlockItem> DEEPSLATE_LEAD_ORE = ITEMS.registerSimpleBlockItem(ModBlocks.DEEPSLATE_LEAD_ORE);
+    public static final DeferredItem<BlockItem> URANIUM_ORE = ITEMS.registerSimpleBlockItem(ModBlocks.URANIUM_ORE);
+    public static final DeferredItem<BlockItem> DEEPSLATE_URANIUM_ORE = ITEMS.registerSimpleBlockItem(ModBlocks.DEEPSLATE_URANIUM_ORE);
+    public static final DeferredItem<BlockItem> CENTRIFUGE = ITEMS.registerSimpleBlockItem(ModBlocks.CENTRIFUGE);
+    public static final DeferredItem<BlockItem> KEROSENE_TANK = ITEMS.registerSimpleBlockItem(ModBlocks.KEROSENE_TANK);
+    public static final DeferredItem<Item> RAW_LEAD = ITEMS.registerSimpleItem("raw_lead");
+    public static final DeferredItem<Item> LEAD_INGOT = ITEMS.registerSimpleItem("lead_ingot");
+    public static final DeferredItem<Item> RAW_URANIUM = ITEMS.registerSimpleItem("raw_uranium");
+    public static final DeferredItem<Item> URANIUM_INGOT = ITEMS.registerSimpleItem("uranium_ingot");
+    public static final DeferredItem<Item> ENRICHED_URANIUM_CORE = ITEMS.registerSimpleItem("enriched_uranium_core",
+            new Item.Properties().rarity(Rarity.EPIC).stacksTo(16));
+    public static final DeferredItem<Item> PRECISION_DETONATOR = ITEMS.registerSimpleItem("precision_detonator", new Item.Properties().rarity(Rarity.RARE));
+    public static final DeferredItem<Item> RUBBERIZED_CANVAS = ITEMS.registerSimpleItem("rubberized_canvas");
+    public static final DeferredItem<Item> NBC_FILTER = ITEMS.registerSimpleItem("nbc_filter", new Item.Properties().stacksTo(16));
+    public static final DeferredItem<Item> AIRCRAFT_ENGINE = ITEMS.registerSimpleItem("aircraft_engine", new Item.Properties().stacksTo(4));
+    public static final DeferredItem<Item> PRESSURIZED_COCKPIT = ITEMS.registerSimpleItem("pressurized_cockpit", new Item.Properties().stacksTo(1));
+    public static final DeferredItem<Item> GEIGER_COUNTER = ITEMS.register("geiger_counter",
+            () -> new fr.modeminecraft.nuclear.GeigerCounterItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> HAZMAT_KIT = ITEMS.register("hazmat_kit",
+            () -> new fr.modeminecraft.nuclear.HazmatKitItem(new Item.Properties().stacksTo(1)));
+    /** Tenues anti-radiation : hazmat_suit_* (civile) et nbc_suit_* (militaire). */
+    public static final java.util.Map<String, DeferredItem<Item>> RAD_SUITS = new java.util.LinkedHashMap<>();
+
+    static {
+        net.minecraft.world.item.ArmorItem.Type[] types = {net.minecraft.world.item.ArmorItem.Type.HELMET, net.minecraft.world.item.ArmorItem.Type.CHESTPLATE,
+                net.minecraft.world.item.ArmorItem.Type.LEGGINGS, net.minecraft.world.item.ArmorItem.Type.BOOTS};
+        String[] pieces = {"helmet", "chestplate", "leggings", "boots"};
+        for (var suit : fr.modeminecraft.nuclear.RadiationSuitItem.Suit.values()) {
+            for (int i = 0; i < 4; i++) {
+                var t = types[i];
+                String id = suit.id + "_" + pieces[i];
+                RAD_SUITS.put(id, ITEMS.register(id, () -> new fr.modeminecraft.nuclear.RadiationSuitItem(suit, t,
+                        new Item.Properties().rarity(suit == fr.modeminecraft.nuclear.RadiationSuitItem.Suit.NBC ? Rarity.RARE : Rarity.UNCOMMON)
+                                .durability(t.getDurability(suit == fr.modeminecraft.nuclear.RadiationSuitItem.Suit.NBC ? 40 : 22)))));
+            }
+        }
+    }
     public static final DeferredItem<Item> LASER_DESIGNATOR = ITEMS.register("laser_designator",
             () -> new fr.modeminecraft.item.military.LaserDesignatorItem(new Item.Properties().rarity(Rarity.RARE)));
 

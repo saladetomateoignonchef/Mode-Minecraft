@@ -5,6 +5,9 @@
     "modeminecraft:deepslate_rubis_ore",
     "modeminecraft:rubis_block",
     "modeminecraft:titanium_ore",
-    "modeminecraft:deepslate_titanium_ore"
+    "modeminecraft:deepslate_titanium_ore",
+    "modeminecraft:uranium_ore",
+    "modeminecraft:deepslate_uranium_ore",
+    "modeminecraft:uranium_centrifuge"
   ]
 }

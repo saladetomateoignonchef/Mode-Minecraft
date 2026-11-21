@@ -36,10 +36,11 @@ COLORS = {
     "glass": "#7fa8c0", "light": "#fff2c0", "ir": "#d02018", "canvas": "#5d6640", "canvas_us": "#9c8a62", "ammo": "#c8a040",
     "rubber": "#1e1e1e", "rotor": "#2a2c2e", "radar": "#c8ccc8", "white": "#e4e4e0", "red": "#b02018", "missile": "#d8dcd0",
     "missile_g": "#6a7a4a", "seat": "#3a3428", "black": "#141414", "steel": "#7a8088", "orange": "#d07020",
+    "alu": ["#c4c8cc", "#bcc0c4", "#cdd1d4"], "alu_d": "#9ea3a8", "glass_frame": "#8a9096", "navy": "#1c2a5c",
 }
 MATERIAL = {"glass": "glass", "light": "flat", "ir": "flat", "track": "metal", "tire": "polymer", "rubber": "polymer", "canvas": "fabric",
             "canvas_us": "fabric", "seat": "leather", "red": "flat"}
-PAINTS = {"sov", "ru", "us", "usg", "sov_d", "ru_d", "us_d", "usg_d", "white", "missile", "missile_g", "radar", "orange"}
+PAINTS = {"sov", "ru", "us", "usg", "sov_d", "ru_d", "us_d", "usg_d", "white", "missile", "missile_g", "radar", "orange", "navy"}
 
 
 def material(k):
@@ -62,6 +63,7 @@ class V:
         self.wheel_r = 0.5
         self.wheel_w = 0.35
         self.seats = []             # (x, y, z) m : position des fesses du passager
+        self.props = []             # (x, y, z) m : moyeux des hélices (avions), tournant autour de l'axe X
         self.muzzles = []           # (x, y, z, mount) mount : 0 caisse, 1 tourelle, 2 canon (tourelle + élévation)
         # origine du modèle (pixels) : recentrée sur la longueur réelle (canon compris), voir main()
         self.ox = OX.get(name, 8.0)
@@ -1028,6 +1030,113 @@ def apache():
     return v
 
 
+# =========================================================================== bombardier stratégique
+def prop_model(v, r):
+    """Hélice tripale centrée (en pixels) sur (8, 8, 8), dans le plan YZ (elle tourne autour de l'axe X)."""
+    k = 16 / v.S
+    R = r * k
+    e = []
+
+    def b(x0, y0, z0, x1, y1, z1, key, rot=None):
+        el = {"from": [round(x0, 3), round(y0, 3), round(z0, 3)], "to": [round(x1, 3), round(y1, 3), round(z1, 3)],
+              "faces": {f: {"uv": [0, 0, 1, 1], "texture": "#p"} for f in vb.FACES}, "__key": key}
+        if rot is not None:
+            el["rotation"] = {"axis": "x", "angle": rot, "origin": [8, 8, 8]}
+        e.append(el)
+    b(7.2, 7.4, 7.4, 8.9, 8.6, 8.6, "metal")                                        # moyeu (cône)
+    b(8.9, 7.7, 7.7, 9.4, 8.3, 8.3, "metal")
+    w = max(0.5, 0.35 * k)
+    for ang in (-45, 0, 45):                                                         # 3 pales (pas de 22,5° imposé)
+        b(7.8, 8 - w / 2, 8 - R, 8.3, 8 + w / 2, 8 - 0.4, "rotor", ang)
+    b(7.8, 8 - 0.4, 8 + 0.4, 8.3, 8 + 0.4, 8 + R * 0.9, "rotor", 22.5)
+    return e
+
+
+def b29():
+    """Boeing B-29 Superfortress : 28 m d'envergure, 20 m de long, quadrimoteur, soute ventrale, 4 tourelles."""
+    v = V("b29_superfortress", 10.0)
+    p = "alu"
+    cy = 2.7                                                                         # axe du fuselage (train sorti)
+    v.cyl("hull", "x", (cy, 0.0), 1.45, -7.5, 7.6, p)                               # fuselage
+    v.cyl("hull", "x", (cy + 0.1, 0.0), 1.1, -9.6, -7.5, p)                         # cône arrière
+    v.cyl("hull", "x", (cy - 0.05, 0.0), 1.25, 7.6, 8.8, p)
+    v.cyl("hull", "x", (cy - 0.1, 0.0), 1.0, 8.8, 9.6, "glass")                     # nez vitré en dôme
+    v.cyl("hull", "x", (cy - 0.15, 0.0), 0.6, 9.6, 10.1, "glass")
+    v.box("hull", 8.8, 9.7, cy - 0.3, cy + 0.9, -0.5, 0.5, "glass_frame")          # montants du vitrage
+    # ailes (envergure 28 m), trapézoïdales, avec saumons
+    for i in range(14):
+        z0, z1 = 1.2 + i * 0.9, 1.2 + (i + 1) * 0.9
+        f = i / 13
+        chord = 4.2 - 2.6 * f
+        xl = 3.6 - 0.9 * f                                                           # bord d'attaque en flèche légère
+        for s in (-1, 1):
+            a, b_ = sorted((s * z0, s * z1))
+            v.box("hull", xl - chord, xl, cy - 0.25 + f * 0.25, cy + 0.12 + f * 0.25, a, b_, p)
+            v.box("hull", xl - chord, xl - chord + 0.4, cy - 0.22 + f * 0.25, cy + 0.08 + f * 0.25, a, b_, "alu_d")  # volets
+    v.box("hull", -0.6, 3.6, cy - 0.3, cy + 0.15, -1.4, 1.4, p)                      # emplanture
+    v.sym("hull", 0.0, 0.6, cy - 0.2, cy + 0.08, 13.8, 13.95, "red")                # feux de position
+    # 4 moteurs en étoile dans leurs nacelles
+    for zz in (4.4, 8.4):
+        for s in (-1, 1):
+            z = s * zz
+            v.cyl("hull", "x", (cy - 0.15, z), 0.78, 0.0, 4.6, p)
+            v.cyl("hull", "x", (cy - 0.15, z), 0.82, 4.4, 4.9, "dark")               # capot moteur
+            v.box("hull", -0.6, 0.2, cy - 0.7, cy - 0.3, z - 0.4, z + 0.4, "dark")   # échappements / turbo
+            v.props.append((5.25, cy - 0.15, z))
+    # empennage : dérive haute et plans horizontaux
+    v.slope("hull", -9.4, -6.5, cy + 0.6, 6.0, -0.15, 0.15, p, 6, up_front=False)
+    v.box("hull", -9.6, -8.6, cy + 0.6, 6.0, -0.15, 0.15, p)
+    v.box("hull", -9.3, -7.0, cy + 0.05, cy + 0.3, -5.2, 5.2, p)
+    v.box("hull", -9.3, -8.7, cy + 0.05, cy + 0.3, -5.2, 5.2, "alu_d")
+    v.box("hull", -9.65, -9.4, 4.8, 5.6, -0.17, 0.17, "red")
+    # marques : étoiles de l'US Air Force (bleu / blanc)
+    for s in (-1, 1):
+        v.box("hull", -5.2, -4.0, cy - 0.5, cy + 0.7, s * 1.46 - 0.02, s * 1.46 + 0.02, "navy")
+        v.box("hull", -4.9, -4.3, cy - 0.2, cy + 0.4, s * 1.48 - 0.02, s * 1.48 + 0.02, "white")
+        v.box("hull", 1.0, 2.6, cy + 0.2, cy + 0.21, s * 10.0 - 0.7, s * 10.0 + 0.7, "navy")
+    # tourelles défensives (M2 jumelées)
+    def turret(x, y, z, top):
+        v.cyl("hull", "y", (x, z), 0.55, y - 0.2, y + 0.25, "alu_d")
+        v.box("hull", x - 0.35, x + 0.35, y + (0.25 if top else -0.5), y + (0.55 if top else -0.2), z - 0.35, z + 0.35, "glass")
+        for dz in (-0.15, 0.15):
+            v.cyl("hull", "x", (y + 0.05, z + dz), 0.05, x, x + 1.3, "gun")
+    turret(5.2, cy + 1.45, 0.0, True)                                                 # dorsale avant
+    turret(-2.6, cy + 1.45, 0.0, True)                                                # dorsale arrière
+    turret(-1.5, cy - 1.45, 0.0, False)                                               # ventrale
+    v.box("hull", -10.2, -9.5, cy - 0.3, cy + 0.6, -0.4, 0.4, "glass")               # poste de queue
+    for dz in (-0.15, 0.15):
+        v.cyl("hull", "x", (cy + 0.1, dz), 0.05, -11.0, -10.1, "gun")
+    v.muzzle(6.5, cy + 1.5, 0.0, 0)
+    v.muzzle(-1.3, cy + 1.5, 0.0, 0)
+    v.muzzle(-0.2, cy - 1.45, 0.0, 0)
+    v.muzzle(-11.0, cy + 0.1, 0.0, 0)
+    # soute à bombes : trappes fermées (bay) ou ouvertes, pendant sous le fuselage (bay_open)
+    v.box("bay", -1.8, 3.4, cy - 1.47, cy - 1.32, -0.95, 0.95, "alu_d")
+    v.box("bay", -1.7, 3.3, cy - 1.49, cy - 1.47, -0.03, 0.03, "dark")
+    for s in (-1, 1):
+        a, b_ = sorted((s * 0.95, s * 1.05))
+        v.box("bay_open", -1.8, 3.4, cy - 2.4, cy - 1.32, a, b_, "alu_d")
+    v.box("bay_open", -1.7, 3.3, cy - 1.42, cy - 1.32, -0.9, 0.9, "dark")            # intérieur de la soute
+    # train d'atterrissage (sorti) : 2 jambes principales à roues jumelées, train avant
+    for s in (-1, 1):
+        z = s * 4.4
+        v.box("gear", 1.9, 2.2, 0.6, cy - 0.8, z - 0.1, z + 0.1, "metal")
+        for dz in (-0.3, 0.3):
+            v.cyl("gear", "z", (2.05, 0.6), 0.6, z + dz - 0.18, z + dz + 0.18, "tire")
+            v.cyl("gear", "z", (2.05, 0.6), 0.3, z + dz - 0.2, z + dz + 0.2, "rim")
+    v.box("gear", 7.2, 7.45, 0.45, cy - 1.0, -0.08, 0.08, "metal")
+    for dz in (-0.22, 0.22):
+        v.cyl("gear", "z", (7.3, 0.42), 0.42, dz - 0.12, dz + 0.12, "tire")
+    # équipage : pilote, bombardier (nez), puis 4 tireurs
+    v.seat(8.0, cy - 0.6, -0.35)
+    v.seat(9.0, cy - 0.8, 0.0)
+    v.seat(4.8, cy + 0.4, 0.0)
+    v.seat(-2.4, cy + 0.4, 0.0)
+    v.seat(-1.5, cy - 0.8, 0.5)
+    v.seat(-9.5, cy - 0.4, 0.0)
+    return v
+
+
 # =========================================================================== lance-missiles stratégiques
 def heavy_truck(v, p, L0, L1, axles, cab_len=1.8, h=2.9, wheels_half=1.25):
     chassis(v, L0, L1, 1.1, 0.7, 1.15)
@@ -1124,7 +1233,7 @@ def iskander():
 
 VEHICLES = [uaz, tigr, kamaz, brdm, btr80, bmp2, grad, shilka, mi24, t90m, t80, t14, bmpt, sprut,
             humvee, matv, m939, stryker, m113, bradley, abrams, himars, lambda: humvee(True), blackhawk, apache,
-            s400, s500, iskander]
+            s400, s500, iskander, b29]
 
 
 OX = {}
@@ -1158,6 +1267,8 @@ def main():
         check(v)
         groups = dict(v.parts)
         groups["wheel"] = wheel_model(v, v.wheel_r, v.wheel_w)
+        if v.props:
+            groups["prop"] = prop_model(v, 1.85)
         d = 2 if v.S >= 4 else 3
         baked = vb.bake(groups, d=d, skip_chamfer=("glass", "light", "ir", "track", "rotor", "radar", "canvas", "canvas_us", "dark"))
         vb.paint(baked, painter).save(os.path.join(ASSETS, f"textures/item/vehicle/{v.name}.png"))
@@ -1188,9 +1299,10 @@ def main():
         wheels = ", ".join(f"{{{w[0]}f, {w[1]}f, {w[2]}f, {w[3]}f}}" for w in v.wheels)
         seats = ", ".join(f"{{{s[0]}f, {s[1]}f, {s[2]}f}}" for s in v.seats)
         muz = ", ".join(f"{{{m[0]}f, {m[1]}f, {m[2]}f, {m[3]}f}}" for m in v.muzzles)
+        props = ", ".join(f"{{{q[0]}f, {q[1]}f, {q[2]}f}}" for q in v.props)
         lines.append(f'        put("{v.name}", new Geo({v.S}f, {v.ox}f, {java_vec(v.turret)}, {java_vec(v.gunp)}, {java_vec(v.rotor)}, '
                      f'{java_vec(v.tail)}, {java_vec(v.radar)},\n                new float[][]{{{wheels}}},\n'
-                     f'                new float[][]{{{seats}}},\n                new float[][]{{{muz}}}));')
+                     f'                new float[][]{{{seats}}},\n                new float[][]{{{muz}}},\n                new float[][]{{{props}}}));')
     os.makedirs(os.path.dirname(JAVA), exist_ok=True)
     with open(JAVA, "w", encoding="utf-8") as f:
         f.write("""package fr.modeminecraft.entity.military;
@@ -1209,9 +1321,10 @@ import java.util.Map;
 public final class MilGeometry {
     /**
      * scale : 1 pixel de modèle = scale / 16 bloc ; ox : abscisse (pixels) de l'origine du véhicule dans le modèle.
-     * wheels : {x, y, z, rayon}. seats : {x, y, z}. muzzles : {x, y, z, mount}.
+     * wheels : {x, y, z, rayon}. seats : {x, y, z}. muzzles : {x, y, z, mount}. props : moyeux d'hélices {x, y, z}.
      */
-    public record Geo(float scale, float ox, Vec3 turret, Vec3 gun, Vec3 rotor, Vec3 tail, Vec3 radar, float[][] wheels, float[][] seats, float[][] muzzles) {}
+    public record Geo(float scale, float ox, Vec3 turret, Vec3 gun, Vec3 rotor, Vec3 tail, Vec3 radar, float[][] wheels, float[][] seats, float[][] muzzles,
+                      float[][] props) {}
 
     private static final Map<String, Geo> ALL = new HashMap<>();
 

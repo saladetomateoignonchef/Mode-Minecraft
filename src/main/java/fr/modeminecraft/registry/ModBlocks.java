@@ -54,6 +54,23 @@ public final class ModBlocks {
         }
     }
 
+    /** Minerais de plomb (fréquent, Y -32 à 64) et d'uranium (rare, profond, faiblement lumineux). */
+    public static final DeferredBlock<Block> LEAD_ORE = BLOCKS.register("lead_ore",
+            () -> new DropExperienceBlock(UniformInt.of(0, 1), BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_ORE)));
+    public static final DeferredBlock<Block> DEEPSLATE_LEAD_ORE = BLOCKS.register("deepslate_lead_ore",
+            () -> new DropExperienceBlock(UniformInt.of(0, 1), BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE_IRON_ORE)));
+    public static final DeferredBlock<Block> URANIUM_ORE = BLOCKS.register("uranium_ore",
+            () -> new DropExperienceBlock(UniformInt.of(2, 5), BlockBehaviour.Properties.ofFullCopy(Blocks.DIAMOND_ORE).lightLevel(s -> 4)));
+    public static final DeferredBlock<Block> DEEPSLATE_URANIUM_ORE = BLOCKS.register("deepslate_uranium_ore",
+            () -> new DropExperienceBlock(UniformInt.of(2, 5), BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE_DIAMOND_ORE).lightLevel(s -> 4)));
+    /** Centrifugeuse à uranium : 16 lingots d'uranium -> 1 cœur d'uranium enrichi (alimentée par la redstone). */
+    public static final DeferredBlock<Block> CENTRIFUGE = BLOCKS.register("uranium_centrifuge",
+            () -> new fr.modeminecraft.nuclear.CentrifugeBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion()));
+
+    /** Citerne de kérosène des hangars à avions : ravitaille seule les aéronefs posés à moins de 8 blocs. */
+    public static final DeferredBlock<Block> KEROSENE_TANK = BLOCKS.register("kerosene_tank",
+            () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK)));
+
     public static final DeferredBlock<Block> VAULT_WALL = BLOCKS.register("vault_wall",
             () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.REINFORCED_DEEPSLATE).strength(-1f, 3600000f).noLootTable()
                     .pushReaction(net.minecraft.world.level.material.PushReaction.BLOCK)));

@@ -151,6 +151,85 @@ def crash_alarm(seed):
     return gs.normalize(beep * 0.6 + voice * 0.7, 0.8)
 
 
+def bay_release(seed):
+    """Largage : déverrouillage métallique lourd (crochets de soute) et choc sourd."""
+    rng = np.random.default_rng(seed)
+    t = gs.t_axis(0.9)
+    n = len(t)
+    clank = gs.band(gs.noise(n, rng), lo=400, hi=5000) * gs.env(t, 0.001, 0.05)
+    ring = (np.sin(2 * np.pi * 820 * t) + 0.6 * np.sin(2 * np.pi * 1330 * t)) * np.exp(-t / 0.18) * 0.4
+    thump = np.sin(2 * np.pi * 70 * t) * gs.env(t, 0.003, 0.12)
+    return gs.normalize(clank + ring + thump * 1.2, 0.85)
+
+
+def bay_doors(seed):
+    """Trappes de soute : moteur électrique, grincement, butée."""
+    rng = np.random.default_rng(seed)
+    t = gs.t_axis(1.6)
+    n = len(t)
+    motor = np.sin(2 * np.pi * np.cumsum(180 + 60 * np.clip(t / 1.2, 0, 1)) / SR) * 0.3 * (t < 1.35)
+    squeal = gs.band(gs.noise(n, rng), lo=1500, hi=3500) * 0.2 * (t < 1.35)
+    thud = gs.band(gs.noise(n, rng), lo=60, hi=600) * gs.env(np.maximum(t - 1.35, 0), 0.002, 0.1) * (t > 1.35)
+    return gs.normalize(motor + squeal + thud * 1.5, 0.8)
+
+
+def whistle(seed):
+    """Sifflement de bombe qui tombe : glissando descendant."""
+    rng = np.random.default_rng(seed)
+    t = gs.t_axis(3.0)
+    f = 1500 - 900 * (t / 3.0)
+    tone = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.clip(t / 0.4, 0, 1)
+    air = gs.band(gs.noise(len(t), rng), lo=800, hi=4000) * 0.25
+    return gs.normalize((tone + air) * np.clip((3.0 - t) / 0.2, 0, 1), 0.7)
+
+
+def nuke(seed):
+    """Détonation nucléaire : craquement initial, souffle énorme et long grondement."""
+    rng = np.random.default_rng(seed)
+    t = gs.t_axis(7.0)
+    n = len(t)
+    crack = gs.band(gs.noise(n, rng), lo=800, hi=9000) * gs.env(t, 0.0008, 0.06) * 1.4
+    blast = gs.band(gs.noise(n, rng), lo=20, hi=500) * gs.env(t, 0.02, 2.5) * 1.6
+    sub = np.sin(2 * np.pi * np.cumsum(22 + 30 * np.exp(-t / 0.6)) / SR) * gs.env(t, 0.01, 3.5)
+    x = gs.echo(crack + blast + sub * 1.3, [0.6, 1.4, 2.6], [0.4, 0.25, 0.12])
+    return gs.normalize(x, 0.98)
+
+
+def rumble(seed):
+    """Grondement sourd et assourdissant de l'onde de choc (arrive avec retard)."""
+    rng = np.random.default_rng(seed)
+    t = gs.t_axis(9.0)
+    n = len(t)
+    low = gs.band(gs.noise(n, rng), lo=15, hi=160) * gs.env(t, 0.4, 4.0) * 2
+    roll = gs.band(gs.noise(n, rng), lo=80, hi=700) * gs.env(t, 0.2, 2.0) * (0.7 + 0.3 * np.sin(2 * np.pi * 0.7 * t))
+    return gs.normalize(low + roll, 0.95)
+
+
+def geiger(seed):
+    """Un clic de compteur Geiger (sec et métallique)."""
+    rng = np.random.default_rng(seed)
+    t = gs.t_axis(0.03)
+    n = len(t)
+    click = gs.band(gs.noise(n, rng), lo=2000, hi=9000) * np.exp(-t / 0.0025)
+    return gs.normalize(click + np.sin(2 * np.pi * 3200 * t) * np.exp(-t / 0.002) * 0.5, 0.75)
+
+
+def prop_loop(seed):
+    """Quatre moteurs en étoile : ronflement grave cadencé, souffle des hélices (boucle parfaite)."""
+    rng = np.random.default_rng(seed)
+    dur = 2.0
+    t = gs.t_axis(dur)
+    n = len(t)
+    x = np.zeros(n)
+    for f0, ph in ((38, 0.0), (41, 1.3), (44, 2.1), (47, 0.7)):
+        f = round(f0 * dur) / dur
+        for h in range(1, 6):
+            x += np.sin(2 * np.pi * f * h * t + ph * h) / h
+    beat = 1 + 0.35 * np.maximum(0, np.sin(2 * np.pi * (round(18 * dur) / dur) * t))
+    air = np.fft.irfft(np.fft.rfft(rng.normal(size=n)) * ((np.fft.rfftfreq(n, 1 / SR) > 80) & (np.fft.rfftfreq(n, 1 / SR) < 1200)), n)
+    return gs.normalize(x * beat * 0.3 + air * 0.8, 0.75)
+
+
 SOUNDS = {
     "mil.radio_dispatch_call": (lambda s: radio_call(s), 2, "radio_call"),
     "mil.radio_call_cut": (lambda s: radio_cut(s), 1, "radio_cut"),
@@ -169,6 +248,13 @@ SOUNDS = {
     "mil.air_raid_alarm": (lambda s: alarm(s), 1, "air_raid_alarm"),
     "mil.himars_hydraulics": (lambda s: hydraulics(s), 1, "himars_hydraulics"),
     "mil.aircraft_crash_alarm": (lambda s: crash_alarm(s), 1, "aircraft_crash_alarm"),
+    "mil.bomb_bay_release": (lambda s: bay_release(s), 1, "bomb_bay_release"),
+    "mil.bomb_bay_doors": (lambda s: bay_doors(s), 1, "bomb_bay_doors"),
+    "mil.bomb_whistle": (lambda s: whistle(s), 1, "bomb_whistle"),
+    "mil.nuclear_detonation": (lambda s: nuke(s), 1, "nuclear_detonation"),
+    "mil.nuclear_detonation_rumble": (lambda s: rumble(s), 1, "nuclear_rumble"),
+    "mil.geiger_clicks": (lambda s: geiger(s), 3, "geiger"),
+    "mil.prop_engine_loop": (lambda s: prop_loop(s), 1, "prop_engine"),
 }
 
 

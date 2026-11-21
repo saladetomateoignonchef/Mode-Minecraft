@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SJS",
+    "SJS",
+    "SJS"
+  ],
+  "key": {
+    "S": {
+      "item": "modeminecraft:steel_ingot"
+    },
+    "J": {
+      "item": "modeminecraft:jerrycan"
+    }
+  },
+  "result": {
+    "id": "modeminecraft:kerosene_tank",
+    "count": 1
+  }
+}

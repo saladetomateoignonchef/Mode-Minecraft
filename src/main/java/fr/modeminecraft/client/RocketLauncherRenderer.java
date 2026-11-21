@@ -87,7 +87,7 @@ public class RocketLauncherRenderer extends EntityRenderer<RocketLauncherEntity>
     }
 
     /** Pavé texturé (texture entière sur chaque face), teinté. */
-    private static void box(PoseStack pose, VertexConsumer vc, int light, int argb, float x0, float y0, float z0, float x1, float y1, float z1) {
+    public static void box(PoseStack pose, VertexConsumer vc, int light, int argb, float x0, float y0, float z0, float x1, float y1, float z1) {
         PoseStack.Pose p = pose.last();
         int a = argb >>> 24, r = argb >> 16 & 255, g = argb >> 8 & 255, b = argb & 255;
         // (x, y, z) des 4 coins de chaque face + normale

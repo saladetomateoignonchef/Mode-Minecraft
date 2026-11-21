@@ -97,7 +97,7 @@ public final class MilClient {
             return false;
         }
         MilType.Seat s = v.weaponSeat(p);
-        return s != null && (s.primary() >= 0 || s.secondary() >= 0);
+        return s != null && (s.primary() >= 0 || s.secondary() >= 0) || v.canBomb(p);
     }
 
     public static boolean thermalActive() {
@@ -117,7 +117,32 @@ public final class MilClient {
         if (v == null) {
             zoom = 1;
             thermal = false;
+            MilVehicleEntity.bombSightActive = false;
             return;
+        }
+        if (v.type().plane()) {
+            // B-29 : G train, O trappes, V viseur Norden, Espace largage (H : clé d'armement, voir DEPLOY)
+            while (ModKeyMappings.AMMO_TYPE.consumeClick()) {
+                send(MilControlPayload.GEAR);
+            }
+            while (ModKeyMappings.BOMB_BAY.consumeClick()) {
+                send(MilControlPayload.BAY);
+            }
+            while (ModKeyMappings.UNDERBARREL.consumeClick()) {
+                if (v.canBomb(mc.player)) {
+                    MilVehicleEntity.bombSightActive = !MilVehicleEntity.bombSightActive;
+                }
+            }
+            if (v.canBomb(mc.player)) {
+                while (mc.options.keyJump.consumeClick()) {
+                    send(MilControlPayload.DROP);
+                }
+            } else {
+                MilVehicleEntity.bombSightActive = false;
+            }
+            if (!mc.options.getCameraType().isFirstPerson()) {
+                MilVehicleEntity.bombSightActive = false;
+            }
         }
         MilType.Seat s = seat();
         if (s != null && (s.primary() >= 0 || s.secondary() >= 0) && mc.level != null) {
@@ -184,12 +209,45 @@ public final class MilClient {
         }
     }
 
+    /** Point d'impact prévu d'une bombe larguée maintenant (vitesse et altitude de l'avion, traînée de la bombe). */
+    public static Vec3 bombImpact(MilVehicleEntity v, float partial) {
+        Vec3 p = v.getPosition(partial).add(v.toWorld(0.8, 0.9, 0).subtract(v.position()));
+        Vec3 vel = v.position().subtract(v.xo, v.yo, v.zo).add(0, -0.1, 0);
+        var level = Minecraft.getInstance().level;
+        for (int i = 0; i < 600; i++) {
+            vel = new Vec3(vel.x * 0.992, Math.max(-3.2, vel.y - 0.045) * 0.998, vel.z * 0.992);
+            p = p.add(vel);
+            int g = level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, (int) Math.floor(p.x), (int) Math.floor(p.z));
+            if (p.y <= g) {
+                return new Vec3(p.x, g, p.z);
+            }
+        }
+        return p;
+    }
+
+    /** Viseur de bombardement Norden : caméra sous le nez vitré, braquée sur le point d'impact prévu. */
+    @SubscribeEvent
+    public static void onCameraAngles(net.neoforged.neoforge.client.event.ViewportEvent.ComputeCameraAngles event) {
+        MilVehicleEntity v = vehicle();
+        if (v == null || !MilVehicleEntity.bombSightActive) {
+            return;
+        }
+        float partial = (float) event.getPartialTick();
+        Vec3 eye = event.getCamera().getPosition();
+        Vec3 d = bombImpact(v, partial).subtract(eye);
+        event.setYaw((float) Math.toDegrees(Math.atan2(-d.x, d.z)));
+        event.setPitch((float) Math.toDegrees(Math.atan2(-d.y, Math.hypot(d.x, d.z))));
+    }
+
     /** Vue à la 1re personne du tireur : dans l'axe du canon (viseur au-dessus du tourillon). */
     public static Vec3 cameraPosition(float partial) {
         MilVehicleEntity v = vehicle();
         Minecraft mc = Minecraft.getInstance();
         if (v == null || !mc.options.getCameraType().isFirstPerson()) {
             return null;
+        }
+        if (MilVehicleEntity.bombSightActive) {
+            return v.getPosition(partial).add(v.toWorld(9.3, 0.9, 0).subtract(v.position()));       // sous le nez vitré
         }
         MilType.Seat s = v.weaponSeat(mc.player);
         if (s == null || s.role() != MilType.Role.GUNNER || s.primary() < 0 || v.type().weapons.get(s.primary()).free()) {
@@ -304,7 +362,7 @@ public final class MilClient {
         private final boolean tracks;
 
         Loop(MilVehicleEntity v) {
-            this(v, v.type().heli() ? ModSounds.ROTOR_LOOP.get()
+            this(v, v.type().plane() ? ModSounds.PROP_ENGINE_LOOP.get() : v.type().heli() ? ModSounds.ROTOR_LOOP.get()
                     : v.type() == MilType.T_80BVM || v.type() == MilType.M1A2_ABRAMS ? ModSounds.TURBINE_LOOP.get() : ModSounds.DIESEL_LOOP.get(), false);
         }
 
@@ -484,6 +542,43 @@ public final class MilClient {
             // sous le panneau du véhicule (la barre d'action en bas d'écran sert aux messages)
             g.drawString(font, Component.translatable(up ? "hud.modeminecraft.mil.launcher_up" : v.raise(0) > 0 && v.raise(0) < 1
                     ? "hud.modeminecraft.mil.launcher_moving" : "hud.modeminecraft.mil.launcher_down"), 6, 6 + hudLines * 11 + 6, up ? 0xFF60E060 : 0xFFFFB040);
+        }
+        if (t.plane()) {
+            var binfo = v.info();
+            int py = 6 + hudLines * 11 + 6;
+            boolean nuke = binfo.getBoolean("nuke");
+            g.drawString(font, Component.translatable("hud.modeminecraft.b29.bombs", binfo.getInt("bombs"),
+                    Component.translatable(nuke ? "hud.modeminecraft.b29.nuke" : "hud.modeminecraft.b29.conventional")), 6, py, nuke ? 0xFFFF6060 : 0xFFE0D090);
+            g.drawString(font, Component.translatable("hud.modeminecraft.b29.status",
+                    Component.translatable(v.is(MilVehicleEntity.GEAR_UP) ? "hud.modeminecraft.b29.gear_up" : "hud.modeminecraft.b29.gear_down"),
+                    Component.translatable(v.is(MilVehicleEntity.BAY_OPEN) ? "hud.modeminecraft.b29.bay_open" : "hud.modeminecraft.b29.bay_closed")),
+                    6, py + 11, v.is(MilVehicleEntity.BAY_OPEN) ? 0xFFFFB040 : 0xFFB0C8FF);
+            if (nuke) {
+                g.drawString(font, Component.translatable(v.is(MilVehicleEntity.NUKE_ARMED) ? "hud.modeminecraft.b29.armed" : "hud.modeminecraft.b29.safe"),
+                        6, py + 22, v.is(MilVehicleEntity.NUKE_ARMED) && (v.tickCount / 6) % 2 == 0 ? 0xFFFF2020 : 0xFF90A090);
+            }
+            if (v.canBomb(mc.player)) {
+                g.drawString(font, Component.translatable("hud.modeminecraft.b29.keys"), 6, py + 33, 0xFF909090);
+            }
+            float stallKmh = t.maxSpeed() * 0.45f / 0.0095f;
+            if (kmh < stallKmh && !v.onGround()) {
+                g.drawCenteredString(font, Component.translatable("hud.modeminecraft.b29.stall"), g.guiWidth() / 2, g.guiHeight() / 2 - 40, 0xFFFF3030);
+            }
+            if (MilVehicleEntity.bombSightActive) {
+                // réticule Norden : le centre de l'écran EST le point d'impact prévu
+                int cx = g.guiWidth() / 2, cy = g.guiHeight() / 2;
+                for (int i = 0; i < 360; i += 6) {
+                    double a = Math.toRadians(i);
+                    g.fill(cx + (int) (Math.cos(a) * 18), cy + (int) (Math.sin(a) * 18), cx + (int) (Math.cos(a) * 18) + 1, cy + (int) (Math.sin(a) * 18) + 1, 0xFFFF4040);
+                }
+                g.fill(cx - 40, cy, cx - 22, cy + 1, 0xFFFF4040);
+                g.fill(cx + 22, cy, cx + 40, cy + 1, 0xFFFF4040);
+                g.fill(cx, cy - 40, cx + 1, cy - 22, 0xFFFF4040);
+                g.fill(cx, cy + 22, cx + 1, cy + 40, 0xFFFF4040);
+                Vec3 imp = bombImpact(v, delta.getGameTimeDeltaPartialTick(false));
+                g.drawCenteredString(font, Component.translatable("hud.modeminecraft.b29.sight", (int) (v.getY() - imp.y),
+                        (int) Math.hypot(imp.x - v.getX(), imp.z - v.getZ())), cx, cy + 48, 0xFFFF6060);
+            }
         }
         if (thermal) {
             g.fill(0, 0, g.guiWidth(), g.guiHeight(), 0x18FFFFFF);

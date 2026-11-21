@@ -36,6 +36,7 @@ import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -86,6 +87,19 @@ public class MilVehicleEntity extends Entity {
     public static final int ENGINE_DOWN = 1, MOBILITY_DOWN = 2, DEPLOYED = 4, BURNING = 8, LOCKING = 16, LOCKED = 32;
     /** Aéronef en perdition (chute incontrôlable), rotor de queue détruit (vrille), épave en feu. */
     public static final int CRASHING = 64, TAIL_HIT = 128, WRECK = 256;
+    /** B-29 : train rentré, trappes de soute ouvertes, bombe nucléaire armée. */
+    public static final int GEAR_UP = 512, BAY_OPEN = 1024, NUKE_ARMED = 2048;
+    /** Soute à bombes (avions). */
+    public final fr.modeminecraft.nuclear.BombBay bombBay = new fr.modeminecraft.nuclear.BombBay();
+    /** Assiette de l'avion (degrés, positif = nez en l'air) et viseur de bombardement actif (client du pilote). */
+    public float planePitch, spool;
+    private boolean planeInit;
+    private static final net.minecraft.server.level.TicketType<ChunkPos> FLIGHT_TICKET = net.minecraft.server.level.TicketType.create(
+            "modeminecraft_flight", java.util.Comparator.comparingLong(ChunkPos::toLong), 100);
+    private ChunkPos flightTicket;
+    public static boolean bombSightActive;
+    private int bombCooldown;
+    private double lastVy;
 
     /** Entrées d'un pilote d'hélicoptère côté client (monter / descendre) : fournies par le code client. */
     public static java.util.function.IntSupplier heliLift = () -> 0;
@@ -218,6 +232,7 @@ public class MilVehicleEntity extends Entity {
             case AVENGER -> new float[]{4.8f, 2.2f, 2.4f};
             case UH_60_BLACK_HAWK -> new float[]{14.5f, 2.4f, 3.1f};
             case AH_64E_APACHE -> new float[]{13.5f, 2.2f, 2.8f};
+            case B29_SUPERFORTRESS -> new float[]{20.5f, 3.2f, 4.4f};
             case S_400, ISKANDER -> new float[]{12.6f, 2.8f, 3.0f};
             case S_500 -> new float[]{13.6f, 2.9f, 3.1f};
         };
@@ -573,6 +588,10 @@ public class MilVehicleEntity extends Entity {
             crashFly();
             return;
         }
+        if (type().plane()) {
+            flyPlane();
+            return;
+        }
         MilType t = type();
         boolean run = canRun();
         float r = rotor();
@@ -614,6 +633,182 @@ public class MilVehicleEntity extends Entity {
         entityData.set(SPEED, speed);
     }
 
+    // ------------------------------------------------------------------ avion à voilure fixe (B-29)
+    /**
+     * Vol d'avion : Z / S = gaz, Q / D = virage (avec inclinaison), la souris (regard vers le haut / le bas) commande
+     * la profondeur. Il faut atteindre la vitesse de rotation sur une piste dégagée pour décoller ; sous la vitesse de
+     * décrochage, l'avion s'enfonce nez en bas. Train rentré au sol = atterrissage sur le ventre.
+     */
+    private void flyPlane() {
+        MilType t = type();
+        boolean run = canRun();
+        if (!planeInit) {
+            // entité (re)créée en plein vol : on repart de l'état synchronisé (moteurs, vitesse)
+            planeInit = true;
+            spool = Math.max(rotor(), onGround() ? 0 : 0.9f);
+            speed = Math.max(speed, Math.abs(speed()));
+            if (!onGround()) {
+                speed = Math.max(speed, type().maxSpeed() * 0.7f);              // en vol : on garde la vitesse de croisière
+            }
+        }
+        // régime des moteurs : calculé par celui qui fait voler l'avion (le serveur ne fait que l'afficher)
+        spool = run ? Math.min(1, spool + 0.01f) : Math.max(0, spool - 0.005f);
+        float r = spool;
+        if (!level().isClientSide) {
+            entityData.set(ROTOR, r);
+        }
+        float[] in = run ? input() : new float[]{0, 0};
+        Entity c = getControllingPassenger();
+        boolean ground = onGround();
+        float max = t.maxSpeed(), stall = max * 0.45f;
+        if (in[0] > 0) {
+            speed = Math.min(max * r, speed + max / 170f);
+        } else if (in[0] < 0) {
+            speed = Math.max(0, speed - max / (ground ? 45f : 260f));
+        } else if (!run) {
+            speed = Math.max(0, speed - max / (ground ? 60f : 400f));
+        } else if (ground) {
+            speed = Math.max(0, speed - max / 600f);
+        }
+        boolean flying = speed >= stall;
+        float want = 0;
+        if (c instanceof Player p && !(level().isClientSide && bombSightActive)) {
+            want = Mth.clamp(-p.getXRot() * 0.8f, -28, 22);
+        }
+        if (ground) {
+            want = flying ? Math.max(0, want) : 0;                                  // au sol : seule la rotation est possible
+        }
+        if (!flying && !ground) {
+            want = -25;                                                            // décrochage : le nez tombe
+        }
+        planePitch = Mth.approach(planePitch, want, 1.2f);
+        float turn = ground ? (speed < 0.05f ? 0 : 1.4f) : 1.8f * Math.min(1, speed / stall);
+        setYRot(getYRot() - in[1] * turn);
+        roll = Mth.lerp(0.08f, roll, ground ? 0 : in[1] * 28f);
+        tilt = planePitch;
+        double rad = Math.toRadians(getYRot()), pr = Math.toRadians(planePitch);
+        double horiz = speed * Math.cos(pr);
+        double vy;
+        if (flying) {
+            vy = speed * Math.sin(pr);
+            if (ground && vy < 0) {
+                vy = 0;
+            }
+        } else {
+            vy = ground ? 0 : Math.max(-1.4, getDeltaMovement().y - 0.06);
+        }
+        if (getY() > level().getMaxBuildHeight() - 30) {
+            vy = Math.min(vy, -0.05);                                              // plafond pratique : l'air est trop rare
+            planePitch = Math.min(planePitch, 0);
+        }
+        setDeltaMovement(-Math.sin(rad) * horiz, vy, Math.cos(rad) * horiz);
+        move(MoverType.SELF, getDeltaMovement());
+        if (onGround() && is(GEAR_UP) && speed > 0.2f) {
+            speed *= 0.92f;                                                         // le ventre racle la piste
+        }
+        if (onGround()) {
+            setDeltaMovement(getDeltaMovement().multiply(1, 0, 1));
+        }
+        entityData.set(SPEED, speed);
+    }
+
+    /** Vitesse de vol imposée (mise en vol directe, essais). */
+    public void setAirspeed(float v) {
+        speed = v;
+        spool = 1;
+    }
+
+    /** Places qui commandent la soute : bombardier, ou pilote s'il est seul à bord. */
+    public boolean canBomb(Entity e) {
+        int s = seatOf(e);
+        return type().plane() && (s == 1 || s == 0 && getPassengers().size() == 1);
+    }
+
+    /** Touche G : sortir / rentrer le train (pilote). */
+    public void toggleGear(Entity by) {
+        if (!type().plane() || seatOf(by) != 0) {
+            return;
+        }
+        if (!is(GEAR_UP) && onGround()) {
+            return;                                                                // pas au sol !
+        }
+        setState(GEAR_UP, !is(GEAR_UP));
+        level().playSound(null, getX(), getY(), getZ(), ModSounds.HIMARS_HYDRAULICS.get(), SoundSource.NEUTRAL, 1.5f, 1.3f);
+        if (by instanceof Player p) {
+            p.displayClientMessage(Component.translatable(is(GEAR_UP) ? "message.modeminecraft.b29.gear_up" : "message.modeminecraft.b29.gear_down")
+                    .withStyle(ChatFormatting.AQUA), true);
+        }
+    }
+
+    /** Touche O : trappes de soute (une bombe nucléaire doit d'abord être armée). */
+    public void toggleBay(Entity by) {
+        if (!canBomb(by) && seatOf(by) != 0) {
+            return;
+        }
+        if (!is(BAY_OPEN) && bombBay.hasNuke() && !is(NUKE_ARMED)) {
+            if (by instanceof Player p) {
+                p.displayClientMessage(Component.translatable("message.modeminecraft.b29.arm_first").withStyle(ChatFormatting.RED), true);
+            }
+            return;
+        }
+        setState(BAY_OPEN, !is(BAY_OPEN));
+        level().playSound(null, getX(), getY(), getZ(), ModSounds.BOMB_BAY_DOORS.get(), SoundSource.NEUTRAL, 2f, 1f);
+    }
+
+    /** Touche H : clé d'armement de la bombe nucléaire (pilote). */
+    public void toggleArm(Entity by) {
+        if (seatOf(by) != 0 || !(by instanceof Player p)) {
+            return;
+        }
+        if (!bombBay.hasNuke()) {
+            p.displayClientMessage(Component.translatable("message.modeminecraft.b29.no_nuke").withStyle(ChatFormatting.GRAY), true);
+            return;
+        }
+        setState(NUKE_ARMED, !is(NUKE_ARMED));
+        level().playSound(null, getX(), getY(), getZ(), SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.NEUTRAL, 1f, is(NUKE_ARMED) ? 0.6f : 1.2f);
+        p.displayClientMessage(Component.translatable(is(NUKE_ARMED) ? "message.modeminecraft.b29.armed" : "message.modeminecraft.b29.disarmed")
+                .withStyle(is(NUKE_ARMED) ? ChatFormatting.RED : ChatFormatting.GREEN), true);
+    }
+
+    /** Clic gauche / Espace : largage de la bombe suivante (trappes ouvertes). */
+    public void dropBomb(Entity by) {
+        if (level().isClientSide || !canBomb(by) || bombCooldown > 0) {
+            return;
+        }
+        if (!is(BAY_OPEN)) {
+            if (by instanceof Player p) {
+                p.displayClientMessage(Component.translatable("message.modeminecraft.b29.open_bay").withStyle(ChatFormatting.YELLOW), true);
+            }
+            bombCooldown = 10;
+            return;
+        }
+        if (bombBay.hasNuke() && !is(NUKE_ARMED)) {
+            return;
+        }
+        var kind = bombBay.take();
+        if (kind == null) {
+            if (by instanceof Player p) {
+                p.displayClientMessage(Component.translatable("message.modeminecraft.b29.empty").withStyle(ChatFormatting.GRAY), true);
+            }
+            bombCooldown = 10;
+            return;
+        }
+        bombCooldown = kind == fr.modeminecraft.nuclear.BombItem.Kind.NUKE ? 40 : 6;
+        if (kind == fr.modeminecraft.nuclear.BombItem.Kind.NUKE) {
+            setState(NUKE_ARMED, false);
+        }
+        Vec3 bay = toWorld(0.8, 0.9, 0);
+        Vec3 motion = position().subtract(xo, yo, zo);
+        if (motion.lengthSqr() < 1e-4) {
+            double rad = Math.toRadians(getYRot());
+            motion = new Vec3(-Math.sin(rad) * speed(), 0, Math.cos(rad) * speed());
+        }
+        LivingEntity owner = by instanceof LivingEntity le ? le : null;
+        level().addFreshEntity(new fr.modeminecraft.nuclear.BombEntity(level(), kind, owner, this, bay, motion.add(0, -0.1, 0)));
+        level().playSound(null, bay.x, bay.y, bay.z, ModSounds.BOMB_BAY_RELEASE.get(), SoundSource.NEUTRAL, 3f, 1f);
+        infoDirty = true;
+    }
+
     // ------------------------------------------------------------------ crash des aéronefs
     private int wreckTicks, crashTicks;
 
@@ -648,7 +843,8 @@ public class MilVehicleEntity extends Entity {
     private boolean copilotTakesOver() {
         for (Entity p : getPassengers()) {
             MilType.Seat s = seat(p);
-            if (s != null && (s.role() == MilType.Role.GUNNER || s.role() == MilType.Role.PILOT) && seatOf(p) != 0
+            if (s != null && (s.role() == MilType.Role.GUNNER && !type().plane() || s.role() == MilType.Role.PILOT
+                    || s.role() == MilType.Role.BOMBARDIER) && seatOf(p) != 0
                     && (p instanceof Player || p instanceof HumanBotEntity)) {
                 assignSeat(p, 0);
                 if (p instanceof Player pl) {
@@ -1038,8 +1234,60 @@ public class MilVehicleEntity extends Entity {
                 activeProtection(sl);
             }
         }
+        if (bombCooldown > 0) {
+            bombCooldown--;
+        }
+        // aéronef posé près d'une citerne de kérosène (hangar à avions) : ravitaillement automatique
+        if (t.heli() && tickCount % 40 == 0 && onGround() && Math.abs(speed()) < 0.05f && fuel() < 0.999f) {
+            BlockPos c = blockPosition();
+            for (BlockPos q : BlockPos.betweenClosed(c.offset(-8, -1, -8), c.offset(8, 3, 8))) {
+                if (sl.getBlockState(q).is(fr.modeminecraft.registry.ModBlocks.KEROSENE_TANK.get())) {
+                    setFuel(Math.min(1f, fuel() + 0.05f));
+                    if (getControllingPassenger() instanceof Player pl) {
+                        pl.displayClientMessage(Component.translatable("message.modeminecraft.mil.refuel", Math.round(fuel() * 100)), true);
+                    }
+                    break;
+                }
+            }
+        }
+        if (t.plane() && tickCount % 10 == 0) {
+            infoDirty = true;                                                       // contenu de la soute (rempli à la main)
+        }
+        if (t.heli() && !onGround()) {
+            // aéronef rapide : chunks chargés devant lui (sinon il dépasse la génération du terrain et « saute »)
+            Vec3 motion = position().subtract(xo, yo, zo);
+            if (motion.lengthSqr() > 0.25) {
+                ChunkPos ahead = new ChunkPos(BlockPos.containing(position().add(motion.scale(50))));
+                if (!ahead.equals(flightTicket) || tickCount % 40 == 0) {
+                    sl.getChunkSource().addRegionTicket(FLIGHT_TICKET, ahead, 3, ahead);
+                    ChunkPos mid = new ChunkPos(BlockPos.containing(position().add(motion.scale(25))));
+                    sl.getChunkSource().addRegionTicket(FLIGHT_TICKET, mid, 3, mid);
+                    flightTicket = ahead;
+                }
+            }
+        }
+        if (t.plane() && !is(WRECK) && !is(CRASHING)) {
+            // contrôles faits par le serveur (le pilote joueur fait voler l'avion de son côté)
+            double vy = getY() - yo, hs = Math.hypot(getX() - xo, getZ() - zo);
+            if (onGround() && lastVy < -0.5) {
+                hurtInternal((float) (-lastVy * 160), null, position().add(0, -1, 0), false);       // atterrissage brutal
+            }
+            if (onGround() && is(GEAR_UP) && hs > 0.2) {
+                hurtInternal(t.health * 0.02f, null, position().add(0, -1, 0), false);              // atterrissage sur le ventre
+                sl.sendParticles(ParticleTypes.LAVA, getX(), getY(), getZ(), 3, 2, 0.1, 2, 0);
+            }
+            if (horizontalCollision && hs > 0.6 && !onGround()) {
+                startCrash(false);
+                crashImpact();                                                     // contre une falaise / un immeuble
+                return;
+            }
+            lastVy = vy;
+        }
         // armes
         for (Entity p : getPassengers()) {
+            if (t.plane() && p instanceof Player pl && canBomb(pl) && TriggerHandler.isTriggerDown(pl)) {
+                dropBomb(pl);                                                       // tapis de bombes en maintenant le clic
+            }
             MilType.Seat s = weaponSeat(p);
             if (s == null) {
                 continue;
@@ -1436,6 +1684,10 @@ public class MilVehicleEntity extends Entity {
 
     /** Déploiement des complexes lance-missiles (béquilles + relèvement des tubes). */
     public void toggleDeploy(Entity by) {
+        if (type().plane()) {
+            toggleArm(by);
+            return;
+        }
         if (!type().has(MilType.Flag.STRATEGIC) && !raisable() || Math.abs(speed()) > 0.02f) {
             return;
         }
@@ -1499,6 +1751,10 @@ public class MilVehicleEntity extends Entity {
         }
         t.putInt("smoke", smoke);
         t.putInt("aps", aps);
+        if (type().plane()) {
+            t.putInt("bombs", bombBay.bombs());
+            t.putBoolean("nuke", bombBay.hasNuke());
+        }
         if (hasSavedTarget) {
             t.putInt("LastTargetX", lastTargetX);                         // console Iskander : champs pré-remplis
             t.putInt("LastTargetZ", lastTargetZ);
@@ -1565,7 +1821,7 @@ public class MilVehicleEntity extends Entity {
         if (type().heli() && !is(WRECK) && airborne() && (s.guided || s.blast >= 2)) {
             boolean rear = armorAt(at) == type().armorRear;
             if (rear || random.nextFloat() < 0.35f) {
-                startCrash(true);
+                startCrash(!type().plane());                                     // avion : moteurs en feu, piqué (pas de vrille)
             }
         }
     }
@@ -1694,6 +1950,12 @@ public class MilVehicleEntity extends Entity {
         sl.explode(this, getX(), getY() + d[2] / 2, getZ(), type().tracked() ? 4.5f : 3.5f, Level.ExplosionInteraction.NONE);
         sl.sendParticles(ParticleTypes.LAVA, getX(), getY() + 1, getZ(), 30, d[1] / 2, 0.5, d[1] / 2, 0.1);
         spawnAtLocation(new ItemStack(ModItems.STEEL_PLATE.get(), 2 + random.nextInt(4)));
+        for (int i = 0; i < bombBay.getContainerSize(); i++) {
+            ItemStack s = bombBay.getItem(i);
+            if (!s.isEmpty() && !(s.getItem() instanceof fr.modeminecraft.nuclear.BombItem b && b.kind == fr.modeminecraft.nuclear.BombItem.Kind.NUKE)) {
+                spawnAtLocation(s);
+            }
+        }
         for (int i = 0; i < trunk.getContainerSize(); i++) {
             ItemStack s = trunk.getItem(i);
             if (!s.isEmpty()) {
@@ -1714,6 +1976,13 @@ public class MilVehicleEntity extends Entity {
             return InteractionResult.SUCCESS;
         }
         MilType t = type();
+        if (player.isSecondaryUseActive() && t.plane()) {
+            // soute à bombes (Maj + clic droit sous le fuselage)
+            bombBay.user(player);
+            player.openMenu(new SimpleMenuProvider((id, inv, p) -> new ChestMenu(MenuType.GENERIC_9x2, id, inv, bombBay, 2),
+                    Component.translatable("container.modeminecraft.bomb_bay")));
+            return InteractionResult.SUCCESS;
+        }
         if (player.isSecondaryUseActive()) {
             if (t.trunk > 0) {
                 int rows = Math.max(1, Math.min(6, (t.trunk + 8) / 9));
@@ -1813,6 +2082,12 @@ public class MilVehicleEntity extends Entity {
     // ------------------------------------------------------------------ client
     private void clientFx() {
         MilType t = type();
+        if (t.plane() && !isControlledByLocalInstance() && !is(CRASHING)) {
+            // assiette vue par les autres joueurs : déduite de la trajectoire
+            double dy = getY() - yo, hz = Math.hypot(getX() - xo, getZ() - zo);
+            tilt = Mth.lerp(0.2f, tilt, hz > 0.05 ? (float) Math.toDegrees(Math.atan2(dy, hz)) : 0);
+            roll = Mth.lerp(0.1f, roll, 0);
+        }
         if (is(CRASHING)) {
             // nez qui plonge et roulis désordonné
             tilt = Mth.lerp(0.05f, tilt, -35f);
@@ -1846,7 +2121,7 @@ public class MilVehicleEntity extends Entity {
         entityData.set(TYPE, (t == null ? MilType.UAZ_469 : t).ordinal());
         entityData.set(HEALTH, tag.contains("Health") ? tag.getFloat("Health") : type().health);
         entityData.set(FUEL, tag.contains("Fuel") ? tag.getFloat("Fuel") : 0.6f);
-        entityData.set(STATE, tag.getInt("State") & (ENGINE_DOWN | MOBILITY_DOWN | DEPLOYED | WRECK));
+        entityData.set(STATE, tag.getInt("State") & (ENGINE_DOWN | MOBILITY_DOWN | DEPLOYED | WRECK | GEAR_UP | NUKE_ARMED));
         entityData.set(TURRET, tag.getFloat("Turret"));
         hasSavedTarget = tag.getBoolean("HasSavedTarget");
         destroyed = is(WRECK);
@@ -1870,6 +2145,9 @@ public class MilVehicleEntity extends Entity {
         aps = tag.contains("Aps") ? tag.getInt("Aps") : 4;
         if (tag.contains("Trunk")) {
             trunk.fromTag(tag.getList("Trunk", 10), registryAccess());
+        }
+        if (tag.contains("BombBay")) {
+            bombBay.fromTag(tag.getList("BombBay", 10), registryAccess());
         }
         if (tag.contains("Dest")) {
             destination = BlockPos.of(tag.getLong("Dest"));
@@ -1904,6 +2182,9 @@ public class MilVehicleEntity extends Entity {
         tag.putInt("Aps", aps);
         ListTag items = trunk.createTag(registryAccess());
         tag.put("Trunk", items);
+        if (type().plane()) {
+            tag.put("BombBay", bombBay.createTag(registryAccess()));
+        }
         if (destination != null) {
             tag.putLong("Dest", destination.asLong());
         }

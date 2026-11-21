@@ -17,5 +17,9 @@ public final class ModDamageTypes {
     public static final ResourceKey<DamageType> BULLET_AP =
             ResourceKey.create(Registries.DAMAGE_TYPE, ModeMinecraft.id("bullet_ap"));
 
+    /** Irradiation (zone nucléaire) : traverse l'armure, sauf tenue anti-radiation complète. */
+    public static final ResourceKey<DamageType> RADIATION =
+            ResourceKey.create(Registries.DAMAGE_TYPE, ModeMinecraft.id("radiation"));
+
     private ModDamageTypes() {}
 }

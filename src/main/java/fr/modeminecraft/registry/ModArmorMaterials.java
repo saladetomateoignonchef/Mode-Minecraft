@@ -41,6 +41,11 @@ public final class ModArmorMaterials {
     public static final Holder<ArmorMaterial> CARTEL_OUTFIT = outfit("cartel_outfit", 1, 3, 2, 1, 0f);
     public static final Holder<ArmorMaterial> SHERIFF_OUTFIT = outfit("sheriff_outfit", 2, 3, 2, 1, 0f);
 
+    /** Combinaison Hazmat civile : étanche (100 % des radiations) mais à peine plus solide que du cuir. */
+    public static final Holder<ArmorMaterial> HAZMAT = outfit("hazmat_suit", 1, 2, 2, 1, 0f);
+    /** Tenue de combat NBC : doublée de plomb et de plaques, excellente protection balistique. */
+    public static final Holder<ArmorMaterial> NBC = outfit("nbc_suit", 3, 8, 6, 3, 2.5f);
+
     private static Holder<ArmorMaterial> outfit(String name, int helmet, int chest, int legs, int boots, float toughness) {
         return ARMOR_MATERIALS.register(name, () -> new ArmorMaterial(
                 Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {

@@ -81,6 +81,8 @@ public final class ClientSetup {
         event.registerEntityRenderer(ModEntities.TOMAHAWK.get(), ctx -> new ThrownItemRenderer<>(ctx, 1.2f, false));
         event.registerEntityRenderer(ModEntities.MOUNTED_GUN.get(), MountedGunRenderer::new);
         event.registerEntityRenderer(ModEntities.ROCKET_LAUNCHER.get(), RocketLauncherRenderer::new);
+        event.registerEntityRenderer(ModEntities.BOMB.get(), BombRenderer::new);
+        event.registerEntityRenderer(ModEntities.NUKE_CLOUD.get(), NukeCloudRenderer::new);
         event.registerEntityRenderer(ModEntities.HUMAN_BOT.get(), HumanBotRenderer::new);
         event.registerEntityRenderer(ModEntities.PIGEON.get(), PigeonRenderer::new);
         event.registerEntityRenderer(ModEntities.AIRDROP.get(), AirdropRenderer::new);
@@ -114,6 +116,7 @@ public final class ClientSetup {
     public static void registerKeys(RegisterKeyMappingsEvent event) {
         event.register(ModKeyMappings.RELOAD);
         event.register(ModKeyMappings.VEHICLE_ZOOM);
+        event.register(ModKeyMappings.BOMB_BAY);
         event.register(ModKeyMappings.FIRE_MODE);
         event.register(ModKeyMappings.CHECK_CHAMBER);
         event.register(ModKeyMappings.AMMO_TYPE);

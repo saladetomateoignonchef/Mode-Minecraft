@@ -723,6 +723,59 @@ Des **villes générées** apparaissent selon le biome (un centre de ville par r
   pas et l'arme ne vise ni ne tire (« Impossible d'utiliser un bouclier avec une arme à deux mains ») ; sortir une arme
   longue bouclier levé annule la garde. Les bots au bouclier (SWAT) n'ont qu'un pistolet.
 
+### Boeing B-29 Superfortress, bombes et arme nucléaire (mise à jour 0.6)
+#### Le bombardier
+- Quadrimoteur de 28 blocs d'envergure et 20 de long, fuselage en aluminium poli, nez vitré en dôme, 4 hélices
+  tripales animées, trappes de soute et train d'atterrissage articulés. **6 places** : pilote, bombardier (viseur
+  Norden), et 4 tireurs aux tourelles M2 jumelées (dorsale avant, dorsale arrière, ventrale, queue).
+- **Vol** : Z / S gaz, Q / D virage incliné, la **souris** commande la profondeur (regarder vers le haut pour monter).
+  Il faut prendre de la vitesse sur une piste pour décoller ; sous la vitesse de décrochage (alarme à l'écran), le nez
+  tombe. **G** : train d'atterrissage (atterrir train rentré = sur le ventre, gros dégâts).
+- **Soute** : Maj + clic droit sous le fuselage : jusqu'à 12 bombes explosives, 16 incendiaires (16 bombes au total), ou
+  **une seule bombe nucléaire** qui occupe toute la soute.
+- **Bombardement** (le bombardier, ou le pilote s'il est **seul à bord** — il garde alors les commandes de vol) :
+  **O** ouvre les trappes, **V** bascule la caméra sous le nez vitré (le centre de l'écran est le point d'impact calculé
+  en temps réel selon l'altitude et la vitesse), **Espace / clic gauche** largue (clic maintenu = tapis de bombes).
+  Bombe nucléaire : le pilote doit d'abord tourner la **clé d'armement (H)**.
+- Soumis aux **crashs aériens** (moteurs en feu après un missile, pilote tué) ; à l'abri dans les **méga-hangars**, les
+  **citernes de kérosène** le ravitaillent automatiquement.
+- Fabrication à l'établi d'assemblage : 4 moteurs d'avion en étoile + cockpit pressurisé + 24 plaques de titane +
+  16 plaques d'acier + 2 modules de conduite de tir + train de roues. Ou bien, avec de la chance, dans un méga-hangar.
+
+#### Pistes et méga-hangars
+- En bordure des **bases militaires secrètes** et des **cités soviétiques** : piste en béton de 18 blocs de large
+  (96 à 112 blocs de long), seuils et ligne médiane blancs, balises lumineuses, feux d'approche, manche à air, tour de
+  contrôle radar. À côté, un **méga-hangar** voûté de 36 x 32 x 14 relié par un taxiway : porte coulissante ouverte,
+  projecteurs, citernes de kérosène, caisses de pièces détachées et parfois un **B-29 prêt au décollage**.
+
+#### Les bombes (établi d'artillerie)
+- **AN-M65 explosive** : explosion de 14 blocs, cratère profond, blindés pulvérisés.
+- **AN-M76 incendiaire au napalm** : explosion de 8 blocs et **nappe de feu liquide de 22 blocs** pendant 45 s.
+- **Bombe nucléaire stratégique** (l'objet le plus cher du mod) : 4 cœurs d'uranium enrichi, 4 lingots de netherite,
+  8 plaques de titane, 2 détonateurs électroniques de haute précision, 1 bloc de diamant. À l'impact :
+  1. **flash** sur 400 blocs (cécité 3 s pour qui regarde sans visière : le masque Hazmat / NBC protège) ;
+  2. **cratère de 110 blocs de diamètre** et 35 de profondeur, creusé par anneaux sur 2 secondes (pas de gel), fond
+     vitrifié, couronne calcinée et en flammes ; **champignon atomique** de 180 blocs de haut, visible de très loin ;
+  3. **onde de choc** visible jusqu'à 180 blocs : vitres et blocs fragiles soufflés, feuillages arrachés, joueurs,
+     bots et véhicules projetés, puis le grondement arrive avec un retard proportionnel à la distance ;
+  4. **impulsion électromagnétique** de 220 blocs (drones, tourelles, radars, véhicules, éclairages).
+
+#### Radiations (7 jours de jeu)
+- La zone reste contaminée **exactement 7 jours Minecraft** (168 000 ticks, sauvegardés : le décompte survit aux
+  redémarrages) sur **160 blocs** autour du point zéro : ciel et brouillard verdâtres, cendres radioactives.
+- Sans protection : nausée, vision brouillée, faiblesse et **2 à 6 PV par seconde** selon la distance, mort rapide au
+  centre. Touche aussi les bots, les civils et les animaux.
+- **Compteur Geiger-Müller** (2 lingots d'acier, cuivre, 2 redstone, vitre, pile CR123A) : crépite dès qu'il est dans la
+  barre d'action (clics espacés à l'approche, grésillement frénétique au point zéro) ; en main, il affiche le débit de
+  dose (0,12 µSv/h à plus de 500 Sv/h), le temps avant dissipation et la saturation de la tenue.
+- **Tenue Hazmat** (kit : 6 toiles caoutchoutées + 2 lingots de plomb + 1 verre ; clic droit = 4 pièces) : bloque 100 %
+  des radiations, mais à peine plus solide que du cuir. **Tenue de combat NBC** (chaque pièce Hazmat + plaques de
+  titane / d'acier + plomb + cartouche filtrante) : 100 % des radiations ET forte protection balistique ; au cœur du
+  cratère, elle consomme une **cartouche filtrante NBC** par minute (sans cartouche, le masque laisse passer).
+- **Plomb** (minerai fréquent) et **uranium** (minerai rare et profond, faiblement lumineux) ; la **centrifugeuse à
+  uranium** (alimentée par la redstone) transforme 16 lingots d'uranium en 1 cœur enrichi en 60 s. On trouve aussi des
+  cœurs dans les chambres fortes du bunker et du QG soviétique.
+
 ### Gameplay et progression
 - **Niveaux des armes (1 à 5)** : chaque arme garde ses statistiques (éliminations, tirs à la tête, tirs, ratio)
   et gagne de l'expérience : +10 par élimination, +5 si tir à la tête, +10 pour un gros monstre (50 PV ou plus).
