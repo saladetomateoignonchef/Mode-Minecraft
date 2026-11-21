@@ -85,8 +85,9 @@ public final class StrategicSystems {
                         && Math.hypot(s.target.x - v.getX(), s.target.z - v.getZ()) < range(t)) {
                     MilAmmo a = pick(v, true);
                     if (a != null && v.consume(a)) {
-                        launchInterceptor(sl, v, null);
-                        Strikes.intercept(sl, s, v.position(), now + 25);
+                        if (Strikes.intercept(sl, s, v.position(), now + 100000)) {
+                            launchInterceptor(sl, v, null, s);
+                        }
                     }
                 }
             }
@@ -99,7 +100,7 @@ public final class StrategicSystems {
                 if (hostile) {
                     MilAmmo a = pick(v, false);
                     if (a != null && v.consume(a)) {
-                        launchInterceptor(sl, v, e);
+                        launchInterceptor(sl, v, e, null);
                     }
                     break;
                 }
@@ -123,13 +124,24 @@ public final class StrategicSystems {
         return null;
     }
 
-    private static void launchInterceptor(ServerLevel sl, MilVehicleEntity v, Entity target) {
+    /** Intercepteur lancé à froid vers une entité (hélicoptère, drone, missile) ou vers un missile balistique simulé. */
+    private static void launchInterceptor(ServerLevel sl, MilVehicleEntity v, Entity target, Strikes.Strike strike) {
         MilAmmo a = pick(v, target == null || target instanceof ShellEntity);
         MilAmmo.Shell shell = a == null ? MilAmmo.Shell.SAM_LONG : a.shell;
         Vec3 tube = v.toWorld(-MilVehicleEntity.dims(v.type())[0] / 2 + 1, MilVehicleEntity.dims(v.type())[2] + 2.5, 0);
         ShellEntity m = new ShellEntity(sl, v.occupant(1) instanceof LivingEntity le ? le : null, shell, v);
         m.setPos(tube.x, tube.y, tube.z);
-        m.coldLaunch(target);
+        if (strike != null) {
+            m.interceptStrike(strike, sl.getGameTime());
+            // couloir préchargé jusqu'au point de rencontre prévu (16 ticks d'éjection + vol)
+            Vec3 meet = ShellEntity.meetingPoint(strike, tube.add(0, 25, 0), shell.speed * 0.9, sl.getGameTime() + 16);
+            ShellEntity.preloadPath(sl, tube, meet);
+        } else {
+            m.coldLaunch(target);
+            if (target != null) {
+                ShellEntity.preloadPath(sl, tube, target.position());
+            }
+        }
         sl.addFreshEntity(m);
         sl.sendParticles(net.minecraft.core.particles.ParticleTypes.CLOUD, tube.x, tube.y, tube.z, 30, 0.6, 0.3, 0.6, 0.05);
         sl.playSound(null, tube.x, tube.y, tube.z, fr.modeminecraft.registry.ModSounds.MISSILE_LAUNCH.get(), net.minecraft.sounds.SoundSource.NEUTRAL, 8f, 0.8f);
@@ -156,11 +168,24 @@ public final class StrategicSystems {
                 List<Strikes.Strike> strikes = Strikes.active();
                 int k = -id - 1;
                 if (k < strikes.size()) {
-                    launchInterceptor(sl, v, null);
-                    Strikes.intercept(sl, strikes.get(k), v.position(), sl.getGameTime() + 25);
+                    if (Strikes.intercept(sl, strikes.get(k), v.position(), sl.getGameTime() + 100000)) {
+                        launchInterceptor(sl, v, null, strikes.get(k));
+                    } else {
+                        v.refund(a);                                                   // déjà pris en chasse
+                        continue;
+                    }
+                } else {
+                    v.refund(a);
+                    continue;
                 }
             } else {
-                launchInterceptor(sl, v, sl.getEntity(id));
+                Entity target = sl.getEntity(id);
+                if (target == null) {
+                    p.displayClientMessage(Component.translatable("message.modeminecraft.strategic.lost").withStyle(ChatFormatting.RED), true);
+                    v.refund(a);                                                       // contact perdu : missile non tiré
+                    continue;
+                }
+                launchInterceptor(sl, v, target, null);
             }
             fired++;
         }
@@ -195,6 +220,7 @@ public final class StrategicSystems {
         ShellEntity m = new ShellEntity(sl, p, a.shell, v);
         m.setPos(tube.x, tube.y, tube.z);
         m.coldLaunchAt(new Vec3(x + 0.5, y, z + 0.5));
+        ShellEntity.preloadPath(sl, tube, new Vec3(x + 0.5, y, z + 0.5));
         sl.addFreshEntity(m);
         sl.sendParticles(net.minecraft.core.particles.ParticleTypes.CLOUD, tube.x, tube.y, tube.z, 30, 0.6, 0.3, 0.6, 0.05);
         sl.playSound(null, tube.x, tube.y, tube.z, fr.modeminecraft.registry.ModSounds.MISSILE_LAUNCH.get(), net.minecraft.sounds.SoundSource.NEUTRAL, 8f, 0.8f);

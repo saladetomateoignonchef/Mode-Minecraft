@@ -1591,5 +1591,13 @@
   "gui.modeminecraft.launcher.redstone": "Un signal de redstone sur le lanceur déclenche une salve",
   "gui.modeminecraft.launcher.status": "Azimut %s°  Élévation %s°  Portée ~%s blocs",
   "gui.modeminecraft.launcher.keys": "Clic gauche : 1 roquette · clic droit / Espace : salve",
-  "message.modeminecraft.shield.two_handed": "Impossible d'utiliser un bouclier avec une arme à deux mains"
+  "message.modeminecraft.shield.two_handed": "Impossible d'utiliser un bouclier avec une arme à deux mains",
+  "container.modeminecraft.outfit_chest": "Coffre de la tenue : %s",
+  "message.modeminecraft.strategic.lost": "Contact perdu : cible hors de portée de suivi",
+  "outfit.modeminecraft.police_uniform": "uniforme de police",
+  "outfit.modeminecraft.desert_boss": "tenue du Boss du Désert (1 pièce sur 4)",
+  "outfit.modeminecraft.special_forces": "tenue des Forces Spéciales",
+  "outfit.modeminecraft.soviet_uniform": "uniforme soviétique",
+  "outfit.modeminecraft.cartel_outfit": "tenue du cartel",
+  "outfit.modeminecraft.sheriff_outfit": "tenue de shérif"
 }

@@ -39,11 +39,13 @@ public class VaultDoorBlock extends DoorBlock {
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level world, BlockPos pos, Player player,
                                               InteractionHand hand, BlockHitResult hit) {
-        if (stack.getItem() instanceof AccessCardItem card) {
+        // la carte nominative d'un boss est un passe-partout : elle ouvre aussi toutes les salles fortes de la ville
+        boolean master = stack.getItem() instanceof fr.modeminecraft.item.BossCardItem;
+        if (stack.getItem() instanceof AccessCardItem || master) {
             if (world.isClientSide) {
                 return ItemInteractionResult.SUCCESS;
             }
-            if (card.level() < level) {
+            if (!master && ((AccessCardItem) stack.getItem()).level() < level) {
                 player.displayClientMessage(Component.translatable("message.modeminecraft.vault.denied", level).withStyle(ChatFormatting.RED), true);
                 world.playSound(null, pos, SoundEvents.NOTE_BLOCK_BASS.value(), SoundSource.BLOCKS, 1f, 0.5f);
                 return ItemInteractionResult.CONSUME;

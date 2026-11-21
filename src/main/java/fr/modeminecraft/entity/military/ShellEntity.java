@@ -31,6 +31,13 @@ public class ShellEntity extends Projectile {
     private static final EntityDataAccessor<Integer> SHELL = SynchedEntityData.defineId(ShellEntity.class, EntityDataSerializers.INT);
 
     private int launcher = -1;
+    /** Les missiles en vol gardent leurs chunks chargés (sinon ils se figent hors de la distance de simulation). */
+    private static final net.minecraft.server.level.TicketType<net.minecraft.world.level.ChunkPos> TICKET = net.minecraft.server.level.TicketType.create(
+            "modeminecraft_missile", java.util.Comparator.comparingLong(net.minecraft.world.level.ChunkPos::toLong), 100);
+    /** Couloir de vol préchargé au lancement (missiles sol-air à longue portée). */
+    private static final net.minecraft.server.level.TicketType<net.minecraft.world.level.ChunkPos> PATH = net.minecraft.server.level.TicketType.create(
+            "modeminecraft_missile_path", java.util.Comparator.comparingLong(net.minecraft.world.level.ChunkPos::toLong), 400);
+    private net.minecraft.world.level.ChunkPos ticketHere, ticketAhead;
     /** Poussée relative du moteur-fusée (charge propulsive réduite des lanceurs fixes). */
     private float thrust = 1;
     /** Guidage : 0 aucun, 1 faisceau (réticule du tireur), 2 autodirecteur (cible), 3 GPS (point). */
@@ -78,6 +85,40 @@ public class ShellEntity extends Projectile {
         gpsTarget = target;
     }
 
+    /**
+     * Précharge les chunks entre le lanceur et la cible (et autour d'elle) : sans cela, un missile tiré au-delà de la
+     * distance de simulation arrive sur des chunks pas encore chargés, se fige et n'atteint jamais sa cible.
+     */
+    public static void preloadPath(ServerLevel sl, Vec3 from, Vec3 to) {
+        Vec3 d = new Vec3(to.x - from.x, 0, to.z - from.z);
+        double len = d.length();
+        java.util.Set<Long> done = new java.util.HashSet<>();
+        for (double t = 0; t <= len + 16; t += 12) {
+            Vec3 p = len < 1 ? from : from.add(d.scale(Math.min(t, len) / len));
+            var cp = new net.minecraft.world.level.ChunkPos(net.minecraft.core.BlockPos.containing(p));
+            if (done.add(cp.toLong())) {
+                sl.getChunkSource().addRegionTicket(PATH, cp, 3, cp);
+            }
+        }
+    }
+
+    /** Ticket de chargement sur le chunk du projectile, un peu plus loin sur sa route et autour de sa cible. */
+    private void keepLoaded(ServerLevel sl) {
+        if (life % 10 == 1 && (mode == 2 || mode == 4) && guideId >= 0 && sl.getEntity(guideId) instanceof Entity t) {
+            sl.getChunkSource().addRegionTicket(TICKET, t.chunkPosition(), 3, t.chunkPosition());   // la cible continue de bouger
+        }
+        var here = chunkPosition();
+        var ahead = new net.minecraft.world.level.ChunkPos(net.minecraft.core.BlockPos.containing(position().add(getDeltaMovement().scale(20))));
+        if (!here.equals(ticketHere) || life % 20 == 0) {
+            sl.getChunkSource().addRegionTicket(TICKET, here, 3, here);
+            ticketHere = here;
+        }
+        if (!ahead.equals(ticketAhead) && !ahead.equals(here)) {
+            sl.getChunkSource().addRegionTicket(TICKET, ahead, 3, ahead);
+            ticketAhead = ahead;
+        }
+    }
+
     public void setThrust(float k) {
         thrust = k;
     }
@@ -92,6 +133,28 @@ public class ShellEntity extends Projectile {
         guideId = target == null ? -1 : target.getId();
         setDeltaMovement(0, 1.6, 0);
         setNoGravity(true);
+    }
+
+    /** Missile balistique (simulé par Strikes) poursuivi par cet intercepteur. */
+    private Strikes.Strike strike;
+
+    /** Premier point de la trajectoire du missile balistique que l'intercepteur peut atteindre à temps. */
+    public static Vec3 meetingPoint(Strikes.Strike s, Vec3 from, double speed, long now) {
+        long rem = s.impact - now;
+        for (int t = 1; t < rem; t++) {
+            Vec3 p = s.position(now + t);
+            if (p.distanceTo(from) <= speed * t) {
+                return p;
+            }
+        }
+        return s.position(Math.max(now, s.impact - 6));
+    }
+
+    /** Lancement à froid vers un missile balistique en vol : poursuite de sa position simulée, explosion au contact. */
+    public void interceptStrike(Strikes.Strike s, long now) {
+        coldLaunch(null);
+        strike = s;
+        gpsTarget = s.position(now);
     }
 
     /** Lancement à froid vers un point fixe (marqueur posé sur l'écran radar du S-400). */
@@ -153,7 +216,33 @@ public class ShellEntity extends Projectile {
             }
             return;
         }
-        if (!level().isClientSide && mode == 4 && guideId < 0 && gpsTarget != null && life > 16
+        if (level() instanceof ServerLevel sl) {
+            keepLoaded(sl);
+        }
+        if (level() instanceof ServerLevel sl2 && strike != null && mode == 4) {
+            long now = sl2.getGameTime();
+            if (!Strikes.active().contains(strike) || life > 400) {
+                Strikes.interceptFailed(strike);                                    // cible disparue (impact, déjà abattue)
+                detonate(position());
+                return;
+            }
+            // point de rencontre : premier instant où l'intercepteur peut atteindre la position future du missile
+            gpsTarget = meetingPoint(strike, position(), Math.max(shell().speed, getDeltaMovement().length()), now);
+            // fusée de proximité sur tout le tick (vitesses relatives de plus de 15 blocs / tick)
+            Vec3 s0 = strike.position(now), s1 = strike.position(now + 1), v0 = getDeltaMovement();
+            double closest = 1e9;
+            for (int k = 0; k <= 6; k++) {
+                double f = k / 6.0;
+                closest = Math.min(closest, position().add(v0.scale(f)).distanceTo(s0.add(s1.subtract(s0).scale(f))));
+            }
+            if (life > 16 && closest < 12) {
+                Strikes.resolveIntercept(sl2, strike, position());
+                strike = null;
+                detonate(position());
+                return;
+            }
+        }
+        if (!level().isClientSide && mode == 4 && guideId < 0 && gpsTarget != null && strike == null && life > 16
                 && (position().distanceTo(gpsTarget) < 4 || getDeltaMovement().dot(gpsTarget.subtract(position())) < 0 && life > 40)) {
             detonate(position());                                                  // point du radar atteint : fusée de proximité
             return;
@@ -172,7 +261,12 @@ public class ShellEntity extends Projectile {
         // fusée de proximité des missiles sol-air
         if (!level().isClientSide && (mode == 2 || mode == 4) && guideId >= 0) {
             Entity t = level().getEntity(guideId);
-            if (t != null && t.position().add(0, t.getBbHeight() / 2, 0).distanceTo(position()) < 4.5) {
+            // distance au segment parcouru pendant ce tick (à 5 blocs/tick, un simple test de position le « saute »)
+            Vec3 c = t == null ? null : t.position().add(0, t.getBbHeight() / 2, 0);
+            Vec3 step = getDeltaMovement();
+            double k = c == null || step.lengthSqr() < 1e-6 ? 0 : Mth.clamp(c.subtract(position()).dot(step) / step.lengthSqr(), 0, 1);
+            double fuse = 4.5 + Math.max(t == null ? 0 : t.getBbWidth(), t == null ? 0 : t.getBbHeight()) * 0.5;
+            if (t != null && position().add(step.scale(k)).distanceTo(c) < fuse) {
                 if (t instanceof ShellEntity || t instanceof fr.modeminecraft.entity.RocketEntity) {
                     t.discard();                                                     // missile ou roquette abattu
                 } else {
@@ -241,7 +335,7 @@ public class ShellEntity extends Projectile {
             }
         } else if (mode == 4 && guideId < 0 && gpsTarget != null) {
             aim = gpsTarget;
-            turn = 9;
+            turn = strike != null ? 14 : 9;
         } else if (mode == 2 || mode == 4) {
             Entity t = level().getEntity(guideId);
             if (t != null && t.isAlive()) {

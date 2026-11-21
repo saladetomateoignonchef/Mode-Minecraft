@@ -683,7 +683,10 @@ Des **villes générées** apparaissent selon le biome (un centre de ville par r
 - Une **trappe dissimulée** près du boss descend par une échelle jusqu'à une **porte blindée indestructible** (ni
   explosifs, ni redstone) : seule la bonne carte l'ouvre (ouverture hydraulique, refermeture automatique après 20 s).
 - Derrière, des **murs de chambre forte** indestructibles, **4 à 6 coffres** au butin propre à chaque ville (armes rares,
-  plaques, lingots, munitions lourdes…), des râteliers d'armes et le coffre de la **tenue** de la faction.
+  plaques, lingots, munitions lourdes…), des râteliers d'armes et, **au fond, au centre, sur un socle doré éclairé**, le
+  **Coffre de la tenue** : uniquement la tenue complète de la faction (au palais du désert : une seule pièce au hasard).
+- La carte d'un boss est aussi un **passe-partout** : elle ouvre toutes les salles fortes de ville (portes bleue, rouge
+  et noire), quel que soit le niveau demandé.
 
 ### Correctifs : chars, missiles, drones, crashs aériens et lance-roquettes statiques
 - **Chars** : la tourelle et le canon tournent enfin du même côté que la visée (le modèle tournait à l'envers) ; le tir
@@ -697,6 +700,10 @@ Des **villes générées** apparaissent selon le biome (un centre de ville par r
 - **S-400** : un clic **n'importe où** sur l'écran radar pose un marqueur (X, Z, altitude facultative) ; LANCER envoie un
   missile (lancement à froid) qui explose sur ce point. Clic droit sur le radar : efface le marqueur.
 - **Iskander** : les dernières coordonnées X / Z sont mémorisées dans le véhicule (même après redémarrage).
+- **S-400 / S-500 à longue portée** : les missiles chargent les chunks de leur couloir de vol (préchargés au lancement)
+  et ne se figent plus au-delà de la distance de simulation ; fusée de proximité calculée sur toute la trajectoire du
+  tick. Contre un missile balistique, l'intercepteur file vers le point de rencontre calculé et explose à son contact
+  (25 % de chances que l'Iskander l'esquive par une manœuvre).
 - **Drones** : ils ne se figent plus à moyenne distance (chunks chargés autour du drone piloté, suivi à 32 chunks) ; à la
   limite de portée radio, seul le mouvement qui éloigne du pilote est freiné (on peut toujours revenir et tourner).
 - **Crashs d'hélicoptères** : pilote qui saute ou meurt sans copilote (un copilote reprend les commandes s'il y en a

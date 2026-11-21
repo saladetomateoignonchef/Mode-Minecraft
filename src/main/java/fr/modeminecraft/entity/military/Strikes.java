@@ -104,6 +104,31 @@ public final class Strikes {
         return true;
     }
 
+    /**
+     * L'intercepteur est arrivé au contact du missile balistique : explosion à sa position (visible), sauf manœuvre
+     * d'évitement réussie (25 %) ; le missile poursuit alors sa route et une autre batterie peut retenter sa chance.
+     */
+    public static boolean resolveIntercept(ServerLevel level, Strike s, Vec3 at) {
+        if (!ACTIVE.contains(s)) {
+            return false;
+        }
+        if (level.random.nextFloat() < 0.25f) {
+            s.intercepting = false;
+            return false;
+        }
+        ACTIVE.remove(s);
+        level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, at.x, at.y, at.z, 2, 2, 2, 2, 0);
+        level.sendParticles(ParticleTypes.FLASH, at.x, at.y, at.z, 3, 1, 1, 1, 0);
+        level.playSound(null, at.x, at.y, at.z, ModSounds.HUGE_EXPLOSION.get(), SoundSource.NEUTRAL, 16f, 1.4f);
+        ModeMinecraft.LOGGER.info("Frappe {} interceptée à {}", s.warhead, BlockPos.containing(at));
+        return true;
+    }
+
+    /** Intercepteur détruit / perdu sans atteindre le missile : une autre batterie peut tirer. */
+    public static void interceptFailed(Strike s) {
+        s.intercepting = false;
+    }
+
     @SubscribeEvent
     public static void onTick(ServerTickEvent.Post event) {
         if (ACTIVE.isEmpty()) {

@@ -1186,6 +1186,12 @@ public class MilVehicleEntity extends Entity {
     }
 
     /** Retire un coup de la soute (consoles de tir). */
+    /** Missile rendu à la soute (tir annulé). */
+    public void refund(MilAmmo a) {
+        stock.put(a, ammo(a) + 1);
+        infoDirty = true;
+    }
+
     public boolean consume(MilAmmo a) {
         if (ammo(a) <= 0) {
             return false;

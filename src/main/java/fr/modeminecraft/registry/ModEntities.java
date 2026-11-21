@@ -55,7 +55,7 @@ public final class ModEntities {
     /** Obus, roquettes et missiles des véhicules. */
     public static final DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.entity.military.ShellEntity>> SHELL = ENTITY_TYPES.register("heavy_shell",
             () -> EntityType.Builder.<fr.modeminecraft.entity.military.ShellEntity>of(fr.modeminecraft.entity.military.ShellEntity::new, MobCategory.MISC)
-                    .sized(0.3f, 0.3f).clientTrackingRange(16).updateInterval(1).build("heavy_shell"));
+                    .sized(0.3f, 0.3f).clientTrackingRange(32).updateInterval(1).build("heavy_shell"));
 
     /** Carreau d'arbalète (récupérable). */
     public static final DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.entity.BoltEntity>> BOLT = ENTITY_TYPES.register("bolt",

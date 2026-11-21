@@ -211,6 +211,24 @@ public final class B {
         RandomizableContainer.setBlockEntityLootTable(level, er, pos(x, y, z), key);
     }
 
+    /** Coffre au contenu fixé (pas de table de butin), avec un nom affiché à l'ouverture. */
+    void itemChest(int x, int y, int z, Direction facing, java.util.List<net.minecraft.world.item.ItemStack> items, net.minecraft.network.chat.Component name) {
+        if (!inside(x, y, z)) {
+            return;
+        }
+        set(x, y, z, Blocks.CHEST.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, facing));
+        if (level.getBlockEntity(pos(x, y, z)) instanceof net.minecraft.world.level.block.entity.ChestBlockEntity chest) {
+            int slot = 11;                                                  // au centre de la rangée du milieu
+            for (var it : items) {
+                chest.setItem(slot++, it);
+            }
+            var tag = chest.saveWithoutMetadata(level.registryAccess());
+            tag.putString("CustomName", net.minecraft.network.chat.Component.Serializer.toJson(name, level.registryAccess()));
+            chest.loadWithComponents(tag, level.registryAccess());
+            chest.setChanged();
+        }
+    }
+
     /** Table de butin d'un conteneur déjà posé (casier de police...). */
     void lootAt(int x, int y, int z, String loot) {
         if (!inside(x, y, z)) {

@@ -93,8 +93,32 @@ final class BossVaults {
         int[] xs = {sx - 3, sx - 1, sx + 1, sx + 3, sx - 4, sx + 4};
         for (int i = 0; i < chests; i++) {
             int x = xs[i], z = i < 4 ? far : (lz + hz) / 2;
-            b.chest(x, f, z, i < 4 ? toDoor : (x < sx ? Direction.EAST : Direction.WEST), i == 0 ? table + "_outfit" : table, false);
+            b.chest(x, f, z, i < 4 ? toDoor : (x < sx ? Direction.EAST : Direction.WEST), table, false);
         }
+        // coffre spécial au fond, au centre, sur un socle doré éclairé : uniquement la tenue de la faction
+        // (au palais du désert : une seule pièce au hasard de la tenue du Boss du Désert)
+        String outfit = switch (t) {
+            case SWAT_HQ -> "police_uniform";
+            case DESERT_PALACE -> "desert_boss";
+            case FOREST_BUNKER -> "special_forces";
+            case SOVIET_HQ -> "soviet_uniform";
+            case CARTEL_VILLA -> "cartel_outfit";
+            case BADLANDS_REFINERY -> "sheriff_outfit";
+        };
+        String[] pieces = {"helmet", "chestplate", "leggings", "boots"};
+        java.util.List<net.minecraft.world.item.ItemStack> suit = new java.util.ArrayList<>();
+        if (t == BossCardItem.VaultType.DESERT_PALACE) {
+            suit.add(new net.minecraft.world.item.ItemStack(fr.modeminecraft.registry.ModItems.OUTFITS.get(outfit + "_" + pieces[b.nextInt(4)]).get()));
+        } else {
+            for (String p : pieces) {
+                suit.add(new net.minecraft.world.item.ItemStack(fr.modeminecraft.registry.ModItems.OUTFITS.get(outfit + "_" + p).get()));
+            }
+        }
+        b.set(sx, f - 1, far, Blocks.GOLD_BLOCK);
+        b.itemChest(sx, f, far, toDoor, suit, net.minecraft.network.chat.Component.translatable("container.modeminecraft.outfit_chest",
+                net.minecraft.network.chat.Component.translatable("outfit.modeminecraft." + outfit)));
+        b.set(sx, f + 2, far, Blocks.LANTERN.defaultBlockState().setValue(net.minecraft.world.level.block.LanternBlock.HANGING, true));
+        b.set(sx, f + 3, far, Blocks.CHAIN);
         // râteliers d'armes sur les côtés, et le trésor du thème
         for (int z = lz + 1; z <= hz - 1; z += 2) {
             Deco.armoryRack(b, sx - 4, f + 1, z, Direction.EAST);

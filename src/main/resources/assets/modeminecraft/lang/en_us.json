@@ -1591,5 +1591,13 @@
   "gui.modeminecraft.launcher.redstone": "A redstone signal on the launcher fires a salvo",
   "gui.modeminecraft.launcher.status": "Bearing %s°  Elevation %s°  Range ~%s blocks",
   "gui.modeminecraft.launcher.keys": "Left click: 1 rocket · right click / Space: salvo",
-  "message.modeminecraft.shield.two_handed": "You cannot use a shield with a two-handed weapon"
+  "message.modeminecraft.shield.two_handed": "You cannot use a shield with a two-handed weapon",
+  "container.modeminecraft.outfit_chest": "Outfit chest: %s",
+  "message.modeminecraft.strategic.lost": "Contact lost: target out of tracking range",
+  "outfit.modeminecraft.police_uniform": "police uniform",
+  "outfit.modeminecraft.desert_boss": "Desert Boss outfit (1 piece of 4)",
+  "outfit.modeminecraft.special_forces": "Special Forces outfit",
+  "outfit.modeminecraft.soviet_uniform": "Soviet uniform",
+  "outfit.modeminecraft.cartel_outfit": "cartel outfit",
+  "outfit.modeminecraft.sheriff_outfit": "sheriff outfit"
 }
