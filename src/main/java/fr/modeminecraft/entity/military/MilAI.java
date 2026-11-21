@@ -171,5 +171,29 @@ public final class MilAI {
         return dy < 3 && dp < 3 && clear(v, t);
     }
 
+    /** Passager bot : à l'arrêt, tire au fusil d'assaut par la fenêtre sur la cible de l'équipage. */
+    static void passengerFire(MilVehicleEntity v, HumanBotEntity bot) {
+        LivingEntity t = crewTarget(v);
+        if (t == null || Math.abs(v.speed()) > 0.06f || (v.tickCount + bot.getId()) % 5 != 0
+                || !(bot.getMainHandItem().getItem() instanceof fr.modeminecraft.item.gun.GunItem gun)) {
+            return;
+        }
+        Vec3 eye = bot.getEyePosition();
+        Vec3 to = t.position().add(0, t.getBbHeight() * 0.6, 0);
+        if (eye.distanceTo(to) > 55 || v.level().clip(new ClipContext(eye, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, bot)).getType() != HitResult.Type.MISS) {
+            return;
+        }
+        bot.setTarget(t);
+        bot.getLookControl().setLookAt(t, 30, 30);
+        var stats = gun.stats();
+        var b = new fr.modeminecraft.entity.BulletEntity(v.level(), bot, stats.damage() * 0.6f, 0, false, fr.modeminecraft.item.gun.AmmoType.STANDARD);
+        b.setWeapon(bot.getMainHandItem());
+        b.setPos(eye.x, eye.y, eye.z);
+        b.shoot(to.x - eye.x, to.y - eye.y, to.z - eye.z, stats.velocity(), 3.5f);
+        v.level().addFreshEntity(b);
+        bot.swing(net.minecraft.world.InteractionHand.MAIN_HAND);
+        v.level().playSound(null, bot.getX(), bot.getY(), bot.getZ(), stats.sound().get(), net.minecraft.sounds.SoundSource.HOSTILE, 4f, stats.pitch());
+    }
+
     private MilAI() {}
 }

@@ -64,6 +64,36 @@ public final class Convoys {
         }
     }
 
+    /**
+     * Patrouille mobile de milice en GAZ-2975 Tigr (escouade de 3) : un conducteur (qui ralentit et se met de travers
+     * pour donner un angle de tir à la tourelle), un passager avant (tire au fusil d'assaut par la fenêtre quand le
+     * véhicule s'arrête) et un tireur debout dans l'écoutille (Kord 12,7 mm, 360°). Sur les routes et à travers les
+     * biomes ; soviétique dans le grand Nord.
+     */
+    public static void spawnTigr(ServerLevel level, Vec3 near) {
+        var r = level.getRandom();
+        double a = r.nextDouble() * Math.PI * 2;
+        Vec3 dir = new Vec3(Math.cos(a), 0, Math.sin(a));
+        BlockPos start = surface(level, near.add(dir.scale(90)));
+        BlockPos dest = surface(level, near.subtract(dir.scale(160)).add(-dir.z * 20, 0, dir.x * 20));
+        if (!level.isLoaded(start) || !level.getFluidState(start.below()).isEmpty()) {
+            return;
+        }
+        Faction f = AirdropEntity.localFaction(level, start) == Faction.SOVIET ? Faction.SOVIET : Faction.MILITIA;
+        float yaw = (float) (Mth.atan2(dest.getZ() - start.getZ(), dest.getX() - start.getX()) * Mth.RAD_TO_DEG) - 90;
+        var tigr = fr.modeminecraft.entity.military.MilVehicleEntity.create(level, fr.modeminecraft.entity.military.MilType.TIGR,
+                start.getX() + 0.5, start.getY() + 0.3, start.getZ() + 0.5, yaw);
+        tigr.fillAmmo(1f);
+        tigr.setFuel(1f);
+        tigr.patrol = true;
+        tigr.destination = dest;
+        level.addFreshEntity(tigr);
+        bot(level, start, f, BotRole.OFFICER).startRiding(tigr, true);                  // conducteur
+        bot(level, start, f, BotRole.SOLDIER).startRiding(tigr, true);                  // passager avant
+        bot(level, start, f, BotRole.GUNNER).startRiding(tigr, true);                   // tireur de tourelle
+        fr.modeminecraft.ModeMinecraft.LOGGER.info("Patrouille Tigr ({}) de {} vers {}", f.id, start, dest);
+    }
+
     private static VehicleEntity vehicle(ServerLevel level, VehicleEntity.Type type, BlockPos pos, float yaw, Faction f, int crew) {
         VehicleEntity v = new VehicleEntity(level, type, pos.getX() + 0.5, pos.getY() + 0.2, pos.getZ() + 0.5, yaw);
         v.convoy = true;

@@ -515,8 +515,13 @@ final class CityGenRegions {
                     b.set(x, 6, 24, Blocks.SEA_LANTERN);
                 }
                 b.fill(3, -1, 3, 29, -1, 29, Blocks.GRAY_CONCRETE);
-                b.vehicle(10, 0, 11, fr.modeminecraft.entity.VehicleEntity.Type.JEEP, 90);
-                b.vehicle(11, 0, 21, fr.modeminecraft.entity.VehicleEntity.Type.ARMORED_TRUCK, 90);
+                // 2 ou 3 blindés lourds prêts au combat, face à la grande porte
+                b.milVehicle(10, 0, 11, b.chance(0.5f) ? fr.modeminecraft.entity.military.MilType.BMP_2 : fr.modeminecraft.entity.military.MilType.BTR_80, 90);
+                b.milVehicle(12, 0, 21, b.chance(0.5f) ? fr.modeminecraft.entity.military.MilType.T_80BVM : fr.modeminecraft.entity.military.MilType.BRDM_2, 90);
+                if (b.chance(0.5f)) {
+                    b.milVehicle(21, 0, 9, b.chance(0.25f) ? fr.modeminecraft.entity.military.MilType.T_14_ARMATA : fr.modeminecraft.entity.military.MilType.BM_21_GRAD, 90);
+                }
+                Hangars.baseFittings(b);
                 forklift(b, 20, 0, 14);
                 for (int z = 6; z <= 26; z += 4) {
                     if (z != 14 && z != 18) {
@@ -798,6 +803,7 @@ final class CityGenRegions {
                     b.pair(5, 1, 6, Faction.SOVIET, 20);
                 }
             }
+            case "mil_hangar" -> Hangars.soviet(b);
             case "factory" -> {
                 int n = 31;
                 b.ground(0, 0, n, n, Blocks.GRAY_CONCRETE.defaultBlockState(), Blocks.STONE.defaultBlockState(), 28);

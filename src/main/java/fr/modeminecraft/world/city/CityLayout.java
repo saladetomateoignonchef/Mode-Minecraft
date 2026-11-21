@@ -137,6 +137,9 @@ public final class CityLayout {
                 if (in(dx, dz, -8, 4, -7, 5)) {
                     return multi("factory", 28, -8, 4, 2, 2);                       // seconde usine
                 }
+                if (in(dx, dz, -9, -9, -8, -7)) {
+                    return multi("mil_hangar", 16, -9, -9, 2, 3);                   // hangar militaire blindé
+                }
                 if (in(dx, dz, 0, 0, 1, 1)) {
                     return multi("plaza", 12, 0, 0, 2, 2);
                 }

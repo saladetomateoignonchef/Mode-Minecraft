@@ -570,6 +570,14 @@ Des **villes générées** apparaissent selon le biome (un centre de ville par r
   **neige** viaduc soviétique en béton brut et métal rouillé ; **jungle** pont suspendu (pylônes et câbles) ;
   **mesa** pont à chevalets en bois massif. Les ponts des routes entre villes prennent le même style.
 
+- **Patrouilles mobiles en GAZ-2975 Tigr** (escouades de 3 miliciens, soviétiques dans le grand Nord) sur les routes
+  et à travers les biomes : le conducteur ralentit et se met de travers pour donner un angle de tir, le tireur debout
+  dans l'écoutille arrose au Kord 12,7 mm (360°), le passager avant tire au fusil d'assaut par la fenêtre à l'arrêt.
+- **Hangars militaires blindés** : dans les cités soviétiques (24 x 36 x 14, tôle ondulée sur béton armé, grande
+  porte coulissante, pont roulant, fosse de maintenance, fûts de carburant, établis) et dans le hangar en voûte des
+  bases secrètes (forêt). 2 ou 3 blindés lourds prêts au combat (réservoir partiellement rempli) : BRDM-2, BTR-80,
+  BMP-2, BM-21 Grad, T-80BVM, et parfois un T-14 Armata.
+
 #### Véhicules militaires (28 modèles 3D)
 - **Soviétiques / russes** : UAZ-469, GAZ-2975 Tigr (vitres pare-balles, tourelle Kord / PKM), KamAZ-4310 (10 places,
   coffre de 54), BRDM-2 (amphibie, KPVT 14,5 + PKT), BTR-80 (8x8 amphibie, KPVT à forte élévation), BMP-2 (30 mm 2A42 +

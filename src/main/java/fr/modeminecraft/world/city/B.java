@@ -277,6 +277,18 @@ public final class B {
         level.addFreshEntity(new fr.modeminecraft.entity.VehicleEntity(level.getLevel(), type, p.getX() + 0.5, p.getY(), p.getZ() + 0.5, yaw));
     }
 
+    /** Véhicule militaire garé (réservoir partiellement rempli, soutes à moitié pleines). */
+    void milVehicle(int x, int y, int z, fr.modeminecraft.entity.military.MilType type, float yaw) {
+        if (!inside(x, y, z)) {
+            return;
+        }
+        BlockPos p = pos(x, y, z);
+        var v = fr.modeminecraft.entity.military.MilVehicleEntity.create(level.getLevel(), type, p.getX() + 0.5, p.getY(), p.getZ() + 0.5, yaw);
+        v.fillAmmo(0.5f);
+        v.setFuel(0.25f + r.nextFloat() * 0.3f);
+        level.addFreshEntity(v);
+    }
+
     int nextInt(int n) {
         return r.nextInt(n);
     }

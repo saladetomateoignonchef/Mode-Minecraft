@@ -190,6 +190,9 @@ public final class BotEvents {
             if (!p.isSpectator() && overworld.getRandom().nextFloat() < CONVOY_CHANCE) {
                 Convoys.spawn(overworld, p.position());
             }
+            if (!p.isSpectator() && overworld.getRandom().nextFloat() < TIGR_CHANCE) {
+                Convoys.spawnTigr(overworld, p.position());
+            }
             if (!p.isSpectator() && overworld.getRandom().nextFloat() < AIRDROP_CHANCE) {
                 fr.modeminecraft.entity.AirdropEntity.call(overworld, p.position());
             }
@@ -228,6 +231,8 @@ public final class BotEvents {
     public static float AIRDROP_CHANCE = 0.04f;
     /** Probabilité, par minute et par joueur, qu'un convoi de patrouille passe dans les environs. */
     public static float CONVOY_CHANCE = 0.05f;
+    /** Patrouille mobile en Tigr (par joueur et par minute). */
+    public static float TIGR_CHANCE = 0.06f;
 
     static void later(HumanBotEntity bot, int delay, Runnable r) {
         LATER.add(new Object[]{bot.level().getGameTime() + delay, r});

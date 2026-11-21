@@ -833,6 +833,10 @@ public class MilVehicleEntity extends Entity {
                 left = TriggerHandler.isTriggerDown(pl);
                 right = TriggerHandler.isRightHeld(pl);
             } else if (p instanceof HumanBotEntity bot) {
+                if (s.role() == MilType.Role.PASSENGER) {
+                    MilAI.passengerFire(this, bot);                             // tir par la fenêtre, à l'arrêt
+                    continue;
+                }
                 left = MilAI.wantsFire(this, bot, s);
                 right = false;
             } else {
