@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "artillery",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 3
+    },
+    {
+      "item": "minecraft:coal",
+      "count": 4
+    },
+    {
+      "item": "minecraft:dried_kelp_block",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:jerrycan",
+    "count": 1
+  }
+}

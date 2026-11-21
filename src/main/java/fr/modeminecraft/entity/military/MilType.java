@@ -126,11 +126,14 @@ public enum MilType {
                     w("hellfire", Kind.ATGM, 3, 60, -40, 10, 8, 0, MilAmmo.ATGM))),
     // ------------------------------------------------------------ complexes lance-missiles (armes : voir StrategicSystems)
     S_400("s_400", Side.SOVIET, Chassis.WHEELS, 60, 160, 0.8f, 0.8f, 0.8f, 500, 0, Flag.STRATEGIC,
-            List.of(seat(Role.DRIVER, true), seat(Role.OPERATOR, true)), List.of()),
+            List.of(seat(Role.DRIVER, true), seat(Role.OPERATOR, true)),
+            List.of(w("s400_tubes", Kind.SAM, 0, 20, 0, 90, 4, 0, MilAmmo.S400_48N6, MilAmmo.S400_9M96))),
     S_500("s_500", Side.SOVIET, Chassis.WHEELS, 55, 180, 0.8f, 0.8f, 0.8f, 550, 0, Flag.STRATEGIC,
-            List.of(seat(Role.DRIVER, true), seat(Role.OPERATOR, true)), List.of()),
+            List.of(seat(Role.DRIVER, true), seat(Role.OPERATOR, true)),
+            List.of(w("s500_tubes", Kind.SAM, 0, 30, 0, 90, 2, 0, MilAmmo.S500_77N6, MilAmmo.S500_40N6))),
     ISKANDER("iskander", Side.SOVIET, Chassis.WHEELS, 60, 170, 0.8f, 0.8f, 0.8f, 500, 0, Flag.STRATEGIC,
-            List.of(seat(Role.DRIVER, true), seat(Role.OPERATOR, true)), List.of());
+            List.of(seat(Role.DRIVER, true), seat(Role.OPERATOR, true)),
+            List.of(w("9m723", Kind.ROCKETS, 0, 200, 0, 85, 2, 0, MilAmmo.ISK_HE, MilAmmo.ISK_CLUSTER, MilAmmo.ISK_EMP)));
 
     public enum Side { SOVIET, US }
 

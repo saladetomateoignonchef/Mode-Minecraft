@@ -80,16 +80,90 @@ public class ShellEntity extends Projectile {
         jammed = true;
     }
 
+    /** Lancement à froid (S-400 / S-500) : éjecté à la verticale à 25 blocs, puis vire vers sa cible. */
+    public void coldLaunch(Entity target) {
+        mode = 4;
+        guideId = target == null ? -1 : target.getId();
+        setDeltaMovement(0, 1.6, 0);
+        setNoGravity(true);
+    }
+
+    /** Missile balistique, montée (purement visuelle : le vol réel est simulé par Strikes). */
+    public void visualAscent() {
+        mode = 5;
+        setDeltaMovement(0, 1.2, 0);
+        setNoGravity(true);
+    }
+
+    /** Missile balistique, piqué final sur la cible (visuel, avec manœuvres d'évitement). */
+    public void visualDive(Vec3 target, int ticks) {
+        mode = 6;
+        gpsTarget = target;
+        Vec3 d = target.subtract(position());
+        setDeltaMovement(d.scale(1.0 / ticks));
+        setNoGravity(true);
+    }
+
+    /** Cible de cet intercepteur (pour le radar et les tests). */
+    public int guideId() {
+        return guideId;
+    }
+
+    public boolean visual() {
+        return mode == 5 || mode == 6;
+    }
+
     @Override
     public void tick() {
         super.tick();
         MilAmmo.Shell s = shell();
-        if (++life > 600 || getY() < level().getMinBuildHeight() - 20) {
+        if (++life > (s == MilAmmo.Shell.SAM_EXTREME || s == MilAmmo.Shell.SAM_LONG ? 900 : 600) || getY() < level().getMinBuildHeight() - 20) {
             discard();
             return;
         }
-        if (!level().isClientSide && mode != 0 && !jammed) {
+        if (mode == 5 || mode == 6) {
+            // visuel : pas de collision
+            if (mode == 5) {
+                setDeltaMovement(getDeltaMovement().add(0, 0.05, 0));
+            } else if (gpsTarget != null) {
+                double wiggle = Math.sin(life * 0.7) * 0.35;                       // manœuvres d'évitement
+                setDeltaMovement(getDeltaMovement().add(wiggle, 0, -wiggle));
+            }
+            Vec3 p = position().add(getDeltaMovement());
+            setPos(p.x, p.y, p.z);
+            updateRotation();
+            if (level().isClientSide) {
+                Vec3 back = position();
+                level().addParticle(ParticleTypes.CLOUD, back.x, back.y, back.z, 0, 0, 0);
+                level().addParticle(ParticleTypes.FLAME, back.x, back.y, back.z, 0, -0.1, 0);
+            } else if (mode == 5 && life > 70 || mode == 6 && life > 45) {
+                discard();
+            }
+            return;
+        }
+        if (!level().isClientSide && mode == 4 && guideId < 0 && life > 30) {
+            // intercepteur d'un missile balistique (vol simulé) : explosion de proximité en haute altitude
+            ((ServerLevel) level()).sendParticles(ParticleTypes.EXPLOSION_EMITTER, getX(), getY(), getZ(), 1, 0, 0, 0, 0);
+            discard();
+            return;
+        }
+        if (!level().isClientSide && mode == 4 && life < 16) {
+            setDeltaMovement(0, 1.6, 0);                                           // éjection verticale (charge de poudre)
+        } else if (!level().isClientSide && mode != 0 && !jammed) {
             guide(s);
+        }
+        // fusée de proximité des missiles sol-air
+        if (!level().isClientSide && (mode == 2 || mode == 4) && guideId >= 0) {
+            Entity t = level().getEntity(guideId);
+            if (t != null && t.position().add(0, t.getBbHeight() / 2, 0).distanceTo(position()) < 4.5) {
+                if (t instanceof ShellEntity || t instanceof fr.modeminecraft.entity.RocketEntity) {
+                    t.discard();                                                     // missile ou roquette abattu
+                } else {
+                    t.hurt(getOwner() instanceof LivingEntity le ? damageSources().explosion(this, le) : damageSources().generic(), s.damage);
+                }
+                detonate(position());
+                return;
+            }
         }
         Vec3 v = getDeltaMovement();
         if (!isNoGravity()) {
@@ -148,11 +222,11 @@ public class ShellEntity extends Projectile {
                 aim = onBeam;
                 turn = 5;
             }
-        } else if (mode == 2) {
+        } else if (mode == 2 || mode == 4) {
             Entity t = level().getEntity(guideId);
             if (t != null && t.isAlive()) {
                 aim = t.position().add(0, t.getBbHeight() / 2, 0).add(t.getDeltaMovement().scale(position().distanceTo(t.position()) / Math.max(1, s.speed)));
-                turn = 9;
+                turn = s == MilAmmo.Shell.SAM_AGILE || s == MilAmmo.Shell.ABM ? 14 : 9;
                 // brouilleur Shtora du char visé
                 if (t instanceof MilVehicleEntity v && position().distanceToSqr(t.position()) < 60 * 60 && life % 10 == 0 && v.shtora()) {
                     jammed = true;
@@ -202,6 +276,9 @@ public class ShellEntity extends Projectile {
 
     @Override
     protected boolean canHitEntity(Entity e) {
+        if (visual()) {
+            return false;
+        }
         if (!super.canHitEntity(e) && !(e instanceof MilPart)) {
             return false;
         }

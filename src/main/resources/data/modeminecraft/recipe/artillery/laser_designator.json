@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "artillery",
+  "ingredients": [
+    {
+      "item": "modeminecraft:steel_ingot",
+      "count": 2
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 6
+    },
+    {
+      "item": "minecraft:glass_pane",
+      "count": 2
+    },
+    {
+      "item": "minecraft:diamond",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:laser_designator",
+    "count": 1
+  }
+}

@@ -60,6 +60,11 @@ GEAR = [item("pasgt_vest", 2), item("swat_vest", 1), item("mich_2000", 2), item(
 ATT = [item("red_dot_sight", 3), item("holo_sight", 2), item("acog_scope", 1), item("vertical_grip", 3), item("silencer", 1),
        item("surefire_m600", 1), item("tactical_battery", 3, (1, 3))]
 
+# munitions lourdes des véhicules (mise à jour 0.4) : bases militaires, convois, largages
+HEAVY = [item("apfsds_shell", 3, (1, 3)), item("he_shell", 4, (1, 4)), item("heat_shell", 3, (1, 3)), item("ap_i_belt", 4, (1, 2)),
+         item("he_i_belt", 4, (1, 2)), item("grad_rocket", 3, (2, 6)), item("atgm_missile", 2, (1, 2)), item("jerrycan", 5, (1, 2)),
+         item("ammo_box_145", 3, (1, 2))]
+
 LOOT = {
     "city_dumpster": table([((1, 3), FOOD + [item("minecraft:paper", 3, (1, 4)), item("minecraft:string", 2), item("minecraft:bone", 2),
                                              item("ammo_9mm", 1, (2, 6)), item("bandage", 1)])]),
@@ -74,7 +79,8 @@ LOOT = {
     "city_vault": table([((3, 6), [item("minecraft:diamond", 3, (1, 3)), item("minecraft:gold_block", 2), item("minecraft:emerald", 4, (3, 9)),
                                     item("titanium_ingot", 3, (2, 5)), item("red_access_card", 2), item("black_access_card", 1),
                                     item("minecraft:netherite_scrap", 1)] + GUNS_MIL[:3])]),
-    "military_crate": table([((3, 6), AMMO + MED + GUNS_MIL + GEAR + ATT + [item("frag_grenade", 3, (1, 3)), item("flashbang", 2, (1, 2))])]),
+    "military_crate": table([((3, 6), AMMO + MED + GUNS_MIL + GEAR + ATT + [item("frag_grenade", 3, (1, 3)), item("flashbang", 2, (1, 2))]),
+                             ((0, 2), HEAVY)]),
     "rebel_cache": table([((2, 5), AMMO[:3] + FOOD[:3] + [item("kar98k", 2), item("fn_fal", 1), item("molotov", 3, (1, 3)),
                                                          item("bandage", 3, (1, 3)), item("minecraft:iron_ingot", 3, (2, 6))])]),
     "lab": table([((2, 4), MED + [item("minecraft:glowstone_dust", 3, (2, 6)), item("minecraft:redstone", 3, (3, 9)),

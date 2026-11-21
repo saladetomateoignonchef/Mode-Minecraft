@@ -33,7 +33,30 @@ public class ArmamentTableMenu extends AbstractContainerMenu {
     }
 
     public ArmamentTableMenu(int containerId, Inventory inventory, ContainerLevelAccess access) {
-        super(ModMenus.ARMAMENT_TABLE.get(), containerId);
+        this(ModMenus.ARMAMENT_TABLE.get(), containerId, inventory, access);
+    }
+
+    /** Établi d'artillerie : même menu, autres recettes (onglet « Artillerie » seul). */
+    public static ArmamentTableMenu artillery(int containerId, Inventory inventory) {
+        return new ArmamentTableMenu(ModMenus.ARTILLERY_TABLE.get(), containerId, inventory, ContainerLevelAccess.NULL);
+    }
+
+    public static ArmamentTableMenu artillery(int containerId, Inventory inventory, ContainerLevelAccess access) {
+        return new ArmamentTableMenu(ModMenus.ARTILLERY_TABLE.get(), containerId, inventory, access);
+    }
+
+    public boolean isArtillery() {
+        return getType() == ModMenus.ARTILLERY_TABLE.get();
+    }
+
+    /** Onglets de cette table. */
+    public List<ArmamentRecipe.Category> categories() {
+        return isArtillery() ? List.of(ArmamentRecipe.Category.ARTILLERY)
+                : java.util.Arrays.stream(ArmamentRecipe.Category.values()).filter(c -> c != ArmamentRecipe.Category.ARTILLERY).toList();
+    }
+
+    private ArmamentTableMenu(net.minecraft.world.inventory.MenuType<?> type, int containerId, Inventory inventory, ContainerLevelAccess access) {
+        super(type, containerId);
         this.access = access;
         this.player = inventory.player;
         // Emplacements invisibles de l'inventaire du joueur : ils ne servent qu'à synchroniser
@@ -50,7 +73,9 @@ public class ArmamentTableMenu extends AbstractContainerMenu {
     }
 
     public List<RecipeHolder<ArmamentRecipe>> recipes() {
-        return ModRecipes.armamentRecipes(player.level());
+        boolean art = isArtillery();
+        return ModRecipes.armamentRecipes(player.level()).stream()
+                .filter(r -> (r.value().category() == ArmamentRecipe.Category.ARTILLERY) == art).toList();
     }
 
     @Override
@@ -85,6 +110,6 @@ public class ArmamentTableMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        return stillValid(access, player, ModBlocks.ARMAMENT_TABLE.get());
+        return stillValid(access, player, isArtillery() ? ModBlocks.ARTILLERY_TABLE.get() : ModBlocks.ARMAMENT_TABLE.get());
     }
 }

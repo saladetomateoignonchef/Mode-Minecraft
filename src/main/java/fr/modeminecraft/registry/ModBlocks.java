@@ -32,6 +32,11 @@ public final class ModBlocks {
             () -> new WorkbenchBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SMITHING_TABLE),
                     Component.translatable("container.modeminecraft.armament_table"), ArmamentTableMenu::new));
 
+    /** Établi d'artillerie : obus de char, bandes de canon automatique, roquettes, missiles, carburant. */
+    public static final DeferredBlock<Block> ARTILLERY_TABLE = BLOCKS.register("artillery_table",
+            () -> new WorkbenchBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.ANVIL).sound(net.minecraft.world.level.block.SoundType.METAL),
+                    Component.translatable("container.modeminecraft.artillery_table"), ArmamentTableMenu::artillery));
+
     /** Table de modification : accessoires et skins des armes. */
     public static final DeferredBlock<Block> MODIFICATION_TABLE = BLOCKS.register("modification_table",
             () -> new WorkbenchBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SMITHING_TABLE),

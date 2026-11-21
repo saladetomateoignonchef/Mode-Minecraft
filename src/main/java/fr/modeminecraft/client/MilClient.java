@@ -114,6 +114,13 @@ public final class MilClient {
         while (ModKeyMappings.SIREN.consumeClick()) {
             send(MilControlPayload.DEPLOY);
         }
+        if (s != null && s.role() == MilType.Role.OPERATOR) {
+            while (mc.options.keyUse.consumeClick()) {
+                if (mc.screen == null) {
+                    mc.setScreen(new FireControlScreen(v));
+                }
+            }
+        }
         while (ModKeyMappings.HELMET_MODULE.consumeClick()) {
             if (optics(s)) {
                 thermal = !thermal;
@@ -319,6 +326,18 @@ public final class MilClient {
                 }
                 y += 11;
             }
+        }
+        if (s != null && s.role() == MilType.Role.OPERATOR && !t.weapons.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (MilAmmo a : t.weapons.get(0).ammo()) {
+                sb.append(Component.translatable("ammo_short.modeminecraft." + a.name().toLowerCase()).getString())
+                        .append(" : ").append(info.getInt(a.name())).append("   ");
+            }
+            g.drawString(font, sb.toString(), x, y, 0xFFFFFFFF);
+            y += 11;
+            g.drawString(font, Component.translatable(v.is(MilVehicleEntity.DEPLOYED) ? "hud.modeminecraft.mil.console" : "hud.modeminecraft.mil.deploy_hint"),
+                    x, y, 0xFFE0C060);
+            y += 11;
         }
         // état : modules, fumigènes, protection active, optiques
         StringBuilder st = new StringBuilder();

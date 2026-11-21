@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "artillery",
+  "ingredients": [
+    {
+      "item": "modeminecraft:steel_ingot",
+      "count": 2
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 4
+    },
+    {
+      "item": "minecraft:tnt",
+      "count": 1
+    },
+    {
+      "item": "minecraft:string",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:atgm_missile",
+    "count": 1
+  }
+}

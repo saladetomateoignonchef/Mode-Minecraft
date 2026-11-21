@@ -891,6 +891,7 @@ public final class ModItems {
 
     // ---------- Tables ----------
     public static final DeferredItem<BlockItem> ARMAMENT_TABLE = ITEMS.registerSimpleBlockItem(ModBlocks.ARMAMENT_TABLE);
+    public static final DeferredItem<BlockItem> ARTILLERY_TABLE = ITEMS.registerSimpleBlockItem(ModBlocks.ARTILLERY_TABLE);
     public static final DeferredItem<BlockItem> MODIFICATION_TABLE = ITEMS.registerSimpleBlockItem(ModBlocks.MODIFICATION_TABLE);
     public static final DeferredItem<BlockItem> WEAPON_RACK = ITEMS.registerSimpleBlockItem(ModBlocks.WEAPON_RACK);
     public static final DeferredItem<BlockItem> TROPHY_WEAPON_RACK = ITEMS.registerSimpleBlockItem(ModBlocks.TROPHY_WEAPON_RACK);
@@ -1086,6 +1087,14 @@ public final class ModItems {
     public static final DeferredItem<Item> S8_ROCKET = ammoItem("s8_rocket", 20);
     public static final DeferredItem<Item> HYDRA_ROCKET = ammoItem("hydra_rocket", 19);
     public static final DeferredItem<Item> ATGM_MISSILE = ammoItem("atgm_missile", 4);
+    /** Missiles des complexes S-400 / S-500 / Iskander. */
+    public static final DeferredItem<Item> MISSILE_48N6E3 = ammoItem("missile_48n6e3", 1);
+    public static final DeferredItem<Item> MISSILE_9M96E2 = ammoItem("missile_9m96e2", 1);
+    public static final DeferredItem<Item> MISSILE_77N6N = ammoItem("missile_77n6n", 1);
+    public static final DeferredItem<Item> MISSILE_40N6M = ammoItem("missile_40n6m", 1);
+    public static final DeferredItem<Item> ISKANDER_HE = ammoItem("iskander_he", 1);
+    public static final DeferredItem<Item> ISKANDER_CLUSTER = ammoItem("iskander_cluster", 1);
+    public static final DeferredItem<Item> ISKANDER_EMP = ammoItem("iskander_emp", 1);
     /** Bidon de carburant militaire (diesel) : +25 % de réservoir. */
     public static final DeferredItem<Item> JERRYCAN = ammoItem("jerrycan", 4);
     public static final DeferredItem<Item> LASER_DESIGNATOR = ITEMS.register("laser_designator",

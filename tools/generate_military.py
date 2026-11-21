@@ -191,6 +191,17 @@ def heavy_ammo_icons():
     i.save("laser_designator")
 
 
+def strategic_icons():
+    white, grey, black, red = hexc("#e4e6e0"), hexc("#8a8e92"), hexc("#26282a"), hexc("#b02a20")
+    for name, band, tip, w in (("missile_48n6e3", hexc("#5a6a38"), grey, 3), ("missile_9m96e2", hexc("#5a6a38"), grey, 2),
+                               ("missile_77n6n", black, black, 3), ("missile_40n6m", red, grey, 3),
+                               ("iskander_he", red, red, 4), ("iskander_cluster", hexc("#d8c030"), grey, 4), ("iskander_emp", hexc("#3080e0"), grey, 4)):
+        i = Icon(name)
+        diag(i, 14, w, [(0.12, hexc("#3a3a3a")), (0.35, white), (0.45, band), (0.85, white), (1, tip)], start=(1, 14))
+        i.px(1, 12, grey), i.px(3, 14, grey), i.px(0, 13, shade(grey, 0.8))
+        i.save(name)
+
+
 def shell_texture():
     """Texture des projectiles en vol : 8 lignes de couleur (voir ShellRenderer)."""
     img = Image.new("RGBA", (16, 64))
@@ -206,8 +217,114 @@ def shell_texture():
     img.save(p)
 
 
+# ------------------------------------------------------------------------------------------- établi d'artillerie
+def block_tex(name, painter):
+    img = Image.new("RGBA", (16, 16))
+    r = random.Random(name)
+    painter(img, r)
+    p = os.path.join(ASSETS, "textures/block", name + ".png")
+    img.save(p)
+
+
+def artillery_table():
+    olive = hexc("#4f5d34")
+
+    def top(img, r):
+        for y in range(16):
+            for x in range(16):
+                img.putpixel((x, y), shade(hexc("#5a5e62"), 1 + r.uniform(-0.07, 0.07)))       # plateau d'acier
+        for x in range(16):
+            img.putpixel((x, 0), hexc("#3a3e42")), img.putpixel((x, 15), hexc("#3a3e42"))
+        for k in range(3):                                                                       # obus posés
+            y = 3 + k * 4
+            for x in range(3, 12):
+                img.putpixel((x, y), shade(hexc("#c8a040"), 1.1 if x < 8 else 1.0))
+                img.putpixel((x, y + 1), shade(hexc("#c8a040"), 0.8))
+            img.putpixel((12, y), hexc("#5a6a38")), img.putpixel((13, y), hexc("#b02a20"))
+        img.putpixel((13, 13), hexc("#b0b4b8")), img.putpixel((12, 13), hexc("#808488"))          # clé
+
+    def side(img, r):
+        for y in range(16):
+            for x in range(16):
+                c = olive if y > 2 else hexc("#5a5e62")
+                img.putpixel((x, y), shade(c, 1 + r.uniform(-0.06, 0.06)))
+        for y in (3, 15):
+            for x in range(16):
+                img.putpixel((x, y), hexc("#2c3420"))
+        for x in (0, 15):
+            for y in range(16):
+                img.putpixel((x, y), hexc("#2c3420"))
+        for x in (4, 7, 10):                                                                     # roquettes au râtelier
+            for y in range(5, 14):
+                img.putpixel((x, y), shade(hexc("#5a6a38"), 1.15))
+                img.putpixel((x + 1, y), shade(hexc("#5a6a38"), 0.85))
+            img.putpixel((x, 4), hexc("#b02a20")), img.putpixel((x + 1, 4), hexc("#b02a20"))
+        for x in range(2, 14):
+            img.putpixel((x, 12), hexc("#3a3e42"))
+
+    def front(img, r):
+        side(img, r)
+        for y in range(6, 12):                                                                  # étau
+            for x in range(5, 11):
+                img.putpixel((x, y), shade(hexc("#6a6e72"), 1 + r.uniform(-0.05, 0.05)))
+        for x in range(4, 12):
+            img.putpixel((x, 5), hexc("#3a3e42"))
+        img.putpixel((7, 8), hexc("#e0a020")), img.putpixel((8, 8), hexc("#e0a020"))           # étiquette danger
+    block_tex("artillery_table_top", top)
+    block_tex("artillery_table_side", side)
+    block_tex("artillery_table_front", front)
+    write(os.path.join(ASSETS, "blockstates/artillery_table.json"), {"variants": {"": {"model": f"{MOD}:block/artillery_table"}}})
+    write(os.path.join(ASSETS, "models/block/artillery_table.json"), {"parent": "minecraft:block/cube", "textures": {
+        "particle": f"{MOD}:block/artillery_table_side", "north": f"{MOD}:block/artillery_table_front", "south": f"{MOD}:block/artillery_table_front",
+        "east": f"{MOD}:block/artillery_table_side", "west": f"{MOD}:block/artillery_table_side", "up": f"{MOD}:block/artillery_table_top",
+        "down": "minecraft:block/iron_block"}})
+    write(os.path.join(ASSETS, "models/item/artillery_table.json"), {"parent": f"{MOD}:block/artillery_table"})
+    write(os.path.join(DATA, "loot_table/blocks/artillery_table.json"), {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
+        {"type": "minecraft:item", "name": f"{MOD}:artillery_table"}], "conditions": [{"condition": "minecraft:survives_explosion"}]}]})
+    write(os.path.join(DATA, "recipe/artillery_table.json"), {"type": "minecraft:crafting_shaped", "category": "misc",
+        "pattern": ["SSS", "TAT", "I I"], "key": {"S": {"item": f"{MOD}:steel_plate"}, "T": {"item": "minecraft:tnt"},
+                                                  "A": {"item": f"{MOD}:armament_table"}, "I": {"item": "minecraft:iron_block"}},
+        "result": {"id": f"{MOD}:artillery_table", "count": 1}})
+
+
+# recettes de l'établi d'artillerie : objet -> (quantité, [(ingrédient, nombre)])
+ARTILLERY_RECIPES = {
+    "ap_i_belt": (1, [("minecraft:copper_ingot", 4), ("modeminecraft:steel_ingot", 2), ("minecraft:gunpowder", 4), ("minecraft:blaze_powder", 1)]),
+    "he_i_belt": (1, [("minecraft:copper_ingot", 4), ("minecraft:gunpowder", 6), ("minecraft:blaze_powder", 1)]),
+    "ammo_box_145": (1, [("minecraft:copper_ingot", 4), ("minecraft:iron_ingot", 3), ("minecraft:gunpowder", 4)]),
+    "apfsds_shell": (1, [("modeminecraft:titanium_ingot", 2), ("minecraft:copper_ingot", 2), ("minecraft:gunpowder", 4)]),
+    "he_shell": (1, [("minecraft:iron_ingot", 3), ("minecraft:copper_ingot", 2), ("minecraft:tnt", 1), ("minecraft:gunpowder", 2)]),
+    "heat_shell": (1, [("minecraft:iron_ingot", 2), ("minecraft:copper_ingot", 3), ("minecraft:tnt", 1), ("minecraft:gunpowder", 2)]),
+    "cannon_atgm_missile": (1, [("modeminecraft:steel_ingot", 2), ("minecraft:redstone", 4), ("minecraft:tnt", 1), ("minecraft:gunpowder", 3)]),
+    "grad_rocket": (2, [("minecraft:iron_ingot", 3), ("minecraft:tnt", 1), ("minecraft:gunpowder", 4)]),
+    "s8_rocket": (4, [("minecraft:iron_ingot", 3), ("minecraft:tnt", 1), ("minecraft:gunpowder", 4)]),
+    "hydra_rocket": (4, [("minecraft:iron_ingot", 3), ("minecraft:tnt", 1), ("minecraft:gunpowder", 4)]),
+    "mlrs_rocket": (1, [("modeminecraft:steel_ingot", 3), ("minecraft:redstone", 4), ("minecraft:compass", 1), ("minecraft:tnt", 2)]),
+    "atacms_missile": (1, [("modeminecraft:titanium_ingot", 4), ("minecraft:redstone_block", 1), ("minecraft:compass", 1), ("minecraft:tnt", 4)]),
+    "atgm_missile": (1, [("modeminecraft:steel_ingot", 2), ("minecraft:redstone", 4), ("minecraft:tnt", 1), ("minecraft:string", 2)]),
+    "missile_48n6e3": (1, [("modeminecraft:titanium_ingot", 4), ("minecraft:redstone_block", 1), ("minecraft:tnt", 3), ("minecraft:blaze_rod", 2)]),
+    "missile_9m96e2": (1, [("modeminecraft:titanium_ingot", 3), ("minecraft:redstone_block", 1), ("minecraft:tnt", 2), ("minecraft:blaze_rod", 2)]),
+    "missile_77n6n": (1, [("modeminecraft:titanium_plate", 4), ("minecraft:redstone_block", 2), ("minecraft:blaze_rod", 4), ("minecraft:diamond", 1)]),
+    "missile_40n6m": (1, [("modeminecraft:titanium_plate", 4), ("minecraft:redstone_block", 2), ("minecraft:tnt", 3), ("minecraft:blaze_rod", 4)]),
+    "iskander_he": (1, [("modeminecraft:titanium_plate", 6), ("minecraft:redstone_block", 2), ("minecraft:tnt", 16), ("minecraft:blaze_rod", 6)]),
+    "iskander_cluster": (1, [("modeminecraft:titanium_plate", 6), ("minecraft:redstone_block", 2), ("minecraft:tnt", 12), ("minecraft:blaze_rod", 6), ("minecraft:iron_ingot", 12)]),
+    "iskander_emp": (1, [("modeminecraft:titanium_plate", 6), ("minecraft:redstone_block", 4), ("minecraft:tnt", 8), ("minecraft:blaze_rod", 6), ("minecraft:copper_block", 4)]),
+    "jerrycan": (1, [("minecraft:iron_ingot", 3), ("minecraft:coal", 4), ("minecraft:dried_kelp_block", 1)]),
+    "laser_designator": (1, [("modeminecraft:steel_ingot", 2), ("minecraft:redstone", 6), ("minecraft:glass_pane", 2), ("minecraft:diamond", 1)]),
+}
+
+
+def artillery_recipes():
+    for name, (n, ing) in ARTILLERY_RECIPES.items():
+        write(os.path.join(DATA, f"recipe/artillery/{name}.json"), {"type": "modeminecraft:armament", "category": "artillery",
+            "ingredients": [{"item": i, "count": c} for i, c in ing], "result": {"id": f"{MOD}:{name}", "count": n}})
+
+
 if __name__ == "__main__":
     loot_icons()
+    artillery_table()
+    artillery_recipes()
     heavy_ammo_icons()
+    strategic_icons()
     shell_texture()
     print("ok")

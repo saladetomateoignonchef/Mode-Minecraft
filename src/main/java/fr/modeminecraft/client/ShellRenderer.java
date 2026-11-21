@@ -70,6 +70,17 @@ public class ShellRenderer extends EntityRenderer<ShellEntity> {
                 box(vc, m, 1.4f, 1.9f, r * 0.6f, GREY, light);
                 fins(vc, m, -1.9f, r * 2.2f, GREY, light);
             }
+            case SAM_LONG, SAM_AGILE, ABM, SAM_EXTREME -> {
+                box(vc, m, -2.2f, 1.6f, 0.22f, WHITE, light);
+                box(vc, m, 1.6f, 2.2f, 0.14f, GREY, light);
+                fins(vc, m, -2.1f, 0.5f, GREY, light);
+            }
+            case BALLISTIC -> {
+                box(vc, m, -3.5f, 2.5f, 0.45f, WHITE, light);
+                box(vc, m, 2.5f, 3.6f, 0.3f, GREY, light);
+                fins(vc, m, -3.4f, 0.9f, GREY, light);
+            }
+            case SUBMUNITION -> box(vc, m, -0.15f, 0.15f, 0.1f, OLIVE, light);
             default -> box(vc, m, -0.2f, 0.2f, 0.05f, BRASS, light);
         }
         pose.popPose();

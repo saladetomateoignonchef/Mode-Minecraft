@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "artillery",
+  "ingredients": [
+    {
+      "item": "minecraft:copper_ingot",
+      "count": 4
+    },
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 3
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 4
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:ammo_box_145",
+    "count": 1
+  }
+}

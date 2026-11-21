@@ -14,6 +14,9 @@ public final class ModMenus {
 
     public static final DeferredHolder<MenuType<?>, MenuType<ArmamentTableMenu>> ARMAMENT_TABLE =
             MENUS.register("armament_table", () -> new MenuType<>(ArmamentTableMenu::new, FeatureFlags.VANILLA_SET));
+    /** Établi d'artillerie (même menu que la table d'armement, recettes lourdes). */
+    public static final DeferredHolder<MenuType<?>, MenuType<ArmamentTableMenu>> ARTILLERY_TABLE =
+            MENUS.register("artillery_table", () -> new MenuType<>(ArmamentTableMenu::artillery, FeatureFlags.VANILLA_SET));
     public static final DeferredHolder<MenuType<?>, MenuType<ModificationTableMenu>> MODIFICATION_TABLE =
             MENUS.register("modification_table", () -> new MenuType<>(ModificationTableMenu::new, FeatureFlags.VANILLA_SET));
 

@@ -106,6 +106,10 @@ public class MilVehicleEntity extends Entity {
     public java.util.UUID leader;
     /** Véhicule de patrouille / de convoi (disparaît avec son équipage quand aucun joueur n'est proche). */
     public boolean patrol;
+    /** S-500 : sentinelle automatique ; S-400 des bases : défense aérienne automatique. */
+    public boolean sentinel, autoDefense;
+    /** Joueur qui commande la batterie (ses propres frappes ne sont pas interceptées). */
+    public java.util.UUID ownerId;
 
     public MilVehicleEntity(EntityType<? extends MilVehicleEntity> et, Level level, MilType t) {
         super(et, level);
@@ -143,10 +147,12 @@ public class MilVehicleEntity extends Entity {
     /** Remplit les soutes (fraction de la contenance) : véhicules des hangars, des patrouilles, du créatif. */
     public void fillAmmo(float fraction) {
         for (MilType.Weapon w : type().weapons) {
-            for (int i = 0; i < w.ammo().size(); i++) {
+            int n = w.ammo().size();
+            for (int i = 0; i < n; i++) {
                 MilAmmo a = w.ammo().get(i);
-                int cap = capacity(a);
-                stock.put(a, Math.max(stock.getOrDefault(a, 0), Math.round(cap * fraction / (i == 0 ? 1f : 2f))));
+                // la première munition prend 60 % de la soute, les autres se partagent le reste
+                float share = n == 1 ? 1f : i == 0 ? 0.6f : 0.4f / (n - 1);
+                stock.put(a, Math.max(stock.getOrDefault(a, 0), Math.round(w.capacity() * fraction * share)));
             }
         }
         infoDirty = true;
@@ -876,6 +882,9 @@ public class MilVehicleEntity extends Entity {
         if (health() < t.health * 0.3f && tickCount % 4 == 0) {
             sl.sendParticles(ParticleTypes.LARGE_SMOKE, getX(), getY() + dims(t)[2], getZ(), 1, 0.3, 0.1, 0.3, 0.01);
         }
+        if (t.has(MilType.Flag.STRATEGIC)) {
+            StrategicSystems.tick(this);
+        }
         if (infoDirty && tickCount % 2 == 0) {
             syncInfo();
         }
@@ -966,14 +975,40 @@ public class MilVehicleEntity extends Entity {
         return stock.getOrDefault(a, 0);
     }
 
+    /** Retire un coup de la soute (consoles de tir). */
+    public boolean consume(MilAmmo a) {
+        if (ammo(a) <= 0) {
+            return false;
+        }
+        stock.put(a, ammo(a) - 1);
+        infoDirty = true;
+        return true;
+    }
+
+    /** Contenance des soutes pour ce type de munition (les munitions d'une même arme se partagent sa soute). */
     public int capacity(MilAmmo a) {
         int cap = 0;
         for (MilType.Weapon w : type().weapons) {
             if (w.ammo().contains(a)) {
-                cap += w.capacity();
+                cap = Math.max(cap, w.capacity());
             }
         }
         return cap;
+    }
+
+    /** Place libre pour ce type de munition. */
+    public int room(MilAmmo a) {
+        int room = 0;
+        for (MilType.Weapon w : type().weapons) {
+            if (w.ammo().contains(a)) {
+                int used = 0;
+                for (MilAmmo b : w.ammo()) {
+                    used += ammo(b);
+                }
+                room = Math.max(room, w.capacity() - used);
+            }
+        }
+        return room;
     }
 
     public MilAmmo selectedAmmo(int weapon) {
@@ -1156,6 +1191,11 @@ public class MilVehicleEntity extends Entity {
         level().playSound(null, getX(), getY(), getZ(), SoundEvents.FIREWORK_ROCKET_LAUNCH, SoundSource.NEUTRAL, 2f, 0.6f);
     }
 
+    /** Déployé dès la génération (bases militaires). */
+    public void deployNow() {
+        setState(DEPLOYED, true);
+    }
+
     /** Déploiement des complexes lance-missiles (béquilles + relèvement des tubes). */
     public void toggleDeploy(Entity by) {
         if (!type().has(MilType.Flag.STRATEGIC) || Math.abs(speed()) > 0.02f) {
@@ -1299,6 +1339,23 @@ public class MilVehicleEntity extends Entity {
         }
     }
 
+    /** Impulsion électromagnétique (Iskander EMP) : électronique grillée, moteur coupé, radar replié. */
+    public void empHit() {
+        if (level().isClientSide) {
+            return;
+        }
+        setState(ENGINE_DOWN, true);
+        setState(DEPLOYED, false);
+        announce("message.modeminecraft.mil.emp");
+    }
+
+    /** Souffle d'une énorme explosion (frappe balistique, mine). */
+    public void blastHit(Vec3 at, float damage) {
+        if (!level().isClientSide && damage > 0) {
+            hurtInternal(damage, null, at, true);
+        }
+    }
+
     /** Explosion de la mine sous le véhicule (coque en V du M-ATV : -80 %). */
     public float mineFactor() {
         return type().has(MilType.Flag.MINE_PROOF) ? 0.2f : 1f;
@@ -1368,19 +1425,19 @@ public class MilVehicleEntity extends Entity {
         for (MilType.Weapon w : t.weapons) {
             for (MilAmmo a : w.ammo()) {
                 if (held.is(a.item())) {
-                    int room = capacity(a) - ammo(a);
+                    int room = room(a);
                     int n = Math.min(held.getCount(), Math.max(0, (room + a.perItem - 1) / a.perItem));
                     if (n <= 0) {
                         player.displayClientMessage(Component.translatable("message.modeminecraft.mil.ammo_full"), true);
                         return InteractionResult.SUCCESS;
                     }
-                    stock.put(a, Math.min(capacity(a), ammo(a) + n * a.perItem));
+                    stock.put(a, ammo(a) + Math.min(room, n * a.perItem));
                     if (!player.getAbilities().instabuild) {
                         held.shrink(n);
                     }
                     infoDirty = true;
                     level().playSound(null, getX(), getY(), getZ(), SoundEvents.ARMOR_EQUIP_IRON.value(), SoundSource.NEUTRAL, 1f, 0.8f);
-                    player.displayClientMessage(Component.translatable("message.modeminecraft.mil.loaded", ammo(a), capacity(a)), true);
+                    player.displayClientMessage(Component.translatable("message.modeminecraft.mil.loaded", ammo(a), ammo(a) + room(a)), true);
                     return InteractionResult.SUCCESS;
                 }
             }
@@ -1465,6 +1522,11 @@ public class MilVehicleEntity extends Entity {
         entityData.set(TURRET, tag.getFloat("Turret"));
         entityData.set(PITCH, tag.getFloat("Pitch"));
         patrol = tag.getBoolean("Patrol");
+        sentinel = tag.getBoolean("Sentinel");
+        autoDefense = tag.getBoolean("AutoDefense");
+        if (tag.hasUUID("Owner")) {
+            ownerId = tag.getUUID("Owner");
+        }
         CompoundTag ammo = tag.getCompound("Ammo");
         for (MilAmmo a : MilAmmo.values()) {
             if (ammo.contains(a.name())) {
@@ -1492,6 +1554,11 @@ public class MilVehicleEntity extends Entity {
         tag.putFloat("Turret", entityData.get(TURRET));
         tag.putFloat("Pitch", entityData.get(PITCH));
         tag.putBoolean("Patrol", patrol);
+        tag.putBoolean("Sentinel", sentinel);
+        tag.putBoolean("AutoDefense", autoDefense);
+        if (ownerId != null) {
+            tag.putUUID("Owner", ownerId);
+        }
         CompoundTag ammo = new CompoundTag();
         stock.forEach((a, n) -> ammo.putInt(a.name(), n));
         tag.put("Ammo", ammo);

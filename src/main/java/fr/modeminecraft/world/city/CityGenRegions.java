@@ -565,6 +565,11 @@ final class CityGenRegions {
                 b.fill(6, 20, 6, 9, 20, 9, Blocks.IRON_BLOCK);
                 b.fill(4, 22, 7, 11, 24, 8, Blocks.WHITE_CONCRETE);                               // antenne radar
                 b.fill(7, 21, 7, 8, 21, 8, Blocks.LIGHTNING_ROD);
+                // objectifs prioritaires : batterie S-400 déployée (défense aérienne automatique), parfois un Iskander
+                b.strategic(8, 0, 14, fr.modeminecraft.entity.military.MilType.S_400, 90);
+                if (b.chance(0.45f)) {
+                    b.strategic(8, 0, 1, fr.modeminecraft.entity.military.MilType.ISKANDER, 90);
+                }
 
             }
             case "flak" -> {

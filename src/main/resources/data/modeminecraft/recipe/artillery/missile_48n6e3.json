@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "artillery",
+  "ingredients": [
+    {
+      "item": "modeminecraft:titanium_ingot",
+      "count": 4
+    },
+    {
+      "item": "minecraft:redstone_block",
+      "count": 1
+    },
+    {
+      "item": "minecraft:tnt",
+      "count": 3
+    },
+    {
+      "item": "minecraft:blaze_rod",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:missile_48n6e3",
+    "count": 1
+  }
+}

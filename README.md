@@ -612,6 +612,30 @@ Des **villes générées** apparaissent selon le biome (un centre de ville par r
 - **Écrasement** : chars et gros blindés couchent les arbres (tronc entier), clôtures, vitres, plantes, écrasent les
   voitures et renversent les piétons.
 
+#### Établi d'artillerie
+- Nouveau bloc (3 plaques d'acier, 2 TNT, la table d'armement, 2 blocs de fer) : onglet **Artillerie** avec les obus
+  de char, bandes AP-I / HE-I, caisses de 14,5 mm, roquettes (122 mm, S-8, Hydra, 227 mm guidées), ATACMS, missiles
+  antichars, missiles des S-400 / S-500 / Iskander, bidons de carburant et désignateur laser. On en trouve aussi dans les
+  coffres des bases militaires et les caisses militaires.
+
+#### Lance-missiles stratégiques : S-400, S-500, Iskander
+- **H** (n'importe quelle place) : déploiement (béquilles + relèvement des tubes / missiles, véhicule immobilisé).
+  L'**opérateur** (2e place, touche C) ouvre la **console de tir** par **clic droit**.
+- **S-400 Triumf** : écran **radar** de 600 blocs (hélicoptères en rouge, drones en orange, missiles en jaune, missiles
+  balistiques en magenta) ; cliquez jusqu'à **4 contacts** puis **LANCER**. Lancement vertical « à froid » (éjection à
+  25 blocs puis virage) ; **48N6E3** longue portée (fusée de proximité) ou **9M96E2** ultra-agile (drones, missiles).
+- **S-500 Prometey** : radar de 800 blocs, 2 tubes ; **77N6-N** (intercepteur cinétique des missiles balistiques en
+  haute altitude) ou **40N6M** (portée extrême) ; mode **Sentinelle automatique** : il abat seul tout missile
+  balistique qui approche (pas ceux de son propre opérateur).
+- **9K720 Iskander** : coordonnées **X / Z** (ou bouton « marque du désignateur laser »), 60 à 1000 blocs. Le missile
+  monte dans la stratosphère (épaisse traînée blanche), plonge à Mach 6 en manœuvrant (25 % de chances d'échapper à un
+  intercepteur), **alerte sonore 2 s avant l'impact**. Ogives : **9M723-HE** (cratère de 22 blocs), **9M723-Cluster**
+  (36 sous-munitions sur 45 x 45 blocs), **9M723-EMP** (boule de feu thermobarique + impulsion électromagnétique sur
+  80 blocs : drones, radars, tourelles, véhicules et éclairages grillés).
+- **Alerte aérienne** : un missile qui vise une ville déclenche les sirènes, et les civils courent se mettre à l'abri.
+- **Bases militaires secrètes** : une batterie **S-400 déployée en défense aérienne automatique** (elle abat les
+  hélicoptères et drones des joueurs, et intercepte leurs missiles) et parfois un Iskander armé : objectifs prioritaires.
+
 ### Gameplay et progression
 - **Niveaux des armes (1 à 5)** : chaque arme garde ses statistiques (éliminations, tirs à la tête, tirs, ratio)
   et gagne de l'expérience : +10 par élimination, +5 si tir à la tête, +10 pour un gros monstre (50 PV ou plus).

@@ -289,6 +289,20 @@ public final class B {
         level.addFreshEntity(v);
     }
 
+    /** Complexe lance-missiles déployé (objectif prioritaire) : S-400 en défense aérienne automatique, Iskander armé. */
+    void strategic(int x, int y, int z, fr.modeminecraft.entity.military.MilType type, float yaw) {
+        if (!inside(x, y, z)) {
+            return;
+        }
+        BlockPos p = pos(x, y, z);
+        var v = fr.modeminecraft.entity.military.MilVehicleEntity.create(level.getLevel(), type, p.getX() + 0.5, p.getY(), p.getZ() + 0.5, yaw);
+        v.fillAmmo(1f);
+        v.setFuel(0.5f);
+        v.deployNow();
+        v.autoDefense = type != fr.modeminecraft.entity.military.MilType.ISKANDER;
+        level.addFreshEntity(v);
+    }
+
     int nextInt(int n) {
         return r.nextInt(n);
     }

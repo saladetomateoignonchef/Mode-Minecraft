@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "artillery",
+  "ingredients": [
+    {
+      "item": "minecraft:copper_ingot",
+      "count": 4
+    },
+    {
+      "item": "modeminecraft:steel_ingot",
+      "count": 2
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 4
+    },
+    {
+      "item": "minecraft:blaze_powder",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:ap_i_belt",
+    "count": 1
+  }
+}

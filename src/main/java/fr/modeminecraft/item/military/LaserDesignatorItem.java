@@ -60,8 +60,8 @@ public class LaserDesignatorItem extends Item {
             return InteractionResultHolder.fail(player.getItemInHand(hand));
         }
         Vec3 p = hit.getLocation();
+        setMark(player, p);                                         // aussi côté client (console de l'Iskander)
         if (level instanceof ServerLevel sl) {
-            setMark(player, p);
             sl.sendParticles(new DustParticleOptions(new Vector3f(1, 0.05f, 0.05f), 2.5f), p.x, p.y + 0.2, p.z, 30, 0.3, 0.3, 0.3, 0);
             player.displayClientMessage(Component.translatable("message.modeminecraft.designator.marked", (int) p.x, (int) p.y, (int) p.z,
                     (int) eye.distanceTo(p)).withStyle(ChatFormatting.RED), true);

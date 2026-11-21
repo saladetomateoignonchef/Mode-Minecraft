@@ -43,7 +43,10 @@ public class ArmamentTableScreen extends AbstractContainerScreen<ArmamentTableMe
     protected void init() {
         super.init();
         tabs.clear();
-        ArmamentRecipe.Category[] categories = ArmamentRecipe.Category.values();
+        ArmamentRecipe.Category[] categories = menu.categories().toArray(new ArmamentRecipe.Category[0]);
+        if (!menu.categories().contains(category)) {
+            category = categories[0];
+        }
         for (int i = 0; i < categories.length; i++) {
             ArmamentRecipe.Category c = categories[i];
             Button tab = Button.builder(Component.translatable("gui.modeminecraft.category." + c.getSerializedName()), b -> {
@@ -124,7 +127,7 @@ public class ArmamentTableScreen extends AbstractContainerScreen<ArmamentTableMe
         craftButton.active = recipe != null && recipe.canCraft(minecraft.player);
         craftButton.setMessage(Component.translatable(Screen.hasShiftDown() ? "gui.modeminecraft.craft_many" : "gui.modeminecraft.craft"));
         for (int i = 0; i < tabs.size(); i++) {
-            tabs.get(i).active = ArmamentRecipe.Category.values()[i] != category;
+            tabs.get(i).active = menu.categories().get(i) != category;
         }
         filterButton.visible = category == ArmamentRecipe.Category.SPECIAL_AMMO;
         filterButton.setMessage(Component.translatable("gui.modeminecraft.filter",

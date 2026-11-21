@@ -36,7 +36,8 @@ public final class ModCreativeTabs {
     /** Munitions et charges sans classe dédiée. */
     private static final Set<String> AMMO_IDS = Set.of("pzf3_warhead", "stinger_missile", "javelin_missile", "plasma_ball", "grenade_40mm",
             "rpg_rocket", "mortar_shell", "ap_i_belt", "he_i_belt", "apfsds_shell", "he_shell", "heat_shell", "cannon_atgm_missile",
-            "grad_rocket", "mlrs_rocket", "atacms_missile", "s8_rocket", "hydra_rocket", "atgm_missile");
+            "grad_rocket", "mlrs_rocket", "atacms_missile", "s8_rocket", "hydra_rocket", "atgm_missile", "missile_48n6e3", "missile_9m96e2",
+            "missile_77n6n", "missile_40n6m", "iskander_he", "iskander_cluster", "iskander_emp");
     /** Drones, véhicules et ce qui va avec (brouilleur EMP, clé à molette, bidons). */
     private static final Set<String> DRONE_IDS = Set.of("emp_jammer_rifle", "wrench", "jerrycan");
     /** Objets présents dans deux onglets (le pied-de-biche est une arme ET un outil d'effraction). */

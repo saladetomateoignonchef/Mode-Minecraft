@@ -28,7 +28,15 @@ public enum MilAmmo {
     S8(() -> ModItems.S8_ROCKET.get(), 1, Shell.S8),
     HYDRA(() -> ModItems.HYDRA_ROCKET.get(), 1, Shell.HYDRA),
     ATGM(() -> ModItems.ATGM_MISSILE.get(), 1, Shell.ATGM),
-    SAM(() -> ModItems.STINGER_MISSILE.get(), 1, Shell.SAM);
+    SAM(() -> ModItems.STINGER_MISSILE.get(), 1, Shell.SAM),
+    // complexes lance-missiles (S-400, S-500, Iskander)
+    S400_48N6(() -> ModItems.MISSILE_48N6E3.get(), 1, Shell.SAM_LONG),
+    S400_9M96(() -> ModItems.MISSILE_9M96E2.get(), 1, Shell.SAM_AGILE),
+    S500_77N6(() -> ModItems.MISSILE_77N6N.get(), 1, Shell.ABM),
+    S500_40N6(() -> ModItems.MISSILE_40N6M.get(), 1, Shell.SAM_EXTREME),
+    ISK_HE(() -> ModItems.ISKANDER_HE.get(), 1, Shell.BALLISTIC),
+    ISK_CLUSTER(() -> ModItems.ISKANDER_CLUSTER.get(), 1, Shell.BALLISTIC),
+    ISK_EMP(() -> ModItems.ISKANDER_EMP.get(), 1, Shell.BALLISTIC);
 
     private final Supplier<Item> item;
     public final int perItem;
@@ -62,7 +70,15 @@ public enum MilAmmo {
         S8(3.8f, 0.012f, 25, 3.5f, 0.35f, false),
         HYDRA(3.8f, 0.012f, 25, 3.5f, 0.35f, false),
         ATGM(2.4f, 0.0f, 80, 3.0f, 0.9f, true),
-        SAM(3.2f, 0.0f, 40, 3.0f, 0.5f, true);
+        SAM(3.2f, 0.0f, 40, 3.0f, 0.5f, true),
+        SAM_LONG(4.5f, 0.0f, 80, 4.0f, 0.5f, true),
+        SAM_AGILE(5.0f, 0.0f, 50, 3.0f, 0.5f, true),
+        ABM(7.0f, 0.0f, 120, 2.0f, 0.5f, true),
+        SAM_EXTREME(5.5f, 0.0f, 80, 4.0f, 0.5f, true),
+        /** Missile balistique (vol simulé par Strikes, l'entité n'est que visuelle). */
+        BALLISTIC(4.0f, 0.0f, 0, 0, 0, true),
+        /** Sous-munition de l'ogive à dispersion de l'Iskander. */
+        SUBMUNITION(1.2f, 0.06f, 20, 3.5f, 0.4f, false);
 
         public final float speed, gravity, damage, blast, pierce;
         public final boolean guided;

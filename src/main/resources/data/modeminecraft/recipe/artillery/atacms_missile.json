@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "artillery",
+  "ingredients": [
+    {
+      "item": "modeminecraft:titanium_ingot",
+      "count": 4
+    },
+    {
+      "item": "minecraft:redstone_block",
+      "count": 1
+    },
+    {
+      "item": "minecraft:compass",
+      "count": 1
+    },
+    {
+      "item": "minecraft:tnt",
+      "count": 4
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:atacms_missile",
+    "count": 1
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "artillery",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 2
+    },
+    {
+      "item": "minecraft:copper_ingot",
+      "count": 3
+    },
+    {
+      "item": "minecraft:tnt",
+      "count": 1
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:heat_shell",
+    "count": 1
+  }
+}

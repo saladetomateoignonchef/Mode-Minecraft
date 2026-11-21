@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "artillery",
+  "ingredients": [
+    {
+      "item": "modeminecraft:titanium_ingot",
+      "count": 2
+    },
+    {
+      "item": "minecraft:copper_ingot",
+      "count": 2
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 4
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:apfsds_shell",
+    "count": 1
+  }
+}
