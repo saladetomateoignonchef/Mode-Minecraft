@@ -169,6 +169,38 @@ public final class StrategicSystems {
         }
     }
 
+    /**
+     * Console S-400 / S-500 : tir sur un point libre de l'écran radar (X, Z, altitude facultative : -1 = auto). Le missile
+     * est lancé à froid puis vire vers ces coordonnées, où sa fusée de proximité le fait exploser.
+     */
+    public static void fireSamAt(MilVehicleEntity v, ServerPlayer p, int x, int alt, int z, int ammoIndex) {
+        if (!checkReady(v, p)) {
+            return;
+        }
+        double d = Math.hypot(x - v.getX(), z - v.getZ());
+        if (d > range(v.type()) || d < 20) {
+            p.displayClientMessage(Component.translatable("message.modeminecraft.strategic.out_of_range", (int) d).withStyle(ChatFormatting.RED), true);
+            return;
+        }
+        List<MilAmmo> list = v.type().weapons.get(0).ammo();
+        MilAmmo wanted = list.get(Math.floorMod(ammoIndex, list.size()));
+        MilAmmo a = v.ammo(wanted) > 0 ? wanted : pick(v, false);
+        if (a == null || !v.consume(a)) {
+            p.displayClientMessage(Component.translatable("message.modeminecraft.strategic.no_missile").withStyle(ChatFormatting.RED), true);
+            return;
+        }
+        ServerLevel sl = (ServerLevel) v.level();
+        double y = alt >= 0 ? alt : sl.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, x, z) + 2;
+        Vec3 tube = v.toWorld(-MilVehicleEntity.dims(v.type())[0] / 2 + 1, MilVehicleEntity.dims(v.type())[2] + 2.5, 0);
+        ShellEntity m = new ShellEntity(sl, p, a.shell, v);
+        m.setPos(tube.x, tube.y, tube.z);
+        m.coldLaunchAt(new Vec3(x + 0.5, y, z + 0.5));
+        sl.addFreshEntity(m);
+        sl.sendParticles(net.minecraft.core.particles.ParticleTypes.CLOUD, tube.x, tube.y, tube.z, 30, 0.6, 0.3, 0.6, 0.05);
+        sl.playSound(null, tube.x, tube.y, tube.z, fr.modeminecraft.registry.ModSounds.MISSILE_LAUNCH.get(), net.minecraft.sounds.SoundSource.NEUTRAL, 8f, 0.8f);
+        p.displayClientMessage(Component.translatable("message.modeminecraft.strategic.launched_point", x, (int) y, z).withStyle(ChatFormatting.GREEN), true);
+    }
+
     /** Console Iskander : frappe balistique sur (X, Z). */
     public static void fireIskander(MilVehicleEntity v, ServerPlayer p, int x, int z, int warhead) {
         if (!checkReady(v, p)) {

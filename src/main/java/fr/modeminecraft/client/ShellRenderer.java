@@ -59,7 +59,7 @@ public class ShellRenderer extends EntityRenderer<ShellEntity> {
                 box(vc, m, -0.75f, 0.6f, 0.06f, WHITE, light);
                 fins(vc, m, -0.7f, 0.16f, GREY, light);
             }
-            case ROCKET_122, S8, HYDRA -> {
+            case ROCKET_122, ROCKET_107, S8, HYDRA -> {
                 box(vc, m, -0.9f, 0.6f, 0.07f, OLIVE, light);
                 box(vc, m, 0.6f, 0.8f, 0.045f, RED, light);
                 fins(vc, m, -0.85f, 0.16f, OLIVE, light);

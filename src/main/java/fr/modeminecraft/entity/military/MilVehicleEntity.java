@@ -74,9 +74,18 @@ public class MilVehicleEntity extends Entity {
     private static final EntityDataAccessor<Integer> STATE = SynchedEntityData.defineId(MilVehicleEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<CompoundTag> SEATS = SynchedEntityData.defineId(MilVehicleEntity.class, EntityDataSerializers.COMPOUND_TAG);
     private static final EntityDataAccessor<CompoundTag> INFO = SynchedEntityData.defineId(MilVehicleEntity.class, EntityDataSerializers.COMPOUND_TAG);
+    /** Fin du relevage hydraulique (HIMARS, heure de jeu) et cible verrouillée (Stinger), synchronisées pour le client. */
+    private static final EntityDataAccessor<Integer> RAISE_END = SynchedEntityData.defineId(MilVehicleEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> LOCK_ID = SynchedEntityData.defineId(MilVehicleEntity.class, EntityDataSerializers.INT);
+    public static final int RAISE_TICKS = 40;
+    /** Dernières coordonnées de frappe saisies à la console (Iskander), conservées dans le véhicule. */
+    public int lastTargetX, lastTargetZ;
+    public boolean hasSavedTarget;
 
     /** Bits de STATE. */
     public static final int ENGINE_DOWN = 1, MOBILITY_DOWN = 2, DEPLOYED = 4, BURNING = 8, LOCKING = 16, LOCKED = 32;
+    /** Aéronef en perdition (chute incontrôlable), rotor de queue détruit (vrille), épave en feu. */
+    public static final int CRASHING = 64, TAIL_HIT = 128, WRECK = 256;
 
     /** Entrées d'un pilote d'hélicoptère côté client (monter / descendre) : fournies par le code client. */
     public static java.util.function.IntSupplier heliLift = () -> 0;
@@ -217,7 +226,8 @@ public class MilVehicleEntity extends Entity {
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder b) {
         b.define(TYPE, 0).define(HEALTH, 50f).define(FUEL, 0.6f).define(SPEED, 0f).define(STEER, 0f).define(TURRET, 0f).define(PITCH, 0f)
-                .define(ROTOR, 0f).define(STATE, 0).define(SEATS, new CompoundTag()).define(INFO, new CompoundTag());
+                .define(ROTOR, 0f).define(STATE, 0).define(SEATS, new CompoundTag()).define(INFO, new CompoundTag())
+                .define(RAISE_END, 0).define(LOCK_ID, -1);
     }
 
     public MilType type() {
@@ -500,8 +510,8 @@ public class MilVehicleEntity extends Entity {
         if (deep) {
             max = t.has(MilType.Flag.AMPHIBIOUS) ? 0.28f : 0;          // hydrojet : ~10 km/h ; sinon noyé
         }
-        if (t.has(MilType.Flag.STRATEGIC) && is(DEPLOYED)) {
-            max = 0;                                                     // béquilles sorties
+        if ((t.has(MilType.Flag.STRATEGIC) || raisable()) && is(DEPLOYED)) {
+            max = 0;                                                     // béquilles sorties / lanceur relevé
         }
         if (!t.has(MilType.Flag.SNOW) && t.tracked() && level().getBlockState(blockPosition()).is(Blocks.SNOW)) {
             max *= 0.85f;
@@ -553,6 +563,16 @@ public class MilVehicleEntity extends Entity {
 
     // ------------------------------------------------------------------ vol (hélicoptères)
     private void fly() {
+        if (is(WRECK)) {
+            Vec3 v = getDeltaMovement();
+            setDeltaMovement(0, onGround() ? 0 : Math.max(-1.5, v.y - 0.08), 0);
+            move(MoverType.SELF, getDeltaMovement());
+            return;
+        }
+        if (is(CRASHING)) {
+            crashFly();
+            return;
+        }
         MilType t = type();
         boolean run = canRun();
         float r = rotor();
@@ -594,8 +614,118 @@ public class MilVehicleEntity extends Entity {
         entityData.set(SPEED, speed);
     }
 
+    // ------------------------------------------------------------------ crash des aéronefs
+    private int wreckTicks, crashTicks;
+
+    /** En vol (plus de 3 blocs au-dessus du sol) ? */
+    private boolean airborne() {
+        return !onGround() && !isInWater()
+                && getY() - level().getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, getBlockX(), getBlockZ()) > 3;
+    }
+
+    /**
+     * Perte de contrôle (cahier des charges « Crashs aériens ») : pilote parti ou mort sans copilote, structure sous 20 %,
+     * ou rotor de queue détruit (vrille). Les commandes ne répondent plus, le nez plonge, fumée noire et flammes,
+     * alarme de cockpit, puis explosion au contact du sol, d'un mur ou de l'eau.
+     */
+    public void startCrash(boolean tail) {
+        if (level().isClientSide || !type().heli() || is(WRECK)) {
+            return;
+        }
+        if (tail && !is(TAIL_HIT)) {
+            setState(TAIL_HIT, true);
+            announce("message.modeminecraft.mil.tail_rotor_hit");
+        }
+        if (!is(CRASHING)) {
+            setState(CRASHING, true);
+            crashTicks = 0;
+            announce("message.modeminecraft.mil.crashing");
+            level().playSound(null, getX(), getY(), getZ(), ModSounds.AIRCRAFT_CRASH_ALARM.get(), SoundSource.NEUTRAL, 3f, 1f);
+        }
+    }
+
+    /** Un passager « copilote » (place de tireur / pilote) reprend les commandes si le pilote saute ou meurt. */
+    private boolean copilotTakesOver() {
+        for (Entity p : getPassengers()) {
+            MilType.Seat s = seat(p);
+            if (s != null && (s.role() == MilType.Role.GUNNER || s.role() == MilType.Role.PILOT) && seatOf(p) != 0
+                    && (p instanceof Player || p instanceof HumanBotEntity)) {
+                assignSeat(p, 0);
+                if (p instanceof Player pl) {
+                    pl.displayClientMessage(Component.translatable("message.modeminecraft.mil.copilot").withStyle(ChatFormatting.GOLD), true);
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void crashFly() {
+        crashTicks++;
+        float sp = speed() * 0.985f + 0.004f;                                 // l'inertie l'emporte en avant
+        if (is(TAIL_HIT)) {
+            setYRot(getYRot() + 8);                                            // vrille : 8° par tick
+        }
+        double rad = Math.toRadians(getYRot());
+        double vy = Math.max(-1.6, getDeltaMovement().y - 0.045);
+        setDeltaMovement(-Math.sin(rad) * sp, vy, Math.cos(rad) * sp);
+        move(MoverType.SELF, getDeltaMovement());
+        entityData.set(SPEED, sp);
+        entityData.set(ROTOR, Math.max(0.35f, rotor() - 0.003f));
+        if (crashTicks > 3 && (onGround() || horizontalCollision || verticalCollision || isInWater())) {
+            crashImpact();
+        }
+    }
+
+    /** Écrasement : explosion (puissance 7, incendies), occupants tués, épave en feu pendant 30 s. */
+    private void crashImpact() {
+        if (!(level() instanceof ServerLevel sl) || is(WRECK)) {
+            return;
+        }
+        destroyed = true;                                                     // l'épave ne subit plus de dégâts
+        setState(CRASHING, false);
+        setState(TAIL_HIT, false);
+        setState(WRECK, true);
+        setState(BURNING, true);
+        entityData.set(HEALTH, 0f);
+        entityData.set(ROTOR, 0f);
+        entityData.set(SPEED, 0f);
+        wreckTicks = 0;
+        for (Entity p : List.copyOf(getPassengers())) {
+            p.stopRiding();
+            p.hurt(damageSources().explosion(this, null), 1000);
+        }
+        sl.explode(this, getX(), getY() + 1, getZ(), 7f, true, Level.ExplosionInteraction.TNT);
+        sl.sendParticles(ParticleTypes.EXPLOSION_EMITTER, getX(), getY() + 1, getZ(), 2, 1, 1, 1, 0);
+        sl.sendParticles(ParticleTypes.LAVA, getX(), getY() + 1, getZ(), 40, 2, 0.5, 2, 0.1);
+        level().playSound(null, getX(), getY(), getZ(), ModSounds.HUGE_EXPLOSION.get(), SoundSource.NEUTRAL, 6f, 1f);
+        setDeltaMovement(Vec3.ZERO);
+    }
+
+    /** Épave en feu : flammes, fumée noire, brûle ce qui la touche, disparaît après 30 s en laissant de la ferraille. */
+    private void wreckTick(ServerLevel sl) {
+        float[] d = dims(type());
+        if (tickCount % 3 == 0) {
+            sl.sendParticles(ParticleTypes.FLAME, getX(), getY() + d[2] * 0.5, getZ(), 6, d[0] * 0.3, d[2] * 0.3, d[0] * 0.3, 0.02);
+            sl.sendParticles(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, getX(), getY() + d[2], getZ(), 2, d[0] * 0.2, 0.2, d[0] * 0.2, 0.01);
+            sl.sendParticles(ParticleTypes.LARGE_SMOKE, getX(), getY() + d[2], getZ(), 3, d[0] * 0.3, 0.3, d[0] * 0.3, 0.03);
+        }
+        if (tickCount % 20 == 0) {
+            for (LivingEntity e : sl.getEntitiesOfClass(LivingEntity.class, getBoundingBox().inflate(0.5))) {
+                e.igniteForSeconds(4);
+            }
+        }
+        if (++wreckTicks > 600) {
+            spawnAtLocation(new ItemStack(ModItems.STEEL_PLATE.get(), 2 + random.nextInt(4)));
+            discard();
+        }
+    }
+
     @Override
     public boolean isControlledByLocalInstance() {
+        if (is(CRASHING) || is(WRECK)) {
+            return !level().isClientSide;                                     // plus aucune commande : le serveur simule la chute
+        }
         Entity c = getControllingPassenger();
         if (c instanceof Player p) {
             return p.isLocalPlayer();
@@ -635,17 +765,70 @@ public class MilVehicleEntity extends Entity {
         return g instanceof Player p && p.isLocalPlayer();
     }
 
-    /** Servant de la tourelle (place de tireur, ou pilote de l'Apache pour personne). */
+    /** Servant de la tourelle (place de tireur ; conducteur seul à bord : le conducteur lui-même). */
     public Entity gunner() {
         List<MilType.Seat> seats = type().seats;
         for (int i = 0; i < seats.size(); i++) {
             MilType.Seat s = seats.get(i);
             if ((s.role() == MilType.Role.GUNNER || s.role() == MilType.Role.OPERATOR) && s.primary() >= 0
                     && !type().weapons.get(s.primary()).free()) {
-                return occupant(i);
+                Entity o = occupant(i);
+                if (o == null) {
+                    Entity driver = occupant(0);
+                    if (driver != null && soloGunnerSeat(driver) == i) {
+                        return driver;
+                    }
+                }
+                return o;
             }
         }
         return null;
+    }
+
+    /**
+     * Mode solo (cahier des charges « Corrections chars » §1.3) : un joueur seul au poste de conduite d'un blindé dont
+     * la place de tireur est libre conduit (ZQSD) ET sert la tourelle (souris, clic gauche canon, clic droit coaxiale,
+     * R munitions). Dès qu'un tireur monte, les commandes de la tourelle lui reviennent.
+     */
+    private int soloGunnerSeat(Entity e) {
+        if (!(e instanceof Player) || seatOf(e) != 0 || type().heli() || type().has(MilType.Flag.STRATEGIC)) {
+            return -1;
+        }
+        List<MilType.Seat> seats = type().seats;
+        for (int i = 1; i < seats.size(); i++) {
+            MilType.Seat s = seats.get(i);
+            if (s.role() == MilType.Role.GUNNER && s.primary() >= 0 && !type().weapons.get(s.primary()).free()) {
+                return occupant(i) == null ? i : -1;
+            }
+        }
+        return -1;
+    }
+
+    /** Conducteur seul qui sert aussi la tourelle ? */
+    public boolean solo(Entity e) {
+        return soloGunnerSeat(e) >= 0;
+    }
+
+    /** Place dont `e` sert les armes : la sienne, ou celle du tireur en mode solo. */
+    public MilType.Seat weaponSeat(Entity e) {
+        int g = soloGunnerSeat(e);
+        return g >= 0 ? type().seats.get(g) : seat(e);
+    }
+
+    // ------------------------------------------------------------------ point visé (réticule)
+    private Vec3 aimPoint;
+    private long aimTime;
+    private int aimBy = -1;
+
+    /** Point visé par le réticule du joueur (lancer de rayon caméra jusqu'à 300 blocs, envoyé par le client). */
+    public void setAim(Entity by, Vec3 p) {
+        aimPoint = p;
+        aimBy = by.getId();
+        aimTime = level().getGameTime();
+    }
+
+    public Vec3 aimPoint(Entity by) {
+        return aimPoint != null && by != null && aimBy == by.getId() && Math.abs(level().getGameTime() - aimTime) < 20 ? aimPoint : null;
     }
 
     private MilType.Weapon turretWeapon() {
@@ -669,7 +852,9 @@ public class MilVehicleEntity extends Entity {
         if (g instanceof HumanBotEntity bot && !level().isClientSide) {
             want = MilAI.aim(this, bot, w);
         } else if (g instanceof Player p && (!level().isClientSide || p.isLocalPlayer())) {
-            want = new float[]{Mth.wrapDegrees(p.getYRot() - getYRot()), -p.getXRot()};
+            Vec3 ap = aimPoint(p);
+            // le canon s'oriente exactement vers le point visé (pas de parallaxe entre le réticule et le tube)
+            want = ap != null && ap.distanceToSqr(position()) > 36 ? aimAt(ap) : new float[]{Mth.wrapDegrees(p.getYRot() - getYRot()), -p.getXRot()};
             Entity air = radarTrack(p);
             if (air != null) {
                 want = aimAt(air.position().add(0, air.getBbHeight() / 2, 0).add(air.getDeltaMovement().scale(distanceTo(air) / 5.0)));
@@ -677,6 +862,10 @@ public class MilVehicleEntity extends Entity {
         }
         if (want == null) {
             return;
+        }
+        if (raisable() && !raised()) {
+            // vérins : le module se relève (ou se recouche) dans l'axe, puis seulement le tireur le pointe
+            want = new float[]{0, is(DEPLOYED) ? 30 * raise(0) : 0};
         }
         float tr = w.traverse() <= 0 ? 360 : w.traverse();
         yaw += Mth.clamp(Mth.wrapDegrees(want[0] - yaw), -tr, tr);
@@ -747,9 +936,9 @@ public class MilVehicleEntity extends Entity {
         if (mount >= 1 && geo.turret() != null) {
             double dx = x - geo.turret().x, dz = z - geo.turret().z;
             double c = Math.cos(Math.toRadians(yaw)), s = Math.sin(Math.toRadians(yaw));
-            // lacet positif = vers la gauche (sens des angles de Minecraft)
-            x = geo.turret().x + dx * c + dz * s;
-            z = geo.turret().z - dx * s + dz * c;
+            // lacet positif = vers la droite (sens des angles de Minecraft, comme la direction du tir) ; +z = droite
+            x = geo.turret().x + dx * c - dz * s;
+            z = geo.turret().z + dx * s + dz * c;
         }
         Vec3 pos = toWorld(x, y, z);
         Vec3 dir;
@@ -792,8 +981,29 @@ public class MilVehicleEntity extends Entity {
             // régime du rotor calculé aussi par le serveur (le pilote joueur le calcule de son côté)
             entityData.set(ROTOR, canRun() ? Math.min(1, rotor() + 0.008f) : Math.max(0, rotor() - 0.004f));
         }
-        if (t.heli() && getControllingPassenger() == null && !onGround()) {
-            // plus de pilote : chute
+        if (t.heli() && is(WRECK)) {
+            wreckTick(sl);
+            return;
+        }
+        if (t.heli() && !is(CRASHING) && airborne()) {
+            if (getControllingPassenger() == null && !copilotTakesOver()) {
+                startCrash(false);                                               // pilote parti ou mort, sans copilote
+            } else if (health() < t.health * 0.2f) {
+                startCrash(false);                                               // structure trop endommagée
+            }
+        }
+        if (t.heli() && is(CRASHING) && tickCount % 2 == 0) {
+            float[] d = dims(t);
+            Vec3 eng = toWorld(-d[0] * 0.15, d[2] * 0.8, 0);
+            sl.sendParticles(ParticleTypes.LARGE_SMOKE, eng.x, eng.y, eng.z, 4, 0.4, 0.3, 0.4, 0.02);
+            sl.sendParticles(ParticleTypes.CAMPFIRE_COSY_SMOKE, eng.x, eng.y, eng.z, 2, 0.3, 0.2, 0.3, 0.01);
+            sl.sendParticles(ParticleTypes.FLAME, eng.x, eng.y, eng.z, 3, 0.3, 0.2, 0.3, 0.02);
+            if (crashTicks % 40 == 0) {
+                level().playSound(null, getX(), getY(), getZ(), ModSounds.AIRCRAFT_CRASH_ALARM.get(), SoundSource.NEUTRAL, 3f, 1f);
+            }
+        }
+        if (t.heli() && getControllingPassenger() == null && !onGround() && !is(CRASHING)) {
+            // posé de travers / très bas sans pilote : il retombe simplement
             entityData.set(ROTOR, Math.max(0, rotor() - 0.004f));
             setDeltaMovement(getDeltaMovement().multiply(0.98, 1, 0.98).add(0, -0.04, 0));
             move(MoverType.SELF, getDeltaMovement());
@@ -830,7 +1040,7 @@ public class MilVehicleEntity extends Entity {
         }
         // armes
         for (Entity p : getPassengers()) {
-            MilType.Seat s = seat(p);
+            MilType.Seat s = weaponSeat(p);
             if (s == null) {
                 continue;
             }
@@ -1018,7 +1228,7 @@ public class MilVehicleEntity extends Entity {
 
     /** Touche R : munition suivante de l'arme principale (ou secondaire si la principale n'en a qu'une). */
     public void cycleAmmo(Entity e) {
-        MilType.Seat s = seat(e);
+        MilType.Seat s = weaponSeat(e);
         if (s == null) {
             return;
         }
@@ -1058,8 +1268,12 @@ public class MilVehicleEntity extends Entity {
                 return;
             }
         }
-        if (w.kind() == MilType.Kind.SAM && lockTarget < 0) {
-            return;                                                           // pas de tir sans verrouillage
+        if (!raised()) {
+            if (now - lastShot[wi] > 20 && shooter instanceof Player p) {
+                lastShot[wi] = (int) now;
+                p.displayClientMessage(Component.translatable("message.modeminecraft.mil.raise_first").withStyle(ChatFormatting.RED), true);
+            }
+            return;
         }
         lastShot[wi] = (int) now;
         stock.put(a, ammo(a) - 1);
@@ -1077,6 +1291,19 @@ public class MilVehicleEntity extends Entity {
         LivingEntity owner = shooter instanceof LivingEntity le ? le : null;
         ServerLevel sl = (ServerLevel) level();
         MilAmmo.Shell sh = a.shell;
+        // convergence : le projectile part de la bouche, vers le point exact sous le réticule
+        Vec3 ap = shooter instanceof Player ? aimPoint(shooter) : null;
+        if (ap != null && ap.distanceToSqr(pos) > 9) {
+            Vec3 target = ap;
+            if (!sh.bullet() && !sh.rocket() && !sh.guided && sh.gravity > 0) {
+                double t = ap.distanceTo(pos) / Math.max(0.1, sh.speed);
+                target = target.add(0, sh.gravity * t * (t + 1) / 2, 0);              // compensation de la chute
+            }
+            Vec3 nd = target.subtract(pos).normalize();
+            if (w.free() || nd.dot(dir) > Math.cos(Math.toRadians(12))) {
+                dir = nd;
+            }
+        }
         float spread = w.kind() == MilType.Kind.MG ? 0.012f : w.kind() == MilType.Kind.ROCKETS && w.cooldown() <= 10 ? 0.03f : 0.004f;
         dir = dir.add(random.nextGaussian() * spread, random.nextGaussian() * spread, random.nextGaussian() * spread).normalize();
         if (sh.bullet()) {
@@ -1087,12 +1314,14 @@ public class MilVehicleEntity extends Entity {
             sl.addFreshEntity(b);
         } else {
             ShellEntity s = new ShellEntity(sl, owner, sh, this);
-            s.setPos(pos.x, pos.y, pos.z);
+            // missiles et roquettes : départ devant les tubes, hors de la boîte de collision du lanceur
+            Vec3 out = sh.rocket() || sh.guided ? pos.add(dir.scale(1.2)) : pos;
+            s.setPos(out.x, out.y, out.z);
             s.setDeltaMovement(dir.scale(sh.speed * (sh.guided && sh != MilAmmo.Shell.SAM ? 0.7 : 1)));
             if (sh == MilAmmo.Shell.ATGM || sh == MilAmmo.Shell.REFLEKS) {
                 s.beamRider(shooter);                                       // suit le réticule du tireur (SACLOS)
             } else if (sh == MilAmmo.Shell.SAM) {
-                s.home(sl.getEntity(lockTarget));
+                s.home(lockTarget >= 0 ? sl.getEntity(lockTarget) : null);      // sans verrouillage : tir libre, vol droit
             } else if (sh == MilAmmo.Shell.ROCKET_227 || sh == MilAmmo.Shell.ATACMS) {
                 s.gps(designated(shooter));
             }
@@ -1167,6 +1396,9 @@ public class MilVehicleEntity extends Entity {
         }
         lockTarget = lockTicks >= 30 ? lockCandidate : -1;
         boolean locked = lockTarget >= 0;
+        if (entityData.get(LOCK_ID) != lockCandidate) {
+            entityData.set(LOCK_ID, lockCandidate);
+        }
         setState(LOCKED, locked);
         setState(LOCKING, !locked && lockTicks > 0);
         if (tickCount % (locked ? 4 : 10) == 0 && lockTicks > 0 && shooter instanceof Player p) {
@@ -1198,11 +1430,53 @@ public class MilVehicleEntity extends Entity {
 
     /** Déploiement des complexes lance-missiles (béquilles + relèvement des tubes). */
     public void toggleDeploy(Entity by) {
-        if (!type().has(MilType.Flag.STRATEGIC) || Math.abs(speed()) > 0.02f) {
+        if (!type().has(MilType.Flag.STRATEGIC) && !raisable() || Math.abs(speed()) > 0.02f) {
+            return;
+        }
+        if (raisable()) {
+            // HIMARS : relevage / abaissement hydraulique du module lance-roquettes (2 s)
+            if (level().getGameTime() < entityData.get(RAISE_END)) {
+                return;                                                   // vérins déjà en mouvement
+            }
+            setState(DEPLOYED, !is(DEPLOYED));
+            entityData.set(RAISE_END, (int) level().getGameTime() + RAISE_TICKS);
+            level().playSound(null, getX(), getY(), getZ(), ModSounds.HIMARS_HYDRAULICS.get(), SoundSource.NEUTRAL, 2f, is(DEPLOYED) ? 1f : 0.85f);
             return;
         }
         setState(DEPLOYED, !is(DEPLOYED));
         level().playSound(null, getX(), getY(), getZ(), SoundEvents.PISTON_EXTEND, SoundSource.NEUTRAL, 2f, 0.5f);
+    }
+
+    /** Lanceur à relever avant le tir (HIMARS). */
+    public boolean raisable() {
+        return type() == MilType.M142_HIMARS;
+    }
+
+    /** Progression du relevage (0 = couché, 1 = relevé et prêt), interpolée côté client. */
+    public float raise(float partial) {
+        if (!raisable()) {
+            return 1;
+        }
+        float left = Mth.clamp((entityData.get(RAISE_END) - (level().getGameTime() + partial)) / RAISE_TICKS, 0, 1);
+        return is(DEPLOYED) ? 1 - left : left;
+    }
+
+    /** Lanceur relevé, vérins à l'arrêt : le tir est autorisé. */
+    public boolean raised() {
+        return !raisable() || is(DEPLOYED) && level().getGameTime() >= entityData.get(RAISE_END);
+    }
+
+    /** Mémorise les coordonnées saisies à la console (Iskander). */
+    public void saveTarget(int x, int z) {
+        lastTargetX = x;
+        lastTargetZ = z;
+        hasSavedTarget = true;
+        infoDirty = true;
+    }
+
+    /** Cible verrouillée par le système sol-air (client : carré rouge). */
+    public int lockId() {
+        return entityData.get(LOCK_ID);
     }
 
     private void syncInfo() {
@@ -1219,6 +1493,10 @@ public class MilVehicleEntity extends Entity {
         }
         t.putInt("smoke", smoke);
         t.putInt("aps", aps);
+        if (hasSavedTarget) {
+            t.putInt("LastTargetX", lastTargetX);                         // console Iskander : champs pré-remplis
+            t.putInt("LastTargetZ", lastTargetZ);
+        }
         entityData.set(INFO, t);
     }
 
@@ -1277,6 +1555,13 @@ public class MilVehicleEntity extends Entity {
         float dmg = s.damage * k;
         hurtInternal(dmg / Math.max(0.05f, armor), shell.getOwner(), at, true, armor);
         modules(at, s.pierce >= 0.3f || s.blast >= 3);
+        // missile sol-air / antichar / obus antiaérien sur un hélicoptère en vol : rotor de queue arraché (vrille)
+        if (type().heli() && !is(WRECK) && airborne() && (s.guided || s.blast >= 2)) {
+            boolean rear = armorAt(at) == type().armorRear;
+            if (rear || random.nextFloat() < 0.35f) {
+                startCrash(true);
+            }
+        }
     }
 
     private boolean hurtInternal(float amount, Entity by, Vec3 from, boolean heavy) {
@@ -1295,7 +1580,12 @@ public class MilVehicleEntity extends Entity {
             modules(from, true);
         }
         if (hp <= 0) {
-            destroy(by);
+            if (type().heli() && airborne() && hp > -type().health * 0.5f) {
+                entityData.set(HEALTH, 1f);                                      // abattu en vol : il s'écrase
+                startCrash(random.nextFloat() < 0.5f);
+            } else {
+                destroy(by);
+            }
         }
         return true;
     }
@@ -1410,7 +1700,7 @@ public class MilVehicleEntity extends Entity {
     // ------------------------------------------------------------------ interaction
     @Override
     public InteractionResult interact(Player player, InteractionHand hand) {
-        if (hasPassenger(player)) {
+        if (hasPassenger(player) || is(WRECK)) {
             return InteractionResult.PASS;
         }
         ItemStack held = player.getItemInHand(hand);
@@ -1517,6 +1807,11 @@ public class MilVehicleEntity extends Entity {
     // ------------------------------------------------------------------ client
     private void clientFx() {
         MilType t = type();
+        if (is(CRASHING)) {
+            // nez qui plonge et roulis désordonné
+            tilt = Mth.lerp(0.05f, tilt, -35f);
+            roll = Mth.lerp(0.1f, roll, (float) Math.sin(tickCount * 0.3) * 12f);
+        }
         if (Math.abs(speed()) > 0.05 && tickCount % 6 == 0 && !t.heli()) {
             Vec3 ex = toWorld(-dims(t)[0] / 2 + 0.3, 1.2, dims(t)[1] / 2 - 0.4);
             level().addParticle(ParticleTypes.SMOKE, ex.x, ex.y, ex.z, 0, 0.03, 0);
@@ -1545,8 +1840,13 @@ public class MilVehicleEntity extends Entity {
         entityData.set(TYPE, (t == null ? MilType.UAZ_469 : t).ordinal());
         entityData.set(HEALTH, tag.contains("Health") ? tag.getFloat("Health") : type().health);
         entityData.set(FUEL, tag.contains("Fuel") ? tag.getFloat("Fuel") : 0.6f);
-        entityData.set(STATE, tag.getInt("State") & (ENGINE_DOWN | MOBILITY_DOWN | DEPLOYED));
+        entityData.set(STATE, tag.getInt("State") & (ENGINE_DOWN | MOBILITY_DOWN | DEPLOYED | WRECK));
         entityData.set(TURRET, tag.getFloat("Turret"));
+        hasSavedTarget = tag.getBoolean("HasSavedTarget");
+        destroyed = is(WRECK);
+        lastTargetX = tag.getInt("LastTargetX");
+        lastTargetZ = tag.getInt("LastTargetZ");
+        infoDirty = true;
         entityData.set(PITCH, tag.getFloat("Pitch"));
         patrol = tag.getBoolean("Patrol");
         sentinel = tag.getBoolean("Sentinel");
@@ -1579,6 +1879,11 @@ public class MilVehicleEntity extends Entity {
         tag.putFloat("Fuel", fuel());
         tag.putInt("State", state());
         tag.putFloat("Turret", entityData.get(TURRET));
+        if (hasSavedTarget) {
+            tag.putBoolean("HasSavedTarget", true);
+            tag.putInt("LastTargetX", lastTargetX);
+            tag.putInt("LastTargetZ", lastTargetZ);
+        }
         tag.putFloat("Pitch", entityData.get(PITCH));
         tag.putBoolean("Patrol", patrol);
         tag.putBoolean("Sentinel", sentinel);

@@ -121,6 +121,8 @@ public final class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> RADIO_DISPATCH_CALL = register("mil.radio_dispatch_call");
     public static final DeferredHolder<SoundEvent, SoundEvent> RADIO_CALL_CUT = register("mil.radio_call_cut");
     public static final DeferredHolder<SoundEvent, SoundEvent> VAULT_DOOR_OPEN = register("mil.vault_door_open");
+    public static final DeferredHolder<SoundEvent, SoundEvent> HIMARS_HYDRAULICS = register("mil.himars_hydraulics");
+    public static final DeferredHolder<SoundEvent, SoundEvent> AIRCRAFT_CRASH_ALARM = register("mil.aircraft_crash_alarm");
 
     private static DeferredHolder<SoundEvent, SoundEvent> register(String name) {
         return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(ModeMinecraft.id(name)));

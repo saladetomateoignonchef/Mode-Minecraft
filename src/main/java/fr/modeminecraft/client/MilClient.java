@@ -49,6 +49,7 @@ import java.util.Map;
 @EventBusSubscriber(modid = ModeMinecraft.MODID, value = Dist.CLIENT)
 public final class MilClient {
     private static int zoom = 1;
+    private static int hudLines;
     private static boolean thermal;
     private static final Map<Integer, Loop> SOUNDS = new HashMap<>();
 
@@ -67,9 +68,27 @@ public final class MilClient {
         return p != null && p.getVehicle() instanceof MilVehicleEntity v ? v : null;
     }
 
+    /** Place servie (celle du tireur pour un conducteur seul en mode solo). */
     public static MilType.Seat seat() {
         MilVehicleEntity v = vehicle();
-        return v == null ? null : v.seat(Minecraft.getInstance().player);
+        return v == null ? null : v.weaponSeat(Minecraft.getInstance().player);
+    }
+
+    /** Point du monde sous le réticule : lancer de rayon depuis la caméra (blocs puis entités), 300 blocs au plus. */
+    private static Vec3 crosshairPoint(MilVehicleEntity v) {
+        Minecraft mc = Minecraft.getInstance();
+        var cam = mc.gameRenderer.getMainCamera();
+        Vec3 eye = cam.getPosition();
+        Vec3 look = new Vec3(cam.getLookVector());
+        Vec3 end = eye.add(look.scale(300));
+        var bh = mc.level.clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, mc.player));
+        if (bh.getType() != HitResult.Type.MISS) {
+            end = bh.getLocation();
+        }
+        var eh = net.minecraft.world.entity.projectile.ProjectileUtil.getEntityHitResult(mc.level, mc.player, eye, end,
+                new net.minecraft.world.phys.AABB(eye, end).inflate(1), e -> !e.isSpectator() && e.isPickable() && e != v && !v.hasPassenger(e)
+                        && !(e instanceof fr.modeminecraft.entity.military.MilPart mp && mp.getParent() == v), 0f);
+        return eh != null ? eh.getLocation() : end;
     }
 
     /** Place armée (clic gauche / droit = armes du véhicule) : la détente est envoyée au serveur comme pour une arme. */
@@ -77,7 +96,7 @@ public final class MilClient {
         if (!(p.getVehicle() instanceof MilVehicleEntity v)) {
             return false;
         }
-        MilType.Seat s = v.seat(p);
+        MilType.Seat s = v.weaponSeat(p);
         return s != null && (s.primary() >= 0 || s.secondary() >= 0);
     }
 
@@ -101,6 +120,13 @@ public final class MilClient {
             return;
         }
         MilType.Seat s = seat();
+        if (s != null && (s.primary() >= 0 || s.secondary() >= 0) && mc.level != null) {
+            Vec3 aim = crosshairPoint(v);
+            v.setAim(mc.player, aim);                                   // tourelle locale orientée sans attendre le serveur
+            if (mc.player.tickCount % 2 == 0) {
+                PacketDistributor.sendToServer(new fr.modeminecraft.network.MilAimPayload(aim.x, aim.y, aim.z));
+            }
+        }
         while (ModKeyMappings.PRONE.consumeClick()) {
             send(MilControlPayload.SMOKE);
         }
@@ -165,7 +191,7 @@ public final class MilClient {
         if (v == null || !mc.options.getCameraType().isFirstPerson()) {
             return null;
         }
-        MilType.Seat s = v.seat(mc.player);
+        MilType.Seat s = v.weaponSeat(mc.player);
         if (s == null || s.role() != MilType.Role.GUNNER || s.primary() < 0 || v.type().weapons.get(s.primary()).free()) {
             return null;
         }
@@ -178,6 +204,63 @@ public final class MilClient {
         Vec3 dir = md[1];
         // viseur : au-dessus du tourillon, un peu en avant (on ne voit pas l'intérieur de la tourelle)
         return pivot.add(0, 0.45, 0).add(dir.scale(v.type().heli() ? 0.6 : 1.2));
+    }
+
+    /**
+     * Verrouillage sol-air (Avenger, Strela…) : carré jaune pendant l'acquisition (1,5 s), rouge une fois verrouillé,
+     * dessiné autour de la cible, visible à travers le relief.
+     */
+    @SubscribeEvent
+    public static void onRenderLevel(net.neoforged.neoforge.client.event.RenderLevelStageEvent event) {
+        if (event.getStage() != net.neoforged.neoforge.client.event.RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) {
+            return;
+        }
+        MilVehicleEntity v = vehicle();
+        Minecraft mc = Minecraft.getInstance();
+        if (v == null || v.lockId() < 0 || mc.level == null) {
+            return;
+        }
+        Entity t = mc.level.getEntity(v.lockId());
+        if (t == null) {
+            return;
+        }
+        boolean locked = v.is(MilVehicleEntity.LOCKED);
+        if (!locked && !v.is(MilVehicleEntity.LOCKING)) {
+            return;
+        }
+        float partial = event.getPartialTick().getGameTimeDeltaPartialTick(false);
+        Vec3 at = t.getPosition(partial).add(0, t.getBbHeight() / 2, 0);
+        Vec3 cam = event.getCamera().getPosition();
+        var pose = event.getPoseStack();
+        pose.pushPose();
+        pose.translate(at.x - cam.x, at.y - cam.y, at.z - cam.z);
+        pose.mulPose(event.getCamera().rotation());
+        float size = (float) Math.max(1.2, Math.max(t.getBbWidth(), t.getBbHeight()) * 0.8) * (locked ? 1f : 1.3f);
+        float w = size * 0.08f;
+        org.joml.Matrix4f m = pose.last().pose();
+        var buffers = mc.renderBuffers().bufferSource();
+        var vc = buffers.getBuffer(net.minecraft.client.renderer.RenderType.textBackgroundSeeThrough());
+        int col = locked ? 0xFFFF2020 : 0xFFFFC020;
+        int light = net.minecraft.client.renderer.LightTexture.FULL_BRIGHT;
+        quad(vc, m, -size, -size, size, -size + w, col, light);
+        quad(vc, m, -size, size - w, size, size, col, light);
+        quad(vc, m, -size, -size, -size + w, size, col, light);
+        quad(vc, m, size - w, -size, size, size, col, light);
+        pose.popPose();
+        buffers.endBatch(net.minecraft.client.renderer.RenderType.textBackgroundSeeThrough());
+    }
+
+    private static void quad(com.mojang.blaze3d.vertex.VertexConsumer vc, org.joml.Matrix4f m, float x0, float y0, float x1, float y1, int argb, int light) {
+        int a = argb >>> 24, r = argb >> 16 & 255, g = argb >> 8 & 255, b = argb & 255;
+        vc.addVertex(m, x0, y1, 0).setColor(r, g, b, a).setLight(light);
+        vc.addVertex(m, x1, y1, 0).setColor(r, g, b, a).setLight(light);
+        vc.addVertex(m, x1, y0, 0).setColor(r, g, b, a).setLight(light);
+        vc.addVertex(m, x0, y0, 0).setColor(r, g, b, a).setLight(light);
+        // face arrière (le carré reste visible quel que soit le sens du quadrilatère)
+        vc.addVertex(m, x0, y0, 0).setColor(r, g, b, a).setLight(light);
+        vc.addVertex(m, x1, y0, 0).setColor(r, g, b, a).setLight(light);
+        vc.addVertex(m, x1, y1, 0).setColor(r, g, b, a).setLight(light);
+        vc.addVertex(m, x0, y1, 0).setColor(r, g, b, a).setLight(light);
     }
 
     /** Les passagers à l'abri dans la caisse ne sont pas dessinés. */
@@ -275,13 +358,15 @@ public final class MilClient {
             return;
         }
         MilType t = v.type();
-        MilType.Seat s = v.seat(mc.player);
+        MilType.Seat own = v.seat(mc.player);
+        MilType.Seat s = v.weaponSeat(mc.player);
         var font = mc.font;
         int x = 6, y = 6, w = 190;
         List<Component> lines = new java.util.ArrayList<>();
         int hp = Math.round(v.health() / t.health * 100);
         int lineCount = 6 + (s != null && s.primary() >= 0 ? 1 : 0) + (s != null && s.secondary() >= 0 ? 1 : 0);
         g.fill(x - 3, y - 3, x + w, y + lineCount * 11 + 2, 0x90000000);
+        hudLines = lineCount;
         g.drawString(font, Component.translatable("entity.modeminecraft." + t.id).withStyle(net.minecraft.ChatFormatting.BOLD), x, y, 0xFFE8D890);
         y += 11;
         bar(g, font, x, y, "hud.modeminecraft.mil.armor", hp / 100f, hp > 50 ? 0xFF5BC85B : hp > 25 ? 0xFFE0B030 : 0xFFE04040, hp + " %");
@@ -290,14 +375,17 @@ public final class MilClient {
         y += 11;
         float kmh = Math.abs(v.speed()) / (t.heli() ? 0.0095f : 0.0111f);
         String turret = t.geo().turret() != null ? "   " + Component.translatable("hud.modeminecraft.mil.turret").getString() + " "
-                + Math.round(Mth.wrapDegrees(-v.turret(1)) + 360) % 360 + "°" : "";
+                + Math.round(Mth.wrapDegrees(v.turret(1)) + 360) % 360 + "°" : "";
         String alt = t.heli() ? "   " + Component.translatable("hud.modeminecraft.mil.altitude").getString() + " "
                 + (int) (v.getY() - mc.level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, v.getBlockX(), v.getBlockZ())) + " m" : "";
         g.drawString(font, Component.translatable("hud.modeminecraft.mil.speed", Math.round(kmh)).getString() + turret + alt, x, y, 0xFFD0D0D0);
         y += 11;
-        if (s != null) {
-            g.drawString(font, Component.translatable("hud.modeminecraft.mil.seat",
-                    Component.translatable("seat.modeminecraft." + s.role().name().toLowerCase())), x, y, 0xFFB0C8FF);
+        if (own != null) {
+            Component role = Component.translatable("seat.modeminecraft." + own.role().name().toLowerCase());
+            if (v.solo(mc.player)) {
+                role = Component.translatable("hud.modeminecraft.mil.solo", role);
+            }
+            g.drawString(font, Component.translatable("hud.modeminecraft.mil.seat", role), x, y, 0xFFB0C8FF);
         }
         y += 11;
         var info = v.info();
@@ -390,6 +478,12 @@ public final class MilClient {
             } else if (v.is(MilVehicleEntity.LOCKING)) {
                 g.drawCenteredString(font, Component.translatable("hud.modeminecraft.mil.locking"), cx, cy - 26, 0xFFFFC030);
             }
+        }
+        if (v.raisable() && s != null && s.primary() >= 0) {
+            boolean up = v.raised();
+            // sous le panneau du véhicule (la barre d'action en bas d'écran sert aux messages)
+            g.drawString(font, Component.translatable(up ? "hud.modeminecraft.mil.launcher_up" : v.raise(0) > 0 && v.raise(0) < 1
+                    ? "hud.modeminecraft.mil.launcher_moving" : "hud.modeminecraft.mil.launcher_down"), 6, 6 + hudLines * 11 + 6, up ? 0xFF60E060 : 0xFFFFB040);
         }
         if (thermal) {
             g.fill(0, 0, g.guiWidth(), g.guiHeight(), 0x18FFFFFF);

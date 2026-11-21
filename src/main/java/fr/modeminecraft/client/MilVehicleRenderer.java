@@ -55,6 +55,9 @@ public class MilVehicleRenderer extends EntityRenderer<MilVehicleEntity> {
         // (le rendu d'objet ignore une pile vide : on passe l'objet du véhicule)
         ItemStack stack = new ItemStack(fr.modeminecraft.registry.ModItems.MIL_VEHICLES.get(t).get());
         STACK = stack;
+        if (v.is(MilVehicleEntity.WRECK)) {
+            light = net.minecraft.client.renderer.LightTexture.pack(0, 1);           // épave calcinée
+        }
         float bodyYaw = Mth.rotLerp(partial, v.yRotO, v.getYRot());
         pose.pushPose();
         pose.mulPose(Axis.YP.rotationDegrees(-90 - bodyYaw));
@@ -77,7 +80,9 @@ public class MilVehicleRenderer extends EntityRenderer<MilVehicleEntity> {
         if (geo.turret() != null) {
             pose.pushPose();
             pivot(pose, geo.turret(), s);
-            pose.mulPose(Axis.YP.rotationDegrees(ty));
+            // lacet du véhicule : positif = vers la droite (sens des angles de Minecraft) ; dans le repère du modèle
+            // (+X = avant, +Z = droite), une rotation YP positive tourne vers la gauche, d'où le signe moins
+            pose.mulPose(Axis.YP.rotationDegrees(-ty));
             unpivot(pose, geo.turret(), s);
             draw(mc, pose, buffers, light, t, "turret", null, 0, (char) 0);
             if (geo.gun() != null) {

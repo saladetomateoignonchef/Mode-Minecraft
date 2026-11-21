@@ -22,15 +22,19 @@ import java.util.List;
 /**
  * Console de tir des complexes lance-missiles (clic droit à la place d'opérateur) :
  * - S-400 / S-500 : écran radar circulaire (contacts en temps réel), clic sur les contacts pour les verrouiller
- *   (4 / 2 au plus), choix du missile, LANCER ; S-500 : mode Sentinelle automatique ;
- * - Iskander : coordonnées X / Z (ou marque du désignateur laser), choix de l'ogive, LANCER.
+ *   (4 / 2 au plus), ou clic n'importe où ailleurs sur l'écran pour poser un marqueur (X, Z, altitude facultative) ;
+ *   choix du missile, LANCER ; clic droit sur le radar : efface le marqueur ; S-500 : mode Sentinelle automatique ;
+ * - Iskander : coordonnées X / Z (ou marque du désignateur laser), choix de l'ogive, LANCER ; les dernières
+ *   coordonnées saisies restent mémorisées dans le véhicule.
  */
 public class FireControlScreen extends Screen {
     private static RadarPayload last;
     private final MilVehicleEntity v;
     private final List<Integer> selected = new ArrayList<>();
     private int ammo;
-    private EditBox xBox, zBox;
+    private EditBox xBox, zBox, altBox;
+    /** Marqueur libre posé sur le radar (décalage en blocs par rapport au véhicule), ou null. */
+    private double[] marker;
     private Button ammoButton, fireButton, sentinelButton;
     private static final int R = 92;
 
@@ -62,8 +66,14 @@ public class FireControlScreen extends Screen {
             zBox = addRenderableWidget(new EditBox(font, px + 110, py, 70, 18, Component.literal("Z")));
             xBox.setFilter(s -> s.matches("-?\\d{0,7}"));
             zBox.setFilter(s -> s.matches("-?\\d{0,7}"));
-            xBox.setValue(Integer.toString((int) v.getX() + 300));
-            zBox.setValue(Integer.toString((int) v.getZ()));
+            var info = v.info();
+            if (info.contains("LastTargetX")) {
+                xBox.setValue(Integer.toString(info.getInt("LastTargetX")));      // coordonnées mémorisées
+                zBox.setValue(Integer.toString(info.getInt("LastTargetZ")));
+            } else {
+                xBox.setValue(Integer.toString((int) v.getX() + 300));
+                zBox.setValue(Integer.toString((int) v.getZ()));
+            }
             addRenderableWidget(Button.builder(Component.translatable("gui.modeminecraft.fire_control.designator"), b -> {
                 Vec3 m = fr.modeminecraft.item.military.LaserDesignatorItem.mark(Minecraft.getInstance().player);
                 if (m != null) {
@@ -77,6 +87,11 @@ public class FireControlScreen extends Screen {
                 .bounds(px, py, 180, 18).build());
         fireButton = addRenderableWidget(Button.builder(Component.translatable("gui.modeminecraft.fire_control.launch"), b -> fire())
                 .bounds(px, py + 24, 180, 22).build());
+        if (!iskander()) {
+            altBox = addRenderableWidget(new EditBox(font, px + 110, py - 24, 70, 18, Component.literal("Alt")));
+            altBox.setFilter(s -> s.matches("\\d{0,3}"));
+            altBox.setHint(Component.translatable("gui.modeminecraft.fire_control.alt_auto"));
+        }
         if (v.type() == MilType.S_500) {
             sentinelButton = addRenderableWidget(Button.builder(Component.empty(), b -> PacketDistributor.sendToServer(
                     new StrategicFirePayload(StrategicFirePayload.TOGGLE_SENTINEL, List.of(), 0, 0, 0))).bounds(px, py + 52, 180, 18).build());
@@ -93,7 +108,28 @@ public class FireControlScreen extends Screen {
         } else if (!selected.isEmpty()) {
             PacketDistributor.sendToServer(new StrategicFirePayload(StrategicFirePayload.FIRE_SAM, List.copyOf(selected), ammo, 0, 0));
             selected.clear();
+        } else if (marker != null) {
+            int alt = -1;
+            try {
+                alt = altBox.getValue().isEmpty() ? -1 : Integer.parseInt(altBox.getValue());
+            } catch (NumberFormatException ignored) {
+            }
+            PacketDistributor.sendToServer(new StrategicFirePayload(StrategicFirePayload.FIRE_SAM_POINT, List.of(alt), ammo,
+                    (int) Math.floor(v.getX() + marker[0]), (int) Math.floor(v.getZ() + marker[1])));
         }
+    }
+
+    @Override
+    public void removed() {
+        // Iskander : les coordonnées saisies restent mémorisées dans le véhicule (même sans tirer)
+        if (iskander() && xBox != null) {
+            try {
+                PacketDistributor.sendToServer(new StrategicFirePayload(StrategicFirePayload.SAVE_TARGET, List.of(), 0,
+                        Integer.parseInt(xBox.getValue()), Integer.parseInt(zBox.getValue())));
+            } catch (NumberFormatException ignored) {
+            }
+        }
+        super.removed();
     }
 
     private int maxTargets() {
@@ -102,10 +138,14 @@ public class FireControlScreen extends Screen {
 
     @Override
     public boolean mouseClicked(double mx, double my, int button) {
-        if (!iskander() && last != null) {
+        if (!iskander()) {
             int cx = width / 2 - 70, cy = height / 2;
             double scale = R / fr.modeminecraft.entity.military.StrategicSystems.range(v.type());
-            for (RadarPayload.Blip b : last.blips()) {
+            if (Math.hypot(mx - cx, my - cy) <= R && button == 1) {
+                marker = null;                                               // clic droit : efface le marqueur
+                return true;
+            }
+            for (RadarPayload.Blip b : last == null ? List.<RadarPayload.Blip>of() : last.blips()) {
                 double bx = cx + b.dx() * scale, by = cy + b.dz() * scale;
                 if (Math.hypot(mx - bx, my - by) < 5) {
                     if (selected.contains(b.id())) {
@@ -115,6 +155,10 @@ public class FireControlScreen extends Screen {
                     }
                     return true;
                 }
+            }
+            if (Math.hypot(mx - cx, my - cy) <= R && button == 0) {
+                marker = new double[]{(mx - cx) / scale, (my - cy) / scale};   // point libre : coordonnées du monde
+                return true;
             }
         }
         return super.mouseClicked(mx, my, button);
@@ -131,7 +175,7 @@ public class FireControlScreen extends Screen {
                     Component.translatable("item.modeminecraft." + BuiltInRegistries.ITEM.getKey(a.item()).getPath()), info.getInt(a.name())));
         }
         boolean deployed = v.is(MilVehicleEntity.DEPLOYED);
-        fireButton.active = deployed && (iskander() || !selected.isEmpty());
+        fireButton.active = deployed && (iskander() || !selected.isEmpty() || marker != null);
         int top = 12;
         g.drawCenteredString(font, Component.translatable("entity.modeminecraft." + v.type().id), width / 2, top, 0xFFE8D890);
         g.drawCenteredString(font, Component.translatable(deployed ? "gui.modeminecraft.fire_control.deployed" : "gui.modeminecraft.fire_control.stowed"),
@@ -186,6 +230,17 @@ public class FireControlScreen extends Screen {
                             (int) Math.hypot(b.dx(), b.dz()), (int) b.alt()), mouseX, mouseY);
                 }
             }
+        }
+        if (marker != null) {
+            int mx = cx + (int) (marker[0] * scale), my = cy + (int) (marker[1] * scale);
+            g.fill(mx - 5, my, mx + 6, my + 1, 0xFFFF3030);
+            g.fill(mx, my - 5, mx + 1, my + 6, 0xFFFF3030);
+            circle(g, mx, my, 4, 0xFFFF3030);
+            g.drawString(font, Component.translatable("gui.modeminecraft.fire_control.marker", (int) Math.floor(v.getX() + marker[0]),
+                    (int) Math.floor(v.getZ() + marker[1]), (int) Math.hypot(marker[0], marker[1])), cx - R, cy + R + 32, 0xFFFF6060);
+        }
+        if (altBox != null) {
+            g.drawString(font, Component.translatable("gui.modeminecraft.fire_control.alt"), altBox.getX() - 70, altBox.getY() + 5, 0xFFD0D0D0);
         }
         g.drawString(font, Component.translatable("gui.modeminecraft.fire_control.locked", selected.size(), maxTargets()), cx - R, cy + R + 8, 0xFFD0D0D0);
         g.drawString(font, Component.translatable("gui.modeminecraft.fire_control.range", (int) fr.modeminecraft.entity.military.StrategicSystems.range(v.type())),

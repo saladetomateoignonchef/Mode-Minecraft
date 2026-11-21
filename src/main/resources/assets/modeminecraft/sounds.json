@@ -646,5 +646,17 @@
     "sounds": [
       "modeminecraft:mil/vault_door_open_0"
     ]
+  },
+  "mil.himars_hydraulics": {
+    "subtitle": "subtitles.modeminecraft.himars_hydraulics",
+    "sounds": [
+      "modeminecraft:mil/himars_hydraulics_0"
+    ]
+  },
+  "mil.aircraft_crash_alarm": {
+    "subtitle": "subtitles.modeminecraft.aircraft_crash_alarm",
+    "sounds": [
+      "modeminecraft:mil/aircraft_crash_alarm_0"
+    ]
   }
 }

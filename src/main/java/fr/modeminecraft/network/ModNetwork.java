@@ -28,6 +28,8 @@ public final class ModNetwork {
                 .playToServer(StrategicFirePayload.TYPE, StrategicFirePayload.STREAM_CODEC, StrategicFirePayload::handle)
                 .playToClient(RadarPayload.TYPE, RadarPayload.STREAM_CODEC, RadarPayload::handle)
                 .playToServer(MilControlPayload.TYPE, MilControlPayload.STREAM_CODEC, MilControlPayload::handle)
+                .playToServer(MilAimPayload.TYPE, MilAimPayload.STREAM_CODEC, MilAimPayload::handle)
+                .playToServer(LauncherPayload.TYPE, LauncherPayload.STREAM_CODEC, LauncherPayload::handle)
                 .playToServer(RobPayload.TYPE, RobPayload.STREAM_CODEC, RobPayload::handle)
                 .playToServer(LeanPayload.TYPE, LeanPayload.STREAM_CODEC, LeanPayload::handle)
                 .playToServer(TriggerPayload.TYPE, TriggerPayload.STREAM_CODEC, TriggerPayload::handle)

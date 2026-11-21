@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "S S",
+    "PRP",
+    "SLS"
+  ],
+  "key": {
+    "S": {
+      "item": "modeminecraft:steel_ingot"
+    },
+    "P": {
+      "item": "modeminecraft:iron_pipe"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "L": {
+      "item": "minecraft:lever"
+    }
+  },
+  "result": {
+    "id": "modeminecraft:type63_launcher",
+    "count": 1
+  }
+}

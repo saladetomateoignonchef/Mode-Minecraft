@@ -128,6 +128,29 @@ def vault_open(seed):
     return gs.normalize(clack * 0.8 + hiss * 0.6 + rumble + thud * 1.2, 0.85)
 
 
+def hydraulics(seed):
+    """Vérins hydrauliques : pompe qui monte en régime, sifflement de fluide, cliquetis de verrouillage final."""
+    rng = np.random.default_rng(seed)
+    t = gs.t_axis(2.2)
+    n = len(t)
+    f = 90 + 40 * np.clip(t / 0.4, 0, 1)
+    pump = np.sign(np.sin(2 * np.pi * np.cumsum(f) / SR)) * 0.25 + np.sin(2 * np.pi * np.cumsum(f * 2) / SR) * 0.3
+    pump *= np.clip(t / 0.15, 0, 1) * np.clip((2.0 - t) / 0.2, 0, 1)
+    whine = np.sin(2 * np.pi * np.cumsum(700 + 250 * np.clip(t / 1.8, 0, 1)) / SR) * 0.15 * (t < 2.0)
+    hiss = gs.band(gs.noise(n, rng), lo=2000, hi=7000) * 0.25 * (t < 2.0)
+    clunk = gs.band(gs.noise(n, rng), lo=80, hi=1200) * gs.env(np.maximum(t - 2.0, 0), 0.001, 0.06) * (t > 2.0)
+    return gs.normalize(pump + whine + hiss + clunk * 1.4, 0.8)
+
+
+def crash_alarm(seed):
+    """Alarme de cockpit : bips aigus rapides et voix de synthèse grave (« pull up »)."""
+    t = gs.t_axis(2.0)
+    beep = np.sin(2 * np.pi * 2400 * t) * ((t * 8) % 1 < 0.45)
+    f0 = 180 + 20 * np.sin(2 * np.pi * 3 * t)
+    voice = gs.band(np.sign(np.sin(2 * np.pi * np.cumsum(f0) / SR)), lo=300, hi=2200) * ((t > 0.9) & (t < 1.7))
+    return gs.normalize(beep * 0.6 + voice * 0.7, 0.8)
+
+
 SOUNDS = {
     "mil.radio_dispatch_call": (lambda s: radio_call(s), 2, "radio_call"),
     "mil.radio_call_cut": (lambda s: radio_cut(s), 1, "radio_cut"),
@@ -144,6 +167,8 @@ SOUNDS = {
     "mil.rotor_loop": (lambda s: loop_rotor(s), 1, "rotor"),
     "mil.huge_explosion": (lambda s: huge_explosion(s), 2, "huge_explosion"),
     "mil.air_raid_alarm": (lambda s: alarm(s), 1, "air_raid_alarm"),
+    "mil.himars_hydraulics": (lambda s: hydraulics(s), 1, "himars_hydraulics"),
+    "mil.aircraft_crash_alarm": (lambda s: crash_alarm(s), 1, "aircraft_crash_alarm"),
 }
 
 

@@ -12,9 +12,12 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.List;
 
-/** Console de tir : 0 tir sol-air sur des contacts, 1 sentinelle on/off (S-500), 2 frappe Iskander sur (x, z). */
+/**
+ * Console de tir : 0 tir sol-air sur des contacts, 1 sentinelle on/off (S-500), 2 frappe Iskander sur (x, z),
+ * 3 mémoriser les coordonnées saisies, 4 tir sol-air sur un point libre du radar (x, z ; altitude dans targets[0]).
+ */
 public record StrategicFirePayload(int action, List<Integer> targets, int ammo, int x, int z) implements CustomPacketPayload {
-    public static final int FIRE_SAM = 0, TOGGLE_SENTINEL = 1, FIRE_STRIKE = 2;
+    public static final int FIRE_SAM = 0, TOGGLE_SENTINEL = 1, FIRE_STRIKE = 2, SAVE_TARGET = 3, FIRE_SAM_POINT = 4;
     public static final Type<StrategicFirePayload> TYPE = new Type<>(ModeMinecraft.id("strategic_fire"));
     public static final StreamCodec<ByteBuf, StrategicFirePayload> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, StrategicFirePayload::action, ByteBufCodecs.VAR_INT.apply(ByteBufCodecs.list(8)), StrategicFirePayload::targets,
@@ -39,7 +42,18 @@ public record StrategicFirePayload(int action, List<Integer> targets, int ammo, 
                         v.ownerId = sp.getUUID();
                     }
                 }
-                case FIRE_STRIKE -> StrategicSystems.fireIskander(v, sp, p.x(), p.z(), p.ammo());
+                case FIRE_STRIKE -> {
+                    if (v.seatOf(sp) == 1) {
+                        v.saveTarget(p.x(), p.z());
+                    }
+                    StrategicSystems.fireIskander(v, sp, p.x(), p.z(), p.ammo());
+                }
+                case SAVE_TARGET -> {
+                    if (v.seatOf(sp) == 1) {
+                        v.saveTarget(p.x(), p.z());
+                    }
+                }
+                case FIRE_SAM_POINT -> StrategicSystems.fireSamAt(v, sp, p.x(), p.targets().isEmpty() ? -1 : p.targets().get(0), p.z(), p.ammo());
                 default -> {}
             }
         });

@@ -6,6 +6,7 @@ désignateur, mines...), modèles d'objets et données. Utilisation : python3 to
 import json
 import os
 import random
+import sys
 
 from PIL import Image
 
@@ -664,7 +665,56 @@ def boss_cards():
         "side": "minecraft:block/reinforced_deepslate_side", "end": "minecraft:block/reinforced_deepslate_top"}})
 
 
+# ------------------------------------------------------------------------------------------- lance-roquettes statiques
+def rocket_launchers():
+    """Type 63 (trépied, 4 x 107 mm) : icônes, texture d'entité, recettes ; roquette de 107 mm ; tuyau en fer."""
+    olive, red, steel, dark = hexc("#5a6a38"), hexc("#b02a20"), hexc("#8a8e92"), hexc("#3a3e34")
+    i = Icon("rocket_107")
+    diag(i, 11, 2, [(0.15, hexc("#3a3a3a")), (0.85, olive), (1, red)], start=(2, 13))
+    i.px(2, 11, olive), i.px(4, 13, olive)
+    i.save("rocket_107")
+    i = Icon("iron_pipe")
+    diag(i, 13, 2, [(0.1, shade(steel, 0.7)), (0.9, steel), (1, shade(steel, 0.7))], start=(1, 14))
+    i.save("iron_pipe")
+    i = Icon("type63_launcher")
+    for x0, y0 in ((3, 13), (8, 14), (12, 13)):                          # trépied
+        for t in range(5):
+            i.px(x0 + (8 - x0) * t // 5, y0 - t, shade(steel, 0.8))
+    for k in range(4):                                                    # 4 tubes inclinés
+        for t in range(9):
+            x, y = 2 + t + (k % 2), 8 - t // 2 - (k // 2) * 2 + 1
+            if 0 <= x < 16 and 0 <= y < 16:
+                i.px(x, y, shade(olive, 1.1 if k % 2 else 0.9))
+    i.px(11, 3, red), i.px(12, 3, red)
+    i.save("type63_launcher")
+    # texture des volumes de l'entité : vert olive mat, légèrement bruité, liserés plus sombres
+    img = Image.new("RGBA", (16, 16))
+    r = random.Random("rocket_launcher")
+    for y in range(16):
+        for x in range(16):
+            c = shade(olive, 1 + r.uniform(-0.07, 0.07))
+            if x in (0, 15) or y in (0, 15):
+                c = shade(c, 0.75)
+            img.putpixel((x, y), c)
+    p = os.path.join(ASSETS, "textures/entity/rocket_launcher.png")
+    os.makedirs(os.path.dirname(p), exist_ok=True)
+    img.save(p)
+    # recettes : roquettes à l'établi d'artillerie, lanceur et tuyaux à l'établi
+    write(os.path.join(DATA, "recipe/artillery/rocket_107.json"), {"type": f"{MOD}:armament", "category": "artillery",
+        "ingredients": [{"item": "minecraft:iron_ingot", "count": 2}, {"item": "minecraft:tnt", "count": 1}, {"item": "minecraft:gunpowder", "count": 3}],
+        "result": {"id": f"{MOD}:rocket_107", "count": 3}})
+    write(os.path.join(DATA, "recipe/iron_pipe.json"), {"type": "minecraft:crafting_shaped", "category": "misc", "pattern": ["I", "I", "I"],
+        "key": {"I": {"item": "minecraft:iron_ingot"}}, "result": {"id": f"{MOD}:iron_pipe", "count": 2}})
+    write(os.path.join(DATA, "recipe/type63_launcher.json"), {"type": "minecraft:crafting_shaped", "category": "misc",
+        "pattern": ["S S", "PRP", "SLS"], "key": {"S": {"item": f"{MOD}:steel_ingot"}, "P": {"item": f"{MOD}:iron_pipe"},
+                                              "R": {"item": "minecraft:redstone"}, "L": {"item": "minecraft:lever"}},
+        "result": {"id": f"{MOD}:type63_launcher", "count": 1}})
+
+
 if __name__ == "__main__":
+    if len(sys.argv) > 1 and sys.argv[1] == "launchers":
+        rocket_launchers()
+        sys.exit(0)
     loot_icons()
     vault_loot()
     boss_cards()

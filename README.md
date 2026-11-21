@@ -685,6 +685,37 @@ Des **villes générées** apparaissent selon le biome (un centre de ville par r
 - Derrière, des **murs de chambre forte** indestructibles, **4 à 6 coffres** au butin propre à chaque ville (armes rares,
   plaques, lingots, munitions lourdes…), des râteliers d'armes et le coffre de la **tenue** de la faction.
 
+### Correctifs : chars, missiles, drones, crashs aériens et lance-roquettes statiques
+- **Chars** : la tourelle et le canon tournent enfin du même côté que la visée (le modèle tournait à l'envers) ; le tir
+  part de la bouche du canon **exactement vers le point sous le réticule** (lancer de rayon caméra jusqu'à 300 blocs,
+  chute de l'obus compensée). **Mode solo** : seul au poste de conduite, vous conduisez (ZQSD) ET servez la tourelle
+  (souris, clic gauche canon, clic droit coaxiale, R munitions) ; un tireur qui monte reprend la tourelle.
+- **HIMARS** : touche **H** pour relever le module lance-roquettes (vérins hydrauliques, 2 s) ; impossible de tirer
+  couché (« Déployez le lanceur avant de tirer ») ; H à nouveau pour le recoucher. Véhicule immobilisé une fois relevé.
+- **Avenger** : le Stinger part bien devant les tubes ; verrouillage en 1,5 s (carré jaune puis **rouge** autour de la
+  cible, bips) pour un missile autoguidé, ou **tir libre** sans verrouillage.
+- **S-400** : un clic **n'importe où** sur l'écran radar pose un marqueur (X, Z, altitude facultative) ; LANCER envoie un
+  missile (lancement à froid) qui explose sur ce point. Clic droit sur le radar : efface le marqueur.
+- **Iskander** : les dernières coordonnées X / Z sont mémorisées dans le véhicule (même après redémarrage).
+- **Drones** : ils ne se figent plus à moyenne distance (chunks chargés autour du drone piloté, suivi à 32 chunks) ; à la
+  limite de portée radio, seul le mouvement qui éloigne du pilote est freiné (on peut toujours revenir et tourner).
+- **Crashs d'hélicoptères** : pilote qui saute ou meurt sans copilote (un copilote reprend les commandes s'il y en a
+  un), structure sous 20 %, ou rotor de queue arraché par un missile ou un obus antiaérien (**vrille**) : commandes
+  mortes, nez qui plonge, fumée noire et flammes, alarme de cockpit ; explosion au sol / contre un mur / dans l'eau
+  (puissance 7, incendies, occupants tués) et **épave en feu** pendant 30 s.
+- **Lance-roquettes statiques** :
+  - **Type 63** (trépied, 4 x 107 mm) : établi, 4 lingots d'acier + 2 tuyaux en fer + 1 redstone + 1 levier
+    (tuyaux : 3 lingots de fer en colonne) ; roquettes de 107 mm à l'établi d'artillerie ;
+  - **batterie fixe de 12 x 122 mm**, chargée, sur le périmètre des bases secrètes, des villes soviétiques et des
+    raffineries ;
+  - clic droit avec des roquettes : charger ; **Maj + clic droit** : écran de pointage (azimut, élévation 0-65°,
+    portée estimée 50-400 blocs, tir unique ou salve) ; clic droit main nue : servir le lanceur (souris = pointage,
+    clic gauche = 1 roquette, clic droit / Espace = salve) ; **signal de redstone** = salve ; clé + Maj : démonter.
+- **Bouclier balistique** : uniquement avec une arme de poing ou une arme blanche légère. Avec un fusil, un fusil de
+  précision, un fusil à pompe, une mitrailleuse, un lance-roquettes ou une arme blanche lourde, le bouclier ne se lève
+  pas et l'arme ne vise ni ne tire (« Impossible d'utiliser un bouclier avec une arme à deux mains ») ; sortir une arme
+  longue bouclier levé annule la garde. Les bots au bouclier (SWAT) n'ont qu'un pistolet.
+
 ### Gameplay et progression
 - **Niveaux des armes (1 à 5)** : chaque arme garde ses statistiques (éliminations, tirs à la tête, tirs, ratio)
   et gagne de l'expérience : +10 par élimination, +5 si tir à la tête, +10 pour un gros monstre (50 PV ou plus).

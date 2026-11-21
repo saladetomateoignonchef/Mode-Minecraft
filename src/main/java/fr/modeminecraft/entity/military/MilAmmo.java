@@ -23,6 +23,7 @@ public enum MilAmmo {
     HEAT(() -> ModItems.HEAT_SHELL.get(), 1, Shell.HEAT),
     REFLEKS(() -> ModItems.CANNON_ATGM_MISSILE.get(), 1, Shell.REFLEKS),
     ROCKET_122(() -> ModItems.GRAD_ROCKET.get(), 1, Shell.ROCKET_122),
+    ROCKET_107(() -> ModItems.ROCKET_107.get(), 1, Shell.ROCKET_107),
     ROCKET_227(() -> ModItems.MLRS_ROCKET.get(), 1, Shell.ROCKET_227),
     ATACMS(() -> ModItems.ATACMS_MISSILE.get(), 1, Shell.ATACMS),
     S8(() -> ModItems.S8_ROCKET.get(), 1, Shell.S8),
@@ -65,6 +66,8 @@ public enum MilAmmo {
         HEAT(6.5f, 0.008f, 80, 3.0f, 0.8f, false),
         REFLEKS(3.2f, 0.0f, 85, 3.0f, 0.85f, true),
         ROCKET_122(3.0f, 0.02f, 30, 4.5f, 0.3f, false),
+        /** Roquette de 107 mm (lance-roquettes Type 63) : plus courte et plus légère que la Grad. */
+        ROCKET_107(2.4f, 0.02f, 22, 3.5f, 0.25f, false),
         ROCKET_227(3.6f, 0.015f, 40, 5.5f, 0.35f, true),
         ATACMS(4.0f, 0.012f, 60, 9.0f, 0.5f, true),
         S8(3.8f, 0.012f, 25, 3.5f, 0.35f, false),

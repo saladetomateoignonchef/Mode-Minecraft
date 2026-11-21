@@ -353,8 +353,12 @@ public class DroneEntity extends LivingEntity {
                 startRth("battery");
                 setMode(DOWN);
             }
-            if (tickCount % 20 == 0) {
-                level.getChunkSource().addRegionTicket(TICKET, chunkPosition(), 2, chunkPosition());
+            // ticket de chargement autour du drone (rayon 2 chunks en « entity ticking »), déplacé dès qu'il change de
+            // chunk : sinon, en sortant de la distance de simulation, il se figeait en plein vol
+            ChunkPos cp = chunkPosition();
+            if (tickCount % 20 == 0 || !cp.equals(ticketChunk)) {
+                level.getChunkSource().addRegionTicket(TICKET, cp, 3, cp);
+                ticketChunk = cp;
             }
         }
         Jamming.tickDrone(this, level);
@@ -454,7 +458,7 @@ public class DroneEntity extends LivingEntity {
             return;
         }
         boolean grace = level.getGameTime() - pilotStart < LINK_GRACE;      // décollage : liaison en cours d'initialisation
-        if (!grace && distanceTo(pilot) > radioRange()) {
+        if (!grace && distanceTo(pilot) > radioRange() + 24) {
             startRth("signal_lost");                                // perte de signal radio : retour automatique
             return;
         }
@@ -504,6 +508,7 @@ public class DroneEntity extends LivingEntity {
     }
 
     private Vec3 targetVelocity;
+    private ChunkPos ticketChunk;
     private double lastSpeed;
 
     @Override
@@ -531,6 +536,25 @@ public class DroneEntity extends LivingEntity {
                 want = want.normalize();
             }
             want = want.scale(droneType().speed);
+            // limite de portée radio : on freine seulement ce qui éloigne du pilote (retour et rotation restent libres)
+            if (!level().isClientSide && level().getEntity(pilotId()) instanceof Player pilot) {
+                Vec3 away = position().subtract(pilot.position());
+                double d = away.length();
+                double limit = radioRange() - 8;
+                if (d > limit && d > 1e-3) {
+                    Vec3 out = away.scale(1 / d);
+                    double along = want.dot(out);
+                    if (along > 0) {
+                        want = want.subtract(out.scale(along));
+                    }
+                    if (d > limit + 2) {
+                        want = want.subtract(out.scale(Math.min(0.15, (d - limit - 2) * 0.05)));   // ramené doucement dans la bulle
+                    }
+                    if (tickCount % 30 == 0) {
+                        pilot.displayClientMessage(Component.translatable("message.modeminecraft.drone.range_limit").withStyle(ChatFormatting.GOLD), true);
+                    }
+                }
+            }
         } else if (botTarget >= 0 && targetVelocity != null) {
             want = targetVelocity;
         } else {

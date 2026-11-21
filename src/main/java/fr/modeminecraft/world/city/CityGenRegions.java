@@ -481,6 +481,10 @@ final class CityGenRegions {
                 Deco.fence(b, 0, 12, 15, 12, 4);
             }
         }
+        // batteries fixes de roquettes de 122 mm sur le périmètre, tournées vers l'extérieur
+        if (type.equals("perimeter") && h < 0.3) {
+            b.rocketBattery(8, 0, 8, Integer.signum(dx) * (Math.abs(dx) == rad ? 1 : 0), Integer.signum(dz) * (Math.abs(dz) == rad ? 1 : 0));
+        }
         // champ de mines antichars entre les deux grillages (mise à jour 0.4)
         for (int k = 2; k <= 13; k += 4) {
             if (dx == -rad) b.mine(1 + (k % 2), 0, k, false);
@@ -738,6 +742,10 @@ final class CityGenRegions {
         switch (type) {
             case "road" -> {
                 b.ground(0, 0, 15, 15, Blocks.GRAY_CONCRETE.defaultBlockState(), Blocks.STONE.defaultBlockState(), 10);
+                if ((Math.abs(dx) == rad || Math.abs(dz) == rad) && h > 0.6) {
+                    // batterie de 122 mm en lisière de ville
+                    b.rocketBattery(9, 0, 9, Integer.signum(dx) * (Math.abs(dx) == rad ? 1 : 0), Integer.signum(dz) * (Math.abs(dz) == rad ? 1 : 0));
+                }
                 for (int x = 0; x < 16; x++) {
                     for (int z = 0; z < 16; z++) {
                         if ((x * 7 + z * 13) % 9 == 0) {

@@ -30,6 +30,12 @@ public class BallisticShieldItem extends ShieldItem {
     @Override
     public net.minecraft.world.InteractionResultHolder<ItemStack> use(net.minecraft.world.level.Level level, net.minecraft.world.entity.player.Player player,
                                                                        net.minecraft.world.InteractionHand hand) {
+        if (ShieldCombat.twoHanded(player.getMainHandItem())) {
+            if (!level.isClientSide) {
+                player.displayClientMessage(Component.translatable("message.modeminecraft.shield.two_handed").withStyle(ChatFormatting.RED), true);
+            }
+            return net.minecraft.world.InteractionResultHolder.fail(player.getItemInHand(hand));   // arme à deux mains
+        }
         if (ShieldCombat.active(player) && ShieldCombat.reloading(player)) {
             return net.minecraft.world.InteractionResultHolder.fail(player.getItemInHand(hand));   // on recharge : bouclier baissé
         }

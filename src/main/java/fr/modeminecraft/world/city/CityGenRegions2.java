@@ -542,6 +542,10 @@ final class CityGenRegions2 {
                 Deco.fence(b, 0, 15, 15, 15, 4);
             }
         }
+        if (type.equals("fence") && h < 0.35) {
+            // batterie de 122 mm derrière la clôture
+            b.rocketBattery(8, 0, 8, Integer.signum(dx) * (Math.abs(dx) == rad ? 1 : 0), Integer.signum(dz) * (Math.abs(dz) == rad ? 1 : 0));
+        }
         switch (type) {
             case "guard_tower" -> {
                 Deco.watchtower(b, 6, 6, 10, Blocks.IRON_BARS, Blocks.IRON_BLOCK);

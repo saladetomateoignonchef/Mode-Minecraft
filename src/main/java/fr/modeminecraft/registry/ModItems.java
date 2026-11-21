@@ -1098,6 +1098,13 @@ public final class ModItems {
     public static final DeferredItem<Item> HEAT_SHELL = ammoItem("heat_shell", 8);
     public static final DeferredItem<Item> CANNON_ATGM_MISSILE = ammoItem("cannon_atgm_missile", 4);
     public static final DeferredItem<Item> GRAD_ROCKET = ammoItem("grad_rocket", 16);
+    /** Roquette de 107 mm du lance-roquettes Type 63 (trépied). */
+    public static final DeferredItem<Item> ROCKET_107 = ammoItem("rocket_107", 16);
+    /** Tuyau en fer (fabrication du lance-roquettes Type 63). */
+    public static final DeferredItem<Item> IRON_PIPE = ITEMS.registerSimpleItem("iron_pipe");
+    /** Lance-roquettes Type 63 sur trépied (4 tubes de 107 mm), à poser n'importe où. */
+    public static final DeferredItem<Item> TYPE63_LAUNCHER = ITEMS.register("type63_launcher",
+            () -> new fr.modeminecraft.item.military.RocketLauncherItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> MLRS_ROCKET = ammoItem("mlrs_rocket", 6);
     public static final DeferredItem<Item> ATACMS_MISSILE = ammoItem("atacms_missile", 1);
     public static final DeferredItem<Item> S8_ROCKET = ammoItem("s8_rocket", 20);

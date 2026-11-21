@@ -31,6 +31,8 @@ public class ShellEntity extends Projectile {
     private static final EntityDataAccessor<Integer> SHELL = SynchedEntityData.defineId(ShellEntity.class, EntityDataSerializers.INT);
 
     private int launcher = -1;
+    /** Poussée relative du moteur-fusée (charge propulsive réduite des lanceurs fixes). */
+    private float thrust = 1;
     /** Guidage : 0 aucun, 1 faisceau (réticule du tireur), 2 autodirecteur (cible), 3 GPS (point). */
     private int mode;
     private int guideId = -1;
@@ -76,6 +78,10 @@ public class ShellEntity extends Projectile {
         gpsTarget = target;
     }
 
+    public void setThrust(float k) {
+        thrust = k;
+    }
+
     public void jam() {
         jammed = true;
     }
@@ -86,6 +92,12 @@ public class ShellEntity extends Projectile {
         guideId = target == null ? -1 : target.getId();
         setDeltaMovement(0, 1.6, 0);
         setNoGravity(true);
+    }
+
+    /** Lancement à froid vers un point fixe (marqueur posé sur l'écran radar du S-400). */
+    public void coldLaunchAt(Vec3 point) {
+        coldLaunch(null);
+        gpsTarget = point;
     }
 
     /** Missile balistique, montée (purement visuelle : le vol réel est simulé par Strikes). */
@@ -141,7 +153,12 @@ public class ShellEntity extends Projectile {
             }
             return;
         }
-        if (!level().isClientSide && mode == 4 && guideId < 0 && life > 30) {
+        if (!level().isClientSide && mode == 4 && guideId < 0 && gpsTarget != null && life > 16
+                && (position().distanceTo(gpsTarget) < 4 || getDeltaMovement().dot(gpsTarget.subtract(position())) < 0 && life > 40)) {
+            detonate(position());                                                  // point du radar atteint : fusée de proximité
+            return;
+        }
+        if (!level().isClientSide && mode == 4 && guideId < 0 && gpsTarget == null && life > 30) {
             // intercepteur d'un missile balistique (vol simulé) : explosion de proximité en haute altitude
             ((ServerLevel) level()).sendParticles(ParticleTypes.EXPLOSION_EMITTER, getX(), getY(), getZ(), 1, 0, 0, 0, 0);
             discard();
@@ -170,8 +187,8 @@ public class ShellEntity extends Projectile {
             v = v.add(0, -s.gravity, 0);
         }
         // roquettes : poussée pendant la combustion (les missiles gardent leur vitesse)
-        if (s.rocket() && life < 40 && v.length() < s.speed) {
-            v = v.normalize().scale(Math.min(s.speed, v.length() + 0.12));
+        if (s.rocket() && life < 40 && v.length() < s.speed * thrust) {
+            v = v.normalize().scale(Math.min(s.speed * thrust, v.length() + 0.12));
         }
         setDeltaMovement(v);
         HitResult hit = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
@@ -222,6 +239,9 @@ public class ShellEntity extends Projectile {
                 aim = onBeam;
                 turn = 5;
             }
+        } else if (mode == 4 && guideId < 0 && gpsTarget != null) {
+            aim = gpsTarget;
+            turn = 9;
         } else if (mode == 2 || mode == 4) {
             Entity t = level().getEntity(guideId);
             if (t != null && t.isAlive()) {

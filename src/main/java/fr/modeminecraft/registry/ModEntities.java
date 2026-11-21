@@ -68,6 +68,10 @@ public final class ModEntities {
                     .sized(0.3f, 0.3f).clientTrackingRange(8).updateInterval(2).build("plasma"));
 
     /** Mitrailleuse lourde posée au sol (M2 Browning, DShK). */
+    /** Lance-roquettes statiques : trépied Type 63 (4 x 107 mm) et batterie fixe de 12 x 122 mm. */
+    public static final DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.entity.military.RocketLauncherEntity>> ROCKET_LAUNCHER = ENTITY_TYPES.register("rocket_launcher",
+            () -> EntityType.Builder.<fr.modeminecraft.entity.military.RocketLauncherEntity>of(fr.modeminecraft.entity.military.RocketLauncherEntity::new, MobCategory.MISC)
+                    .sized(1.4f, 1.1f).clientTrackingRange(10).updateInterval(3).build("rocket_launcher"));
     public static final DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.entity.MountedGunEntity>> MOUNTED_GUN = ENTITY_TYPES.register("mounted_gun",
             () -> EntityType.Builder.<fr.modeminecraft.entity.MountedGunEntity>of(fr.modeminecraft.entity.MountedGunEntity::new, MobCategory.MISC)
                     .sized(1.0f, 1.0f).clientTrackingRange(10).updateInterval(3).build("mounted_gun"));
@@ -90,7 +94,7 @@ public final class ModEntities {
     /** Drones de combat pilotables. */
     public static final DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.entity.drone.DroneEntity>> DRONE = ENTITY_TYPES.register("drone",
             () -> EntityType.Builder.<fr.modeminecraft.entity.drone.DroneEntity>of(fr.modeminecraft.entity.drone.DroneEntity::new, net.minecraft.world.entity.MobCategory.MISC)
-                    .sized(0.6f, 0.3f).clientTrackingRange(16).updateInterval(1).build("drone"));
+                    .sized(0.6f, 0.3f).clientTrackingRange(32).updateInterval(1).build("drone"));
     /** Geyser d'une bouche d'incendie détruite. */
     public static final DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.entity.GeyserEntity>> GEYSER = ENTITY_TYPES.register("geyser",
             () -> EntityType.Builder.<fr.modeminecraft.entity.GeyserEntity>of(fr.modeminecraft.entity.GeyserEntity::new, net.minecraft.world.entity.MobCategory.MISC)

@@ -501,6 +501,10 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
         if (!level().isClientSide && radioEnd() > 0) {
             RadioCalls.tick(this);
         }
+        if (!level().isClientSide && (tickCount + getId()) % 20 == 0 && fr.modeminecraft.item.ShieldCombat.blocked(this)) {
+            // un bot au bouclier (SWAT) ne garde qu'une arme de poing ou une arme blanche légère
+            setItemSlot(net.minecraft.world.entity.EquipmentSlot.MAINHAND, new net.minecraft.world.item.ItemStack(item("glock17")));
+        }
         if (!level().isClientSide) {
             if ((tickCount + getId()) % 20 == 0) {
                 farFromPlayers = level().getNearestPlayer(this, 48) == null;

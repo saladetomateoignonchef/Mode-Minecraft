@@ -101,6 +101,9 @@ public final class TriggerHandler {
                 && (gun.stats().doubleBarrel() || gun.stats().special() == GunStats.Special.FANNING)) {
             return false;
         }
+        if (fr.modeminecraft.item.ShieldCombat.blocked(player)) {
+            return false;
+        }
         return (player.level().isClientSide ? AIM_CLIENT : AIM_SERVER).contains(player.getUUID());
     }
 
@@ -113,6 +116,10 @@ public final class TriggerHandler {
         }
         ItemStack stack = player.getMainHandItem();
         if (!(stack.getItem() instanceof GunItem gun) || player.isSpectator()) {
+            return;
+        }
+        if (fr.modeminecraft.item.ShieldCombat.blocked(player)) {
+            fr.modeminecraft.item.ShieldCombat.warn(player);          // fusil + bouclier : ni tir ni visée
             return;
         }
         gun.triggerTick(player.level(), player, stack, t);

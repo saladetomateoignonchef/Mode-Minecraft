@@ -303,6 +303,17 @@ public final class B {
         level.addFreshEntity(v);
     }
 
+    /** Batterie fixe de 12 tubes de 122 mm (chargée), tubes orientés vers l'extérieur du périmètre. */
+    void rocketBattery(int x, int y, int z, int outX, int outZ) {
+        if (!inside(x, y, z)) {
+            return;
+        }
+        BlockPos p = pos(x, y, z);
+        float yaw = (float) Math.toDegrees(Math.atan2(-outX, outZ));
+        level.addFreshEntity(new fr.modeminecraft.entity.military.RocketLauncherEntity(level.getLevel(),
+                fr.modeminecraft.entity.military.RocketLauncherEntity.Kind.BATTERY, p.getX() + 0.5, p.getY(), p.getZ() + 0.5, yaw, true));
+    }
+
     /** Mine antichar posée (champ de mines). */
     void mine(int x, int y, int z, boolean soviet) {
         if (!inside(x, y, z)) {
