@@ -439,7 +439,7 @@ PART_RECIPES = {
     "vehicle_engine": [(M + "steel_ingot", 6), ("minecraft:iron_block", 2), ("minecraft:piston", 2), ("minecraft:redstone", 4)],
     "gas_turbine": [(M + "titanium_ingot", 6), (M + "steel_ingot", 4), ("minecraft:blaze_rod", 4), ("minecraft:redstone", 4)],
     "track_set": [(M + "steel_plate", 6), ("minecraft:iron_ingot", 12), ("minecraft:chain", 6)],
-    "wheel_set": [("minecraft:iron_ingot", 6), ("minecraft:leather", 4), ("minecraft:slime_ball", 2)],
+    "wheel_set": [("minecraft:iron_ingot", 6), ("minecraft:leather", 4), ("minecraft:dried_kelp", 2)],
     "cannon_barrel": [(M + "titanium_ingot", 4), (M + "steel_ingot", 8), ("minecraft:iron_block", 2)],
     "autocannon_mount": [(M + "steel_ingot", 6), ("minecraft:iron_ingot", 6), ("minecraft:redstone", 2)],
     "fire_control_module": [("minecraft:redstone", 8), ("minecraft:gold_ingot", 2), ("minecraft:quartz", 4), ("minecraft:glass_pane", 2), ("minecraft:diamond", 1)],

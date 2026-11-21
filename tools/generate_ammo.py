@@ -39,7 +39,7 @@ INGREDIENTS = {
     "incendiary": [("minecraft:blaze_powder", 2)],
     "hollow_point": [("minecraft:iron_nugget", 4)],
     "subsonic": [("#minecraft:wool", 1)],
-    "rubber": [("minecraft:slime_ball", 2)],
+    "rubber": [("minecraft:dried_kelp", 2)],
     "marker": [("minecraft:glow_ink_sac", 1)],
     "venom": [("minecraft:spider_eye", 2)],
     "cryo": [("minecraft:packed_ice", 1)],

@@ -128,7 +128,7 @@ l'arme est vide (pistolets, fusils type AR, SCAR, Barrett...) ; flash 3D au bout
 **Munitions spéciales** (table d'armement, onglet *Spéciales* : 16 munitions normales + un ingrédient,
 touche **G** pour changer le type chargé ; les balles chargées sont rendues) :
 perforantes (flint + fer), explosives (TNT), traçantes (glowstone, traînée lumineuse visible par tous),
-incendiaires (poudre de blaze), pointe creuse (pépites de fer), subsoniques (laine), caoutchouc (boules de slime),
+incendiaires (poudre de blaze), pointe creuse (pépites de fer), subsoniques (laine), caoutchouc (algues séchées),
 marqueuses (poche d'encre lumineuse), venimeuses (yeux d'araignée), givrantes (glace compacte),
 électriques (redstone + cuivre), rubis (rubis) ; pour les fusils à pompe : slug, fléchettes, dragon's breath,
 chevrotine magnum. Une pastille de couleur sur l'icône indique le type.
@@ -323,7 +323,7 @@ Fabrication : table d'armement, onglet **Protections**. Toutes ces pièces sont 
 - **Composite céramique-titane** : plaque de titane + terre cuite + poudre de blaze + quartz → préforme → haut-fourneau.
 - **Acier** : 1 lingot de fer + 2 charbons → **fer carburé** → haut-fourneau (ou four, plus lent) → **lingot d'acier** ;
   4 lingots → 2 **plaques d'acier**.
-- **Kevlar** : ficelle + laine + boule de slime + charbon → 2 **fibres d'aramide** ; 4 fibres + 1 lingot d'acier (ou de fer)
+- **Kevlar** : ficelle + laine + boule d'argile + charbon → 2 **fibres d'aramide** ; 4 fibres + 1 lingot d'acier (ou de fer)
   → **plaque de kevlar** ; 2 plaques de kevlar + 1 plaque de titane + 1 cuir → **kevlar multicouche**.
 
 ### Livre des recettes et encyclopédie (façon Not Enough Items)
@@ -352,7 +352,7 @@ Les lampes se montent sur le **rail latéral** (flanc droit du garde-main, avec 
 
 | Lampe | Tier | Portée | Particularités | Recette (table d'armement) |
 |---|---|---|---|---|
-| Lampe de fortune scotchée | 1 | 15 blocs, lumière 12 jaune | scintille, -5 % de vitesse de visée | 2 fer + torche de redstone + ficelle (ou boule de slime) |
+| Lampe de fortune scotchée | 1 | 15 blocs, lumière 12 jaune | scintille, -5 % de vitesse de visée | 2 fer + torche de redstone + ficelle |
 | SureFire M600 Scout | 2 | 28 blocs, lumière 15 blanche | aucun malus | 2 lingots d'acier + poudre lumineuse + redstone + vitre |
 | Streamlight TLR-1 HL | 3 | 38 blocs, cône large | **stroboscope** (10 flashs/s) qui éblouit | 2 plaques d'acier + titane + bloc lumineux + 2 redstone |
 | AN/PEQ-15 | 3 | 30 blocs | + **laser vert** (T) ; allumée : précision au jugé +25 %, visée +10 % | 2 plaques de titane + diamant + poudre lumineuse + 2 redstone + colorant vert |
