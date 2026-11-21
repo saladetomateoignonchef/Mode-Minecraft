@@ -156,14 +156,14 @@ public final class BotGoals {
         @Override
         public boolean canContinueToUse() {
             LivingEntity t = bot.getTarget();
-            double range = bot.faction().sightRange(bot.role()) * 1.4;
+            double range = bot.faction() == Faction.FALCON ? 90 : bot.faction().sightRange(bot.role()) * 1.4;
             return t != null && t.isAlive() && bot.distanceToSqr(t) < range * range
                     && (bot.shouldAttack(t) || t == bot.getLastHurtByMob()) && !(t instanceof Player p && (p.isCreative() || p.isSpectator()));
         }
 
         @Override
         protected double getFollowDistance() {
-            return bot.faction().sightRange(bot.role()) * 1.4;
+            return bot.faction() == Faction.FALCON ? 90 : bot.faction().sightRange(bot.role()) * 1.4;
         }
     }
 
@@ -600,7 +600,7 @@ public final class BotGoals {
     /** Corps à corps : sprint, esquives latérales, dash au katana, lancer de tomahawk, coups balayants. */
     static final class MeleeCombat extends Goal {
         private final HumanBotEntity bot;
-        private int attackCooldown, dashCooldown, throwCooldown, strafeTicks;
+        private int attackCooldown, dashCooldown, throwCooldown, strafeTicks, lostTicks;
         private float strafeDir;
 
         MeleeCombat(HumanBotEntity bot) {
@@ -627,7 +627,9 @@ public final class BotGoals {
         @Override
         public void stop() {
             bot.setAggressive(false);
+            bot.setSprinting(false);
             bot.getNavigation().stop();
+            lostTicks = 0;
         }
 
         @Override
@@ -658,15 +660,31 @@ public final class BotGoals {
                 bot.getNavigation().stop();
                 bot.getMoveControl().strafe(0.6f, strafeDir);
             } else if (!bot.isWithinMeleeAttackRange(target)) {
+                // Faucons Blancs : ils suivent en marchant à allure soutenue (on peut leur échapper en sprintant) ;
+                // seul le Chef des Troupes de Choc charge, et seulement au corps-à-corps ou en mode Berserk
+                boolean falcon = bot.faction() == Faction.FALCON;
+                boolean charge = !falcon || bot.role() == BotRole.CHIEF && (dist < 6 || bot.berserk());
                 if (bot.tickCount % 8 == 0) {
-                    bot.getNavigation().moveTo(target, 1.3);
+                    bot.getNavigation().moveTo(target, charge ? 1.3 : 1.0);
                 }
+                bot.setSprinting(charge && dist > 3);
                 if (dist > 3 && dist < 8 && target instanceof Player && bot.getRandom().nextFloat() < 0.04f) {
                     strafeTicks = 10;
                     strafeDir = bot.getRandom().nextBoolean() ? 0.9f : -0.9f;
                 }
             } else {
                 bot.getNavigation().stop();
+            }
+            // abandon : un joueur qui reste à plus de 55 blocs (ou hors de vue) pendant 12 s leur a échappé
+            if (bot.faction() == Faction.FALCON && target instanceof Player) {
+                if (dist > 55 || !bot.getSensing().hasLineOfSight(target)) {
+                    if (++lostTicks > 240) {
+                        bot.giveUpOn(target);
+                        return;
+                    }
+                } else {
+                    lostTicks = 0;
+                }
             }
             MeleeWeaponItem.Ability ability = bot.getMainHandItem().getItem() instanceof MeleeWeaponItem m ? m.stats().ability() : MeleeWeaponItem.Ability.NONE;
             // Dash au katana / wakizashi (surtout sous les tirs)

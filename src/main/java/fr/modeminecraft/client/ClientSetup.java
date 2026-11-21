@@ -165,6 +165,7 @@ public final class ClientSetup {
         event.registerAbove(VanillaGuiLayers.CROSSHAIR, ModeMinecraft.id("hit_marker"), GunFx::renderHitMarker);
         event.registerAbove(VanillaGuiLayers.CROSSHAIR, ModeMinecraft.id("lock_on"), LockOnClient::render);
         event.registerAbove(VanillaGuiLayers.CROSSHAIR, ModeMinecraft.id("grenade_timer"), GunHudLayer::renderGrenadeTimer);
+        event.registerAbove(VanillaGuiLayers.CROSSHAIR, ModeMinecraft.id("robbery"), RobberyClient::render);
         event.registerAboveAll(ModeMinecraft.id("flashbang"), FlashClient::render);
         event.registerAboveAll(ModeMinecraft.id("drone_hud"), DroneClient::renderHud);
         event.registerAboveAll(ModeMinecraft.id("strobe_dazzle"), FlashlightClient::renderDazzle);

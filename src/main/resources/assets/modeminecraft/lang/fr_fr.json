@@ -1192,5 +1192,12 @@
   "message.modeminecraft.medical.full": "Vous êtes déjà en pleine forme",
   "message.modeminecraft.medical.bandage": "Bandage posé : +%s PV, saignement arrêté",
   "message.modeminecraft.medical.first_aid_kit": "Trousse de secours : +%s PV, effets négatifs soignés",
-  "message.modeminecraft.medical.adrenaline": "Adrénaline ! +%s PV, vitesse, force et résistance"
+  "message.modeminecraft.medical.adrenaline": "Adrénaline ! +%s PV, vitesse, force et résistance",
+  "item.modeminecraft.smartphone": "Smartphone",
+  "item.modeminecraft.wristwatch": "Montre",
+  "item.modeminecraft.military_ration": "Ration militaire",
+  "message.modeminecraft.robbery_quiet": "Braquage réussi : personne ne vous a vu",
+  "message.modeminecraft.robbery_seen": "Un témoin a vu le braquage !",
+  "message.modeminecraft.robbery_empty": "Ses poches sont déjà vides",
+  "hud.modeminecraft.robbing": "Braquage..."
 }

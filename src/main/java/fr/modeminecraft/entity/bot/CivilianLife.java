@@ -39,12 +39,14 @@ public final class CivilianLife {
     /** Un joueur tient-il ce civil en joue (arme pointée sur lui, à 10 blocs, sans obstacle) ? */
     static Player aimingAt(HumanBotEntity bot) {
         for (Player p : bot.level().getEntitiesOfClass(Player.class, bot.getBoundingBox().inflate(10))) {
-            if (p.isSpectator() || !(p.getMainHandItem().getItem() instanceof GunItem)) {
+            boolean gun = p.getMainHandItem().getItem() instanceof GunItem;
+            if (p.isSpectator() || !gun && !BotGoals.armedInHand(p)) {
                 continue;
             }
             Vec3 to = bot.getEyePosition().subtract(p.getEyePosition());
             double d = to.length();
-            if (d < 0.5 || to.normalize().dot(p.getLookAngle()) < 0.965 || !bot.hasLineOfSight(p)) {
+            // arme blanche (couteau...) : il faut être tout près (braquage à moins de 3,5 blocs)
+            if (d < 0.5 || !gun && d > Robbery.RANGE + 0.5 || to.normalize().dot(p.getLookAngle()) < (gun ? 0.965 : 0.9) || !bot.hasLineOfSight(p)) {
                 continue;
             }
             return p;
@@ -129,16 +131,7 @@ public final class CivilianLife {
                 grace--;
             }
             held++;
-            // braquage : le commerçant ouvre le tiroir-caisse le plus proche
-            if (bot.shopkeeper && !bot.robbed && held == 30) {
-                for (BlockPos p : BlockPos.betweenClosed(bot.blockPosition().offset(-4, -1, -4), bot.blockPosition().offset(4, 2, 4))) {
-                    if (bot.level().getBlockState(p).getBlock() instanceof fr.modeminecraft.block.city.CashRegisterBlock) {
-                        fr.modeminecraft.block.city.CashRegisterBlock.burst(bot.level(), p.immutable(), threat);
-                        bot.robbed = true;
-                        break;
-                    }
-                }
-            }
+            // le braquage lui-même (clic droit maintenu 1,5 s) : voir Robbery
         }
 
         @Override
@@ -332,8 +325,11 @@ public final class CivilianLife {
         java.util.Collections.shuffle(all, new java.util.Random(r.nextLong()));
         MerchantOffers out = new MerchantOffers();
         all.stream().limit(7).forEach(out::add);
-        // reprise : 4 liasses contre une émeraude
+        // reprise : 4 liasses contre une émeraude ; téléphones et montres (butin des braquages) rachetés
         out.add(new MerchantOffer(new ItemCost(cash.getItem(), 4), new ItemStack(Items.EMERALD), 16, 1, 0.05f));
+        out.add(new MerchantOffer(new ItemCost(fr.modeminecraft.registry.ModItems.SMARTPHONE.get(), 1), new ItemStack(cash.getItem(), 3), 16, 1, 0.05f));
+        out.add(new MerchantOffer(new ItemCost(fr.modeminecraft.registry.ModItems.WRISTWATCH.get(), 1), new ItemStack(cash.getItem(), 2), 16, 1, 0.05f));
+        all.add(offer(2, new ItemStack(fr.modeminecraft.registry.ModItems.MILITARY_RATION.get(), 2)));
         return out;
     }
 

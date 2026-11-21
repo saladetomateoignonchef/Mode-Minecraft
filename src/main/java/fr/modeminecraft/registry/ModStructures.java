@@ -34,6 +34,9 @@ public final class ModStructures {
     /** Routes entre les villes d'un même biome. */
     public static final DeferredHolder<net.minecraft.world.level.levelgen.feature.Feature<?>, fr.modeminecraft.world.road.RoadFeature> ROAD =
             FEATURES.register("road", fr.modeminecraft.world.road.RoadFeature::new);
+    /** Raccord progressif du relief autour des villes (anneau de 24 blocs). */
+    public static final DeferredHolder<net.minecraft.world.level.levelgen.feature.Feature<?>, fr.modeminecraft.world.road.CityBlendFeature> CITY_BLEND =
+            FEATURES.register("city_blend", fr.modeminecraft.world.road.CityBlendFeature::new);
 
     private ModStructures() {}
 }

@@ -52,6 +52,20 @@ public final class RoadNetwork {
             }
         }
         int x0 = chunk.getMinBlockX() - 8, z0 = chunk.getMinBlockZ() - 8, x1 = chunk.getMaxBlockX() + 8, z1 = chunk.getMaxBlockZ() + 8;
+        // rampes et ponts d'accès aux sorties sans route (villes perchées ou en contrebas)
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                CityPlanner.City c = CityPlanner.city(e, rx + i, rz + j);
+                if (c == null || !c.contains((x0 + x1) / 2, (z0 + z1) / 2, APPROACH + 24)) {
+                    continue;
+                }
+                for (Path path : approaches(e, c)) {
+                    if (path.maxX() >= x0 && path.minX() <= x1 && path.maxZ() >= z0 && path.minZ() <= z1) {
+                        out.add(path);
+                    }
+                }
+            }
+        }
         Map<Long, Path> cache;
         synchronized (PATHS) {
             cache = PATHS.computeIfAbsent(e.gen(), g -> new ConcurrentHashMap<>());
@@ -81,6 +95,88 @@ public final class RoadNetwork {
                 out.add(path);
             }
         }
+        return out;
+    }
+
+    /** Longueur maximale d'une rampe d'accès. */
+    static final int APPROACH = 96;
+    private static final Map<ChunkGenerator, Map<Long, List<Path>>> APPROACHES = new WeakHashMap<>();
+
+    /**
+     * Ponts et rampes d'accès : à chaque sortie de l'avenue centrale qui n'est pas déjà prise par une route, si la ville
+     * est perchée (colline, plateau, falaise) ou en contrebas, une chaussée descend (ou monte) en pente douce jusqu'au
+     * terrain naturel : remblai là où le sol est proche, pont ou viaduc sur piles au-dessus du vide. Praticable en
+     * véhicule (pente d'au plus 40 %). Le style dépend du biome (voir {@link RoadFeature}).
+     */
+    public static List<Path> approaches(CityPlanner.Env e, CityPlanner.City c) {
+        Map<Long, List<Path>> cache;
+        synchronized (APPROACHES) {
+            cache = APPROACHES.computeIfAbsent(e.gen(), g -> new ConcurrentHashMap<>());
+        }
+        long key = ChunkPos.asLong(c.rx(), c.rz()) ^ e.seed() * 17;
+        List<Path> got = cache.get(key);
+        if (got != null) {
+            return got;
+        }
+        // sorties déjà desservies par une route
+        java.util.Set<Integer> used = new java.util.HashSet<>();
+        for (int i = -2; i <= 2; i++) {
+            for (int j = -2; j <= 2; j++) {
+                CityPlanner.City o = CityPlanner.city(e, c.rx() + i, c.rz() + j);
+                if (o == null || o == c || !o.kind().equals(c.kind()) || (i == 0 && j == 0)) {
+                    continue;
+                }
+                if (neighbours(e, c).contains(o) || neighbours(e, o).contains(c)) {
+                    double dx = o.middleX() - c.middleX(), dz = o.middleZ() - c.middleZ();
+                    used.add(Math.abs(dx) >= Math.abs(dz) ? (dx > 0 ? 0 : 1) : (dz > 0 ? 2 : 3));
+                }
+            }
+        }
+        List<Path> out = new ArrayList<>();
+        int base = c.baseY() - 1, sea = e.gen().getSeaLevel();
+        for (int side = 0; side < 4; side++) {
+            if (used.contains(side) || c.variant().equals("stilts")) {
+                continue;
+            }
+            int sx = side == 0 ? 1 : side == 1 ? -1 : 0, sz = side == 2 ? 1 : side == 3 ? -1 : 0;
+            double ax = sx > 0 ? c.maxX() + 1 : sx < 0 ? c.minX() - 1 : c.middleX() + 0.5;
+            double az = sz > 0 ? c.maxZ() + 1 : sz < 0 ? c.minZ() - 1 : c.middleZ() + 0.5;
+            int[] g = new int[APPROACH / 8 + 1];
+            for (int k = 1; k < g.length; k++) {
+                int x = (int) Math.floor(ax + sx * k * 8), z = (int) Math.floor(az + sz * k * 8);
+                int floor = e.gen().getBaseHeight(x, z, Heightmap.Types.OCEAN_FLOOR_WG, e.height(), e.rs()) - 1;
+                int surf = e.gen().getBaseHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG, e.height(), e.rs()) - 1;
+                g[k] = surf > floor ? Math.max(floor, sea + 1) : floor;
+            }
+            if (Math.abs(g[1] - base) <= 3 && Math.abs(g[2] - base) <= 4) {
+                continue;                                  // terrain de plain-pied : le lissage des abords suffit
+            }
+            int len = APPROACH;
+            for (int k = 2; k < g.length; k++) {
+                if (Math.abs(g[k] - base) <= k * 8 * 0.4) {
+                    len = k * 8;
+                    break;
+                }
+            }
+            int end = g[len / 8];
+            int n = (int) ((len + 10) / STEP) + 1;
+            double[] xs = new double[n], zs = new double[n], ys = new double[n];
+            for (int k = 0; k < n; k++) {
+                double d = k * STEP;
+                xs[k] = ax + sx * d;
+                zs[k] = az + sz * d;
+                double f = Math.min(1, d / len);
+                f = f * f * (3 - 2 * f);
+                ys[k] = base + (end - base) * f;
+            }
+            double ex = ax + sx * (len + 10), ez = az + sz * (len + 10);
+            out.add(new Path(c.kind(), xs, zs, ys, (int) Math.floor(Math.min(ax, ex)) - 6, (int) Math.floor(Math.min(az, ez)) - 6,
+                    (int) Math.ceil(Math.max(ax, ex)) + 6, (int) Math.ceil(Math.max(az, ez)) + 6));
+        }
+        if (cache.size() > 2048) {
+            cache.clear();
+        }
+        cache.put(key, out);
         return out;
     }
 

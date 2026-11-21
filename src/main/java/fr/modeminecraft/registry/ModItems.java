@@ -87,6 +87,11 @@ public final class ModItems {
     public static final DeferredItem<Item> SPRAY_CAN = ITEMS.registerSimpleItem("spray_can", new Item.Properties().stacksTo(16));
     /** Liasse de billets (butin des braquages, monnaie des marchands). */
     public static final DeferredItem<Item> CASH_BUNDLE = ITEMS.registerSimpleItem("cash_bundle", new Item.Properties().stacksTo(64));
+    /** Butin des braquages de civils : téléphone, montre (revendables aux commerçants), ration militaire. */
+    public static final DeferredItem<Item> SMARTPHONE = ITEMS.registerSimpleItem("smartphone", new Item.Properties().stacksTo(16));
+    public static final DeferredItem<Item> WRISTWATCH = ITEMS.registerSimpleItem("wristwatch", new Item.Properties().stacksTo(16));
+    public static final DeferredItem<Item> MILITARY_RATION = ITEMS.registerSimpleItem("military_ration", new Item.Properties().stacksTo(16)
+            .food(new net.minecraft.world.food.FoodProperties.Builder().nutrition(10).saturationModifier(0.9f).build()));
     /** Tente de camping pliée (se monte d'un clic droit au sol). */
     public static final DeferredItem<Item> CAMPING_TENT = ITEMS.register("camping_tent",
             () -> new fr.modeminecraft.item.CampingTentItem(new Item.Properties().stacksTo(4)));

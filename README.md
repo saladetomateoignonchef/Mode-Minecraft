@@ -527,9 +527,7 @@ Des **villes générées** apparaissent selon le biome (un centre de ville par r
   groupes, lisent le journal au kiosque, rentrent chez eux la nuit. Coup de feu, explosion ou sirène : ils crient et
   courent se réfugier à l'intérieur ; tenus en joue : **les mains en l'air**.
 - **Commerçants** (cafés, supermarchés, boutiques, stations-service) : vendent rations, boissons, bandages, piles et
-  outils contre des **liasses de billets**. **Braquage** : pointez une arme sur le commerçant, il lève les mains et ouvre
-  le tiroir-caisse (billets, or, émeraudes) — ou forcez la caisse au pied-de-biche. L'alarme prévient la police
-  (recherché) : les voitures de patrouille vous prennent en chasse puis déploient leurs agents.
+  outils contre des **liasses de billets** (et rachètent téléphones et montres). **Braquage** : voir ci-dessous.
 - **Circulation** : berlines et taxis jaunes conduits par des civils, voitures de patrouille ; conduite à droite, choix
   aux carrefours, **arrêt aux feux rouges**, klaxon si on bloque la route. **Bus urbain** sur le boulevard circulaire :
   10 s d'arrêt à chaque **abribus**, on monte à bord gratuitement (clic droit).
@@ -547,6 +545,30 @@ Des **villes générées** apparaissent selon le biome (un centre de ville par r
 - **Performances** : ~3 fois moins d'habitants dans les métropoles, IA au ralenti loin des joueurs, détails 3D
   (équipement, armes, capes) masqués au-delà de 40 blocs, lampes des bots limitées à 32 blocs, routes et plan des
   villes calculés hors du fil principal et seulement quand c'est utile : de ~45 ms à ~6 ms par tick en métropole.
+
+### Véhicules militaires, missiles et factions (mise à jour 0.4)
+- **Braquage des civils** (habitants, passants, commerçants, ouvriers) : il suffit d'une **arme blanche** (couteau de
+  combat minimum) ou d'une arme à feu. À moins de **3,5 blocs**, visez le civil et **maintenez le clic droit 1,5 s**
+  (barre « Braquage... ») : il lève les mains en tremblant et lâche billets, pépites d'or, émeraudes, parfois un
+  **téléphone**, une **montre** ou une **ration militaire** (un commerçant ouvre son tiroir-caisse). Les PNJ armés
+  (policiers, miliciens, soldats, shérifs, gardes) ne se braquent pas. **Témoins** : si aucun représentant de l'ordre
+  (policier, soldat, garde de faction, shérif) ne voit la scène dans son champ de vision, **il ne se passe rien** ;
+  sinon la police vous recherche (voitures de patrouille, SWAT) et les autres factions deviennent hostiles.
+- **Faucons Blancs** : ils vous suivent **en marchant** à allure soutenue, en formation (seul le Chef des Troupes de Choc
+  charge, au corps-à-corps ou en Berserk). On peut leur **échapper en sprintant** ou en véhicule : à plus de
+  **55 blocs** (ou hors de vue) pendant **12 s**, l'escouade abandonne et reprend sa route.
+- **Guerre entre factions** : forces de l'ordre (police, SWAT, shérifs) contre milices, cartels et gangs ; garnison
+  américaine (OTAN) contre forces soviétiques ; Faucons Blancs contre tout le monde. Dès qu'ils se voient, ils
+  s'ouvrent le feu dessus (fusillades spontanées). Pour que les villes ne se vident pas et que ça ne lague pas :
+  **au plus 2 fusillades à la fois**, de 2 minutes ; ensuite le quartier reste calme 3 minutes.
+- **Abords des villes** : le relief est raccordé en **pente douce** sur un anneau de **24 blocs** autour de chaque
+  ville (collines arasées, creux comblés avec le sol du biome) : plus de falaises artificielles.
+- **Ponts et rampes d'accès** : à chaque sortie de l'avenue centrale sans route, si la ville est perchée ou en
+  contrebas, une chaussée praticable en véhicule (pente ≤ 40 %) rejoint le terrain : remblai, ou pont sur piles
+  au-dessus du vide. Style selon le biome : **plaines** pont en béton, rambardes métalliques et lampadaires ;
+  **désert** grès massif à arches et colonnettes ; **forêt / taïga** rondins et poutres d'acier en croisillons ;
+  **neige** viaduc soviétique en béton brut et métal rouillé ; **jungle** pont suspendu (pylônes et câbles) ;
+  **mesa** pont à chevalets en bois massif. Les ponts des routes entre villes prennent le même style.
 
 ### Gameplay et progression
 - **Niveaux des armes (1 à 5)** : chaque arme garde ses statistiques (éliminations, tirs à la tête, tirs, ratio)

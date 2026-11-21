@@ -78,7 +78,11 @@ public class CashRegisterBlock extends FacingDecoBlock {
         sl.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(fr.modeminecraft.registry.ModItems.CASH_BUNDLE.get())),
                 pos.getX() + 0.5, pos.getY() + 0.8, pos.getZ() + 0.5, 25, 0.3, 0.2, 0.3, 0.12);
         if (robber != null) {
-            fr.modeminecraft.world.police.Wanted.alarm(sl, pos, robber);
+            // pas de témoin (policier, soldat, garde, shérif) : personne ne vient
+            if (!fr.modeminecraft.entity.bot.Robbery.witnessed(sl, robber)) {
+                robber.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.modeminecraft.robbery_quiet")
+                        .withStyle(net.minecraft.ChatFormatting.GREEN), true);
+            }
         }
     }
 }

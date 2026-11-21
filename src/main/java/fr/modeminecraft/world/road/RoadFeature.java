@@ -31,30 +31,35 @@ public class RoadFeature extends Feature<NoneFeatureConfiguration> {
         super(NoneFeatureConfiguration.CODEC);
     }
 
-    /** Matériaux d'une famille de route. */
-    record Style(int halfWidth, BlockState surface, BlockState slab, BlockState edge, BlockState line, BlockState base,
-                 BlockState pillar, BlockState rail) {}
+    /**
+     * Matériaux d'une famille de route, et style de ses ponts (cahier des charges) :
+     * plaines = pont routier en béton, rambardes métalliques et lampadaires ; désert = grès massif à arches ;
+     * forêt / taïga = rondins et poutres d'acier ; neige = viaduc soviétique en béton brut et métal rouillé ;
+     * jungle = pont suspendu en bois exotique et câbles ; mesa = pont à chevalets en bois massif (Far West).
+     */
+    record Style(String kind, int halfWidth, BlockState surface, BlockState slab, BlockState edge, BlockState line, BlockState base,
+                 BlockState pillar, BlockState rail, BlockState arch) {}
 
     static Style style(String kind) {
         return switch (kind) {
-            case "desert" -> new Style(2, Blocks.SMOOTH_SANDSTONE.defaultBlockState(), Blocks.SMOOTH_SANDSTONE_SLAB.defaultBlockState(),
+            case "desert" -> new Style(kind, 2, Blocks.SMOOTH_SANDSTONE.defaultBlockState(), Blocks.SMOOTH_SANDSTONE_SLAB.defaultBlockState(),
                     Blocks.CUT_SANDSTONE.defaultBlockState(), null, Blocks.SANDSTONE.defaultBlockState(), Blocks.SANDSTONE.defaultBlockState(),
-                    Blocks.SANDSTONE_WALL.defaultBlockState());
-            case "snow" -> new Style(2, Blocks.POLISHED_ANDESITE.defaultBlockState(), Blocks.POLISHED_ANDESITE_SLAB.defaultBlockState(),
-                    Blocks.GRAVEL.defaultBlockState(), null, Blocks.STONE.defaultBlockState(), Blocks.STONE_BRICKS.defaultBlockState(),
-                    Blocks.COBBLESTONE_WALL.defaultBlockState());
-            case "forest" -> new Style(2, Blocks.DIRT_PATH.defaultBlockState(), Blocks.SPRUCE_SLAB.defaultBlockState(),
+                    Blocks.SANDSTONE_WALL.defaultBlockState(), Blocks.CUT_SANDSTONE.defaultBlockState());
+            case "snow" -> new Style(kind, 2, Blocks.POLISHED_ANDESITE.defaultBlockState(), Blocks.POLISHED_ANDESITE_SLAB.defaultBlockState(),
+                    Blocks.GRAVEL.defaultBlockState(), null, Blocks.STONE.defaultBlockState(), Blocks.GRAY_CONCRETE.defaultBlockState(),
+                    Blocks.IRON_BARS.defaultBlockState(), Blocks.EXPOSED_CUT_COPPER.defaultBlockState());
+            case "forest" -> new Style(kind, 2, Blocks.DIRT_PATH.defaultBlockState(), Blocks.SPRUCE_SLAB.defaultBlockState(),
                     Blocks.COARSE_DIRT.defaultBlockState(), null, Blocks.DIRT.defaultBlockState(), Blocks.SPRUCE_LOG.defaultBlockState(),
-                    Blocks.SPRUCE_FENCE.defaultBlockState());
-            case "jungle" -> new Style(2, Blocks.PACKED_MUD.defaultBlockState(), Blocks.MUD_BRICK_SLAB.defaultBlockState(),
+                    Blocks.SPRUCE_FENCE.defaultBlockState(), Blocks.IRON_BARS.defaultBlockState());
+            case "jungle" -> new Style(kind, 2, Blocks.PACKED_MUD.defaultBlockState(), Blocks.MUD_BRICK_SLAB.defaultBlockState(),
                     Blocks.MUD_BRICKS.defaultBlockState(), null, Blocks.DIRT.defaultBlockState(), Blocks.JUNGLE_LOG.defaultBlockState(),
-                    Blocks.JUNGLE_FENCE.defaultBlockState());
-            case "mesa" -> new Style(2, Blocks.SMOOTH_RED_SANDSTONE.defaultBlockState(), Blocks.SMOOTH_RED_SANDSTONE_SLAB.defaultBlockState(),
-                    Blocks.CUT_RED_SANDSTONE.defaultBlockState(), null, Blocks.RED_SANDSTONE.defaultBlockState(), Blocks.RED_SANDSTONE.defaultBlockState(),
-                    Blocks.RED_SANDSTONE_WALL.defaultBlockState());
-            default -> new Style(3, Blocks.BLACK_CONCRETE.defaultBlockState(), Blocks.POLISHED_BLACKSTONE_SLAB.defaultBlockState(),
+                    Blocks.JUNGLE_FENCE.defaultBlockState(), null);
+            case "mesa" -> new Style(kind, 2, Blocks.SMOOTH_RED_SANDSTONE.defaultBlockState(), Blocks.SMOOTH_RED_SANDSTONE_SLAB.defaultBlockState(),
+                    Blocks.CUT_RED_SANDSTONE.defaultBlockState(), null, Blocks.RED_SANDSTONE.defaultBlockState(), Blocks.DARK_OAK_LOG.defaultBlockState(),
+                    Blocks.DARK_OAK_FENCE.defaultBlockState(), Blocks.DARK_OAK_FENCE.defaultBlockState());
+            default -> new Style(kind, 3, Blocks.BLACK_CONCRETE.defaultBlockState(), Blocks.POLISHED_BLACKSTONE_SLAB.defaultBlockState(),
                     Blocks.LIGHT_GRAY_CONCRETE.defaultBlockState(), Blocks.WHITE_CONCRETE.defaultBlockState(), Blocks.STONE.defaultBlockState(),
-                    Blocks.STONE_BRICKS.defaultBlockState(), Blocks.STONE_BRICK_WALL.defaultBlockState());
+                    Blocks.LIGHT_GRAY_CONCRETE.defaultBlockState(), Blocks.IRON_BARS.defaultBlockState(), Blocks.LIGHT_GRAY_CONCRETE.defaultBlockState());
         };
     }
 
@@ -167,10 +172,12 @@ public class RoadFeature extends Feature<NoneFeatureConfiguration> {
                 level.setBlock(m.set(x, y + 1, z), st.slab().setValue(SlabBlock.TYPE, SlabType.BOTTOM), 2);
             }
             if (bridge) {
+                int ry = y + (half ? 2 : 1);
                 if (edge) {
-                    level.setBlock(m.set(x, y + (half ? 2 : 1), z), st.rail(), 2);       // garde-corps
+                    level.setBlock(m.set(x, ry, z), st.rail(), 2);                       // garde-corps
                 }
                 level.setBlock(m.set(x, y - 1, z), st.pillar(), 2);                    // tablier
+                bridgeDeco(level, m, x, y, z, ry, ground, c, edge);
             } else {
                 for (int yy = y - 1; yy > ground; yy--) {                                // remblai
                     level.setBlock(m.set(x, yy, z), st.base(), 2);
@@ -202,6 +209,75 @@ public class RoadFeature extends Feature<NoneFeatureConfiguration> {
             }
         }
         return true;
+    }
+
+    /** Décor des ponts selon le biome : arches sous le tablier, lampadaires, pylônes et câbles, chevalets. */
+    private static void bridgeDeco(WorldGenLevel level, BlockPos.MutableBlockPos m, int x, int y, int z, int ry, int ground, Cell c, boolean edge) {
+        Style st = c.style();
+        double q = c.s() % 10;
+        // arches (ou contreventements) entre les piles, tous les 10 blocs
+        if (st.arch() != null) {
+            int depth = q < 1.5 || q >= 8.5 ? 2 : q < 2.5 || q >= 7.5 ? 1 : 0;
+            if (st.kind().equals("mesa") || st.kind().equals("forest")) {
+                // chevalets / poutres d'acier : croisillons en X entre les piles
+                double u = Math.abs(q - 5) / 5;                           // 1 aux piles, 0 au milieu
+                depth = 0;
+                int yy = y - 2 - (int) Math.round((1 - u) * 3);
+                if (yy > ground && level.getBlockState(m.set(x, yy, z)).isAir()) {
+                    level.setBlock(m, st.arch(), 2);
+                }
+                yy = y - 2 - (int) Math.round(u * 3);
+                if (yy > ground && level.getBlockState(m.set(x, yy, z)).isAir()) {
+                    level.setBlock(m, st.arch(), 2);
+                }
+            }
+            for (int k = 1; k <= depth; k++) {
+                if (y - 1 - k > ground && level.getBlockState(m.set(x, y - 1 - k, z)).isAir()) {
+                    level.setBlock(m, st.arch(), 2);
+                }
+            }
+        }
+        if (!edge) {
+            return;
+        }
+        switch (st.kind()) {
+            case "plains" -> {
+                if (c.s() % 16 < 0.6) {                                   // lampadaire tous les 16 blocs
+                    level.setBlock(m.set(x, ry + 1, z), Blocks.IRON_BARS.defaultBlockState(), 2);
+                    level.setBlock(m.set(x, ry + 2, z), Blocks.IRON_BARS.defaultBlockState(), 2);
+                    level.setBlock(m.set(x, ry + 3, z), fr.modeminecraft.registry.ModBlocks.STREET_LANTERN.get().defaultBlockState(), 2);
+                }
+            }
+            case "desert" -> {
+                if (q < 0.6) {
+                    level.setBlock(m.set(x, ry, z), Blocks.CHISELED_SANDSTONE.defaultBlockState(), 2);   // colonnettes
+                    level.setBlock(m.set(x, ry + 1, z), Blocks.SANDSTONE_SLAB.defaultBlockState(), 2);
+                }
+            }
+            case "snow" -> {
+                if (c.s() % 20 < 0.6) {                                   // poutres de rive en métal rouillé
+                    level.setBlock(m.set(x, ry, z), Blocks.EXPOSED_CUT_COPPER.defaultBlockState(), 2);
+                    level.setBlock(m.set(x, ry + 1, z), Blocks.LIGHTNING_ROD.defaultBlockState(), 2);
+                }
+            }
+            case "jungle" -> {
+                // pont suspendu : pylônes tous les 20 blocs, câbles en chaînette entre eux
+                double p = c.s() % 20;
+                if (p < 0.6) {
+                    for (int k = 0; k <= 4; k++) {
+                        level.setBlock(m.set(x, ry + k, z), Blocks.JUNGLE_LOG.defaultBlockState(), 2);
+                    }
+                } else {
+                    double u = (p - 10) / 10;
+                    int h = (int) Math.round(1 + 3.4 * u * u);
+                    // câble porteur à la hauteur h, suspentes verticales tous les 4 blocs
+                    for (int k = p % 4 < 0.6 ? 1 : h; k <= h; k++) {
+                        level.setBlock(m.set(x, ry + k, z), Blocks.CHAIN.defaultBlockState(), 2);
+                    }
+                }
+            }
+            default -> {}
+        }
     }
 
     /** Sol solide sous la route (on ignore l'eau, les feuilles, les troncs et les plantes). */

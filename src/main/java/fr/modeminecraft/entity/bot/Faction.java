@@ -70,6 +70,24 @@ public enum Faction {
         this.loadout = loadout;
     }
 
+    /**
+     * Factions qui ne se supportent pas (elles s'ouvrent le feu dessus à vue) : forces de l'ordre (police, SWAT,
+     * shérifs) contre milices, cartels et gangs ; garnison américaine / OTAN contre forces soviétiques.
+     * Les Faucons Blancs, eux, attaquent tout le monde (géré à part).
+     */
+    public boolean enemyOf(Faction o) {
+        return law() && o.outlaw() || o.law() && outlaw()
+                || this == GARRISON && o == SOVIET || this == SOVIET && o == GARRISON;
+    }
+
+    private boolean law() {
+        return this == POLICE || this == SWAT || this == SHERIFF;
+    }
+
+    private boolean outlaw() {
+        return this == MILITIA || this == CARTEL || this == GANG;
+    }
+
     public boolean combatant() {
         return attitude != Attitude.PASSIVE;
     }

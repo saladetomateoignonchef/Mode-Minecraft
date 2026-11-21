@@ -282,8 +282,28 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
     }
 
     /** Ce bot doit-il combattre cette créature ? */
+    /** Joueur qui a semé ce bot (Faucons Blancs) : ignoré jusqu'à {@link #ignoreUntil}, sauf s'il revient tout près. */
+    public java.util.UUID ignored;
+    public long ignoreUntil;
+
+    /** Abandon de la poursuite (toute l'escouade autour) : le joueur leur a échappé. */
+    public void giveUpOn(LivingEntity t) {
+        long until = level().getGameTime() + 900;
+        for (HumanBotEntity b : level().getEntitiesOfClass(HumanBotEntity.class, getBoundingBox().inflate(64),
+                b -> b.faction() == faction() && (b.getTarget() == t || b.getLastHurtByMob() == t))) {
+            b.setTarget(null);
+            b.setLastHurtByMob(null);
+            b.setAggressive(false);
+            b.ignored = t.getUUID();
+            b.ignoreUntil = until;
+        }
+    }
+
     public boolean shouldAttack(LivingEntity t) {
         if (t == null || !t.isAlive() || t == this) {
+            return false;
+        }
+        if (ignored != null && t.getUUID().equals(ignored) && level().getGameTime() < ignoreUntil && distanceToSqr(t) > 12 * 12) {
             return false;
         }
         Faction f = faction();
@@ -303,8 +323,10 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
             if (other.faction() == f) {
                 return false;
             }
-            return f == Faction.FALCON ? other.faction().combatant() || other.faction() == Faction.CIVILIAN
-                    : other.faction() == Faction.FALCON;
+            if (f == Faction.FALCON) {
+                return other.faction().combatant() || other.faction() == Faction.CIVILIAN;
+            }
+            return other.faction() == Faction.FALCON || f.enemyOf(other.faction()) && Skirmishes.allow(this, other);
         }
         if (t instanceof Player p) {
             if (p.isCreative() || p.isSpectator()) {
@@ -729,7 +751,9 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
             }
             return net.minecraft.world.InteractionResult.sidedSuccess(level().isClientSide);
         }
-        if ((role() == BotRole.TRADER || shopkeeper && scaredUntil < level().getGameTime()) && isAlive() && tradingPlayer == null && !player.isSecondaryUseActive()) {
+        // arme en main face à un civil : c'est un braquage (maintenir le clic droit), pas un achat
+        if ((role() == BotRole.TRADER || shopkeeper && scaredUntil < level().getGameTime()) && isAlive() && tradingPlayer == null && !player.isSecondaryUseActive()
+                && !BotGoals.armedInHand(player)) {
             if (!level().isClientSide) {
                 setTradingPlayer(player);
                 openTradingScreen(player, getDisplayName(), 1);

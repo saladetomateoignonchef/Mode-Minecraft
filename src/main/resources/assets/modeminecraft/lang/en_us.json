@@ -1192,5 +1192,12 @@
   "message.modeminecraft.medical.full": "You are already in full health",
   "message.modeminecraft.medical.bandage": "Bandage applied: +%s HP, bleeding stopped",
   "message.modeminecraft.medical.first_aid_kit": "First aid kit: +%s HP, negative effects cured",
-  "message.modeminecraft.medical.adrenaline": "Adrenaline! +%s HP, speed, strength and resistance"
+  "message.modeminecraft.medical.adrenaline": "Adrenaline! +%s HP, speed, strength and resistance",
+  "item.modeminecraft.smartphone": "Smartphone",
+  "item.modeminecraft.wristwatch": "Wristwatch",
+  "item.modeminecraft.military_ration": "Military Ration",
+  "message.modeminecraft.robbery_quiet": "Robbery done: nobody saw you",
+  "message.modeminecraft.robbery_seen": "A witness saw the robbery!",
+  "message.modeminecraft.robbery_empty": "Their pockets are already empty",
+  "hud.modeminecraft.robbing": "Robbing..."
 }

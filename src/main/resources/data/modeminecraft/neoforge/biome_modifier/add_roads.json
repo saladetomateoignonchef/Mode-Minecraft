@@ -1,6 +1,9 @@
 {
   "type": "neoforge:add_features",
   "biomes": "#minecraft:is_overworld",
-  "features": "modeminecraft:road",
+  "features": [
+    "modeminecraft:city_blend",
+    "modeminecraft:road"
+  ],
   "step": "top_layer_modification"
 }
