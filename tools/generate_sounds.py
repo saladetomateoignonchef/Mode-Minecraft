@@ -13,10 +13,13 @@ Utilisation (depuis la racine du projet) :
 import json
 import os
 import subprocess
+import sys
 import tempfile
 import wave
 
 import numpy as np
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 ASSETS = os.path.join(ROOT, "src/main/resources/assets/modeminecraft")
@@ -494,6 +497,13 @@ def main():
         write_ogg(os.path.join(sounds_dir, "bot", f"{name}.ogg"), bot_sound(name, seed))
         seed += 1
         add(f"bot.{name}", [f"bot/{name}"], name)
+
+    import city_sounds
+    for k, name in enumerate(city_sounds.CITY_SOUNDS):
+        write_ogg(os.path.join(sounds_dir, "city", f"{name}.ogg"), city_sounds.city_sound(name, 9000 + k))
+        add(f"city.{name}", [f"city/{name}"], name)
+    write_ogg(os.path.join(sounds_dir, "bot", "police_siren.ogg"), city_sounds.city_sound("police_siren", 8999))
+    add("bot.police_siren", ["bot/police_siren"], "police_siren")
 
     with open(os.path.join(ASSETS, "sounds.json"), "w", encoding="utf-8") as f:
         json.dump(events, f, indent=2)

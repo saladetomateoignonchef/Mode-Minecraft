@@ -26,9 +26,10 @@
     }
   ],
   "placement": {
-    "type": "minecraft:random_spread",
-    "spacing": 28,
-    "separation": 16,
-    "salt": 77031953
+    "type": "modeminecraft:city_grid",
+    "spacing": 40,
+    "separation": 34,
+    "salt": 77031953,
+    "district": 11
   }
 }

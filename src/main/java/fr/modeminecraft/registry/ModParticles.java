@@ -19,6 +19,10 @@ public final class ModParticles {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> CASING_SHELL =
             PARTICLES.register("casing_shell", () -> new SimpleParticleType(false));
 
+    /** Feuille de journal emportée par le vent (rues des villes). */
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> NEWSPAPER =
+            PARTICLES.register("newspaper", () -> new SimpleParticleType(false));
+
     /** Point lumineux de la traînée des balles traçantes. */
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> TRACER =
             PARTICLES.register("tracer", () -> new SimpleParticleType(true));

@@ -63,6 +63,37 @@ final class Deco {
         b.set(x + 1, y + 2, z + 1, Blocks.LANTERN.defaultBlockState().setValue(BlockStateProperties.HANGING, true));
     }
 
+    /** Abribus d'une ligne de bus, sur le trottoir, tourné vers la chaussée (`toRoad`) : vitre, banc, toit, panneau. */
+    static void busShelter(B b, Direction toRoad) {
+        for (int u = 0; u < 4; u++) {
+            for (int v = 0; v < 2; v++) {
+                int[] p = shelterPos(toRoad, u, v);
+                b.set(p[0], 3, p[1], B.slab(Blocks.SMOOTH_STONE_SLAB, false));
+                if (v == 0) {
+                    b.fill(p[0], 0, p[1], p[0], 2, p[1], Blocks.LIGHT_GRAY_STAINED_GLASS);
+                } else if (u == 0 || u == 3) {
+                    b.fill(p[0], 0, p[1], p[0], 2, p[1], Blocks.IRON_BARS);
+                } else {
+                    b.set(p[0], 0, p[1], B.stairs(Blocks.DARK_OAK_STAIRS, toRoad.getOpposite()));
+                }
+            }
+        }
+        int[] sign = shelterPos(toRoad, 4, 1);
+        b.fill(sign[0], 0, sign[1], sign[0], 2, sign[1], Blocks.IRON_BARS);
+        b.set(sign[0], 3, sign[1], Blocks.BLUE_CONCRETE);                                   // panneau d'arrêt
+        b.bot(shelterPos(toRoad, 1, 1)[0], 0, shelterPos(toRoad, 1, 1)[1], fr.modeminecraft.entity.bot.Faction.CIVILIAN,
+                fr.modeminecraft.entity.bot.BotRole.CIVILIAN, 6);
+    }
+
+    private static int[] shelterPos(Direction toRoad, int u, int v) {
+        return switch (toRoad) {
+            case NORTH -> new int[]{5 + u, 15 - v};
+            case SOUTH -> new int[]{5 + u, v};
+            case WEST -> new int[]{15 - v, 5 + u};
+            default -> new int[]{v, 5 + u};
+        };
+    }
+
     /** Kiosque à journaux. */
     static void kiosk(B b, int x, int y, int z) {
         b.fill(x, y, z, x + 1, y + 1, z + 1, Blocks.GREEN_TERRACOTTA);
@@ -105,9 +136,10 @@ final class Deco {
 
     /** Climatiseur de toit. */
     static void airConditioner(B b, int x, int y, int z) {
-        b.fill(x, y, z, x + 1, y, z + 1, Blocks.IRON_BLOCK);
-        b.set(x, y + 1, z, B.facing(Blocks.IRON_TRAPDOOR, Direction.NORTH));
-        b.set(x + 1, y + 1, z, Blocks.LIGHTNING_ROD);
+        b.set(x, y, z, fr.modeminecraft.registry.ModBlocks.AC_UNIT.get());                   // ventilateur qui tourne
+        b.set(x + 1, y, z, fr.modeminecraft.registry.ModBlocks.AC_UNIT.get());
+        b.set(x, y, z + 1, Blocks.IRON_BLOCK);
+        b.set(x + 1, y + 1, z + 1, Blocks.LIGHTNING_ROD);
     }
 
     /** Antenne / paratonnerre. */

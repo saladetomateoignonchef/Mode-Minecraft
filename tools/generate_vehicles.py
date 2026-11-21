@@ -18,7 +18,8 @@ MOD = "modeminecraft"
 
 COLORS = {"red": "#b02a20", "olive": "#4b5a2a", "olive_d": "#353f1d", "black": "#1c1e22", "white": "#e6e8ea", "glass": "#7fb0c8",
           "tire": "#141414", "rim": "#8a9098", "metal": "#5b6068", "seat": "#2a2420", "light": "#fff6c0", "red_l": "#ff2030",
-          "blue_l": "#2050ff", "sand": "#a68b5b", "chrome": "#c8ccd2"}
+          "blue_l": "#2050ff", "sand": "#a68b5b", "chrome": "#c8ccd2", "navy": "#24324e", "silver": "#9aa2ac", "yellow": "#e8b81e",
+          "checker": "#202020", "bus": "#c8322a", "bus_w": "#ececec"}
 MATERIAL = {"glass": "glass", "light": "flat", "red_l": "flat", "blue_l": "flat", "tire": "polymer", "seat": "leather"}
 
 
@@ -82,6 +83,39 @@ def armored_truck():
             zb(32, 5, 33, 7, -0.5, 16.5, "metal"), zb(-16.6, 8, -16, 19, 5, 11, "black")], 0.92)
 
 
+def sedan(color="navy"):
+    """Berline civile : caisse basse, capot et coffre, habitacle vitré, phares."""
+    return [zb(-10, 2, 26, 6, 0.5, 15.5, color),
+            zb(-1, 6, 16, 9.8, 1.5, 14.5, color),
+            zb(-0.6, 6.4, 15.6, 9.4, 1.4, 14.6, "glass"),
+            zb(-1, 9.8, 16, 10.6, 1.5, 14.5, color),
+            zb(25.6, 3.5, 26.4, 5, 2, 5, "light"), zb(25.6, 3.5, 26.4, 5, 11, 14, "light"),
+            zb(-10.4, 3.5, -9.6, 5, 2, 5, "red_l"), zb(-10.4, 3.5, -9.6, 5, 11, 14, "red_l"),
+            zb(26, 2, 27, 3.2, 1, 15, "chrome"), zb(-11, 2, -10, 3.2, 1, 15, "chrome"),
+            zb(10, 6.5, 11, 7, 0.2, 0.5, "chrome"), zb(10, 6.5, 11, 7, 15.5, 15.8, "chrome")]   # poignées
+
+
+def taxi():
+    e = sedan("yellow")
+    e += [zb(5, 10.6, 9, 11.8, 5, 11, "white"),                     # enseigne TAXI
+          zb(-9, 4.5, 25, 5, 0.3, 0.5, "checker"), zb(-9, 4.5, 25, 5, 15.5, 15.7, "checker")]   # damier
+    return e
+
+
+def bus():
+    """Bus urbain : long, vitres sur tout le flanc, portes, bande blanche, girouette (modèle resserré en longueur)."""
+    return squeeze_x([zb(-16, 3, 32, 22, -0.5, 16.5, "bus"),
+            zb(-15.5, 11, 31.5, 18, -0.6, 16.6, "glass"),           # vitres latérales
+            zb(-16, 9, 32, 10.5, -0.7, 16.7, "bus_w"),               # bande blanche
+            zb(31.6, 8, 32.4, 20, 1, 15, "glass"),                  # pare-brise
+            zb(-16.4, 13, -15.8, 20, 2, 14, "glass"),
+            zb(32, 20, 32.5, 21.5, 3, 13, "light"),                   # girouette
+            zb(24, 3.5, 30, 18, 16.5, 16.8, "black"), zb(4, 3.5, 10, 18, 16.5, 16.8, "black"),   # portes (côté droit)
+            zb(32, 4, 32.8, 6, 1, 4, "light"), zb(32, 4, 32.8, 6, 12, 15, "light"),
+            zb(-16.8, 4, -16, 6, 1, 4, "red_l"), zb(-16.8, 4, -16, 6, 12, 15, "red_l"),
+            zb(-15, 22, 10, 23, 2, 14, "silver")], 0.92)                 # climatisation sur le toit
+
+
 def squeeze_x(els, k):
     """Resserre le modèle en longueur (les modèles de Minecraft sont limités à 48 pixels)."""
     for e in els:
@@ -90,11 +124,13 @@ def squeeze_x(els, k):
     return els
 
 
-VEHICLES = {"quad": (quad, 2.6, 2.2), "police_car": (police_car, 3.0, 2.4), "jeep": (jeep, 3.4, 2.6), "armored_truck": (armored_truck, 4.0, 3.2)}
+VEHICLES = {"quad": (quad, 2.6, 2.2), "police_car": (police_car, 3.0, 2.4), "jeep": (jeep, 3.4, 2.6), "armored_truck": (armored_truck, 4.0, 3.2),
+            "sedan": (sedan, 2.8, 2.2), "taxi": (taxi, 2.8, 2.2), "bus": (bus, 3.6, 3.0)}
 
 
 def main():
-    painter = vb.Painter(COLORS, lambda k: MATERIAL.get(k, "paint" if k in ("red", "white", "olive", "olive_d", "sand") else "metal"),
+    painter = vb.Painter(COLORS, lambda k: MATERIAL.get(k, "paint" if k in ("red", "white", "olive", "olive_d", "sand", "navy", "yellow", "bus", "bus_w")
+                                                       else "metal"),
                          {"glass": 160}, seed="vehicle")
     os.makedirs(os.path.join(ASSETS, "textures/item/vehicle"), exist_ok=True)
     for name, (fn, r, w) in VEHICLES.items():

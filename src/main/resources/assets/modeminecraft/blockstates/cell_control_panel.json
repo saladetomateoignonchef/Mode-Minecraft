@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/cell_control_panel"
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/cell_control_panel",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/cell_control_panel",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/cell_control_panel",
+      "y": 270
+    }
+  }
+}

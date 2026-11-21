@@ -705,7 +705,7 @@ final class CityGenRegions {
         b.set(x + 1, y + 2, z + 1, Blocks.IRON_BARS);
     }
 
-    private static void forklift(B b, int x, int y, int z) {
+    static void forklift(B b, int x, int y, int z) {
         b.fill(x, y, z, x + 1, y + 1, z + 1, Blocks.YELLOW_CONCRETE);
         b.fill(x + 2, y, z, x + 2, y + 3, z, Blocks.IRON_BARS);
         b.fill(x + 2, y, z + 1, x + 2, y + 3, z + 1, Blocks.IRON_BARS);

@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "weapons",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_block",
+      "count": 4
+    },
+    {
+      "item": "minecraft:glass",
+      "count": 4
+    },
+    {
+      "item": "minecraft:yellow_dye",
+      "count": 3
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 4
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:taxi",
+    "count": 1
+  }
+}

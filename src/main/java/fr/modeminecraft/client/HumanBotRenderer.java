@@ -65,7 +65,14 @@ public class HumanBotRenderer extends HumanoidMobRenderer<HumanBotEntity, HumanB
         } else if (main.getItem() instanceof GunItem) {
             m.rightArmPose = bot.isAggressive() ? HumanoidModel.ArmPose.BOW_AND_ARROW : HumanoidModel.ArmPose.CROSSBOW_HOLD;
         }
+        boolean sitting = bot.activity() == fr.modeminecraft.entity.bot.CivilianLife.SITTING;
+        m.riding = sitting;
+        pose.pushPose();
+        if (sitting) {
+            pose.translate(0, -0.55, 0);                                              // assis sur le banc
+        }
         super.render(bot, yaw, partial, pose, buffers, light);
+        pose.popPose();
         if (bot.alertEnd() > bot.level().getGameTime()) {
             renderAlert(bot, pose, buffers, light);
         }
@@ -126,6 +133,24 @@ public class HumanBotRenderer extends HumanoidMobRenderer<HumanBotEntity, HumanB
             }
             if (bot.role() == BotRole.CHIEF) {
                 sword(bot, now);
+            }
+            byte act = bot.activity();
+            if (act == fr.modeminecraft.entity.bot.CivilianLife.HANDS_UP) {
+                // mains en l'air (tenu en joue / braquage), légèrement tremblantes
+                float shake = Mth.sin(now * 1.7f) * 0.04f;
+                rightArm.xRot = -Mth.PI + 0.25f + shake;
+                leftArm.xRot = -Mth.PI + 0.25f - shake;
+                rightArm.zRot = 0.35f;
+                leftArm.zRot = -0.35f;
+                rightArm.yRot = leftArm.yRot = 0;
+            } else if (act == fr.modeminecraft.entity.bot.CivilianLife.CHATTING) {
+                rightArm.xRot = -0.45f + Mth.sin(now * 0.25f) * 0.25f;                 // gestes de la main en parlant
+                rightArm.zRot = -0.1f;
+            } else if (act == fr.modeminecraft.entity.bot.CivilianLife.READING) {
+                rightArm.xRot = leftArm.xRot = -1.1f;                                   // journal tenu devant soi
+                rightArm.yRot = -0.35f;
+                leftArm.yRot = 0.35f;
+                head.xRot = 0.45f;
             }
             // capes et gilets suivent le corps ; vestes / manches de la couche externe aussi
             jacket.copyFrom(body);

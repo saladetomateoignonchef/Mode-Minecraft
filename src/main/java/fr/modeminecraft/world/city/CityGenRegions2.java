@@ -257,9 +257,10 @@ final class CityGenRegions2 {
         // coffre derrière un tableau (dans le mur), salle forte rouge
         b.chest(x0, 6, 14, Direction.EAST, "cartel_safe", false);
         if (b.inside(x0 + 1, 7, 14)) {
-            var level = b.level.getLevel();
-            net.minecraft.world.entity.decoration.Painting.create(level, b.pos(x0 + 1, 7, 14), Direction.EAST)
-                    .ifPresent(b.level::addFreshEntity);
+            // tableau 1 x 1 créé sans test de place (le test lirait le monde depuis le fil de génération : blocage)
+            var variant = b.level.registryAccess().registryOrThrow(net.minecraft.core.registries.Registries.PAINTING_VARIANT)
+                    .getHolderOrThrow(net.minecraft.world.entity.decoration.PaintingVariants.KEBAB);
+            b.level.addFreshEntity(new net.minecraft.world.entity.decoration.Painting(b.level.getLevel(), b.pos(x0 + 1, 7, 14), Direction.EAST, variant));
         }
         b.walls(22, 5, 22, 26, 8, 26, Blocks.POLISHED_BLACKSTONE_BRICKS.defaultBlockState());
         CityGen.vaultDoor(b, 22, 6, 24, Direction.WEST, 2);
@@ -460,6 +461,8 @@ final class CityGenRegions2 {
                 b.set(3, 1, zf + in * 2, Blocks.NOTE_BLOCK);
                 b.set(3, 2, zf + in * 2, Blocks.DARK_OAK_SLAB);
                 b.set(4, 1, zf + in * 2, Blocks.NOTE_BLOCK);
+                b.set(4, 2, zf + in * 2, fr.modeminecraft.registry.ModBlocks.AMBIENT_SPEAKER.get().defaultBlockState()           // piano du saloon
+                        .setValue(fr.modeminecraft.block.city.AmbientSpeakerBlock.KIND, fr.modeminecraft.block.city.AmbientSpeakerBlock.Kind.SALOON));
                 for (int x = 6; x <= 10; x += 4) {
                     b.set(x, 1, (z0 + z1) / 2, Blocks.SPRUCE_FENCE);
                     b.set(x, 2, (z0 + z1) / 2, Blocks.GREEN_CARPET);
@@ -473,8 +476,11 @@ final class CityGenRegions2 {
             }
             case "bank" -> {
                 b.fill(3, 1, (z0 + z1) / 2, 12, 1, (z0 + z1) / 2, B.slab(Blocks.SMOOTH_STONE_SLAB, true));
-                b.fill(3, 2, (z0 + z1) / 2, 12, 3, (z0 + z1) / 2, Blocks.IRON_BARS);
+                b.fill(3, 3, (z0 + z1) / 2, 12, 3, (z0 + z1) / 2, Blocks.IRON_BARS);
                 b.fill(7, 1, (z0 + z1) / 2, 7, 3, (z0 + z1) / 2, Blocks.AIR.defaultBlockState());
+                Deco.door(b, 7, 1, (z0 + z1) / 2, southFacing ? Direction.SOUTH : Direction.NORTH, fr.modeminecraft.registry.ModBlocks.LOCKED_WOODEN_DOOR.get());
+                CityGen.cashRegister(b, 5, 2, (z0 + z1) / 2, southFacing ? Direction.SOUTH : Direction.NORTH);
+                CityGen.cashRegister(b, 10, 2, (z0 + z1) / 2, southFacing ? Direction.SOUTH : Direction.NORTH);
                 int vz = back + (southFacing ? 1 : -4);
                 b.walls(3, 1, Math.min(vz, vz + 3), 7, 4, Math.max(vz, vz + 3), Blocks.IRON_BLOCK.defaultBlockState());
                 CityGen.vaultDoor(b, 7, 1, vz + 1, Direction.EAST, 1);

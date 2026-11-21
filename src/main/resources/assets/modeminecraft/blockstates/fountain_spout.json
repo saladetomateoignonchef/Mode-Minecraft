@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/fountain_spout"
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/fountain_spout",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/fountain_spout",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/fountain_spout",
+      "y": 270
+    }
+  }
+}

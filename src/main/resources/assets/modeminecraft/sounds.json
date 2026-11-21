@@ -411,5 +411,143 @@
     "sounds": [
       "modeminecraft:bot/drone_rotor_loop"
     ]
+  },
+  "city.crowbar_pry": {
+    "subtitle": "subtitles.modeminecraft.crowbar_pry",
+    "sounds": [
+      "modeminecraft:city/crowbar_pry"
+    ]
+  },
+  "city.jail_door_slide": {
+    "subtitle": "subtitles.modeminecraft.jail_door_slide",
+    "sounds": [
+      "modeminecraft:city/jail_door_slide"
+    ]
+  },
+  "city.jail_buzzer": {
+    "subtitle": "subtitles.modeminecraft.jail_buzzer",
+    "sounds": [
+      "modeminecraft:city/jail_buzzer"
+    ]
+  },
+  "city.cash_register_bell": {
+    "subtitle": "subtitles.modeminecraft.cash_register_bell",
+    "sounds": [
+      "modeminecraft:city/cash_register_bell"
+    ]
+  },
+  "city.civilian_scream": {
+    "subtitle": "subtitles.modeminecraft.civilian_scream",
+    "sounds": [
+      "modeminecraft:city/civilian_scream"
+    ]
+  },
+  "city.car_horn": {
+    "subtitle": "subtitles.modeminecraft.car_horn",
+    "sounds": [
+      "modeminecraft:city/car_horn"
+    ]
+  },
+  "city.bus_brakes": {
+    "subtitle": "subtitles.modeminecraft.bus_brakes",
+    "sounds": [
+      "modeminecraft:city/bus_brakes"
+    ]
+  },
+  "city.traffic_loop": {
+    "subtitle": "subtitles.modeminecraft.traffic_loop",
+    "sounds": [
+      "modeminecraft:city/traffic_loop"
+    ]
+  },
+  "city.wind_loop": {
+    "subtitle": "subtitles.modeminecraft.wind_loop",
+    "sounds": [
+      "modeminecraft:city/wind_loop"
+    ]
+  },
+  "city.market_loop": {
+    "subtitle": "subtitles.modeminecraft.market_loop",
+    "sounds": [
+      "modeminecraft:city/market_loop"
+    ]
+  },
+  "city.cafe_music": {
+    "subtitle": "subtitles.modeminecraft.cafe_music",
+    "sounds": [
+      "modeminecraft:city/cafe_music"
+    ]
+  },
+  "city.saloon_piano": {
+    "subtitle": "subtitles.modeminecraft.saloon_piano",
+    "sounds": [
+      "modeminecraft:city/saloon_piano"
+    ]
+  },
+  "city.street_guitar": {
+    "subtitle": "subtitles.modeminecraft.street_guitar",
+    "sounds": [
+      "modeminecraft:city/street_guitar"
+    ]
+  },
+  "city.radio_crackle": {
+    "subtitle": "subtitles.modeminecraft.radio_crackle",
+    "sounds": [
+      "modeminecraft:city/radio_crackle"
+    ]
+  },
+  "city.loudspeaker": {
+    "subtitle": "subtitles.modeminecraft.loudspeaker",
+    "sounds": [
+      "modeminecraft:city/loudspeaker"
+    ]
+  },
+  "city.dog_bark": {
+    "subtitle": "subtitles.modeminecraft.dog_bark",
+    "sounds": [
+      "modeminecraft:city/dog_bark"
+    ]
+  },
+  "city.pigeon_coo": {
+    "subtitle": "subtitles.modeminecraft.pigeon_coo",
+    "sounds": [
+      "modeminecraft:city/pigeon_coo"
+    ]
+  },
+  "city.pigeon_flap": {
+    "subtitle": "subtitles.modeminecraft.pigeon_flap",
+    "sounds": [
+      "modeminecraft:city/pigeon_flap"
+    ]
+  },
+  "city.crickets_loop": {
+    "subtitle": "subtitles.modeminecraft.crickets_loop",
+    "sounds": [
+      "modeminecraft:city/crickets_loop"
+    ]
+  },
+  "city.rain_tin_loop": {
+    "subtitle": "subtitles.modeminecraft.rain_tin_loop",
+    "sounds": [
+      "modeminecraft:city/rain_tin_loop"
+    ]
+  },
+  "city.transformer_hum": {
+    "subtitle": "subtitles.modeminecraft.transformer_hum",
+    "sounds": [
+      "modeminecraft:city/transformer_hum"
+    ]
+  },
+  "city.spray_paint": {
+    "subtitle": "subtitles.modeminecraft.spray_paint",
+    "sounds": [
+      "modeminecraft:city/spray_paint"
+    ]
+  },
+  "bot.police_siren": {
+    "subtitle": "subtitles.modeminecraft.police_siren",
+    "sounds": [
+      "modeminecraft:bot/police_siren"
+    ]
   }
 }

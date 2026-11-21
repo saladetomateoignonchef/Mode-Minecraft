@@ -68,5 +68,9 @@ public final class ModKeyMappings {
     public static final KeyMapping BACKPACK = new KeyMapping("key.modeminecraft.backpack",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_K, CATEGORY);
 
+    /** Au volant d'une voiture de police : sirène et gyrophares. */
+    public static final KeyMapping SIREN = new KeyMapping("key.modeminecraft.siren",
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_H, CATEGORY);
+
     private ModKeyMappings() {}
 }

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " C ",
+    "CSC",
+    "CSC"
+  ],
+  "key": {
+    "C": {
+      "item": "modeminecraft:tent_canvas"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "id": "modeminecraft:camping_tent",
+    "count": 1
+  }
+}

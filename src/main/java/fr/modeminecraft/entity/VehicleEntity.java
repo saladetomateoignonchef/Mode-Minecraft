@@ -42,7 +42,11 @@ public class VehicleEntity extends Entity {
         QUAD("quad", 0.55f, 0.030f, 4.5f, 30, 1.0f, 2, false, 1.4f, 1.1f),
         POLICE_CAR("police_car", 0.80f, 0.028f, 3.6f, 60, 0.8f, 4, true, 2.0f, 1.5f),
         JEEP("jeep", 0.70f, 0.026f, 3.4f, 70, 0.7f, 4, false, 2.0f, 1.6f),
-        ARMORED_TRUCK("armored_truck", 0.50f, 0.016f, 2.2f, 200, 0.3f, 4, false, 2.6f, 2.6f);
+        ARMORED_TRUCK("armored_truck", 0.50f, 0.016f, 2.2f, 200, 0.3f, 4, false, 2.6f, 2.6f),
+        // circulation des villes
+        SEDAN("sedan", 0.72f, 0.026f, 3.6f, 50, 0.9f, 4, false, 2.0f, 1.5f),
+        TAXI("taxi", 0.72f, 0.026f, 3.6f, 50, 0.9f, 4, false, 2.0f, 1.5f),
+        BUS("bus", 0.48f, 0.014f, 2.2f, 140, 0.6f, 8, false, 2.6f, 2.9f);
 
         public final String id;
         public final float maxSpeed, accel, turn, health, armor;
@@ -69,6 +73,9 @@ public class VehicleEntity extends Entity {
                 case POLICE_CAR -> ModItems.POLICE_CAR.get();
                 case JEEP -> ModItems.JEEP.get();
                 case ARMORED_TRUCK -> ModItems.ARMORED_TRUCK.get();
+                case SEDAN -> ModItems.SEDAN.get();
+                case TAXI -> ModItems.TAXI.get();
+                case BUS -> ModItems.BUS.get();
             };
         }
 
@@ -76,7 +83,8 @@ public class VehicleEntity extends Entity {
         public Vec3 seat(int i) {
             return switch (this) {
                 case QUAD -> i == 0 ? new Vec3(-0.05, 0.55, 0) : new Vec3(-0.6, 0.62, 0);
-                case POLICE_CAR, JEEP -> new Vec3(i < 2 ? 0.25 : -0.65, 0.35, i % 2 == 0 ? -0.42 : 0.42);
+                case POLICE_CAR, JEEP, SEDAN, TAXI -> new Vec3(i < 2 ? 0.25 : -0.65, 0.35, i % 2 == 0 ? -0.42 : 0.42);
+                case BUS -> i == 0 ? new Vec3(2.0, 0.9, -0.5) : new Vec3(1.0 - (i - 1) / 2 * 1.1, 0.9, (i - 1) % 2 == 0 ? -0.55 : 0.55);
                 case ARMORED_TRUCK -> new Vec3(i < 2 ? 1.6 : -0.8, 0.95, i % 2 == 0 ? -0.5 : 0.5);
             };
         }
@@ -97,6 +105,9 @@ public class VehicleEntity extends Entity {
     public java.util.UUID leader;
     /** Véhicule de convoi (disparaît avec son équipage quand aucun joueur n'est proche). */
     public boolean convoy;
+    /** Circulation des villes : véhicule de la circulation et son itinéraire (non sauvegardé : il disparaît au rechargement). */
+    public boolean trafficCar;
+    public fr.modeminecraft.world.city.Traffic.Route traffic;
     private int lerpSteps;
     private double lerpX, lerpY, lerpZ, lerpYaw;
     private int stuckTicks;
@@ -194,7 +205,11 @@ public class VehicleEntity extends Entity {
                 ((ServerLevel) level()).sendParticles(ParticleTypes.LARGE_SMOKE, getX(), getY() + type().height, getZ(), 1, 0.2, 0.1, 0.2, 0.01);
             }
             if (sirenOn() && tickCount % 40 == 0) {
-                level().playSound(null, getX(), getY(), getZ(), fr.modeminecraft.registry.ModSounds.POLICE_FREEZE_WARNING.get(), SoundSource.NEUTRAL, 0.7f, 1.4f);
+                // sirène (entendue à 80 blocs)
+                level().playSound(null, getX(), getY(), getZ(), fr.modeminecraft.registry.ModSounds.POLICE_SIREN.get(), SoundSource.NEUTRAL, 1.6f, 1f);
+            }
+            if (sirenOn() && tickCount % 10 == 0) {
+                clearTheWay();
             }
         }
         if (level().isClientSide && sirenOn() && tickCount % 2 == 0) {
@@ -219,7 +234,7 @@ public class VehicleEntity extends Entity {
             forward = p.zza;
             side = p.xxa;
         } else if (c instanceof HumanBotEntity bot && !level().isClientSide) {
-            float[] in = autopilot(bot);
+            float[] in = traffic != null ? fr.modeminecraft.world.city.Traffic.input(this, bot, traffic) : autopilot(bot);
             forward = in[0];
             side = in[1];
         }
@@ -402,9 +417,29 @@ public class VehicleEntity extends Entity {
         return position().add(Math.cos(rad) * (type().width / 2 + 0.6), 0.1, Math.sin(rad) * (type().width / 2 + 0.6));
     }
 
+    /** Sirène hurlante : les civils devant la voiture s'écartent sur le côté (et la circulation civile se range). */
+    private void clearTheWay() {
+        Vec3 fwd = Vec3.directionFromRotation(0, getYRot());
+        Vec3 side = new Vec3(-fwd.z, 0, fwd.x);
+        for (var bot : level().getEntitiesOfClass(fr.modeminecraft.entity.bot.HumanBotEntity.class, getBoundingBox().inflate(14),
+                b -> b.faction() == fr.modeminecraft.entity.bot.Faction.CIVILIAN && b.getTarget() == null)) {
+            Vec3 to = bot.position().subtract(position());
+            if (to.dot(fwd) < 0 || to.dot(fwd) > 16) {
+                continue;
+            }
+            double lateral = to.dot(side);
+            Vec3 dest = bot.position().add(side.scale(lateral >= 0 ? 4 : -4));
+            bot.getNavigation().moveTo(dest.x, dest.y, dest.z, 1.3);
+        }
+        fr.modeminecraft.world.police.PolicePatrols.yield.accept(this);
+    }
+
     public void toggleSiren() {
         if (type().siren) {
             entityData.set(SIREN, !sirenOn());
+            if (sirenOn() && !level().isClientSide) {
+                fr.modeminecraft.entity.bot.CivilianLife.panic(level(), position(), 12, 80);   // la sirène surprend les passants
+            }
         }
     }
 
@@ -454,6 +489,7 @@ public class VehicleEntity extends Entity {
     protected void readAdditionalSaveData(CompoundTag tag) {
         entityData.set(TYPE, tag.getInt("VehicleType"));
         convoy = tag.getBoolean("Convoy");
+        trafficCar = tag.getBoolean("Traffic");
         entityData.set(HEALTH, tag.contains("Health") ? tag.getFloat("Health") : type().health);
         if (tag.contains("Dest")) {
             destination = BlockPos.of(tag.getLong("Dest"));
@@ -468,6 +504,7 @@ public class VehicleEntity extends Entity {
     protected void addAdditionalSaveData(CompoundTag tag) {
         tag.putInt("VehicleType", type().ordinal());
         tag.putBoolean("Convoy", convoy);
+        tag.putBoolean("Traffic", trafficCar);
         tag.putFloat("Health", health());
         if (destination != null) {
             tag.putLong("Dest", destination.asLong());

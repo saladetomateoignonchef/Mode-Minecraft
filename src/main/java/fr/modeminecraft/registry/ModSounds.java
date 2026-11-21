@@ -77,6 +77,33 @@ public final class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> DRONE_JAMMED = register("bot.drone_jammed");
     public static final DeferredHolder<SoundEvent, SoundEvent> VEHICLE_ENGINE = register("bot.vehicle_engine");
 
+    // ---- mise à jour 0.3 : police, prison, ville vivante
+    /** Sirène de police : entendue à 80 blocs. */
+    public static final DeferredHolder<SoundEvent, SoundEvent> POLICE_SIREN = SOUNDS.register("bot.police_siren",
+            () -> SoundEvent.createFixedRangeEvent(ModeMinecraft.id("bot.police_siren"), 80));
+    public static final DeferredHolder<SoundEvent, SoundEvent> CROWBAR_PRY = register("city.crowbar_pry");
+    public static final DeferredHolder<SoundEvent, SoundEvent> JAIL_DOOR_SLIDE = register("city.jail_door_slide");
+    public static final DeferredHolder<SoundEvent, SoundEvent> JAIL_BUZZER = register("city.jail_buzzer");
+    public static final DeferredHolder<SoundEvent, SoundEvent> CASH_REGISTER_BELL = register("city.cash_register_bell");
+    public static final DeferredHolder<SoundEvent, SoundEvent> CIVILIAN_SCREAM = register("city.civilian_scream");
+    public static final DeferredHolder<SoundEvent, SoundEvent> CAR_HORN = register("city.car_horn");
+    public static final DeferredHolder<SoundEvent, SoundEvent> BUS_BRAKES = register("city.bus_brakes");
+    public static final DeferredHolder<SoundEvent, SoundEvent> TRAFFIC_LOOP = register("city.traffic_loop");
+    public static final DeferredHolder<SoundEvent, SoundEvent> WIND_LOOP = register("city.wind_loop");
+    public static final DeferredHolder<SoundEvent, SoundEvent> MARKET_LOOP = register("city.market_loop");
+    public static final DeferredHolder<SoundEvent, SoundEvent> CAFE_MUSIC = register("city.cafe_music");
+    public static final DeferredHolder<SoundEvent, SoundEvent> SALOON_PIANO = register("city.saloon_piano");
+    public static final DeferredHolder<SoundEvent, SoundEvent> STREET_GUITAR = register("city.street_guitar");
+    public static final DeferredHolder<SoundEvent, SoundEvent> RADIO_CRACKLE = register("city.radio_crackle");
+    public static final DeferredHolder<SoundEvent, SoundEvent> LOUDSPEAKER = register("city.loudspeaker");
+    public static final DeferredHolder<SoundEvent, SoundEvent> DOG_BARK = register("city.dog_bark");
+    public static final DeferredHolder<SoundEvent, SoundEvent> PIGEON_COO = register("city.pigeon_coo");
+    public static final DeferredHolder<SoundEvent, SoundEvent> PIGEON_FLAP = register("city.pigeon_flap");
+    public static final DeferredHolder<SoundEvent, SoundEvent> CRICKETS_LOOP = register("city.crickets_loop");
+    public static final DeferredHolder<SoundEvent, SoundEvent> RAIN_TIN_LOOP = register("city.rain_tin_loop");
+    public static final DeferredHolder<SoundEvent, SoundEvent> TRANSFORMER_HUM = register("city.transformer_hum");
+    public static final DeferredHolder<SoundEvent, SoundEvent> SPRAY_PAINT = register("city.spray_paint");
+
     private static DeferredHolder<SoundEvent, SoundEvent> register(String name) {
         return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(ModeMinecraft.id(name)));
     }

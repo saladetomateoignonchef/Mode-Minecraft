@@ -150,6 +150,15 @@ public class MeleeWeaponItem extends SwordItem {
         Level level = context.getLevel();
         var pos = context.getClickedPos();
         var state = level.getBlockState(pos);
+        if (context.getPlayer() != null && Crowbar.pryable(level, pos, context.getPlayer())) {
+            // effraction : 2,5 s de levier (clic droit maintenu)
+            Crowbar.begin(context.getPlayer(), pos);
+            context.getPlayer().startUsingItem(context.getHand());
+            return InteractionResult.CONSUME;
+        }
+        if (state.getBlock() instanceof fr.modeminecraft.block.police.LockedDoorBlock) {
+            return InteractionResult.PASS;
+        }
         if ((state.getBlock() instanceof DoorBlock || state.getBlock() instanceof TrapDoorBlock) && state.hasProperty(BlockStateProperties.OPEN)) {
             if (!level.isClientSide) {
                 boolean open = !state.getValue(BlockStateProperties.OPEN);
@@ -167,12 +176,44 @@ public class MeleeWeaponItem extends SwordItem {
 
     @Override
     public UseAnim getUseAnimation(ItemStack stack) {
-        return UseAnim.NONE; // la parade est animée par le mod
+        return stats.ability() == Ability.CROWBAR ? UseAnim.BRUSH : UseAnim.NONE; // levier ; la parade est animée par le mod
     }
 
     @Override
     public int getUseDuration(ItemStack stack, LivingEntity entity) {
+        if (stats.ability() == Ability.CROWBAR && entity instanceof Player p && Crowbar.target(p) != null) {
+            return Crowbar.PRY_TICKS;
+        }
         return hasActiveAbility() ? 0 : 72000;
+    }
+
+    @Override
+    public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int remaining) {
+        if (stats.ability() == Ability.CROWBAR && entity instanceof Player p && Crowbar.target(p) != null) {
+            if (!Crowbar.tick(level, p, Crowbar.PRY_TICKS - remaining)) {
+                Crowbar.cancel(p);
+                p.stopUsingItem();
+            }
+        }
+    }
+
+    @Override
+    public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
+        if (stats.ability() == Ability.CROWBAR && entity instanceof Player p && Crowbar.target(p) != null) {
+            Crowbar.finish(level, p);
+            if (!level.isClientSide) {
+                stack.hurtAndBreak(1, p, net.minecraft.world.entity.EquipmentSlot.MAINHAND);
+            }
+        }
+        return stack;
+    }
+
+    @Override
+    public void releaseUsing(ItemStack stack, Level level, LivingEntity entity, int timeLeft) {
+        if (entity instanceof Player p) {
+            Crowbar.cancel(p);
+        }
+        super.releaseUsing(stack, level, entity, timeLeft);
     }
 
     @Override

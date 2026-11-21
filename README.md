@@ -374,7 +374,7 @@ Les lampes se montent sur le **rail latéral** (flanc droit du garde-main, avec 
 - Une grenade IEM coupe aussi les lampes.
 
 ### Villes, factions et bots (monde vivant)
-Des **villes générées** apparaissent selon le biome (environ une tous les 1 200 blocs, sur terrain assez plat) :
+Des **villes générées** apparaissent selon le biome (un centre de ville par région de 640 blocs, sur terrain assez plat) :
 
 | Biome | Ville (proportion) | Faction | Attitude |
 |---|---|---|---|
@@ -493,6 +493,53 @@ Des **villes générées** apparaissent selon le biome (environ une tous les 1 2
 - **8 onglets créatifs** : armes à feu, armes blanches et boucliers, munitions / grenades / explosifs, accessoires,
   équipements 3D, drones et véhicules, soins / outils / objets spéciaux, blocs et décors.
 - **Coffre bonus** : couteau de combat, Glock 17 et 32 balles de 9 mm en plus des objets de Minecraft.
+
+### Routes, campements, police et ville vivante (mise à jour 0.3)
+
+- **Mégapoles** : la métropole couvre désormais **31 x 31 chunks** (~500 blocs), les cités du désert et soviétique
+  25 x 25 ; la ville est découpée en districts de 11 chunks (une grille commune : Minecraft ne construit les pièces d'une
+  structure qu'à 8 chunks de son départ). Quartiers distincts : centre d'affaires (gratte-ciel à écrans géants),
+  quartiers commerçants, résidentiels (immeubles d'habitation), places, parcs, zone industrielle (entrepôts, usines),
+  avenues de 16 blocs (4 voies) et boulevard circulaire. `/locate structure modeminecraft:city_plains` fonctionne.
+- **Routes** : toutes les villes d'un même biome sont reliées (asphalte à ligne blanche en plaine, grès pavé au désert,
+  route gravillonnée enneigée...). Le tracé ondule, part dans l'axe de l'avenue centrale, épouse le relief (dalles dans
+  les pentes, tranchées) ; au-dessus des ravins et des rivières : **pont à piliers jusqu'au sol**, jamais de route en l'air.
+- **Campements abandonnés** (forêts, plaines, collines, déserts, montagnes) : aucun habitant, feu de camp éteint ou
+  fumant, rondins, 2 à 3 **tentes 3D** (toile kaki sur arceaux, on entre dedans) avec **sac de couchage** et coffre de
+  survie. Sac de couchage : clic droit = dormir sans changer de point de réapparition, **Maj + clic droit** = dormir et
+  en faire son point de réapparition. **Tente de camping** pliée : clic droit au sol pour la monter.
+- **Verre plein** : toutes les vitres des bâtiments des villes sont des blocs de verre pleins.
+- **Voiture de police** : touche **H** (ou L) = gyrophares et sirène, entendue à 80 blocs ; civils et circulation s'écartent.
+- **Pied-de-biche** (3 fer + 1 colorant rouge) : clic droit **maintenu 2,5 s** (levier, grincements) pour forcer les
+  **portes verrouillées** (arrière-boutiques, bureaux, banque), les **casiers de police**, les **caisses enregistreuses**
+  et les portes de cellule (depuis le couloir). Un policier qui vous voit faire : **flagrant délit**, la police attaque.
+- **Commissariat central** : accueil, poste de garde vitré (moniteurs de surveillance, pupitre d'ouverture des cellules),
+  **3 cellules de 5 x 5 x 4** (béton, porte coulissante à barreaux à voyant rouge / vert, lit, sanitaire en inox, banc,
+  fenêtre haute à barreaux, plafond lumineux), un étage entier de **vestiaires : 160 casiers** verrouillés (gilets,
+  casques, munitions, fusils à pompe, PM, cartes d'accès...), bureaux fermés à clé, armurerie au sous-sol.
+- **Police** : elle ne réagit qu'à une arme **en main** (pas dans le dos). **Tué par la police** : vous êtes arrêté,
+  tout votre équipement est confisqué et vous réapparaissez dans une cellule du commissariat ; la porte s'ouvre après
+  **2 minutes** (minuterie au-dessus de la porte), ou plus tôt grâce au pupitre du poste de garde / un complice.
+- **Civils** : flânent sur les trottoirs, traversent aux passages piétons, s'assoient sur les bancs, discutent par petits
+  groupes, lisent le journal au kiosque, rentrent chez eux la nuit. Coup de feu, explosion ou sirène : ils crient et
+  courent se réfugier à l'intérieur ; tenus en joue : **les mains en l'air**.
+- **Commerçants** (cafés, supermarchés, boutiques, stations-service) : vendent rations, boissons, bandages, piles et
+  outils contre des **liasses de billets**. **Braquage** : pointez une arme sur le commerçant, il lève les mains et ouvre
+  le tiroir-caisse (billets, or, émeraudes) — ou forcez la caisse au pied-de-biche. L'alarme prévient la police
+  (recherché) : les voitures de patrouille vous prennent en chasse puis déploient leurs agents.
+- **Circulation** : berlines et taxis jaunes conduits par des civils, voitures de patrouille ; conduite à droite, choix
+  aux carrefours, **arrêt aux feux rouges**, klaxon si on bloque la route. **Bus urbain** sur le boulevard circulaire :
+  10 s d'arrêt à chaque **abribus**, on monte à bord gratuitement (clic droit).
+- **Décors animés** : enseignes **néon clignotantes**, **écrans géants** publicitaires, **bouches d'égout fumantes**,
+  **pigeons** (ou mouettes) qui s'envolent en nuée à l'approche, **journaux** emportés par le vent, **fontaines** à
+  jets d'eau, **climatiseurs** aux ventilateurs qui tournent, **horloges murales** à l'heure du monde.
+- **Paysage sonore** : rumeur de la circulation, vent entre les gratte-ciel, brouhaha du souk, musique des cafés et
+  supermarchés, piano du saloon, annonces par haut-parleur (bases, dictature), grésillements radio des policiers, chiens
+  au loin, roucoulements, grillons la nuit, pluie qui crépite sur les auvents et les toits en tôle.
+- **Micro-événements** : contrôle d'identité, voleur poursuivi par la police, ouvriers de chantier (casques jaunes,
+  gilets fluo, cônes, échafaudage), agent de propreté, **musicien de rue** et son public, artiste qui peint une
+  **fresque murale** bloc par bloc.
+- Correctif : un tableau mal créé pouvait **bloquer la génération** des villas de cartel (gel du jeu).
 
 ### Gameplay et progression
 - **Niveaux des armes (1 à 5)** : chaque arme garde ses statistiques (éliminations, tirs à la tête, tirs, ratio)

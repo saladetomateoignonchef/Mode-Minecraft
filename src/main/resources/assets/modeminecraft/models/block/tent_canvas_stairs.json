@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "modeminecraft:block/tent_canvas",
+    "top": "modeminecraft:block/tent_canvas",
+    "side": "modeminecraft:block/tent_canvas"
+  }
+}

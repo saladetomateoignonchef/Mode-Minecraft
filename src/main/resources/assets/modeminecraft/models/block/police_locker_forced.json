@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "modeminecraft:block/police_locker_front_forced",
+    "side": "modeminecraft:block/police_locker_side",
+    "top": "modeminecraft:block/police_locker_top"
+  }
+}

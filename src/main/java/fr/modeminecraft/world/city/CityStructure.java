@@ -32,6 +32,8 @@ public class CityStructure extends Structure {
     private final String kind;
     /** Tests / commandes : impose la variante et ignore le contrôle du relief (null = normal). */
     public static String forceVariant;
+    /** Tests : demi-taille imposée (0 = celle de la variante). */
+    public static int forceRadius;
 
     public CityStructure(StructureSettings settings, String kind) {
         super(settings);
@@ -57,78 +59,66 @@ public class CityStructure extends Structure {
         };
     }
 
-    /** Demi-taille de la ville, en chunks (métropole : 15 x 15 chunks). */
+    /** Demi-taille de la ville, en chunks (métropole : 31 x 31 chunks, cités du désert et soviétique : 25 x 25). */
     static int radius(String variant) {
         return switch (variant) {
-            case "metropolis" -> 7;
-            case "desert" -> 6;
-            case "soviet" -> 4;
-            case "rebels", "base", "frontier", "refinery" -> 3;
-            default -> 2;
+            case "metropolis" -> 15;
+            case "desert", "soviet" -> 12;
+            case "frontier", "base" -> 5;
+            case "rebels", "refinery" -> 4;
+            default -> 3;
         };
     }
 
     @Override
     protected Optional<GenerationStub> findGenerationPoint(GenerationContext ctx) {
-        RandomSource r = ctx.random();
-        String variant = forceVariant != null ? forceVariant : variant(kind, r);
-        int rad = radius(variant);
         ChunkPos cp = ctx.chunkPos();
-        int cx = cp.getMiddleBlockX(), cz = cp.getMiddleBlockZ();
-        var gen = ctx.chunkGenerator();
-        int sea = gen.getSeaLevel();
-        int center = gen.getFirstOccupiedHeight(cx, cz, Heightmap.Types.WORLD_SURFACE_WG, ctx.heightAccessor(), ctx.randomState());
-        int min = center, max = center;
-        int water = 0;
-        int span = rad * 16;
-        for (int i = -1; i <= 1; i++) {
-            for (int j = -1; j <= 1; j++) {
-                int x = cx + i * span, z = cz + j * span;
-                int h = gen.getFirstOccupiedHeight(x, z, Heightmap.Types.OCEAN_FLOOR_WG, ctx.heightAccessor(), ctx.randomState());
-                int s = gen.getFirstOccupiedHeight(x, z, Heightmap.Types.WORLD_SURFACE_WG, ctx.heightAccessor(), ctx.randomState());
-                if (s > h + 1) {
-                    water++;
-                }
-                min = Math.min(min, h);
-                max = Math.max(max, h);
-            }
-        }
-        int base;
+        CityPlanner.Env env = new CityPlanner.Env(ctx.seed(), ctx.chunkGenerator(), ctx.randomState(), ctx.heightAccessor(), ctx.registryAccess());
         if (forceVariant != null) {
-            base = variant.equals("stilts") ? Math.max(center, sea + 2) : center;
-        } else if (variant.equals("stilts")) {
-            base = sea + 2;                                   // planchers au-dessus de l'eau
-            if (center > sea + 6) {
-                return Optional.empty();
-            }
-        } else {
-            int rough = switch (variant) {
-                case "mine" -> 55;
-                case "frontier", "refinery" -> 45;                    // badlands : relief tourmenté
-                case "metropolis", "desert", "soviet" -> 34;
-                default -> 40;
-            };
-            if (water > 3 || center <= sea || max - min > rough) {
-                return Optional.empty();                      // trop accidenté ou dans l'eau
-            }
-            base = variant.equals("mine") ? min + 1 : center;
+            // tests / commande /place : ville entière centrée ici, variante imposée, relief ignoré
+            String variant = forceVariant;
+            int rad = forceRadius > 0 ? forceRadius : radius(variant);
+            int cx = cp.getMiddleBlockX(), cz = cp.getMiddleBlockZ();
+            int center = ctx.chunkGenerator().getFirstOccupiedHeight(cx, cz, Heightmap.Types.WORLD_SURFACE_WG, ctx.heightAccessor(), ctx.randomState());
+            int baseY = CityPlanner.baseY(env, variant, rad, cx, cz, center, true);
+            long seed = ctx.random().nextLong();
+            return Optional.of(new GenerationStub(new BlockPos(cx, center, cz),
+                    b -> pieces(b, variant, cp, rad, baseY, seed, -rad, rad, -rad, rad)));
         }
-        final int baseY = base;
-        long seed = r.nextLong();
-        BlockPos pos = new BlockPos(cx, baseY, cz);
-        return Optional.of(new GenerationStub(pos, b -> pieces(b, variant, cp, rad, baseY, seed)));
+        CityPlacement placement = CityPlanner.placement(ctx.registryAccess());
+        int[] d = placement == null ? null : placement.districtAt(ctx.seed(), cp.x, cp.z);
+        if (d == null) {
+            return Optional.empty();
+        }
+        CityPlanner.City city = CityPlanner.city(env, d[0], d[1]);
+        if (city == null || !city.kind().equals(kind)) {
+            return Optional.empty();
+        }
+        // part du plan construite par ce district
+        int half = placement.district / 2;
+        int x0 = Math.max(-city.rad(), d[2] * placement.district - half), x1 = Math.min(city.rad(), d[2] * placement.district + half);
+        int z0 = Math.max(-city.rad(), d[3] * placement.district - half), z1 = Math.min(city.rad(), d[3] * placement.district + half);
+        if (x0 > x1 || z0 > z1) {
+            return Optional.empty();
+        }
+        int cx = city.middleX(), cz = city.middleZ();
+        int center = ctx.chunkGenerator().getFirstOccupiedHeight(cx, cz, Heightmap.Types.WORLD_SURFACE_WG, ctx.heightAccessor(), ctx.randomState());
+        // la position sert au contrôle du biome : celle du centre, pour que tous les districts soient d'accord
+        return Optional.of(new GenerationStub(new BlockPos(cx, center, cz),
+                b -> pieces(b, city.variant(), city.center(), city.rad(), city.baseY(), city.seed(), x0, x1, z0, z1)));
     }
 
-    private static void pieces(StructurePiecesBuilder builder, String variant, ChunkPos center, int rad, int baseY, long seed) {
+    private static void pieces(StructurePiecesBuilder builder, String variant, ChunkPos center, int rad, int baseY, long seed,
+                               int x0, int x1, int z0, int z1) {
         CityLayout layout = new CityLayout(variant, rad, seed);
-        for (int dx = -rad; dx <= rad; dx++) {
-            for (int dz = -rad; dz <= rad; dz++) {
+        for (int dx = x0; dx <= x1; dx++) {
+            for (int dz = z0; dz <= z1; dz++) {
                 CityLayout.Plot plot = layout.plot(dx, dz);
                 if (plot == null) {
                     continue;
                 }
-                int x0 = (center.x + dx) * 16, z0 = (center.z + dz) * 16;
-                BoundingBox box = new BoundingBox(x0, baseY - plot.below(), z0, x0 + 15, baseY + plot.above(), z0 + 15);
+                int bx = (center.x + dx) * 16, bz = (center.z + dz) * 16;
+                BoundingBox box = new BoundingBox(bx, baseY - plot.below(), bz, bx + 15, baseY + plot.above(), bz + 15);
                 builder.addPiece(new CityPiece(box, variant, plot.type(), dx, dz, rad, baseY, seed));
             }
         }

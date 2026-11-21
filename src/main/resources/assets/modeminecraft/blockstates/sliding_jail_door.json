@@ -1,0 +1,124 @@
+{
+  "variants": {
+    "facing=north,half=lower,open=true,locked=true": {
+      "model": "modeminecraft:block/jail_door_lower_open_red"
+    },
+    "facing=north,half=lower,open=true,locked=false": {
+      "model": "modeminecraft:block/jail_door_lower_open_green"
+    },
+    "facing=north,half=lower,open=false,locked=true": {
+      "model": "modeminecraft:block/jail_door_lower_red"
+    },
+    "facing=north,half=lower,open=false,locked=false": {
+      "model": "modeminecraft:block/jail_door_lower_green"
+    },
+    "facing=north,half=upper,open=true,locked=true": {
+      "model": "modeminecraft:block/jail_door_upper_open"
+    },
+    "facing=north,half=upper,open=true,locked=false": {
+      "model": "modeminecraft:block/jail_door_upper_open"
+    },
+    "facing=north,half=upper,open=false,locked=true": {
+      "model": "modeminecraft:block/jail_door_upper"
+    },
+    "facing=north,half=upper,open=false,locked=false": {
+      "model": "modeminecraft:block/jail_door_upper"
+    },
+    "facing=east,half=lower,open=true,locked=true": {
+      "model": "modeminecraft:block/jail_door_lower_open_red",
+      "y": 90
+    },
+    "facing=east,half=lower,open=true,locked=false": {
+      "model": "modeminecraft:block/jail_door_lower_open_green",
+      "y": 90
+    },
+    "facing=east,half=lower,open=false,locked=true": {
+      "model": "modeminecraft:block/jail_door_lower_red",
+      "y": 90
+    },
+    "facing=east,half=lower,open=false,locked=false": {
+      "model": "modeminecraft:block/jail_door_lower_green",
+      "y": 90
+    },
+    "facing=east,half=upper,open=true,locked=true": {
+      "model": "modeminecraft:block/jail_door_upper_open",
+      "y": 90
+    },
+    "facing=east,half=upper,open=true,locked=false": {
+      "model": "modeminecraft:block/jail_door_upper_open",
+      "y": 90
+    },
+    "facing=east,half=upper,open=false,locked=true": {
+      "model": "modeminecraft:block/jail_door_upper",
+      "y": 90
+    },
+    "facing=east,half=upper,open=false,locked=false": {
+      "model": "modeminecraft:block/jail_door_upper",
+      "y": 90
+    },
+    "facing=south,half=lower,open=true,locked=true": {
+      "model": "modeminecraft:block/jail_door_lower_open_red",
+      "y": 180
+    },
+    "facing=south,half=lower,open=true,locked=false": {
+      "model": "modeminecraft:block/jail_door_lower_open_green",
+      "y": 180
+    },
+    "facing=south,half=lower,open=false,locked=true": {
+      "model": "modeminecraft:block/jail_door_lower_red",
+      "y": 180
+    },
+    "facing=south,half=lower,open=false,locked=false": {
+      "model": "modeminecraft:block/jail_door_lower_green",
+      "y": 180
+    },
+    "facing=south,half=upper,open=true,locked=true": {
+      "model": "modeminecraft:block/jail_door_upper_open",
+      "y": 180
+    },
+    "facing=south,half=upper,open=true,locked=false": {
+      "model": "modeminecraft:block/jail_door_upper_open",
+      "y": 180
+    },
+    "facing=south,half=upper,open=false,locked=true": {
+      "model": "modeminecraft:block/jail_door_upper",
+      "y": 180
+    },
+    "facing=south,half=upper,open=false,locked=false": {
+      "model": "modeminecraft:block/jail_door_upper",
+      "y": 180
+    },
+    "facing=west,half=lower,open=true,locked=true": {
+      "model": "modeminecraft:block/jail_door_lower_open_red",
+      "y": 270
+    },
+    "facing=west,half=lower,open=true,locked=false": {
+      "model": "modeminecraft:block/jail_door_lower_open_green",
+      "y": 270
+    },
+    "facing=west,half=lower,open=false,locked=true": {
+      "model": "modeminecraft:block/jail_door_lower_red",
+      "y": 270
+    },
+    "facing=west,half=lower,open=false,locked=false": {
+      "model": "modeminecraft:block/jail_door_lower_green",
+      "y": 270
+    },
+    "facing=west,half=upper,open=true,locked=true": {
+      "model": "modeminecraft:block/jail_door_upper_open",
+      "y": 270
+    },
+    "facing=west,half=upper,open=true,locked=false": {
+      "model": "modeminecraft:block/jail_door_upper_open",
+      "y": 270
+    },
+    "facing=west,half=upper,open=false,locked=true": {
+      "model": "modeminecraft:block/jail_door_upper",
+      "y": 270
+    },
+    "facing=west,half=upper,open=false,locked=false": {
+      "model": "modeminecraft:block/jail_door_upper",
+      "y": 270
+    }
+  }
+}

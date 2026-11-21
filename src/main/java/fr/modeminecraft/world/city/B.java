@@ -68,6 +68,7 @@ public final class B {
     void set(int x, int y, int z, BlockState s) {
         if (inside(x, y, z)) {
             s = fr.modeminecraft.world.night.NightOps.cityLight(s);   // éclairage qui s'allume la nuit
+            s = solidGlass(s);                                         // vitres pleines sur tous les bâtiments
             BlockPos p = pos(x, y, z);
             level.setBlock(p, s, 2);
             if (fr.modeminecraft.world.night.NightOps.isCityLight(s)) {
@@ -76,6 +77,19 @@ public final class B {
                 level.scheduleTick(p, s.getBlock(), 20);
             }
         }
+    }
+
+    /** Les vitres fines (panneaux) deviennent des blocs de verre pleins (teintés ou non), pour des façades nettes. */
+    static BlockState solidGlass(BlockState s) {
+        Block b = s.getBlock();
+        if (b == Blocks.GLASS_PANE) {
+            return Blocks.GLASS.defaultBlockState();
+        }
+        if (b instanceof net.minecraft.world.level.block.StainedGlassPaneBlock pane) {
+            return net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(net.minecraft.resources.ResourceLocation.withDefaultNamespace(
+                    pane.getColor().getName() + "_stained_glass")).defaultBlockState();
+        }
+        return s;
     }
 
     void set(int x, int y, int z, Block b) {
@@ -193,6 +207,15 @@ public final class B {
         BlockState s = barrel ? Blocks.BARREL.defaultBlockState().setValue(BlockStateProperties.FACING, Direction.UP)
                 : Blocks.CHEST.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, facing);
         set(x, y, z, s);
+        ResourceKey<LootTable> key = ResourceKey.create(Registries.LOOT_TABLE, fr.modeminecraft.ModeMinecraft.id("chests/" + loot));
+        RandomizableContainer.setBlockEntityLootTable(level, er, pos(x, y, z), key);
+    }
+
+    /** Table de butin d'un conteneur déjà posé (casier de police...). */
+    void lootAt(int x, int y, int z, String loot) {
+        if (!inside(x, y, z)) {
+            return;
+        }
         ResourceKey<LootTable> key = ResourceKey.create(Registries.LOOT_TABLE, fr.modeminecraft.ModeMinecraft.id("chests/" + loot));
         RandomizableContainer.setBlockEntityLootTable(level, er, pos(x, y, z), key);
     }

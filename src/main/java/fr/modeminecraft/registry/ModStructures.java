@@ -12,11 +12,28 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 /** Structures du mod : les villes (une par famille de biome, variantes tirées au hasard). */
 public final class ModStructures {
     public static final DeferredRegister<StructureType<?>> TYPES = DeferredRegister.create(Registries.STRUCTURE_TYPE, ModeMinecraft.MODID);
+    public static final DeferredRegister<net.minecraft.world.level.levelgen.structure.placement.StructurePlacementType<?>> PLACEMENTS =
+            DeferredRegister.create(Registries.STRUCTURE_PLACEMENT, ModeMinecraft.MODID);
     public static final DeferredRegister<StructurePieceType> PIECES = DeferredRegister.create(Registries.STRUCTURE_PIECE, ModeMinecraft.MODID);
 
     public static final DeferredHolder<StructureType<?>, StructureType<CityStructure>> CITY = TYPES.register("city", () -> () -> CityStructure.CODEC);
+    public static final DeferredHolder<StructureType<?>, StructureType<fr.modeminecraft.world.city.CampStructure>> CAMP =
+            TYPES.register("camp", () -> () -> fr.modeminecraft.world.city.CampStructure.CODEC);
+    public static final DeferredHolder<StructurePieceType, StructurePieceType> CAMP_PIECE = PIECES.register("camp_piece",
+            () -> (StructurePieceType) fr.modeminecraft.world.city.CampPiece::new);
     public static final DeferredHolder<StructurePieceType, StructurePieceType> CITY_PIECE = PIECES.register("city_piece",
             () -> (StructurePieceType) CityPiece::new);
+
+    /** Placement des villes en districts (mégapoles de plus de 17 chunks de côté). */
+    public static final DeferredHolder<net.minecraft.world.level.levelgen.structure.placement.StructurePlacementType<?>,
+            net.minecraft.world.level.levelgen.structure.placement.StructurePlacementType<fr.modeminecraft.world.city.CityPlacement>> CITY_PLACEMENT =
+            PLACEMENTS.register("city_grid", () -> () -> fr.modeminecraft.world.city.CityPlacement.CODEC);
+
+    public static final DeferredRegister<net.minecraft.world.level.levelgen.feature.Feature<?>> FEATURES =
+            DeferredRegister.create(Registries.FEATURE, ModeMinecraft.MODID);
+    /** Routes entre les villes d'un même biome. */
+    public static final DeferredHolder<net.minecraft.world.level.levelgen.feature.Feature<?>, fr.modeminecraft.world.road.RoadFeature> ROAD =
+            FEATURES.register("road", fr.modeminecraft.world.road.RoadFeature::new);
 
     private ModStructures() {}
 }

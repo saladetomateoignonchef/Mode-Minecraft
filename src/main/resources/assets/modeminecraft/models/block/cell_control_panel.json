@@ -1,0 +1,78 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "modeminecraft:block/cell_control_panel",
+    "top": "modeminecraft:block/cell_control_panel",
+    "s": "modeminecraft:block/stainless_steel"
+  },
+  "elements": [
+    {
+      "from": [
+        1,
+        0,
+        2
+      ],
+      "to": [
+        15,
+        10,
+        14
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#top"
+        },
+        "north": {
+          "uv": [
+            0,
+            0,
+            16,
+            10
+          ],
+          "texture": "#s"
+        },
+        "south": {
+          "uv": [
+            0,
+            0,
+            16,
+            10
+          ],
+          "texture": "#s"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            12,
+            10
+          ],
+          "texture": "#s"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            12,
+            10
+          ],
+          "texture": "#s"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ],
+          "texture": "#s"
+        }
+      }
+    }
+  ]
+}

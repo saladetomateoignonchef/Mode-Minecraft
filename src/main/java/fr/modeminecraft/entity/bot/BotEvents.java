@@ -46,6 +46,7 @@ public final class BotEvents {
     @SubscribeEvent
     public static void attributes(EntityAttributeCreationEvent event) {
         event.put(ModEntities.HUMAN_BOT.get(), HumanBotEntity.createAttributes().build());
+        event.put(ModEntities.PIGEON.get(), fr.modeminecraft.entity.city.PigeonEntity.createAttributes().build());
         event.put(ModEntities.DRONE.get(), fr.modeminecraft.entity.drone.DroneEntity.createAttributes().build());
     }
 
@@ -127,10 +128,10 @@ public final class BotEvents {
         long now = level.getGameTime();
         boolean silenced = ((fr.modeminecraft.item.gun.GunItem) p.getMainHandItem().getItem()).resolve(p.getMainHandItem()).silenced();
         double radius = silenced ? 16 : 40;
+        CivilianLife.panic(level, p.position(), radius, 240);                     // les civils crient et courent se mettre à l'abri
         for (HumanBotEntity bot : level.getEntitiesOfClass(HumanBotEntity.class, p.getBoundingBox().inflate(radius))) {
             Faction f = bot.faction();
             if (!f.combatant()) {
-                bot.scaredUntil = now + 200;
                 continue;
             }
             if (f == Faction.FALCON || FactionRelations.isHostile(p.getUUID(), f, now)) {
@@ -138,6 +139,14 @@ public final class BotEvents {
             }
             FactionRelations.markHostile(p.getUUID(), f, now);
             alertFaction(bot, p);
+        }
+    }
+
+    /** Explosion : panique des civils alentour. */
+    @SubscribeEvent
+    public static void onExplosion(net.neoforged.neoforge.event.level.ExplosionEvent.Detonate event) {
+        if (!event.getLevel().isClientSide) {
+            CivilianLife.panic(event.getLevel(), event.getExplosion().center(), 32, 300);
         }
     }
 

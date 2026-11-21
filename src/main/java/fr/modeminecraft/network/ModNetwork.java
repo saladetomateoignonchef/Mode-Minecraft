@@ -31,6 +31,7 @@ public final class ModNetwork {
                 .playToServer(LockPayload.TYPE, LockPayload.STREAM_CODEC, LockPayload::handle)
                 .playToClient(LeanSyncPayload.TYPE, LeanSyncPayload.STREAM_CODEC, LeanSyncPayload::handle)
                 .playToClient(ShotFxPayload.TYPE, ShotFxPayload.STREAM_CODEC, ShotFxPayload::handle)
+                .playToClient(CityAmbiencePayload.TYPE, CityAmbiencePayload.STREAM_CODEC, CityAmbiencePayload::handle)
                 .playToClient(HitMarkerPayload.TYPE, HitMarkerPayload.STREAM_CODEC, HitMarkerPayload::handle)
                 .playToClient(ImpactPayload.TYPE, ImpactPayload.STREAM_CODEC, ImpactPayload::handle)
                 .playToClient(BackGunsPayload.TYPE, BackGunsPayload.STREAM_CODEC, BackGunsPayload::handle)

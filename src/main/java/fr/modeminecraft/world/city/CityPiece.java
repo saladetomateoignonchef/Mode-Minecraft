@@ -74,6 +74,11 @@ public class CityPiece extends StructurePiece {
         if (dx == plot.ax() && dz == plot.az() && (plot.type().equals("palace") || plot.type().equals("radar") || plot.type().equals("dome"))) {
             jammer(new B(level, chunkBox, box.minX(), baseY, box.minZ(), r, generator.getSeaLevel()));
         }
+        // haut-parleurs d'annonces : bases militaires, cité sous dictature (palais, avenues)
+        if (dx == plot.ax() && dz == plot.az() && (plot.type().equals("barracks") || plot.type().equals("palace") || plot.type().equals("radar")
+                || plot.type().equals("avenue") && layout.hash(dx, dz, 21) < 0.25)) {
+            loudspeaker(new B(level, chunkBox, box.minX(), baseY, box.minZ(), r, generator.getSeaLevel()));
+        }
         // un transformateur haute tension par quartier (blocs de 3 x 3 chunks), dans une ruelle contre un mur
         if (Math.floorMod(dx, 3) == 1 && Math.floorMod(dz, 3) == 1) {
             transformer(new B(level, chunkBox, box.minX(), baseY, box.minZ(), r, generator.getSeaLevel()));
@@ -92,6 +97,27 @@ public class CityPiece extends StructurePiece {
                 if (s.isFaceSturdy(b.level, b.pos(c[0], y, c[1]), net.minecraft.core.Direction.UP) && b.get(c[0], y + 1, c[1]).isAir()
                         && b.get(c[0], y + 2, c[1]).isAir()) {
                     b.set(c[0], y + 1, c[1], fr.modeminecraft.registry.ModBlocks.JAMMER_TOWER.get().defaultBlockState());
+                    return;
+                }
+                break;
+            }
+        }
+    }
+
+    /** Haut-parleur sur un mât, posé sur le point le plus haut d'un emplacement libre de la parcelle. */
+    private static void loudspeaker(B b) {
+        for (int[] c : new int[][]{{2, 2}, {13, 2}, {2, 13}, {13, 13}, {8, 8}}) {
+            for (int y = 60; y >= -1; y--) {
+                var s = b.get(c[0], y, c[1]);
+                if (s.isAir()) {
+                    continue;
+                }
+                if (s.isFaceSturdy(b.level, b.pos(c[0], y, c[1]), net.minecraft.core.Direction.UP) && b.get(c[0], y + 1, c[1]).isAir()) {
+                    b.set(c[0], y + 1, c[1], net.minecraft.world.level.block.Blocks.IRON_BARS.defaultBlockState());
+                    b.set(c[0], y + 2, c[1], net.minecraft.world.level.block.Blocks.IRON_BARS.defaultBlockState());
+                    b.set(c[0], y + 3, c[1], fr.modeminecraft.registry.ModBlocks.AMBIENT_SPEAKER.get().defaultBlockState()
+                            .setValue(fr.modeminecraft.block.city.AmbientSpeakerBlock.KIND, fr.modeminecraft.block.city.AmbientSpeakerBlock.Kind.LOUDSPEAKER)
+                            .setValue(fr.modeminecraft.block.city.AmbientSpeakerBlock.FACING, net.minecraft.core.Direction.from2DDataValue(c[0] + c[1])));
                     return;
                 }
                 break;

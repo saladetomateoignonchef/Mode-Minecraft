@@ -37,6 +37,10 @@ final class CityGen {
             case "gas_station" -> gasStation(b);
             case "park" -> park(b);
             case "police" -> policeStation(b);
+            case "apartment" -> apartment(b, plot.above() - 4, layout.hash(dx, dz, 11));
+            case "warehouse" -> warehouse(b, layout.hash(dx, dz, 12));
+            case "factory_m" -> factory(b, layout.hash(dx, dz, 13));
+            case "plaza" -> plaza(b, layout.hash(dx, dz, 14));
             default -> {
             }
         }
@@ -87,8 +91,18 @@ final class CityGen {
             b.fill(0, -1, 3, 15, -1, 3, Blocks.LIGHT_GRAY_CONCRETE);
             b.fill(0, -1, 12, 15, -1, 12, Blocks.LIGHT_GRAY_CONCRETE);
         }
+        // abribus de la ligne de bus du boulevard circulaire
+        Direction stop = null;
+        for (int i = 0; i < Traffic.BUS_STOPS.length; i++) {
+            if (Traffic.BUS_STOPS[i][0] == dx && Traffic.BUS_STOPS[i][1] == dz) {
+                stop = new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST}[i];
+            }
+        }
+        if (stop != null) {
+            Deco.busShelter(b, stop);
+        }
         // décors des trottoirs
-        if (ns != ew) {
+        if (ns != ew && stop == null) {
             int[][] spots = ns ? new int[][]{{1, 3}, {14, 11}, {1, 12}, {14, 4}} : new int[][]{{3, 1}, {11, 14}, {12, 1}, {4, 14}};
             Deco.lampPost(b, spots[0][0], 0, spots[0][1], ns ? Direction.EAST : Direction.SOUTH);
             Deco.lampPost(b, spots[1][0], 0, spots[1][1], ns ? Direction.WEST : Direction.NORTH);
@@ -111,6 +125,10 @@ final class CityGen {
         // voitures de police garées le long du trottoir
         if (ns != ew && b.chance(0.15f)) {
             b.vehicle(ns ? 5 : 8, 0, ns ? 8 : 5, fr.modeminecraft.entity.VehicleEntity.Type.POLICE_CAR, ns ? 0 : 90);
+        }
+        // bouche d'égout qui fume sur la chaussée
+        if (ns != ew && b.chance(0.25f)) {
+            b.set(ns ? 6 : 3, 0, ns ? 3 : 6, fr.modeminecraft.registry.ModBlocks.STEAM_VENT.get());
         }
         // égouts sous la chaussée
         sewer(b, ns || !ew, ew || !ns, ns && ew);
@@ -209,6 +227,14 @@ final class CityGen {
         }
         b.fill(8, top, 8, 8, top, 8, B.facing(Blocks.LADDER, Direction.NORTH));
         b.set(8, top + 1, 8, Blocks.AIR);
+        // écran géant publicitaire sur la façade nord (4 x 2 blocs)
+        if (h < 0.4) {
+            for (int part = 0; part < 8; part++) {
+                b.set(10 - part % 4, 10 - part / 4, 0, fr.modeminecraft.registry.ModBlocks.GIANT_SCREEN.get().defaultBlockState()
+                        .setValue(fr.modeminecraft.block.city.GiantScreenBlock.FACING, Direction.NORTH)
+                        .setValue(fr.modeminecraft.block.city.GiantScreenBlock.PART, part));
+            }
+        }
         // hall du rez-de-chaussée : portes vitrées, accueil, portique de sécurité, plantes
         b.fill(6, 1, 1, 9, 3, 1, Blocks.AIR.defaultBlockState());
         b.fill(6, 1, 14, 9, 3, 14, Blocks.AIR.defaultBlockState());
@@ -313,6 +339,121 @@ final class CityGen {
         }
     }
 
+    /** Immeuble d'habitation : appartements (lits, cuisine), cage d'escalier, balcons. */
+    private static void apartment(B b, int height, double h) {
+        Block wall = h < 0.3 ? Blocks.WHITE_CONCRETE : h < 0.6 ? Blocks.BRICKS : Blocks.LIGHT_GRAY_CONCRETE;
+        Block balcony = h < 0.5 ? Blocks.IRON_BARS : Blocks.GLASS_PANE;
+        int floors = Math.max(3, height / 4);
+        int top = floors * 4;
+        b.ground(0, 0, 15, 15, Blocks.SMOOTH_STONE.defaultBlockState(), Blocks.STONE.defaultBlockState(), top + 4);
+        for (int f = 0; f < floors; f++) {
+            int y = f * 4;
+            b.fill(2, y, 2, 13, y, 13, f == 0 ? Blocks.POLISHED_ANDESITE : Blocks.OAK_PLANKS);
+            b.walls(2, y, 2, 13, y + 3, 13, wall.defaultBlockState());
+            for (int i = 4; i <= 11; i += 4) {
+                b.fill(i, y + 1, 2, i + 1, y + 2, 2, Blocks.GLASS);
+                b.fill(i, y + 1, 13, i + 1, y + 2, 13, Blocks.GLASS);
+                b.fill(2, y + 1, i, 2, y + 2, i + 1, Blocks.GLASS);
+                b.fill(13, y + 1, i, 13, y + 2, i + 1, Blocks.GLASS);
+            }
+            b.set(7, y + 3, 7, Blocks.GLOWSTONE);
+            b.fill(12, y, 12, 12, y + 3, 12, B.facing(Blocks.LADDER, Direction.WEST));
+            if (f > 0) {
+                b.fill(3, y + 1, 7, 11, y + 3, 7, wall.defaultBlockState());         // deux appartements par étage
+                b.fill(6, y + 1, 7, 6, y + 2, 7, Blocks.AIR.defaultBlockState());
+                Deco.bed(b, 3, y + 1, 3, Direction.EAST, b.chance(0.5f) ? Blocks.BLUE_BED : Blocks.RED_BED);
+                Deco.kitchen(b, 8, y + 1, 3);
+                Deco.bed(b, 3, y + 1, 11, Direction.EAST, b.chance(0.5f) ? Blocks.LIGHT_GRAY_BED : Blocks.GREEN_BED);
+                b.chest(9, y + 1, 11, Direction.NORTH, "city_house", false);
+                b.fill(5, y, 1, 10, y, 1, B.slab(Blocks.SMOOTH_STONE_SLAB, true));     // balcon
+                b.fill(5, y + 1, 1, 10, y + 1, 1, balcony);
+            }
+        }
+        b.fill(2, top, 2, 13, top, 13, wall.defaultBlockState());
+        b.fill(12, top, 12, 12, top, 12, B.facing(Blocks.LADDER, Direction.WEST));
+        b.set(12, top + 1, 12, Blocks.AIR);
+        b.fill(7, 1, 2, 8, 2, 2, Blocks.AIR.defaultBlockState());
+        Deco.door(b, 7, 1, 2, Direction.NORTH, Blocks.SPRUCE_DOOR);
+        Deco.airConditioner(b, 4, top + 1, 4);
+        Deco.antenna(b, 10, top + 1, 10, 2);
+        if (b.chance(0.4f)) {
+            b.bot(7, 1, 5, Faction.CIVILIAN, BotRole.CIVILIAN, 10);
+        }
+    }
+
+    /** Entrepôt de la zone industrielle : grand hall, rideau métallique, rayonnages, quai de chargement. */
+    private static void warehouse(B b, double h) {
+        b.ground(0, 0, 15, 15, Blocks.GRAY_CONCRETE.defaultBlockState(), Blocks.STONE.defaultBlockState(), 18);
+        Block wall = h < 0.3 ? Blocks.LIGHT_GRAY_CONCRETE : h < 0.6 ? Blocks.CYAN_TERRACOTTA : Blocks.IRON_BLOCK;
+        b.fill(1, 0, 1, 14, 0, 14, Blocks.SMOOTH_STONE);
+        b.walls(1, 0, 1, 14, 9, 14, wall.defaultBlockState());
+        b.fill(1, 9, 1, 14, 9, 14, Blocks.LIGHT_GRAY_CONCRETE);
+        for (int x = 2; x <= 13; x++) {                                               // toit en dents de scie (verrières)
+            if (x % 3 == 0) b.fill(x, 9, 2, x, 9, 13, Blocks.GLASS);
+        }
+        b.fill(5, 1, 1, 10, 5, 1, Blocks.IRON_BARS);                                   // rideau métallique
+        b.fill(6, 1, 1, 9, 3, 1, Blocks.AIR.defaultBlockState());
+        for (int z = 4; z <= 11; z += 4) {                                             // rayonnages
+            b.fill(3, 1, z, 12, 1, z, Blocks.BARREL.defaultBlockState());
+            b.fill(3, 2, z, 12, 2, z, B.slab(Blocks.SPRUCE_SLAB, false));
+            b.fill(3, 3, z, 12, 3, z, Blocks.BARREL.defaultBlockState());
+        }
+        b.chest(12, 1, 13, Direction.WEST, "city_shop", false);
+        b.set(7, 8, 7, Blocks.SEA_LANTERN);
+        CityGenRegions.forklift(b, 3, 1, 12);
+        if (b.chance(0.5f)) {
+            b.bot(7, 1, 2, Faction.CIVILIAN, BotRole.CIVILIAN, 12);
+        }
+    }
+
+    /** Usine : hall de production, cheminées fumantes, cuves, convoyeur. */
+    private static void factory(B b, double h) {
+        b.ground(0, 0, 15, 15, Blocks.GRAY_CONCRETE.defaultBlockState(), Blocks.STONE.defaultBlockState(), 22);
+        b.fill(1, 0, 3, 14, 0, 14, Blocks.SMOOTH_STONE);
+        b.walls(1, 0, 3, 14, 7, 14, Blocks.BRICKS.defaultBlockState());
+        b.fill(1, 7, 3, 14, 7, 14, Blocks.GRAY_CONCRETE);
+        for (int i = 3; i <= 12; i += 3) {
+            b.fill(i, 3, 3, i + 1, 5, 3, Blocks.GLASS);
+            b.fill(i, 3, 14, i + 1, 5, 14, Blocks.GLASS);
+        }
+        b.fill(7, 1, 3, 8, 3, 3, Blocks.AIR.defaultBlockState());
+        for (int[] c : new int[][]{{3, 12}, {12, 12}}) {                               // cheminées
+            b.fill(c[0], 8, c[1], c[0] + 1, 18, c[1] + 1, Blocks.BRICKS);
+            b.set(c[0], 19, c[1], Blocks.CAMPFIRE.defaultBlockState());
+        }
+        b.fill(3, 1, 7, 12, 1, 7, Blocks.SMOOTH_STONE_SLAB.defaultBlockState());      // convoyeur
+        b.fill(3, 1, 9, 4, 3, 10, Blocks.IRON_BLOCK);                                  // cuves
+        b.fill(11, 1, 9, 12, 3, 10, Blocks.IRON_BLOCK);
+        b.set(7, 6, 8, Blocks.SEA_LANTERN);
+        b.chest(13, 1, 4, Direction.WEST, "city_shop", true);
+        b.fill(0, 0, 0, 15, 0, 1, Blocks.GRAVEL);
+    }
+
+    /** Petite place : pavés, fontaine, arbres, bancs, lampadaires, kiosque. */
+    private static void plaza(B b, double h) {
+        b.ground(0, 0, 15, 15, Blocks.STONE_BRICKS.defaultBlockState(), Blocks.STONE.defaultBlockState(), 10);
+        b.fill(2, -1, 2, 13, -1, 13, Blocks.POLISHED_ANDESITE);
+        b.fill(6, -1, 6, 9, -1, 9, Blocks.STONE_BRICKS);
+        b.fill(7, -1, 7, 8, -1, 8, Blocks.WATER);
+        b.fill(6, 0, 6, 9, 0, 9, Blocks.STONE_BRICK_WALL);
+        b.fill(7, 0, 7, 8, 0, 8, Blocks.AIR.defaultBlockState());
+        b.set(7, 0, 7, Blocks.WATER);
+        b.set(8, 0, 8, fr.modeminecraft.registry.ModBlocks.FOUNTAIN_SPOUT.get());
+        for (int[] t : new int[][]{{2, 2}, {13, 2}, {2, 13}, {13, 13}}) {
+            tree(b, t[0], t[1], 4 + (t[0] + t[1]) % 2);
+        }
+        Deco.bench(b, 4, 0, 7, Direction.EAST);
+        Deco.bench(b, 11, 0, 8, Direction.WEST);
+        Deco.lampPost(b, 7, 0, 3, Direction.SOUTH);
+        Deco.lampPost(b, 8, 0, 12, Direction.NORTH);
+        if (h < 0.5) {
+            Deco.kiosk(b, 12, 0, 5);
+        }
+        if (b.chance(0.6f)) {
+            b.bot(5, 0, 5, Faction.CIVILIAN, BotRole.CIVILIAN, 10);
+        }
+    }
+
     /** Maison de ville sur deux étages, avec jardin. */
     private static void townhouse(B b, double h) {
         Block wall = h < 0.5 ? Blocks.BRICKS : Blocks.WHITE_TERRACOTTA;
@@ -360,12 +501,16 @@ final class CityGen {
         b.fill(2, 5, 2, 13, 5, 13, wall.defaultBlockState());
         b.fill(2, 4, 1, 13, 4, 1, (h < 0.5 ? Blocks.RED_WOOL : Blocks.BLUE_WOOL).defaultBlockState());   // auvent
         b.fill(4, 1, 6, 11, 1, 6, B.slab(Blocks.SPRUCE_SLAB, true));
+        cashRegister(b, 6, 2, 6, Direction.NORTH);
+        b.set(4, 3, 1, B.facing(fr.modeminecraft.registry.ModBlocks.NEON_SIGN.get(), Direction.NORTH));             // néon clignotant
+        b.fill(3, 1, 10, 12, 4, 10, wall.defaultBlockState());                                       // arrière-boutique
+        Deco.door(b, 7, 1, 10, Direction.SOUTH, fr.modeminecraft.registry.ModBlocks.LOCKED_WOODEN_DOOR.get());
         for (int x = 3; x <= 12; x++) {
             b.chest(x, 1, 12, Direction.NORTH, "city_shop", true);
             b.set(x, 2, 12, Blocks.BARREL.defaultBlockState().setValue(BlockStateProperties.FACING, Direction.NORTH));
         }
         b.set(7, 4, 7, Blocks.GLOWSTONE);
-        b.bot(7, 1, 8, Faction.CIVILIAN, BotRole.CIVILIAN, 4);
+        shopkeeper(b, 7, 1, 8);
     }
 
     private static void cafe(B b) {
@@ -378,8 +523,12 @@ final class CityGen {
         for (int x = 3; x <= 14; x++) {
             b.set(x, 4, 5, ((x % 2) == 0 ? Blocks.RED_WOOL : Blocks.WHITE_WOOL).defaultBlockState());   // store rayé
         }
-        b.fill(5, 1, 12, 12, 1, 12, B.slab(Blocks.SPRUCE_SLAB, true));
-        b.set(6, 2, 12, Blocks.BREWING_STAND);                                                          // machine à café
+        b.fill(5, 1, 10, 12, 1, 10, B.slab(Blocks.SPRUCE_SLAB, true));                                // comptoir
+        b.set(6, 2, 10, Blocks.BREWING_STAND);                                                          // machine à café
+        cashRegister(b, 10, 2, 10, Direction.NORTH);
+        b.set(12, 3, 5, B.facing(fr.modeminecraft.registry.ModBlocks.NEON_SIGN_CYAN.get(), Direction.NORTH));
+        b.set(8, 3, 12, B.facing(fr.modeminecraft.registry.ModBlocks.WALL_CLOCK.get(), Direction.NORTH));
+        b.set(12, 1, 12, B.facing(fr.modeminecraft.registry.ModBlocks.AMBIENT_SPEAKER.get(), Direction.NORTH));   // musique d'ambiance
         b.set(10, 3, 9, Blocks.LANTERN.defaultBlockState().setValue(BlockStateProperties.HANGING, true));
         for (int x = 3; x <= 12; x += 4) {                                                             // terrasse
             b.set(x, 0, 2, Blocks.OAK_FENCE);
@@ -387,7 +536,7 @@ final class CityGen {
             b.set(x - 1, 0, 2, B.stairs(Blocks.OAK_STAIRS, Direction.WEST));
             b.set(x + 1, 0, 2, B.stairs(Blocks.OAK_STAIRS, Direction.EAST));
         }
-        b.bot(8, 1, 10, Faction.CIVILIAN, BotRole.CIVILIAN, 4);
+        shopkeeper(b, 8, 1, 11);
     }
 
     /** Supermarché : rayons, caisses, parking. */
@@ -410,6 +559,12 @@ final class CityGen {
         }
         b.fill(3, 1, 7, 4, 1, 7, B.slab(Blocks.SMOOTH_STONE_SLAB, true));                                  // caisses
         b.fill(11, 1, 7, 12, 1, 7, B.slab(Blocks.SMOOTH_STONE_SLAB, true));
+        cashRegister(b, 3, 2, 7, Direction.NORTH);
+        cashRegister(b, 12, 2, 7, Direction.NORTH);
+        shopkeeper(b, 3, 1, 8);
+        b.set(10, 3, 5, B.facing(fr.modeminecraft.registry.ModBlocks.NEON_SIGN.get(), Direction.NORTH));
+        b.set(13, 4, 13, B.facing(fr.modeminecraft.registry.ModBlocks.AMBIENT_SPEAKER.get(), Direction.NORTH));
+        Deco.door(b, 7, 1, 14, Direction.NORTH, fr.modeminecraft.registry.ModBlocks.LOCKED_METAL_DOOR.get());   // réserve
         for (int x = 3; x <= 12; x += 3) {
             b.set(x, 4, 11, Blocks.SEA_LANTERN);
             b.fill(x, -1, 0, x, -1, 4, Blocks.WHITE_CONCRETE);                                           // places de parking
@@ -440,8 +595,24 @@ final class CityGen {
         b.fill(3, 4, 11, 12, 4, 14, Blocks.WHITE_CONCRETE.defaultBlockState());
         b.chest(4, 1, 13, Direction.SOUTH, "city_shop", true);
         b.chest(5, 1, 13, Direction.SOUTH, "city_shop", true);
+        b.fill(8, 1, 12, 10, 1, 12, B.slab(Blocks.SMOOTH_QUARTZ_SLAB, true));                             // comptoir
+        cashRegister(b, 9, 2, 12, Direction.NORTH);
+        shopkeeper(b, 9, 1, 13);
         Deco.vendingMachine(b, 11, 1, 13, Direction.NORTH);
         Deco.explosiveBarrel(b, 13, 0, 13);
+    }
+
+    /** Commerçant derrière son comptoir (vend des rations, des soins, des piles ; se fait braquer). */
+    static void shopkeeper(B b, int x, int y, int z) {
+        var k = b.bot(x, y, z, Faction.CIVILIAN, BotRole.CIVILIAN, 2);
+        if (k != null) {
+            k.shopkeeper = true;
+        }
+    }
+
+    /** Caisse enregistreuse posée sur un comptoir, écran tourné vers les clients. */
+    static void cashRegister(B b, int x, int y, int z, Direction facing) {
+        b.set(x, y, z, B.facing(fr.modeminecraft.registry.ModBlocks.CASH_REGISTER.get(), facing));
     }
 
     // ------------------------------------------------------------------ Central Park
@@ -454,7 +625,7 @@ final class CityGen {
         b.fill(12, -1, 12, 19, -1, 19, Blocks.WATER);
         b.fill(12, -2, 12, 19, -2, 19, Blocks.STONE_BRICKS);
         b.fill(15, -1, 15, 16, 2, 16, Blocks.CHISELED_STONE_BRICKS);
-        b.set(15, 3, 15, Blocks.WATER);
+        b.set(15, 3, 15, fr.modeminecraft.registry.ModBlocks.FOUNTAIN_SPOUT.get());                          // jet d'eau animé
         b.set(16, 3, 16, Blocks.WATER);
         // statue
         b.fill(4, 0, 4, 5, 0, 5, Blocks.POLISHED_ANDESITE);
@@ -494,6 +665,14 @@ final class CityGen {
     }
 
     // ------------------------------------------------------------------ commissariat central
+    /**
+     * Commissariat central (2 x 2 chunks) :
+     * - rez-de-chaussée : accueil, poste de garde vitré (moniteurs, pupitre d'ouverture centralisée), couloir de
+     *   surveillance et 3 cellules de détention de 5 x 5 x 4 (béton, porte coulissante à barreaux, lit, sanitaire inox,
+     *   banc, fenêtre haute à barreaux, plafond lumineux) ;
+     * - 1er étage : vestiaires, des dizaines de casiers verrouillés (le gros du matériel, à forcer au pied-de-biche) ;
+     * - 2e étage : bureaux fermés à clé ; toit : héliport ; sous-sol : armurerie blindée (carte bleue).
+     */
     private static void policeStation(B b) {
         b.ground(0, 0, 31, 31, Blocks.SMOOTH_STONE.defaultBlockState(), Blocks.STONE.defaultBlockState(), 22);
         BlockState wall = Blocks.WHITE_CONCRETE.defaultBlockState(), trim = Blocks.BLUE_CONCRETE.defaultBlockState();
@@ -503,35 +682,84 @@ final class CityGen {
             b.walls(3, y, 3, 28, y + 4, 24, wall);
             b.walls(3, y + 4, 3, 28, y + 4, 24, trim);
             for (int i = 5; i <= 26; i += 4) {
-                b.fill(i, y + 1, 3, i + 1, y + 3, 3, Blocks.GLASS_PANE.defaultBlockState());
-                b.fill(i, y + 1, 24, i + 1, y + 3, 24, Blocks.GLASS_PANE.defaultBlockState());
+                b.fill(i, y + 1, 3, i + 1, y + 3, 3, Blocks.LIGHT_BLUE_STAINED_GLASS);
+                if (f > 0) b.fill(i, y + 1, 24, i + 1, y + 3, 24, Blocks.LIGHT_BLUE_STAINED_GLASS);
             }
-            for (int x = 7; x <= 25; x += 6) {
-                b.set(x, y + 4, 13, Blocks.SEA_LANTERN);
-            }
+            b.fill(26, y + 1, 23, 26, y + 4, 23, wall);                                       // cage d'échelle
             b.fill(26, y, 22, 26, y + 4, 22, B.facing(Blocks.LADDER, Direction.NORTH));
         }
         b.fill(3, 15, 3, 28, 15, 24, trim);
         b.fill(26, 15, 22, 26, 15, 22, B.facing(Blocks.LADDER, Direction.NORTH));
         b.set(26, 16, 22, Blocks.AIR);
-        // entrée : portes, auvent bleu, drapeaux
+        // entrée : portes vitrées, auvent bleu, drapeaux
         b.fill(14, 1, 3, 17, 3, 3, Blocks.AIR.defaultBlockState());
         b.fill(12, 4, 1, 19, 4, 2, trim);
         b.set(12, 1, 2, Blocks.BLUE_BANNER);
         b.set(19, 1, 2, Blocks.BLUE_BANNER);
-        // accueil, bureaux, cellules
+        // ---------------- rez-de-chaussée : accueil
         b.fill(10, 1, 7, 21, 1, 7, B.slab(Blocks.POLISHED_ANDESITE_SLAB, true));
+        b.chest(20, 1, 6, Direction.NORTH, "police_office", false);
+        b.set(12, 3, 7, B.facing(fr.modeminecraft.registry.ModBlocks.WALL_CLOCK.get(), Direction.NORTH));
+        b.fill(4, 1, 8, 27, 4, 8, wall);                                                       // cloison accueil / poste
+        Deco.door(b, 15, 1, 8, Direction.SOUTH, Blocks.SPRUCE_DOOR);
+        Deco.door(b, 25, 1, 8, Direction.SOUTH, fr.modeminecraft.registry.ModBlocks.LOCKED_WOODEN_DOOR.get());
+        // poste de garde vitré face aux cellules : bureaux, moniteurs de surveillance, pupitre d'ouverture centralisée
+        b.fill(4, 1, 13, 25, 4, 13, Blocks.GLASS);                                              // vitre (blocs pleins)
+        Deco.door(b, 26, 1, 13, Direction.SOUTH, Blocks.SPRUCE_DOOR);
+        for (int x = 6; x <= 22; x += 4) {
+            b.set(x, 1, 11, B.slab(Blocks.SMOOTH_QUARTZ_SLAB, true));
+            b.set(x, 2, 11, B.facing(fr.modeminecraft.registry.ModBlocks.SURVEILLANCE_MONITOR.get(), Direction.SOUTH));
+            b.set(x + 1, 1, 11, B.slab(Blocks.SMOOTH_QUARTZ_SLAB, true));
+            b.set(x + 1, 2, 11, B.facing(fr.modeminecraft.registry.ModBlocks.SURVEILLANCE_MONITOR.get(), Direction.SOUTH));
+            b.set(x, 1, 10, B.stairs(Blocks.DARK_OAK_STAIRS, Direction.SOUTH));
+        }
+        b.set(14, 1, 12, B.facing(fr.modeminecraft.registry.ModBlocks.CELL_CONTROL_PANEL.get(), Direction.SOUTH));
+        b.chest(4, 1, 9, Direction.EAST, "police_office", false);
+        Deco.camera(b, 4, 4, 17, Direction.EAST);
+        Deco.camera(b, 22, 4, 14, Direction.WEST);
+        // couloir de surveillance (z 14..17), éclairage
+        for (int x = 6; x <= 24; x += 6) {
+            b.set(x, 4, 15, Blocks.SEA_LANTERN);
+        }
+        // cellules de détention
+        for (int x0 : fr.modeminecraft.world.police.Arrest.CELL_X) {
+            cell(b, x0);
+        }
+        b.fill(4, 1, 18, 4, 4, 23, Blocks.LIGHT_GRAY_CONCRETE);                                  // murs extérieurs des cellules
+        b.fill(22, 1, 18, 22, 4, 23, Blocks.LIGHT_GRAY_CONCRETE);
+        // ---------------- 1er étage : vestiaires et casiers de police (verrouillés)
+        int y1 = 5;
+        for (int z : new int[]{5, 9, 13, 17}) {
+            for (int x = 5; x <= 24; x++) {
+                Direction face = z % 8 == 5 ? Direction.SOUTH : Direction.NORTH;
+                BlockState locker = fr.modeminecraft.registry.ModBlocks.POLICE_LOCKER.get().defaultBlockState()
+                        .setValue(fr.modeminecraft.block.police.PoliceLockerBlock.FACING, face);
+                b.set(x, y1 + 1, z, locker);
+                b.set(x, y1 + 2, z, locker);
+                b.lootAt(x, y1 + 1, z, "police_locker");
+                b.lootAt(x, y1 + 2, z, "police_locker");
+            }
+        }
+        for (int x = 7; x <= 22; x += 5) {
+            b.set(x, y1 + 1, 7, B.facing(fr.modeminecraft.registry.ModBlocks.PRISON_BENCH.get(), Direction.SOUTH));
+            b.set(x, y1 + 1, 15, B.facing(fr.modeminecraft.registry.ModBlocks.PRISON_BENCH.get(), Direction.NORTH));
+            b.set(x, y1 + 4, 11, Blocks.SEA_LANTERN);
+        }
+        // ---------------- 2e étage : bureaux fermés à clé
+        int y2 = 10;
+        b.fill(4, y2 + 1, 13, 27, y2 + 3, 13, wall);
+        Deco.door(b, 10, y2 + 1, 13, Direction.NORTH, fr.modeminecraft.registry.ModBlocks.LOCKED_WOODEN_DOOR.get());
+        Deco.door(b, 20, y2 + 1, 13, Direction.NORTH, fr.modeminecraft.registry.ModBlocks.LOCKED_WOODEN_DOOR.get());
         for (int x = 6; x <= 25; x += 4) {
-            Deco.desk(b, x, 6, 8, Direction.SOUTH);
-            Deco.desk(b, x, 6, 18, Direction.NORTH);
+            Deco.desk(b, x, y2 + 1, 8, Direction.SOUTH);
+            Deco.desk(b, x, y2 + 1, 18, Direction.NORTH);
         }
-        for (int c = 0; c < 4; c++) {
-            int x0 = 5 + c * 5;
-            b.walls(x0, 1, 17, x0 + 4, 3, 23, Blocks.IRON_BARS.defaultBlockState());
-            b.fill(x0 + 1, 1, 18, x0 + 3, 3, 22, Blocks.AIR.defaultBlockState());
-            Deco.bed(b, x0 + 1, 1, 21, Direction.EAST, Blocks.GRAY_BED);
+        b.chest(5, y2 + 1, 21, Direction.EAST, "police_office", false);
+        b.chest(24, y2 + 1, 5, Direction.WEST, "police_office", false);
+        for (int x = 7; x <= 25; x += 6) {
+            b.set(x, y2 + 4, 10, Blocks.SEA_LANTERN);
+            b.set(x, y2 + 4, 18, Blocks.SEA_LANTERN);
         }
-        Deco.camera(b, 4, 3, 16, Direction.EAST);
         // armurerie blindée au sous-sol (porte à carte bleue)
         b.fill(6, -6, 6, 25, -1, 13, Blocks.POLISHED_DEEPSLATE);
         b.fill(7, -5, 7, 24, -2, 12, Blocks.AIR.defaultBlockState());
@@ -547,24 +775,49 @@ final class CityGen {
         }
         b.set(15, -2, 9, Blocks.SEA_LANTERN);
         b.set(15, -5, 9, fr.modeminecraft.registry.ModBlocks.ARMAMENT_TABLE.get());
-        // garage et voiture de police
+        // garage et voitures de police
         b.vehicle(8, 0, 28, fr.modeminecraft.entity.VehicleEntity.Type.POLICE_CAR, 90);
         b.vehicle(20, 0, 28, fr.modeminecraft.entity.VehicleEntity.Type.POLICE_CAR, 90);
-        // toit : héliport, antenne, sirène
+        b.chest(29, 0, 26, Direction.WEST, "city_armory", false);
+        // toit : héliport, antenne, projecteur
         b.fill(10, 15, 8, 21, 15, 19, Blocks.GRAY_CONCRETE);
         b.fill(13, 15, 11, 18, 15, 16, Blocks.YELLOW_CONCRETE);
         b.fill(14, 15, 12, 17, 15, 15, Blocks.GRAY_CONCRETE);
         Deco.antenna(b, 5, 16, 5, 8);
         Deco.searchlight(b, 26, 16, 5);
         // effectifs
-        b.pair(14, 1, 10, Faction.POLICE, 16);
-        b.pair(18, 6, 12, Faction.POLICE, 16);
+        b.pair(14, 1, 5, Faction.POLICE, 16);
+        b.bot(10, 1, 10, Faction.POLICE, BotRole.OFFICER, 6);                 // gardien du poste
+        b.pair(18, 6, 11, Faction.POLICE, 12);
         b.bot(16, 1, 1, Faction.POLICE, BotRole.OFFICER, 10);
         b.bot(16, 1, 1, Faction.SWAT, BotRole.BOSS, 8);                       // Commissaire Divisionnaire SWAT
-        b.bot(15, 1, 8, Faction.CIVILIAN, BotRole.CONTRACTOR, 2);
+        b.bot(15, 1, 5, Faction.CIVILIAN, BotRole.CONTRACTOR, 2);
         b.bot(12, -5, 9, Faction.SWAT, BotRole.SOLDIER, 6);
         b.bot(20, -5, 9, Faction.SWAT, BotRole.SOLDIER, 6);
         b.bot(15, 16, 13, Faction.POLICE, BotRole.SNIPER, 4);
+    }
+
+    /** Une cellule de 5 x 5 x 4 (bord gauche x0) : murs en béton, barreaux et porte coulissante sur le couloir. */
+    private static void cell(B b, int x0) {
+        int z0 = fr.modeminecraft.world.police.Arrest.CELL_Z, dz = fr.modeminecraft.world.police.Arrest.DOOR_Z;
+        b.fill(x0, 0, z0, x0 + 4, 0, z0 + 4, Blocks.GRAY_CONCRETE);                              // sol
+        b.fill(x0 - 1, 1, z0, x0 - 1, 4, z0 + 4, Blocks.LIGHT_GRAY_CONCRETE);                    // murs latéraux
+        b.fill(x0 + 5, 1, z0, x0 + 5, 4, z0 + 4, Blocks.LIGHT_GRAY_CONCRETE);
+        b.fill(x0 - 1, 1, z0 + 5, x0 + 5, 4, z0 + 5, Blocks.LIGHT_GRAY_CONCRETE);                // mur du fond
+        b.fill(x0, 1, z0, x0 + 4, 4, z0 + 4, Blocks.AIR.defaultBlockState());
+        b.fill(x0, 5, z0, x0 + 4, 5, z0 + 4, Blocks.SMOOTH_STONE);                                // plafond
+        b.set(x0 + 2, 5, z0 + 2, Blocks.SEA_LANTERN);                                            // barreau lumineux encastré
+        b.fill(x0 - 1, 1, dz, x0 + 5, 4, dz, Blocks.IRON_BARS);                                  // façade à barreaux
+        BlockState door = fr.modeminecraft.registry.ModBlocks.SLIDING_JAIL_DOOR.get().defaultBlockState()
+                .setValue(fr.modeminecraft.block.police.SlidingJailDoorBlock.FACING, Direction.NORTH);
+        b.set(x0 + 2, 1, dz, door);
+        b.set(x0 + 2, 2, dz, door.setValue(fr.modeminecraft.block.police.SlidingJailDoorBlock.HALF,
+                net.minecraft.world.level.block.state.properties.DoubleBlockHalf.UPPER));
+        b.set(x0 + 2, 3, z0 + 5, Blocks.IRON_BARS);                                              // fenêtre haute à barreaux
+        b.set(x0 + 2, 3, z0 + 6, Blocks.AIR);
+        b.set(x0, 1, z0 + 3, B.facing(fr.modeminecraft.registry.ModBlocks.PRISON_BUNK_BED.get(), Direction.SOUTH));
+        b.set(x0 + 4, 1, z0 + 4, B.facing(fr.modeminecraft.registry.ModBlocks.PRISON_TOILET_SINK.get(), Direction.NORTH));
+        b.set(x0 + 4, 1, z0 + 1, B.facing(fr.modeminecraft.registry.ModBlocks.PRISON_BENCH.get(), Direction.WEST));
     }
 
     /** Voiture de police (blocs) : carrosserie noire et blanche, gyrophare. */

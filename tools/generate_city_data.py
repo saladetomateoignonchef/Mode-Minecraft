@@ -154,7 +154,8 @@ def main():
             "spawn_overrides": {}, "terrain_adaptation": "none"})
     write(os.path.join(DATA, "worldgen/structure_set/cities.json"), {
         "structures": [{"structure": f"{MOD}:city_{k}", "weight": 1} for k in BIOMES],
-        "placement": {"type": "minecraft:random_spread", "spacing": 28, "separation": 16, "salt": 77031953}})
+        # un centre de ville par région de 40 x 40 chunks ; mégapoles découpées en districts de 11 chunks (3 x 3 au plus)
+        "placement": {"type": "modeminecraft:city_grid", "spacing": 40, "separation": 34, "salt": 77031953, "district": 11}})
     for name, t in LOOT.items():
         write(os.path.join(DATA, f"loot_table/chests/{name}.json"), t)
     for name, (lvl, color) in DOORS.items():

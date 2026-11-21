@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/sleeping_bag"
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/sleeping_bag",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/sleeping_bag",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/sleeping_bag",
+      "y": 270
+    }
+  }
+}

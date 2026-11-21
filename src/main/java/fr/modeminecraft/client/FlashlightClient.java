@@ -75,6 +75,12 @@ public final class FlashlightClient {
         while (ModKeyMappings.FLASHLIGHT.consumeClick()) {
             presses++;
         }
+        // touche H au volant : sirène et gyrophares (L marche aussi)
+        while (ModKeyMappings.SIREN.consumeClick()) {
+            if (mc.player != null && mc.player.getVehicle() instanceof fr.modeminecraft.entity.VehicleEntity) {
+                PacketDistributor.sendToServer(new FlashlightPayload(false));
+            }
+        }
         if (presses == 0 || mc.player == null || !(mc.player.getMainHandItem().getItem() instanceof GunItem
                 || mc.player.getVehicle() instanceof fr.modeminecraft.entity.VehicleEntity)) {
             return;

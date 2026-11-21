@@ -58,6 +58,38 @@ public final class ModItems {
     public static final DeferredItem<BlockItem> CITY_NEON = ITEMS.registerSimpleBlockItem(ModBlocks.CITY_NEON);
     public static final DeferredItem<BlockItem> STREET_LANTERN = ITEMS.registerSimpleBlockItem(ModBlocks.STREET_LANTERN);
     public static final DeferredItem<BlockItem> HIGH_VOLTAGE_TRANSFORMER = ITEMS.registerSimpleBlockItem(ModBlocks.HIGH_VOLTAGE_TRANSFORMER);
+    public static final DeferredItem<BlockItem> TENT_CANVAS = ITEMS.registerSimpleBlockItem(ModBlocks.TENT_CANVAS);
+    public static final DeferredItem<BlockItem> TENT_CANVAS_STAIRS = ITEMS.registerSimpleBlockItem(ModBlocks.TENT_CANVAS_STAIRS);
+    public static final DeferredItem<BlockItem> SLEEPING_BAG = ITEMS.registerSimpleBlockItem(ModBlocks.SLEEPING_BAG);
+    public static final DeferredItem<BlockItem> POLICE_LOCKER = ITEMS.registerSimpleBlockItem(ModBlocks.POLICE_LOCKER);
+    public static final DeferredItem<Item> LOCKED_WOODEN_DOOR = ITEMS.register("locked_wooden_door",
+            () -> new net.minecraft.world.item.DoubleHighBlockItem(ModBlocks.LOCKED_WOODEN_DOOR.get(), new Item.Properties()));
+    public static final DeferredItem<Item> LOCKED_METAL_DOOR = ITEMS.register("locked_metal_door",
+            () -> new net.minecraft.world.item.DoubleHighBlockItem(ModBlocks.LOCKED_METAL_DOOR.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> SLIDING_JAIL_DOOR = ITEMS.registerSimpleBlockItem(ModBlocks.SLIDING_JAIL_DOOR);
+    public static final DeferredItem<BlockItem> PRISON_BUNK_BED = ITEMS.registerSimpleBlockItem(ModBlocks.PRISON_BUNK_BED);
+    public static final DeferredItem<BlockItem> PRISON_TOILET_SINK = ITEMS.registerSimpleBlockItem(ModBlocks.PRISON_TOILET_SINK);
+    public static final DeferredItem<BlockItem> PRISON_BENCH = ITEMS.registerSimpleBlockItem(ModBlocks.PRISON_BENCH);
+    public static final DeferredItem<BlockItem> CELL_CONTROL_PANEL = ITEMS.registerSimpleBlockItem(ModBlocks.CELL_CONTROL_PANEL);
+    public static final DeferredItem<BlockItem> SURVEILLANCE_MONITOR = ITEMS.registerSimpleBlockItem(ModBlocks.SURVEILLANCE_MONITOR);
+    public static final DeferredItem<BlockItem> CASH_REGISTER = ITEMS.registerSimpleBlockItem(ModBlocks.CASH_REGISTER);
+    public static final DeferredItem<BlockItem> AMBIENT_SPEAKER = ITEMS.registerSimpleBlockItem(ModBlocks.AMBIENT_SPEAKER);
+    public static final DeferredItem<BlockItem> NEON_SIGN = ITEMS.registerSimpleBlockItem(ModBlocks.NEON_SIGN);
+    public static final DeferredItem<BlockItem> NEON_SIGN_CYAN = ITEMS.registerSimpleBlockItem(ModBlocks.NEON_SIGN_CYAN);
+    public static final DeferredItem<BlockItem> GIANT_SCREEN = ITEMS.registerSimpleBlockItem(ModBlocks.GIANT_SCREEN);
+    public static final DeferredItem<BlockItem> STEAM_VENT = ITEMS.registerSimpleBlockItem(ModBlocks.STEAM_VENT);
+    public static final DeferredItem<BlockItem> FOUNTAIN_SPOUT = ITEMS.registerSimpleBlockItem(ModBlocks.FOUNTAIN_SPOUT);
+    public static final DeferredItem<BlockItem> AC_UNIT = ITEMS.registerSimpleBlockItem(ModBlocks.AC_UNIT);
+    public static final DeferredItem<BlockItem> WALL_CLOCK = ITEMS.registerSimpleBlockItem(ModBlocks.WALL_CLOCK);
+    public static final DeferredItem<BlockItem> TRAFFIC_CONE = ITEMS.registerSimpleBlockItem(ModBlocks.TRAFFIC_CONE);
+    /** Accessoires des scènes de rue : guitare du musicien, bombe de peinture de l'artiste. */
+    public static final DeferredItem<Item> ACOUSTIC_GUITAR = ITEMS.registerSimpleItem("acoustic_guitar", new Item.Properties().stacksTo(1));
+    public static final DeferredItem<Item> SPRAY_CAN = ITEMS.registerSimpleItem("spray_can", new Item.Properties().stacksTo(16));
+    /** Liasse de billets (butin des braquages, monnaie des marchands). */
+    public static final DeferredItem<Item> CASH_BUNDLE = ITEMS.registerSimpleItem("cash_bundle", new Item.Properties().stacksTo(64));
+    /** Tente de camping pliée (se monte d'un clic droit au sol). */
+    public static final DeferredItem<Item> CAMPING_TENT = ITEMS.register("camping_tent",
+            () -> new fr.modeminecraft.item.CampingTentItem(new Item.Properties().stacksTo(4)));
     public static final DeferredItem<BlockItem> JAMMER_TOWER = ITEMS.registerSimpleBlockItem(ModBlocks.JAMMER_TOWER);
 
     // ---------- Outils ----------
@@ -1031,6 +1063,12 @@ public final class ModItems {
             () -> new fr.modeminecraft.item.VehicleItem(fr.modeminecraft.entity.VehicleEntity.Type.JEEP, new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final DeferredItem<Item> ARMORED_TRUCK = ITEMS.register("armored_truck",
             () -> new fr.modeminecraft.item.VehicleItem(fr.modeminecraft.entity.VehicleEntity.Type.ARMORED_TRUCK, new Item.Properties().rarity(Rarity.RARE)));
+    public static final DeferredItem<Item> SEDAN = ITEMS.register("sedan",
+            () -> new fr.modeminecraft.item.VehicleItem(fr.modeminecraft.entity.VehicleEntity.Type.SEDAN, new Item.Properties()));
+    public static final DeferredItem<Item> TAXI = ITEMS.register("taxi",
+            () -> new fr.modeminecraft.item.VehicleItem(fr.modeminecraft.entity.VehicleEntity.Type.TAXI, new Item.Properties()));
+    public static final DeferredItem<Item> BUS = ITEMS.register("bus",
+            () -> new fr.modeminecraft.item.VehicleItem(fr.modeminecraft.entity.VehicleEntity.Type.BUS, new Item.Properties().rarity(Rarity.UNCOMMON)));
     /** Sac à dos tactique : 18 cases, porté dans la case « sac à dos » de l'inventaire. */
     public static final DeferredItem<Item> TACTICAL_BACKPACK = ITEMS.register("tactical_backpack",
             () -> new fr.modeminecraft.item.tactical.BackpackItem(new Item.Properties().rarity(Rarity.UNCOMMON)));

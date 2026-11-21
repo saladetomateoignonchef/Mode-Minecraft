@@ -1,0 +1,7 @@
+{
+  "type": "modeminecraft:camp",
+  "biomes": "#modeminecraft:has_camp",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none"
+}

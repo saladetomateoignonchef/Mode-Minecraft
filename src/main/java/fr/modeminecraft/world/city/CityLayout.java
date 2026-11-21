@@ -48,25 +48,42 @@ public final class CityLayout {
         boolean edge = Math.abs(dx) == rad || Math.abs(dz) == rad;
         switch (variant) {
             case "metropolis" -> {
-                if (in(dx, dz, 0, 0, 1, 1)) {
-                    return multi("park", 12, 0, 0, 2, 2);
+                // îlots de 2 x 2 chunks entre les avenues (une avenue tous les 3 chunks)
+                if (in(dx, dz, 1, 1, 2, 2)) {
+                    return multi("park", 12, 1, 1, 2, 2);                          // Central Park
                 }
-                if (in(dx, dz, 3, 0, 4, 1)) {
-                    return multi("police", 22, 3, 0, 2, 2);
+                if (in(dx, dz, 4, 1, 5, 2)) {
+                    return multi("police", 22, 4, 1, 2, 2);                        // commissariat central
+                }
+                if (in(dx, dz, -5, -5, -4, -4) || in(dx, dz, -11, 7, -10, 8)) {
+                    int ax = dx < -6 ? -11 : -5, az = dz > 0 ? 7 : -5;
+                    return multi("park", 12, ax, az, 2, 2);                        // parcs de quartier
                 }
                 if (gridRoad(dx, dz)) {
                     return Plot.of("road", 10, dx, dz);
                 }
                 int ring = Math.max(Math.abs(dx), Math.abs(dz));
                 double h = hash(dx, dz, 1);
-                if (ring <= 3) {
-                    return Plot.of("tower", 36 + (int) (h * 40) + 6, dx, dz);       // gratte-ciel de 35 à 75 blocs
-                }
                 if (ring <= 5) {
-                    return h < 0.7 ? Plot.of("office", 18 + (int) (h * 20) + 4, dx, dz) : Plot.of(h < 0.85 ? "supermarket" : "cafe", 10, dx, dz);
+                    return Plot.of("tower", 36 + (int) (h * 40) + 6, dx, dz);       // centre d'affaires : 35 à 75 blocs
                 }
-                String[] outer = {"house", "house", "gas_station", "shop", "cafe", "supermarket", "house"};
-                return Plot.of(outer[(int) (h * outer.length)], 12, dx, dz);
+                if (dx >= 7 && dz <= -7) {
+                    return Plot.of(h < 0.55 ? "warehouse" : "factory_m", 18, dx, dz); // zone industrielle
+                }
+                if (ring <= 10) {                                                   // quartiers commerçants
+                    if (h < 0.3) return Plot.of("office", 18 + (int) (h * 60) + 4, dx, dz);
+                    if (h < 0.45) return Plot.of("supermarket", 10, dx, dz);
+                    if (h < 0.6) return Plot.of("cafe", 10, dx, dz);
+                    if (h < 0.78) return Plot.of("shop", 10, dx, dz);
+                    if (h < 0.88) return Plot.of("plaza", 10, dx, dz);
+                    return Plot.of("apartment", 22, dx, dz);
+                }
+                // quartiers résidentiels et périphérie
+                if (h < 0.45) return Plot.of("house", 12, dx, dz);
+                if (h < 0.7) return Plot.of("apartment", 22, dx, dz);
+                if (h < 0.78) return Plot.of("gas_station", 10, dx, dz);
+                if (h < 0.86) return Plot.of("plaza", 10, dx, dz);
+                return Plot.of(h < 0.93 ? "shop" : "cafe", 12, dx, dz);
             }
             case "desert" -> {
                 if (in(dx, dz, -1, -5, 1, -3)) {
@@ -75,8 +92,11 @@ public final class CityLayout {
                 if (in(dx, dz, 2, 1, 4, 2)) {
                     return multi("souk", 10, 2, 1, 3, 2);
                 }
-                if (dz == 0 || dx == 0) {
-                    return Plot.of("avenue", 8, dx, dz);
+                if (in(dx, dz, -7, 5, -5, 6)) {
+                    return multi("souk", 10, -7, 5, 3, 2);                          // second marché
+                }
+                if (dz == 0 || dx == 0 || Math.abs(dx) == 8 || Math.abs(dz) == 8) {
+                    return Plot.of("avenue", 8, dx, dz);                           // avenues et boulevard circulaire
                 }
                 return Plot.of("riad", 14, dx, dz);
             }
@@ -111,8 +131,11 @@ public final class CityLayout {
                 if (dz == rad) {
                     return Plot.of("station", 10, dx, dz);
                 }
-                if (in(dx, dz, 3, -3, 4, -2)) {
-                    return multi("factory", 28, 3, -3, 2, 2);
+                if (in(dx, dz, 4, -5, 5, -4)) {
+                    return multi("factory", 28, 4, -5, 2, 2);
+                }
+                if (in(dx, dz, -8, 4, -7, 5)) {
+                    return multi("factory", 28, -8, 4, 2, 2);                       // seconde usine
                 }
                 if (in(dx, dz, 0, 0, 1, 1)) {
                     return multi("plaza", 12, 0, 0, 2, 2);

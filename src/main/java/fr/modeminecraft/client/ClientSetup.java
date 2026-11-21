@@ -61,10 +61,17 @@ public final class ClientSetup {
 
     /** Les balles et roquettes sont affichées avec la texture de leur item. */
     @SubscribeEvent
+    public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(PigeonRenderer.LAYER, PigeonRenderer::layer);
+    }
+
+    @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(fr.modeminecraft.registry.ModBlockEntities.WEAPON_RACK.get(), WeaponRackRenderer::new);
         event.registerBlockEntityRenderer(fr.modeminecraft.registry.ModBlockEntities.TROPHY_RACK.get(), TrophyRackRenderer::new);
         event.registerBlockEntityRenderer(fr.modeminecraft.registry.ModBlockEntities.TRAFFIC_LIGHT.get(), TrafficLightRenderer::new);
+        event.registerBlockEntityRenderer(fr.modeminecraft.registry.ModBlockEntities.JAIL_DOOR.get(), JailDoorRenderer::new);
+        event.registerBlockEntityRenderer(fr.modeminecraft.registry.ModBlockEntities.WALL_CLOCK.get(), WallClockRenderer::new);
         event.registerEntityRenderer(ModEntities.BULLET.get(), BulletRenderer::new);
         event.registerEntityRenderer(ModEntities.ROCKET.get(), ctx -> new ThrownItemRenderer<>(ctx, 1.25f, true));
         event.registerEntityRenderer(ModEntities.GRENADE.get(), ctx -> new ThrownItemRenderer<>(ctx, 0.8f, false));
@@ -74,6 +81,7 @@ public final class ClientSetup {
         event.registerEntityRenderer(ModEntities.TOMAHAWK.get(), ctx -> new ThrownItemRenderer<>(ctx, 1.2f, false));
         event.registerEntityRenderer(ModEntities.MOUNTED_GUN.get(), MountedGunRenderer::new);
         event.registerEntityRenderer(ModEntities.HUMAN_BOT.get(), HumanBotRenderer::new);
+        event.registerEntityRenderer(ModEntities.PIGEON.get(), PigeonRenderer::new);
         event.registerEntityRenderer(ModEntities.AIRDROP.get(), AirdropRenderer::new);
         event.registerEntityRenderer(ModEntities.GEYSER.get(), net.minecraft.client.renderer.entity.NoopRenderer::new);
         event.registerEntityRenderer(ModEntities.VEHICLE.get(), VehicleRenderer::new);
@@ -86,6 +94,7 @@ public final class ClientSetup {
     @SubscribeEvent
     public static void registerParticles(net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.CASING_BRASS.get(), CasingParticle.Provider::new);
+        event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.NEWSPAPER.get(), fr.modeminecraft.client.particle.NewspaperParticle.Provider::new);
         event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.CASING_STEEL.get(), CasingParticle.Provider::new);
         event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.CASING_SHELL.get(), s -> new CasingParticle.Provider(s, true));
         event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.TRACER.get(),
@@ -112,6 +121,7 @@ public final class ClientSetup {
         event.register(ModKeyMappings.QUICK_ATTACH);
         event.register(ModKeyMappings.HELMET_MODULE);
         event.register(ModKeyMappings.BACKPACK);
+        event.register(ModKeyMappings.SIREN);
         event.register(ModKeyMappings.ITEM_PANEL);
         event.register(ModKeyMappings.PRONE);
         event.register(ModKeyMappings.SHOW_RECIPE);

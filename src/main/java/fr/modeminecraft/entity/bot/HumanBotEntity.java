@@ -67,6 +67,8 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
     private static final EntityDataAccessor<Byte> SWORD_STATE = SynchedEntityData.defineId(HumanBotEntity.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Long> SWORD_AT = SynchedEntityData.defineId(HumanBotEntity.class, EntityDataSerializers.LONG);
     private static final EntityDataAccessor<Boolean> BERSERK = SynchedEntityData.defineId(HumanBotEntity.class, EntityDataSerializers.BOOLEAN);
+    /** Activité visible d'un civil : assis, mains en l'air, en discussion, en lecture (voir CivilianLife). */
+    private static final EntityDataAccessor<Byte> ACTIVITY = SynchedEntityData.defineId(HumanBotEntity.class, EntityDataSerializers.BYTE);
     private static final ResourceLocation BERSERK_SPEED = fr.modeminecraft.ModeMinecraft.id("berserk_speed");
 
     public static final byte SWORD_BACK = 0, SWORD_DRAWING = 1, SWORD_DRAWN = 2, SWORD_SHEATHING = 3;
@@ -81,6 +83,9 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
     public BlockPos march;        // destination de l'escouade nomade
     public long lastRangedHit = -1000;
     public long scaredUntil;
+    /** Vie civile : dernier cri, commerçant derrière son comptoir (déjà braqué ?), occupé par un événement jusqu'à. */
+    public long lastScream, eventUntil;
+    public boolean shopkeeper, robbed;
     public long lastTargetSeen;
     public int turretFireTicks;   // servant de tourelle : gâchette pressée
     public String debugState = "";
@@ -120,6 +125,7 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
         b.define(SWORD_STATE, SWORD_BACK);
         b.define(SWORD_AT, -100L);
         b.define(BERSERK, false);
+        b.define(ACTIVITY, (byte) 0);
     }
 
     public Faction faction() {
@@ -155,6 +161,12 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
     public long swordAt() { return entityData.get(SWORD_AT); }
     /** Chef des Troupes de Choc sous 30 % de ses PV : Mode Berserk. */
     public boolean berserk() { return entityData.get(BERSERK); }
+    public byte activity() { return entityData.get(ACTIVITY); }
+    public void setActivity(byte a) {
+        if (activity() != a) {
+            entityData.set(ACTIVITY, a);
+        }
+    }
 
     // ------------------------------------------------------------------ création
     /** Donne faction, rôle, skin, équipement et points de vie. */
@@ -249,12 +261,14 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
     protected void registerGoals() {
         goalSelector.addGoal(0, new FloatGoal(this));
         goalSelector.addGoal(1, new BotGoals.TurretGunner(this));
+        goalSelector.addGoal(1, new CivilianLife.HandsUp(this));
         goalSelector.addGoal(1, new BotGoals.Flee(this));
         goalSelector.addGoal(1, new BotGoals.DroneOperator(this));
         goalSelector.addGoal(2, new BotGoals.GunCombat(this));
         goalSelector.addGoal(2, new BotGoals.MeleeCombat(this));
         goalSelector.addGoal(3, new BotGoals.Warn(this));
         goalSelector.addGoal(4, new BotGoals.SquadMarch(this));
+        goalSelector.addGoal(5, new CivilianLife.Routine(this));
         goalSelector.addGoal(5, new BotGoals.Patrol(this));
         goalSelector.addGoal(6, new OpenDoorGoal(this, true));
         goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 10));
@@ -638,6 +652,8 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
         tag.putBoolean("Berserk", berserk());
         tag.putBoolean("Convoy", convoy);
         tag.putBoolean("Ambush", ambush);
+        tag.putBoolean("Shopkeeper", shopkeeper);
+        tag.putBoolean("Robbed", robbed);
         if (home != null) {
             tag.put("Home", NbtUtils.writeBlockPos(home));
             tag.putInt("HomeRadius", homeRadius);
@@ -667,6 +683,8 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
         entityData.set(SKIN, tag.getInt("Skin"));
         convoy = tag.getBoolean("Convoy");
         ambush = tag.getBoolean("Ambush");
+        shopkeeper = tag.getBoolean("Shopkeeper");
+        robbed = tag.getBoolean("Robbed");
         entityData.set(SWORD_STATE, tag.getByte("Sword") == SWORD_DRAWN ? SWORD_DRAWN : SWORD_BACK);
         if (tag.getBoolean("Berserk")) {
             entityData.set(BERSERK, true);
@@ -698,7 +716,7 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
             }
             return net.minecraft.world.InteractionResult.sidedSuccess(level().isClientSide);
         }
-        if (role() == BotRole.TRADER && isAlive() && tradingPlayer == null && !player.isSecondaryUseActive()) {
+        if ((role() == BotRole.TRADER || shopkeeper && scaredUntil < level().getGameTime()) && isAlive() && tradingPlayer == null && !player.isSecondaryUseActive()) {
             if (!level().isClientSide) {
                 setTradingPlayer(player);
                 openTradingScreen(player, getDisplayName(), 1);
@@ -721,7 +739,7 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
     @Override
     public net.minecraft.world.item.trading.MerchantOffers getOffers() {
         if (offers == null) {
-            offers = BlackMarket.offers(random);
+            offers = shopkeeper ? CivilianLife.shopOffers(random) : BlackMarket.offers(random);
         }
         return offers;
     }

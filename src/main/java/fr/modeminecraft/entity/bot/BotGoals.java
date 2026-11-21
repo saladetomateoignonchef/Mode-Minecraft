@@ -73,7 +73,7 @@ public final class BotGoals {
     }
 
     /** Dans le cône de vision (110°) et à portée, sans obstacle ? */
-    static boolean canSee(HumanBotEntity bot, LivingEntity t, double range) {
+    public static boolean canSee(HumanBotEntity bot, LivingEntity t, double range) {
         Vec3 to = t.getEyePosition().subtract(bot.getEyePosition());
         double d = to.length();
         if (d > range) {
@@ -221,10 +221,10 @@ public final class BotGoals {
             }
             long now = bot.level().getGameTime();
             for (Player p : bot.level().getEntitiesOfClass(Player.class, bot.getBoundingBox().inflate(20))) {
-                if (!p.isCreative() && !p.isSpectator() && (armedVisible(p) || curfew(p)) && !FactionRelations.isHostile(p.getUUID(), bot.faction(), now)
+                if (!p.isCreative() && !p.isSpectator() && (threat(p) || curfew(p)) && !FactionRelations.isHostile(p.getUUID(), bot.faction(), now)
                         && canSee(bot, p, 20)) {
                     suspect = p;
-                    curfewWarning = !armedVisible(p);
+                    curfewWarning = !threat(p);
                     return true;
                 }
             }
@@ -232,6 +232,11 @@ public final class BotGoals {
         }
 
         private boolean curfewWarning;
+
+        /** La police ne réagit qu'à une arme EN MAIN ; les autres factions aussi à une arme dans le dos ou à la hanche. */
+        private boolean threat(Player p) {
+            return bot.faction().group.equals("police") ? armedInHand(p) : armedVisible(p);
+        }
 
         /**
          * Couvre-feu nocturne de la police (métropoles) : sprinter à moins de 12 blocs d'un agent, ou entrer
@@ -274,7 +279,7 @@ public final class BotGoals {
         public void tick() {
             bot.getLookControl().setLookAt(suspect, 30, 30);
             long now = bot.level().getGameTime();
-            if (!armedVisible(suspect) && !curfew(suspect)) {
+            if (!threat(suspect) && !curfew(suspect)) {
                 // plus aucune arme visible (ni en main, ni dans le dos / à la hanche), on marche, on quitte la zone
                 // restreinte : on abaisse la sienne
                 end = 0;
@@ -864,12 +869,22 @@ public final class BotGoals {
         }
 
         private void run() {
-            Entity threat = bot.getLastHurtByMob() != null ? bot.getLastHurtByMob()
-                    : bot.level().getNearestPlayer(bot, 24);
-            Vec3 away = threat == null ? DefaultRandomPos.getPos(bot, 12, 5) : DefaultRandomPos.getPosAway(bot, 16, 6, threat.position());
-            if (away != null) {
-                bot.getNavigation().moveTo(away.x, away.y, away.z, 1.35);
+            bot.setSprinting(true);
+            Vec3 away;
+            if (bot.faction() == Faction.CIVILIAN && bot.getLastHurtByMob() == null) {
+                away = CivilianLife.shelter(bot);                               // se réfugier à l'intérieur
+            } else {
+                Entity threat = bot.getLastHurtByMob() != null ? bot.getLastHurtByMob() : bot.level().getNearestPlayer(bot, 24);
+                away = threat == null ? DefaultRandomPos.getPos(bot, 12, 5) : DefaultRandomPos.getPosAway(bot, 16, 6, threat.position());
             }
+            if (away != null) {
+                bot.getNavigation().moveTo(away.x, away.y, away.z, 1.45);
+            }
+        }
+
+        @Override
+        public void stop() {
+            bot.setSprinting(false);
         }
     }
 
