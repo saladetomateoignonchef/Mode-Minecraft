@@ -33,6 +33,11 @@ public final class FactionRelations {
         }
     }
 
+    /** Le joueur est mort : toutes les factions oublient leurs griefs contre lui. */
+    public static void forgetAll(UUID player) {
+        HOSTILE.remove(player);
+    }
+
     public static void clear() {
         HOSTILE.clear();
     }

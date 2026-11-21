@@ -543,7 +543,7 @@ Des **villes générées** apparaissent selon le biome (un centre de ville par r
   gilets fluo, cônes, échafaudage), agent de propreté, **musicien de rue** et son public, artiste qui peint une
   **fresque murale** bloc par bloc.
 - Correctif : un tableau mal créé pouvait **bloquer la génération** des villas de cartel (gel du jeu).
-- **Mort** : la police et le SWAT oublient leur hostilité et les voitures de patrouille abandonnent la poursuite.
+- **Mort** : toutes les factions t'oublient (police, SWAT, patrouilles soviétiques, rebelles, gangs, Falcons…) : elles lâchent leur cible, leur hostilité est effacée, les drones ennemis rentrent et les voitures de patrouille abandonnent la poursuite. Les factions hostiles à vue redeviennent agressives seulement si elles te revoient sur leur territoire.
 - **Performances** : ~3 fois moins d'habitants dans les métropoles, IA au ralenti loin des joueurs, détails 3D
   (équipement, armes, capes) masqués au-delà de 40 blocs, lampes des bots limitées à 32 blocs, routes et plan des
   villes calculés hors du fil principal et seulement quand c'est utile : de ~45 ms à ~6 ms par tick en métropole.

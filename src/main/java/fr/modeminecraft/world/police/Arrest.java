@@ -82,20 +82,27 @@ public final class Arrest {
     }
 
     /**
-     * Mort du joueur (tué par la police ou non) : l'affaire est close. La police et le SWAT oublient leur hostilité,
-     * les agents cessent de le viser, les voitures de patrouille coupent leurs sirènes et arrêtent la poursuite.
+     * Mort du joueur (tué par la police ou non) : l'affaire est close pour TOUS les personnages. Toutes les factions
+     * (police, patrouilles soviétiques, rebelles, gangs...) oublient leur hostilité, plus aucun bot ne le vise ni ne le
+     * poursuit, les voitures de patrouille coupent leurs sirènes. (Les factions hostiles à vue attaqueront de nouveau
+     * seulement si elles le revoient dans leur ville.)
      */
     public static void calmPolice(ServerLevel level, ServerPlayer player) {
-        fr.modeminecraft.entity.bot.FactionRelations.forgive(player.getUUID(), fr.modeminecraft.entity.bot.Faction.POLICE);
-        for (HumanBotEntity bot : level.getEntitiesOfClass(HumanBotEntity.class, player.getBoundingBox().inflate(160),
-                b -> b.faction().group.equals("police"))) {
-            if (bot.getTarget() == player) {
+        fr.modeminecraft.entity.bot.FactionRelations.forgetAll(player.getUUID());
+        for (HumanBotEntity bot : level.getEntitiesOfClass(HumanBotEntity.class, player.getBoundingBox().inflate(256))) {
+            if (bot.getTarget() == player || bot.getLastHurtByMob() == player) {
+                bot.setLastHurtByMob(null);
                 bot.setTarget(null);
                 bot.setAggressive(false);
                 bot.setAlertEnd(0);
             }
         }
-        for (var v : level.getEntitiesOfClass(fr.modeminecraft.entity.VehicleEntity.class, player.getBoundingBox().inflate(160),
+        // drones ennemis (micro-drones, kamikazes) qui le traquaient : ils rentrent
+        for (var d : level.getEntitiesOfClass(fr.modeminecraft.entity.drone.DroneEntity.class, player.getBoundingBox().inflate(256),
+                d -> d.botTarget == player.getId())) {
+            d.botTarget = -1;
+        }
+        for (var v : level.getEntitiesOfClass(fr.modeminecraft.entity.VehicleEntity.class, player.getBoundingBox().inflate(256),
                 e -> e.type() == fr.modeminecraft.entity.VehicleEntity.Type.POLICE_CAR)) {
             if (v.traffic != null) {
                 v.traffic.stopChase(player);
