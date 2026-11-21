@@ -336,7 +336,7 @@ public class RecipeViewScreen extends Screen {
 
     private void renderWorldGen(GuiGraphics g) {
         boolean titanium = !RecipeIndex.normalize(stack.getHoverName().getString()).contains("rubis");
-        int min = -64, max = titanium ? 16 : 32, best = titanium ? -32 : -16;
+        int min = -64, max = titanium ? 48 : 56, best = titanium ? -8 : -4;
         caption(g, Component.translatable("gui.modeminecraft.book.tab.worldgen"));
         // Diagramme des couches : de Y = -64 (bas) à Y = 80 (haut)
         int x0 = wx + 16, y0 = wy + 72, h = 120, top = 80, bottom = -64;

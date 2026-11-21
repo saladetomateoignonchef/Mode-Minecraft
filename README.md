@@ -17,7 +17,7 @@ Mod **NeoForge** pour **Minecraft 1.21.1** : tout ce qu'on a toujours voulu dans
 ## Contenu
 
 ### Minerai de rubis
-- **Minerai de rubis** (pierre + abîmes) : généré dans l'Overworld entre Y=-64 et Y=32 (pic vers Y=-16).
+- **Minerai de rubis** (pierre + abîmes) : généré dans l'Overworld entre Y=-64 et Y=56 (pic vers Y=-4), plus fréquent que l'or et moins que le fer.
 - Se mine avec une pioche en **fer** minimum, compatible Fortune et Toucher de soie.
 - **Bloc de rubis** (9 rubis), utilisable comme base de balise.
 
@@ -318,7 +318,7 @@ Fabrication : table d'armement, onglet **Protections**. Toutes ces pièces sont 
 - **Bonus d'ensemble** : casque + gilet + pantalon + rangers de la même époque = régénération +10 %.
 
 ### Nouveaux minerais et matériaux
-- **Titane** : minerai (et minerai des abîmes) entre Y = -64 et Y = 16, aussi rare que l'or, pioche en fer minimum.
+- **Titane** : minerai (et minerai des abîmes) entre Y = -64 et Y = 48, plus fréquent que l'or et moins que le fer, pioche en fer minimum.
   Titane brut → four / haut-fourneau → **lingot de titane** ; 4 lingots → 2 **plaques de titane**.
 - **Composite céramique-titane** : plaque de titane + terre cuite + poudre de blaze + quartz → préforme → haut-fourneau.
 - **Acier** : 1 lingot de fer + 2 charbons → **fer carburé** → haut-fourneau (ou four, plus lent) → **lingot d'acier** ;
