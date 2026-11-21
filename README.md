@@ -387,7 +387,7 @@ Des **villes générées** apparaissent selon le biome (un centre de ville par r
 
 - **Bots** : corps de joueur, 78 skins 64x64 sur mesure (aucun Steve / Alex), casques / gilets / pantalons / rangers du mod,
   armes à deux mains, recul, rechargement, accroupis à couvert, snipers allongés sur les toits, servants de tourelles.
-- **IA** : sommation de 3,5 s (icône jaune + radio) si une arme est visible (en main, dans le dos ou à la hanche) ; on la retire de la barre d'action = ils se calment, sinon toute
+- **IA** : sommation de 3,5 s (icône jaune + radio) seulement si une arme est tenue **en main** (rangée dans l'inventaire ou la barre d'action, même visible dans le dos : rien) ; on la range = ils se calment, sinon toute
   la faction devient hostile (5 min). Vision en cône de 110° (45 blocs, 90 pour les snipers) et ouïe à 10 blocs ;
   coups de feu entendus à 40 blocs (16 avec silencieux) ; coffres pillés sous leurs yeux ; prise de couverture derrière
   un muret, rafales courtes, grenades ; patrouilles en binôme ; **renforts SWAT** en cas de fusillade avec la police.
@@ -518,7 +518,9 @@ Des **villes générées** apparaissent selon le biome (un centre de ville par r
   **3 cellules de 5 x 5 x 4** (béton, porte coulissante à barreaux à voyant rouge / vert, lit, sanitaire en inox, banc,
   fenêtre haute à barreaux, plafond lumineux), un étage entier de **vestiaires : 160 casiers** verrouillés (gilets,
   casques, munitions, fusils à pompe, PM, cartes d'accès...), bureaux fermés à clé, armurerie au sous-sol.
-- **Police** : elle ne réagit qu'à une arme **en main** (pas dans le dos). **Tué par la police** : vous êtes arrêté,
+- **Police, shérifs, sécurité de la mine, Soviétiques (dehors)** : seule une arme **en main** les fait réagir (pas une arme rangée).
+  Les factions hostiles à vue (milice du désert, garnison des bases, mercenaires arctiques, cartel, raffinerie, Faucons
+  Blancs) attaquent toujours dès qu'elles vous voient dans leur ville, armé ou non. **Tué par la police** : vous êtes arrêté,
   tout votre équipement est confisqué et vous réapparaissez dans une cellule du commissariat ; la porte s'ouvre après
   **2 minutes** (minuterie au-dessus de la porte), ou plus tôt grâce au pupitre du poste de garde / un complice.
 - **Civils** : flânent sur les trottoirs, traversent aux passages piétons, s'assoient sur les bancs, discutent par petits

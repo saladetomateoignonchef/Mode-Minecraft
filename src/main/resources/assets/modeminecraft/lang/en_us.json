@@ -950,7 +950,7 @@
   "tooltip.modeminecraft.access_card.1": "Opens blue-level vaults",
   "tooltip.modeminecraft.access_card.2": "Opens red-level (and blue) vaults",
   "tooltip.modeminecraft.access_card.3": "Opens every vault",
-  "message.modeminecraft.bot.warn.police": "Police: \"Drop your weapon!\" (put away every visible weapon, even on your back, or they will shoot)",
+  "message.modeminecraft.bot.warn.police": "Police: \"Drop your weapon!\" (put away the weapon in your hand, or they will shoot)",
   "message.modeminecraft.bot.warn.sheriff": "Sheriff: \"Holster that iron, stranger!\"",
   "message.modeminecraft.bot.warn.mine_security": "Security: \"No weapons on site, put it away!\"",
   "message.modeminecraft.bot.warn.soviet": "Patrol: \"Stoy! Weapon down!\"",

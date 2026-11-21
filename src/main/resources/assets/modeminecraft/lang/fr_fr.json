@@ -950,7 +950,7 @@
   "tooltip.modeminecraft.access_card.1": "Ouvre les salles blindées de niveau bleu",
   "tooltip.modeminecraft.access_card.2": "Ouvre les salles blindées de niveau rouge (et bleu)",
   "tooltip.modeminecraft.access_card.3": "Ouvre toutes les salles blindées",
-  "message.modeminecraft.bot.warn.police": "Police : « Lâchez votre arme ! » (retirez toute arme visible, même dans le dos, ou ils tireront)",
+  "message.modeminecraft.bot.warn.police": "Police : « Lâchez votre arme ! » (rangez l'arme que vous tenez en main, ou ils tireront)",
   "message.modeminecraft.bot.warn.sheriff": "Shérif : « Range ton arme, étranger ! »",
   "message.modeminecraft.bot.warn.mine_security": "Sécurité : « Arme interdite sur le site, rangez-la ! »",
   "message.modeminecraft.bot.warn.soviet": "Patrouille : « Стой ! Arme à terre ! »",

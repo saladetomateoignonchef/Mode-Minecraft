@@ -233,9 +233,12 @@ public final class BotGoals {
 
         private boolean curfewWarning;
 
-        /** La police ne réagit qu'à une arme EN MAIN ; les autres factions aussi à une arme dans le dos ou à la hanche. */
+        /**
+         * Seule une arme tenue EN MAIN (main principale ou secondaire) déclenche une sommation : une arme rangée dans
+         * l'inventaire ou dans la barre d'action (même visible dans le dos) laisse toutes les factions indifférentes.
+         */
         private boolean threat(Player p) {
-            return bot.faction().group.equals("police") ? armedInHand(p) : armedVisible(p);
+            return armedInHand(p);
         }
 
         /**
