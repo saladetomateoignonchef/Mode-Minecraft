@@ -40,6 +40,9 @@ public class GearLayer<T extends LivingEntity, M extends HumanoidModel<T>> exten
     @Override
     public void render(PoseStack pose, MultiBufferSource buffers, int light, T entity, float limbSwing, float limbSwingAmount,
                        float partialTick, float ageInTicks, float netHeadYaw, float headPitch) {
+        if (RenderLod.far(entity)) {
+            return;                                   // trop loin : détail invisible
+        }
         for (EquipmentSlot slot : new EquipmentSlot[]{EquipmentSlot.LEGS, EquipmentSlot.FEET}) {
             ItemStack stack = entity.getItemBySlot(slot);
             if (!(stack.getItem() instanceof GearItem gear)) {

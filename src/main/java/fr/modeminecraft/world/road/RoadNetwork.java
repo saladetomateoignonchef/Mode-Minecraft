@@ -38,8 +38,8 @@ public final class RoadNetwork {
         }
         int rx = Math.floorDiv(chunk.x, p.spacing()), rz = Math.floorDiv(chunk.z, p.spacing());
         Map<Long, long[]> edges = new HashMap<>();
-        for (int i = -3; i <= 3; i++) {
-            for (int j = -3; j <= 3; j++) {
+        for (int i = -2; i <= 2; i++) {
+            for (int j = -2; j <= 2; j++) {
                 CityPlanner.City c = CityPlanner.city(e, rx + i, rz + j);
                 if (c == null) {
                     continue;
@@ -63,6 +63,12 @@ public final class RoadNetwork {
                 CityPlanner.City a = CityPlanner.city(e, ChunkPos.getX(ends[0]), ChunkPos.getZ(ends[0]));
                 CityPlanner.City b = CityPlanner.city(e, ChunkPos.getX(ends[1]), ChunkPos.getZ(ends[1]));
                 if (a == null || b == null) {
+                    continue;
+                }
+                // tracé encore inconnu : on ne le calcule que si ce chunk est dans sa zone (évite des centaines de calculs inutiles)
+                int m = 100;
+                if (Math.max(a.middleX(), b.middleX()) + m < x0 || Math.min(a.middleX(), b.middleX()) - m > x1
+                        || Math.max(a.middleZ(), b.middleZ()) + m < z0 || Math.min(a.middleZ(), b.middleZ()) - m > z1) {
                     continue;
                 }
                 path = build(e, a, b);

@@ -26,6 +26,9 @@ public class VestLayer<T extends LivingEntity, M extends HumanoidModel<T>> exten
     @Override
     public void render(PoseStack pose, MultiBufferSource buffers, int light, T entity, float limbSwing, float limbSwingAmount,
                        float partialTick, float ageInTicks, float netHeadYaw, float headPitch) {
+        if (RenderLod.far(entity)) {
+            return;                                   // trop loin : détail invisible
+        }
         ItemStack vest = fr.modeminecraft.item.tactical.TacticalSlots.vest(entity);
         if (!(vest.getItem() instanceof VestItem)) {
             return;

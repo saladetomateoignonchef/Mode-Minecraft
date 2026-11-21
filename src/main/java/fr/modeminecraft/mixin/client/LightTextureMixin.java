@@ -17,6 +17,21 @@ import org.spongepowered.asm.mixin.injection.Redirect;
  */
 @Mixin(LightTexture.class)
 public abstract class LightTextureMixin {
+    /** Intensité de la nuit pour cette mise à jour de la lightmap (calculée une seule fois, pas pour chaque pixel). */
+    @org.spongepowered.asm.mixin.Unique
+    private static float modeminecraft$night;
+
+    @org.spongepowered.asm.mixin.injection.Inject(method = "updateLightTexture", at = @At("HEAD"))
+    private void modeminecraft$prepare(float partial, org.spongepowered.asm.mixin.injection.callback.CallbackInfo ci) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null || mc.player == null || !mc.level.dimensionType().hasSkyLight() || mc.level.effects().forceBrightLightmap()
+                || mc.player.hasEffect(MobEffects.NIGHT_VISION) || mc.level.getSkyFlashTime() > 0) {
+            modeminecraft$night = 0;
+        } else {
+            modeminecraft$night = Mth.clamp((0.75f - mc.level.getSkyDarken(1.0F)) / 0.5f, 0, 1);
+        }
+    }
+
     @Redirect(method = "updateLightTexture", at = @At(value = "INVOKE",
             target = "Lcom/mojang/blaze3d/platform/NativeImage;setPixelRGBA(III)V"))
     private void modeminecraft$darkNights(NativeImage image, int block, int sky, int abgr) {
@@ -24,15 +39,8 @@ public abstract class LightTextureMixin {
     }
 
     private static int modeminecraft$darken(int block, int sky, int abgr) {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.level == null || mc.player == null || !mc.level.dimensionType().hasSkyLight()
-                || mc.level.effects().forceBrightLightmap() || mc.player.hasEffect(MobEffects.NIGHT_VISION)) {
-            return abgr;
-        }
-        // 1 le jour, ~0,2 la nuit : intensité de la nuit
-        float skyDarken = mc.level.getSkyDarken(1.0F);
-        float night = Mth.clamp((0.75f - skyDarken) / 0.5f, 0, 1);
-        if (night <= 0 || mc.level.getSkyFlashTime() > 0) {
+        float night = modeminecraft$night;
+        if (night <= 0) {
             return abgr;
         }
         float bl = block / 15f;

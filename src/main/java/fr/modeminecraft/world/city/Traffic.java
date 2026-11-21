@@ -70,6 +70,13 @@ public final class Traffic {
             return Math.floorMod(x + city.rad(), 3) == 0 && Math.floorMod(z + city.rad(), 3) == 0;
         }
 
+        /** Fin de poursuite (suspect mort ou disparu). */
+        public void stopChase(Player p) {
+            if (chase == p) {
+                chase = null;
+            }
+        }
+
         /** Point de la voie de droite, au bord de sortie du chunk courant. */
         Vec3 exitPoint() {
             double x0 = (city.center().x + dx) * 16, z0 = (city.center().z + dz) * 16;

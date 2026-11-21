@@ -963,9 +963,9 @@
   "item.modeminecraft.bandage": "Bandage",
   "item.modeminecraft.first_aid_kit": "Trousse de premiers secours",
   "item.modeminecraft.adrenaline_syringe": "Seringue d'adrénaline",
-  "tooltip.modeminecraft.medical.bandage": "+4 PV, arrête le saignement (1,6 s)",
-  "tooltip.modeminecraft.medical.first_aid_kit": "+12 PV, retire tous les effets négatifs (3 s)",
-  "tooltip.modeminecraft.medical.adrenaline": "+6 PV, vitesse II, force et résistance pendant 15 s",
+  "tooltip.modeminecraft.medical.bandage": "Clic droit : +4 PV tout de suite, arrête le saignement",
+  "tooltip.modeminecraft.medical.first_aid_kit": "Clic droit : +8 PV, puis +4 PV en 5 s, retire tous les effets négatifs",
+  "tooltip.modeminecraft.medical.adrenaline": "Clic droit : +6 PV, vitesse II, force et résistance pendant 15 s",
   "block.modeminecraft.vault_door_blue": "Porte blindée (carte bleue)",
   "block.modeminecraft.vault_door_red": "Porte blindée (carte rouge)",
   "block.modeminecraft.vault_door_black": "Porte blindée (carte noire)",
@@ -1188,5 +1188,9 @@
   "item.modeminecraft.sedan": "Berline",
   "item.modeminecraft.taxi": "Taxi",
   "item.modeminecraft.bus": "Bus urbain",
-  "entity.modeminecraft.pigeon": "Pigeon"
+  "entity.modeminecraft.pigeon": "Pigeon",
+  "message.modeminecraft.medical.full": "Vous êtes déjà en pleine forme",
+  "message.modeminecraft.medical.bandage": "Bandage posé : +%s PV, saignement arrêté",
+  "message.modeminecraft.medical.first_aid_kit": "Trousse de secours : +%s PV, effets négatifs soignés",
+  "message.modeminecraft.medical.adrenaline": "Adrénaline ! +%s PV, vitesse, force et résistance"
 }

@@ -16,7 +16,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
@@ -24,9 +23,9 @@ import java.util.List;
 
 /**
  * Soins tactiques :
- * - bandage (1,6 s) : +4 PV, arrête le saignement ;
- * - trousse de premiers secours (3 s) : +12 PV et retire tous les effets négatifs ;
- * - seringue d'adrénaline (0,5 s) : +6 PV, vitesse II, force I et résistance I pendant 15 s.
+ * - bandage : +4 PV tout de suite (+ régénération), arrête le saignement ;
+ * - trousse de premiers secours : +8 PV tout de suite, +4 PV de régénération, retire tous les effets négatifs ;
+ * - seringue d'adrénaline : +6 PV, vitesse II, force I et résistance I pendant 15 s.
  */
 public class MedicalItem extends Item {
     public enum Kind { BANDAGE, FIRST_AID_KIT, ADRENALINE }
@@ -38,58 +37,70 @@ public class MedicalItem extends Item {
         this.kind = kind;
     }
 
-    @Override
-    public int getUseDuration(ItemStack stack, LivingEntity entity) {
-        return switch (kind) {
-            case BANDAGE -> 32;
-            case FIRST_AID_KIT -> 60;
-            case ADRENALINE -> 10;
-        };
-    }
-
-    @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
-        return kind == Kind.ADRENALINE ? UseAnim.SPEAR : UseAnim.BOW;
-    }
-
+    /**
+     * Un simple clic droit suffit : le soin est appliqué tout de suite (cœurs, son, message), avec un court délai
+     * avant le suivant. Pas de gaspillage : en pleine santé et sans effet à soigner, l'objet n'est pas consommé.
+     */
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        player.startUsingItem(hand);
-        return InteractionResultHolder.consume(player.getItemInHand(hand));
+        ItemStack stack = player.getItemInHand(hand);
+        boolean hurt = player.getHealth() < player.getMaxHealth();
+        boolean bad = player.getActiveEffects().stream().anyMatch(e -> e.getEffect().value().getCategory() == MobEffectCategory.HARMFUL);
+        if (kind != Kind.ADRENALINE && !hurt && !bad) {
+            if (!level.isClientSide) {
+                player.displayClientMessage(Component.translatable("message.modeminecraft.medical.full").withStyle(ChatFormatting.GRAY), true);
+            }
+            return InteractionResultHolder.fail(stack);
+        }
+        player.swing(hand, true);
+        if (!level.isClientSide) {
+            float before = player.getHealth();
+            treat(player);
+            float healed = player.getHealth() - before;
+            level.playSound(null, player.getX(), player.getY(), player.getZ(), kind == Kind.ADRENALINE ? SoundEvents.HONEY_DRINK : SoundEvents.ARMOR_EQUIP_LEATHER.value(),
+                    SoundSource.PLAYERS, 0.9f, kind == Kind.ADRENALINE ? 1.6f : 1.0f);
+            ((net.minecraft.server.level.ServerLevel) level).sendParticles(net.minecraft.core.particles.ParticleTypes.HEART,
+                    player.getX(), player.getY() + 1.2, player.getZ(), Math.max(2, (int) healed), 0.4, 0.3, 0.4, 0.05);
+            player.displayClientMessage(Component.translatable("message.modeminecraft.medical." + kind.name().toLowerCase(),
+                    String.format(java.util.Locale.ROOT, "%.0f", healed)).withStyle(ChatFormatting.GREEN), true);
+            if (!player.getAbilities().instabuild) {
+                stack.shrink(1);
+            }
+            player.getCooldowns().addCooldown(this, kind == Kind.FIRST_AID_KIT ? 40 : 20);
+        }
+        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
     }
 
-    @Override
-    public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity user) {
-        if (!level.isClientSide) {
-            switch (kind) {
-                case BANDAGE -> {
-                    user.heal(4);
-                    removeBleeding(user);
-                }
-                case FIRST_AID_KIT -> {
-                    user.heal(12);
-                    List<Holder<MobEffect>> bad = new ArrayList<>();
-                    for (MobEffectInstance e : user.getActiveEffects()) {
-                        if (e.getEffect().value().getCategory() == MobEffectCategory.HARMFUL) {
-                            bad.add(e.getEffect());
-                        }
-                    }
-                    bad.forEach(user::removeEffect);
-                }
-                case ADRENALINE -> {
-                    user.heal(6);
-                    user.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 300, 1));
-                    user.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 300, 0));
-                    user.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 300, 0));
-                }
+    private void treat(LivingEntity user) {
+        switch (kind) {
+            case BANDAGE -> {
+                user.heal(4);
+                removeBleeding(user);
+                user.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 60, 0));            // + un peu de régénération
             }
-            level.playSound(null, user.getX(), user.getY(), user.getZ(), kind == Kind.ADRENALINE ? SoundEvents.HONEY_DRINK : SoundEvents.ARMOR_EQUIP_LEATHER.value(),
-                    SoundSource.PLAYERS, 0.8f, kind == Kind.ADRENALINE ? 1.6f : 1.0f);
+            case FIRST_AID_KIT -> {
+                user.heal(8);
+                List<Holder<MobEffect>> bad = new ArrayList<>();
+                for (MobEffectInstance e : user.getActiveEffects()) {
+                    if (e.getEffect().value().getCategory() == MobEffectCategory.HARMFUL) {
+                        bad.add(e.getEffect());
+                    }
+                }
+                bad.forEach(user::removeEffect);
+                user.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 100, 1));           // +4 PV sur 5 s
+            }
+            case ADRENALINE -> {
+                user.heal(6);
+                user.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 300, 1));
+                user.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 300, 0));
+                user.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 300, 0));
+            }
         }
-        if (!(user instanceof Player p && p.getAbilities().instabuild)) {
-            stack.shrink(1);
-        }
-        return stack;
+    }
+
+    /** Pour les bots (soins entre deux combats). */
+    public void applyTo(LivingEntity user) {
+        treat(user);
     }
 
     private static void removeBleeding(LivingEntity user) {

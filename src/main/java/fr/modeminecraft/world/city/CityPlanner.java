@@ -118,8 +118,8 @@ public final class CityPlanner {
     static Integer baseY(Env e, String variant, int rad, int cx, int cz, int center, boolean forced) {
         var gen = e.gen();
         int sea = gen.getSeaLevel();
-        int n = rad <= 7 ? 1 : 2;
-        int span = rad * 16 / n;
+        int n = 1;                                                  // 3 x 3 relevés (le calcul du relief coûte cher)
+        int span = rad * 16 * 3 / 4;
         int min = center, max = center, water = 0, samples = 0;
         for (int i = -n; i <= n; i++) {
             for (int j = -n; j <= n; j++) {
@@ -150,6 +150,45 @@ public final class CityPlanner {
             return null;                                           // trop accidenté ou dans l'eau
         }
         return variant.equals("mine") ? min + 1 : center;
+    }
+
+    private static final java.util.Set<Long> PENDING = ConcurrentHashMap.newKeySet();
+
+    /**
+     * Comme {@link #cityAt}, mais sans jamais calculer sur le fil appelant (fil principal du serveur) : les régions pas
+     * encore connues sont calculées en arrière-plan et seront disponibles au prochain appel.
+     */
+    public static City cityAtCached(Env e, int x, int z, int margin) {
+        CityPlacement p = placement(e.reg());
+        if (p == null) {
+            return null;
+        }
+        Map<Long, Optional<City>> cache;
+        synchronized (CACHE) {
+            cache = CACHE.computeIfAbsent(e.gen(), g -> new ConcurrentHashMap<>());
+        }
+        int rx = Math.floorDiv(x >> 4, p.spacing()), rz = Math.floorDiv(z >> 4, p.spacing());
+        for (int di = -1; di <= 1; di++) {
+            for (int dj = -1; dj <= 1; dj++) {
+                int ax = rx + di, az = rz + dj;
+                long key = ChunkPos.asLong(ax, az) ^ e.seed() * 31;
+                Optional<City> c = cache.get(key);
+                if (c == null) {
+                    if (PENDING.add(key)) {
+                        net.minecraft.Util.backgroundExecutor().execute(() -> {
+                            try {
+                                city(e, ax, az);
+                            } finally {
+                                PENDING.remove(key);
+                            }
+                        });
+                    }
+                } else if (c.isPresent() && c.get().contains(x, z, margin)) {
+                    return c.get();
+                }
+            }
+        }
+        return null;
     }
 
     /** La ville (s'il y en a une) qui couvre ce point, avec une marge en blocs. */

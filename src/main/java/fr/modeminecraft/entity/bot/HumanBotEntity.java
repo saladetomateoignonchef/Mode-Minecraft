@@ -428,8 +428,21 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
     }
 
     // ------------------------------------------------------------------ Chef des Troupes de Choc : épée dans le dos
+    /** Aucun joueur à moins de 48 blocs (recalculé chaque seconde) : l'IA tourne au ralenti. */
+    private boolean farFromPlayers;
+
     @Override
     public void aiStep() {
+        if (!level().isClientSide) {
+            if ((tickCount + getId()) % 20 == 0) {
+                farFromPlayers = level().getNearestPlayer(this, 48) == null;
+            }
+            // économie : un bot loin des joueurs, au repos, ne réfléchit qu'un tick sur quatre
+            if (farFromPlayers && (tickCount + getId()) % 4 != 0 && onGround() && getNavigation().isDone() && getTarget() == null
+                    && !isPassenger()) {
+                return;
+            }
+        }
         super.aiStep();
         if (level().isClientSide) {
             return;

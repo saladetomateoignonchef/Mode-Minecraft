@@ -28,7 +28,7 @@ public final class CityPresence {
                 || !(player.level() instanceof ServerLevel level) || level.dimension() != net.minecraft.world.level.Level.OVERWORLD) {
             return;
         }
-        CityPlanner.City city = CityPlanner.cityAt(CityPlanner.Env.of(level), player.getBlockX(), player.getBlockZ(), 8);
+        CityPlanner.City city = CityPlanner.cityAtCached(CityPlanner.Env.of(level), player.getBlockX(), player.getBlockZ(), 8);
         CityPlanner.City before = CURRENT.get(player.getUUID());
         if (city == null) {
             CURRENT.remove(player.getUUID());

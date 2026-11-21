@@ -38,6 +38,9 @@ public final class Arrest {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onDeath(LivingDeathEvent event) {
+        if (event.getEntity() instanceof ServerPlayer dead && dead.level() instanceof ServerLevel lvl) {
+            calmPolice(lvl, dead);
+        }
         if (!(event.getEntity() instanceof ServerPlayer player) || !(player.level() instanceof ServerLevel level)
                 || !(event.getSource().getEntity() instanceof HumanBotEntity bot) || !bot.faction().group.equals("police")) {
             return;
@@ -76,6 +79,31 @@ public final class Arrest {
             JailDoorBlockEntity.lock(level, lower, SENTENCE, player.getUUID());
         }
         player.displayClientMessage(Component.translatable("message.modeminecraft.jail.arrested", SENTENCE / 1200).withStyle(ChatFormatting.RED), false);
+    }
+
+    /**
+     * Mort du joueur (tué par la police ou non) : l'affaire est close. La police et le SWAT oublient leur hostilité,
+     * les agents cessent de le viser, les voitures de patrouille coupent leurs sirènes et arrêtent la poursuite.
+     */
+    public static void calmPolice(ServerLevel level, ServerPlayer player) {
+        fr.modeminecraft.entity.bot.FactionRelations.forgive(player.getUUID(), fr.modeminecraft.entity.bot.Faction.POLICE);
+        for (HumanBotEntity bot : level.getEntitiesOfClass(HumanBotEntity.class, player.getBoundingBox().inflate(160),
+                b -> b.faction().group.equals("police"))) {
+            if (bot.getTarget() == player) {
+                bot.setTarget(null);
+                bot.setAggressive(false);
+                bot.setAlertEnd(0);
+            }
+        }
+        for (var v : level.getEntitiesOfClass(fr.modeminecraft.entity.VehicleEntity.class, player.getBoundingBox().inflate(160),
+                e -> e.type() == fr.modeminecraft.entity.VehicleEntity.Type.POLICE_CAR)) {
+            if (v.traffic != null) {
+                v.traffic.stopChase(player);
+            }
+            if (v.sirenOn() && v.trafficCar) {
+                v.toggleSiren();
+            }
+        }
     }
 
     private static BlockPos findDoor(Level level, BlockPos near) {

@@ -43,7 +43,24 @@ public class HumanBotRenderer extends HumanoidMobRenderer<HumanBotEntity, HumanB
     public HumanBotRenderer(EntityRendererProvider.Context ctx) {
         super(ctx, new BotModel(ctx.bakeLayer(ModelLayers.PLAYER)), 0.5f);
         addLayer(new HumanoidArmorLayer<>(this, new HumanoidArmorModel<>(ctx.bakeLayer(ModelLayers.PLAYER_INNER_ARMOR)),
-                new HumanoidArmorModel<>(ctx.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR)), ctx.getModelManager()));
+                new HumanoidArmorModel<>(ctx.bakeLayer(ModelLayers.PLAYER_OUTER_ARMOR)), ctx.getModelManager()) {
+            @Override
+            public void render(PoseStack pose, MultiBufferSource buffers, int light, HumanBotEntity bot, float a, float b, float c, float d, float e, float f) {
+                if (!RenderLod.far(bot)) {
+                    super.render(pose, buffers, light, bot, a, b, c, d, e, f);
+                }
+            }
+        });
+        // armes tenues (modèles 3D détaillés) : seulement de près
+        layers.removeIf(l -> l instanceof net.minecraft.client.renderer.entity.layers.ItemInHandLayer);
+        addLayer(new net.minecraft.client.renderer.entity.layers.ItemInHandLayer<>(this, ctx.getItemInHandRenderer()) {
+            @Override
+            public void render(PoseStack pose, MultiBufferSource buffers, int light, HumanBotEntity bot, float a, float b, float c, float d, float e, float f) {
+                if (!RenderLod.far(bot)) {
+                    super.render(pose, buffers, light, bot, a, b, c, d, e, f);
+                }
+            }
+        });
         addLayer(new CapeLayer(this));
         addLayer(new BackSwordLayer(this));
     }
@@ -222,6 +239,9 @@ public class HumanBotRenderer extends HumanoidMobRenderer<HumanBotEntity, HumanB
         @Override
         public void render(PoseStack pose, MultiBufferSource buffers, int light, HumanBotEntity bot, float limbSwing, float limbAmount,
                            float partial, float age, float headYaw, float headPitch) {
+            if (RenderLod.far(bot)) {
+                return;
+            }
             if (bot.faction() != Faction.FALCON || bot.isInvisible() || bot.getPose() == Pose.SWIMMING) {
                 return;
             }
@@ -249,6 +269,9 @@ public class HumanBotRenderer extends HumanoidMobRenderer<HumanBotEntity, HumanB
         @Override
         public void render(PoseStack pose, MultiBufferSource buffers, int light, HumanBotEntity bot, float limbSwing, float limbAmount,
                            float partial, float age, float headYaw, float headPitch) {
+            if (RenderLod.far(bot)) {
+                return;
+            }
             if (bot.role() != BotRole.CHIEF || !bot.getMainHandItem().isEmpty()) {
                 return;
             }

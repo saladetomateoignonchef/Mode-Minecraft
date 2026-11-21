@@ -133,14 +133,17 @@ final class CityGen {
         // égouts sous la chaussée
         sewer(b, ns || !ew, ew || !ns, ns && ew);
         // habitants et police
+        // (densités réduites : une métropole de 31 x 31 chunks comptait sinon ~400 habitants, trop lourd)
         if (ns && ew) {
-            if (b.chance(0.4f)) {
+            if (b.chance(0.08f)) {
                 b.pair(3, 0, 3, Faction.POLICE, 40);
+            } else if (b.chance(0.12f)) {
+                b.bot(3, 0, 3, Faction.POLICE, BotRole.SOLDIER, 40);
             }
-            if (b.chance(0.25f)) {
+            if (b.chance(0.15f)) {
                 b.bot(7, -6, 7, Faction.TRADER, BotRole.TRADER, 2);                // marchand clandestin dans les égouts
             }
-        } else if (b.chance(0.3f)) {
+        } else if (b.chance(0.1f)) {
             b.bot(ns ? 1 : 7, 0, ns ? 7 : 1, Faction.CIVILIAN, BotRole.CIVILIAN, 24);
         }
     }
@@ -247,7 +250,9 @@ final class CityGen {
         b.set(13, 1, 2, Blocks.POTTED_FERN);
         Deco.camera(b, 2, 3, 13, Direction.SOUTH);
         Deco.extinguisher(b, 13, 1, 13);
-        b.bot(4, 1, 6, Faction.CIVILIAN, BotRole.CIVILIAN, 6);
+        if (b.chance(0.4f)) {
+            b.bot(4, 1, 6, Faction.CIVILIAN, BotRole.CIVILIAN, 6);
+        }
         // étages : open-spaces, salle de réunion, penthouse
         for (int f = 1; f < floors; f++) {
             int y = f * 4 + 1;
@@ -376,7 +381,7 @@ final class CityGen {
         Deco.door(b, 7, 1, 2, Direction.NORTH, Blocks.SPRUCE_DOOR);
         Deco.airConditioner(b, 4, top + 1, 4);
         Deco.antenna(b, 10, top + 1, 10, 2);
-        if (b.chance(0.4f)) {
+        if (b.chance(0.2f)) {
             b.bot(7, 1, 5, Faction.CIVILIAN, BotRole.CIVILIAN, 10);
         }
     }
@@ -401,7 +406,7 @@ final class CityGen {
         b.chest(12, 1, 13, Direction.WEST, "city_shop", false);
         b.set(7, 8, 7, Blocks.SEA_LANTERN);
         CityGenRegions.forklift(b, 3, 1, 12);
-        if (b.chance(0.5f)) {
+        if (b.chance(0.25f)) {
             b.bot(7, 1, 2, Faction.CIVILIAN, BotRole.CIVILIAN, 12);
         }
     }
@@ -449,7 +454,7 @@ final class CityGen {
         if (h < 0.5) {
             Deco.kiosk(b, 12, 0, 5);
         }
-        if (b.chance(0.6f)) {
+        if (b.chance(0.3f)) {
             b.bot(5, 0, 5, Faction.CIVILIAN, BotRole.CIVILIAN, 10);
         }
     }
@@ -485,7 +490,7 @@ final class CityGen {
         b.fill(0, 0, 12, 15, 0, 12, Blocks.OAK_FENCE);
         b.set(2, 0, 14, Blocks.ROSE_BUSH);
         b.set(13, 0, 14, Blocks.LILAC);
-        if (h > 0.4) {
+        if (h > 0.7) {
             b.bot(7, 1, 7, Faction.CIVILIAN, BotRole.CIVILIAN, 10);
         }
     }

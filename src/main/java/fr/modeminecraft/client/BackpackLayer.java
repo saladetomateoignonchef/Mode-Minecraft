@@ -22,6 +22,9 @@ public class BackpackLayer extends RenderLayer<AbstractClientPlayer, PlayerModel
     @Override
     public void render(PoseStack pose, MultiBufferSource buffers, int light, AbstractClientPlayer player, float limbSwing,
                        float limbSwingAmount, float partialTick, float ageInTicks, float netHeadYaw, float headPitch) {
+        if (RenderLod.far(player)) {
+            return;                                   // trop loin : détail invisible
+        }
         ItemStack bag = TacticalSlots.backpack(player);
         if (bag.isEmpty() || player.isInvisible()) {
             return;

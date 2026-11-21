@@ -90,7 +90,7 @@ public final class CivilianLife {
 
         @Override
         public boolean canUse() {
-            if (!civilian(bot) && bot.role() != BotRole.TRADER || bot.tickCount % 4 != 0) {
+            if (!civilian(bot) && bot.role() != BotRole.TRADER || (bot.tickCount + bot.getId()) % 6 != 0) {
                 return false;
             }
             threat = aimingAt(bot);
@@ -165,7 +165,8 @@ public final class CivilianLife {
         @Override
         public boolean canUse() {
             return civilian(bot) && !bot.shopkeeper && bot.eventUntil < bot.level().getGameTime() && bot.getVehicle() == null
-                    && bot.scaredUntil < bot.level().getGameTime() && bot.getRandom().nextInt(40) == 0;
+                    && bot.scaredUntil < bot.level().getGameTime() && bot.getRandom().nextInt(80) == 0
+                    && bot.level().getNearestPlayer(bot, 48) != null;
         }
 
         @Override
@@ -184,7 +185,7 @@ public final class CivilianLife {
                 return;
             }
             float r = bot.getRandom().nextFloat();
-            if (r < 0.3f && (spot = find(12, s -> s.getBlock() instanceof StairBlock && s.getValue(StairBlock.HALF) == Half.BOTTOM
+            if (r < 0.3f && (spot = find(9, s -> s.getBlock() instanceof StairBlock && s.getValue(StairBlock.HALF) == Half.BOTTOM
                     && s.is(Blocks.DARK_OAK_STAIRS))) != null) {
                 left = 300 + bot.getRandom().nextInt(400);                        // banc public
             } else if (r < 0.55f && (partner = chatPartner()) != null) {
@@ -192,7 +193,7 @@ public final class CivilianLife {
                 partner.eventUntil = level.getGameTime() + left;
                 partner.setActivity(CHATTING);
                 partner.getNavigation().stop();
-            } else if (r < 0.7f && (spot = find(14, s -> s.is(Blocks.LECTERN))) != null) {
+            } else if (r < 0.7f && (spot = find(10, s -> s.is(Blocks.LECTERN))) != null) {
                 left = 160 + bot.getRandom().nextInt(200);                        // kiosque à journaux
             } else {
                 Vec3 dest = DefaultRandomPos.getPos(bot, 16, 4);
@@ -243,7 +244,7 @@ public final class CivilianLife {
             BlockPos best = null;
             double bd = Double.MAX_VALUE;
             BlockPos c = bot.blockPosition();
-            for (BlockPos p : BlockPos.betweenClosed(c.offset(-r, -2 + dy, -r), c.offset(r, 2 + dy, r))) {
+            for (BlockPos p : BlockPos.betweenClosed(c.offset(-r, -1 + dy, -r), c.offset(r, 1 + dy, r))) {
                 if (test.test(bot.level().getBlockState(p)) && bot.level().getBlockState(p.above()).isAir()) {
                     double d = p.distSqr(c) + bot.getRandom().nextInt(20);
                     if (d < bd) {

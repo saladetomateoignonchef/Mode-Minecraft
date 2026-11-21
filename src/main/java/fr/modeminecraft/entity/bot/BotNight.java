@@ -58,7 +58,7 @@ public final class BotNight {
         boolean on = GunItem.lightMode(gun) != LightMode.OFF;
         if ((bot.tickCount + bot.getId()) % 20 == 0) {
             boolean want = bot.isAlive() && bot.faction().combatant() && NightOps.isNight(level)
-                    && level.getNearestPlayer(bot, 64) != null && !bot.isPassenger();
+                    && level.getNearestPlayer(bot, 32) != null && !bot.isPassenger();
             if (want != on) {
                 gun.set(ModDataComponents.LIGHT_MODE.get(), want ? LightMode.ON : LightMode.OFF);
                 on = want;
@@ -68,7 +68,7 @@ public final class BotNight {
             }
         }
         if (on && (bot.tickCount + bot.getId()) % 4 == 0) {
-            if (level.getNearestPlayer(bot, 48) != null) {
+            if (level.getNearestPlayer(bot, 32) != null) {
                 FlashlightHandler.updateBot(bot, level, light);
             } else {
                 FlashlightHandler.clear(bot);

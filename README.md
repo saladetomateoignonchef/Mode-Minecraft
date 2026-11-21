@@ -399,8 +399,9 @@ Des **villes générées** apparaissent selon le biome (un centre de ville par r
 - **Salles fortes** : portes blindées à carte d'accès bleue / rouge / noire (fermeture auto après 5 s).
 - **Marchands clandestins** (égouts, souk, saloon, pontons) : achètent armes et butin, vendent munitions, soins, piles,
   cartes d'accès (la carte noire contre un Insigne du Faucon Blanc).
-- **Soins** : bandage (+4 PV, arrête le saignement), trousse de premiers secours (+12 PV, retire les effets négatifs),
-  seringue d'adrénaline (vitesse, force, résistance).
+- **Soins** (un simple clic droit, effet immédiat, cœurs et message ; rien n'est gâché en pleine santé) : bandage
+  (+4 PV, arrête le saignement), trousse de premiers secours (+8 PV puis +4 PV, retire les effets négatifs),
+  seringue d'adrénaline (+6 PV, vitesse, force, résistance).
 - **Largages aériens** (≈ toutes les 25 min) : caisse sous parachute, coffre de butin rare et fumée ; les Faucons
   Blancs et la faction locale s'affrontent pour la récupérer.
 - **Véhicules conduisibles** (table d'armement) : quad, voiture de police (L : sirène et gyrophares), jeep militaire,
@@ -540,6 +541,10 @@ Des **villes générées** apparaissent selon le biome (un centre de ville par r
   gilets fluo, cônes, échafaudage), agent de propreté, **musicien de rue** et son public, artiste qui peint une
   **fresque murale** bloc par bloc.
 - Correctif : un tableau mal créé pouvait **bloquer la génération** des villas de cartel (gel du jeu).
+- **Mort** : la police et le SWAT oublient leur hostilité et les voitures de patrouille abandonnent la poursuite.
+- **Performances** : ~3 fois moins d'habitants dans les métropoles, IA au ralenti loin des joueurs, détails 3D
+  (équipement, armes, capes) masqués au-delà de 40 blocs, lampes des bots limitées à 32 blocs, routes et plan des
+  villes calculés hors du fil principal et seulement quand c'est utile : de ~45 ms à ~6 ms par tick en métropole.
 
 ### Gameplay et progression
 - **Niveaux des armes (1 à 5)** : chaque arme garde ses statistiques (éliminations, tirs à la tête, tirs, ratio)

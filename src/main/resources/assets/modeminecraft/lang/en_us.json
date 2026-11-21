@@ -963,9 +963,9 @@
   "item.modeminecraft.bandage": "Bandage",
   "item.modeminecraft.first_aid_kit": "First Aid Kit",
   "item.modeminecraft.adrenaline_syringe": "Adrenaline Syringe",
-  "tooltip.modeminecraft.medical.bandage": "+4 HP, stops bleeding (1.6 s)",
-  "tooltip.modeminecraft.medical.first_aid_kit": "+12 HP, removes all harmful effects (3 s)",
-  "tooltip.modeminecraft.medical.adrenaline": "+6 HP, Speed II, Strength and Resistance for 15 s",
+  "tooltip.modeminecraft.medical.bandage": "Right-click: +4 HP instantly, stops bleeding",
+  "tooltip.modeminecraft.medical.first_aid_kit": "Right-click: +8 HP, then +4 HP over 5 s, cures all negative effects",
+  "tooltip.modeminecraft.medical.adrenaline": "Right-click: +6 HP, speed II, strength and resistance for 15 s",
   "block.modeminecraft.vault_door_blue": "Vault Door (blue card)",
   "block.modeminecraft.vault_door_red": "Vault Door (red card)",
   "block.modeminecraft.vault_door_black": "Vault Door (black card)",
@@ -1188,5 +1188,9 @@
   "item.modeminecraft.sedan": "Sedan",
   "item.modeminecraft.taxi": "Taxi",
   "item.modeminecraft.bus": "City bus",
-  "entity.modeminecraft.pigeon": "Pigeon"
+  "entity.modeminecraft.pigeon": "Pigeon",
+  "message.modeminecraft.medical.full": "You are already in full health",
+  "message.modeminecraft.medical.bandage": "Bandage applied: +%s HP, bleeding stopped",
+  "message.modeminecraft.medical.first_aid_kit": "First aid kit: +%s HP, negative effects cured",
+  "message.modeminecraft.medical.adrenaline": "Adrenaline! +%s HP, speed, strength and resistance"
 }
