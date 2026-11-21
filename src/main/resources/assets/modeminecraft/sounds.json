@@ -627,5 +627,24 @@
     "sounds": [
       "modeminecraft:mil/air_raid_alarm_0"
     ]
+  },
+  "mil.radio_dispatch_call": {
+    "subtitle": "subtitles.modeminecraft.radio_call",
+    "sounds": [
+      "modeminecraft:mil/radio_dispatch_call_0",
+      "modeminecraft:mil/radio_dispatch_call_1"
+    ]
+  },
+  "mil.radio_call_cut": {
+    "subtitle": "subtitles.modeminecraft.radio_cut",
+    "sounds": [
+      "modeminecraft:mil/radio_call_cut_0"
+    ]
+  },
+  "mil.vault_door_open": {
+    "subtitle": "subtitles.modeminecraft.vault_door_open",
+    "sounds": [
+      "modeminecraft:mil/vault_door_open_0"
+    ]
   }
 }

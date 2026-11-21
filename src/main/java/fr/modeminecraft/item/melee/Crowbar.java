@@ -121,13 +121,11 @@ public final class Crowbar {
         long now = level.getGameTime();
         for (HumanBotEntity bot : level.getEntitiesOfClass(HumanBotEntity.class, player.getBoundingBox().inflate(24),
                 b -> b.isAlive() && (b.faction().group.equals("police") || b.faction().group.equals("swat")))) {
-            if (BotGoals.canSee(bot, player, 24)) {
+            if (fr.modeminecraft.entity.bot.RadioCalls.sees(bot, player)) {
                 if (!FactionRelations.isHostile(player.getUUID(), bot.faction(), now)) {
                     player.displayClientMessage(Component.translatable("message.modeminecraft.crowbar.caught").withStyle(ChatFormatting.RED), true);
                 }
-                FactionRelations.markHostile(player.getUUID(), bot.faction(), now);
-                bot.setTarget(player);
-                BotEvents.alertFaction(bot, player);
+                fr.modeminecraft.entity.bot.RadioCalls.witness(bot, player);    // effraction vue : appel radio
             }
         }
     }

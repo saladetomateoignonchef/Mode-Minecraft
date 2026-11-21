@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "modeminecraft:item/police_uniform_boots"
+  }
+}

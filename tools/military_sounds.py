@@ -94,7 +94,44 @@ def alarm(seed):
     return gs.normalize(np.sign(np.sin(2 * np.pi * np.cumsum(f) / SR)) * 0.5 + np.sin(2 * np.pi * np.cumsum(f) / SR) * 0.5, 0.6)
 
 
+def radio_call(seed):
+    """Appel radio : bip d'émission, voix hachée (formants modulés) noyée dans les grésillements, bip de fin."""
+    rng = np.random.default_rng(seed)
+    t = gs.t_axis(2.4)
+    n = len(t)
+    beep = np.sin(2 * np.pi * 1400 * t) * ((t < 0.12) | ((t > 2.25) & (t < 2.35)))
+    syll = (np.sin(2 * np.pi * 4.5 * t) > -0.2) * ((t > 0.2) & (t < 2.15))
+    f0 = 140 + 30 * np.sin(2 * np.pi * 1.3 * t)
+    voice = np.sign(np.sin(2 * np.pi * np.cumsum(f0) / gs.SR)) * syll
+    voice = gs.band(voice, lo=500, hi=2600)
+    hiss = gs.band(gs.noise(n, rng), lo=1500, hi=6000) * (0.25 + 0.15 * rng.random(n))
+    return gs.normalize(beep * 0.6 + voice * 0.9 + hiss * 0.5, 0.8)
+
+
+def radio_cut(seed):
+    rng = np.random.default_rng(seed)
+    t = gs.t_axis(0.8)
+    burst = gs.band(gs.noise(len(t), rng), lo=800, hi=7000) * gs.env(t, 0.005, 0.25)
+    click = np.sin(2 * np.pi * 900 * t) * (t > 0.55) * (t < 0.6)
+    return gs.normalize(burst + click * 0.7, 0.8)
+
+
+def vault_open(seed):
+    """Porte blindée : déverrouillage (clac), sifflement hydraulique, roulement lourd, butée."""
+    rng = np.random.default_rng(seed)
+    t = gs.t_axis(3.2)
+    n = len(t)
+    clack = gs.band(gs.noise(n, rng), lo=300, hi=4000) * gs.env(t, 0.001, 0.04)
+    hiss = gs.band(gs.noise(n, rng), lo=2500, hi=9000) * np.clip((t - 0.3) / 0.3, 0, 1) * np.exp(-np.maximum(t - 1.2, 0) / 0.5)
+    rumble = gs.band(gs.noise(n, rng), lo=30, hi=220) * ((t > 0.6) & (t < 2.8)) * 0.9
+    thud = np.sin(2 * np.pi * 55 * t) * gs.env(np.maximum(t - 2.8, 0), 0.002, 0.18) * (t > 2.8)
+    return gs.normalize(clack * 0.8 + hiss * 0.6 + rumble + thud * 1.2, 0.85)
+
+
 SOUNDS = {
+    "mil.radio_dispatch_call": (lambda s: radio_call(s), 2, "radio_call"),
+    "mil.radio_call_cut": (lambda s: radio_cut(s), 1, "radio_cut"),
+    "mil.vault_door_open": (lambda s: vault_open(s), 1, "vault_door_open"),
     "mil.tank_cannon": (lambda s: boom(s), 2, "tank_cannon"),
     "mil.autocannon": (lambda s: autocannon(s), 2, "autocannon"),
     "mil.rocket_launch": (lambda s: launch(s, 1.4), 2, "rocket_launch"),

@@ -69,6 +69,8 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
     private static final EntityDataAccessor<Boolean> BERSERK = SynchedEntityData.defineId(HumanBotEntity.class, EntityDataSerializers.BOOLEAN);
     /** Activité visible d'un civil : assis, mains en l'air, en discussion, en lecture (voir CivilianLife). */
     private static final EntityDataAccessor<Byte> ACTIVITY = SynchedEntityData.defineId(HumanBotEntity.class, EntityDataSerializers.BYTE);
+    /** Appel radio en cours : fin du compte à rebours de 30 s (icône et barre au-dessus de la tête). */
+    private static final EntityDataAccessor<Long> RADIO_END = SynchedEntityData.defineId(HumanBotEntity.class, EntityDataSerializers.LONG);
     private static final ResourceLocation BERSERK_SPEED = fr.modeminecraft.ModeMinecraft.id("berserk_speed");
 
     public static final byte SWORD_BACK = 0, SWORD_DRAWING = 1, SWORD_DRAWN = 2, SWORD_SHEATHING = 3;
@@ -122,6 +124,7 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
         b.define(ROLE, BotRole.CIVILIAN.ordinal());
         b.define(SKIN, 0);
         b.define(ALERT_END, 0L);
+        b.define(RADIO_END, 0L);
         b.define(RELOAD_END, 0L);
         b.define(SHOT_AT, -100L);
         b.define(SWORD_STATE, SWORD_BACK);
@@ -284,6 +287,38 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
     }
 
     /** Ce bot doit-il combattre cette créature ? */
+    // ------------------------------------------------------------------ témoin / appel radio
+    private java.util.UUID grudge, radioTarget;
+    private long grudgeUntil;
+
+    /** Ce bot a vu ce joueur commettre un crime (hostilité personnelle, même sans alerte générale). */
+    public void setGrudge(Player p, long until) {
+        grudge = p.getUUID();
+        grudgeUntil = until;
+    }
+
+    public boolean hasGrudge(Player p) {
+        return grudge != null && grudge.equals(p.getUUID()) && level().getGameTime() < grudgeUntil;
+    }
+
+    public void forgetGrudge() {
+        grudge = null;
+        startRadio(null, 0);
+    }
+
+    public long radioEnd() {
+        return entityData.get(RADIO_END);
+    }
+
+    public java.util.UUID radioTarget() {
+        return radioTarget;
+    }
+
+    public void startRadio(Player p, long end) {
+        radioTarget = p == null ? null : p.getUUID();
+        entityData.set(RADIO_END, end);
+    }
+
     /** Joueur qui a semé ce bot (Faucons Blancs) : ignoré jusqu'à {@link #ignoreUntil}, sauf s'il revient tout près. */
     public java.util.UUID ignored;
     public long ignoreUntil;
@@ -335,6 +370,12 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
                 return false;
             }
             long now = level().getGameTime();
+            if (hasGrudge(p)) {
+                return true;                                               // témoin d'un crime de ce joueur
+            }
+            if (Disguise.immune(this, p)) {
+                return false;                                              // déguisé en membre de la faction
+            }
             return switch (f.attitude) {
                 case PASSIVE -> false;
                 case PROVOKED, WARN -> FactionRelations.isHostile(p.getUUID(), f, now);
@@ -424,9 +465,9 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
         if (hurt && ambush) {
             FalconSquads.endAmbush(this);
         }
-        if (hurt && source.getEntity() instanceof Player p && !p.isCreative()) {
-            FactionRelations.markHostile(p.getUUID(), faction(), level().getGameTime());
-            BotEvents.alertFaction(this, p);
+        if (hurt && source.getEntity() instanceof Player p && !p.isCreative() && level() instanceof net.minecraft.server.level.ServerLevel sl) {
+            // agression : seuls la victime et ceux qui ont vu la scène réagissent (appel radio de 30 s)
+            RadioCalls.crime(sl, p, position(), this);
         }
         if (hurt && faction() == Faction.CIVILIAN || hurt && faction() == Faction.TRADER) {
             scaredUntil = level().getGameTime() + 200;
@@ -457,6 +498,9 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
 
     @Override
     public void aiStep() {
+        if (!level().isClientSide && radioEnd() > 0) {
+            RadioCalls.tick(this);
+        }
         if (!level().isClientSide) {
             if ((tickCount + getId()) % 20 == 0) {
                 farFromPlayers = level().getNearestPlayer(this, 48) == null;
@@ -537,6 +581,12 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
 
     @Override
     public void die(DamageSource source) {
+        if (!level().isClientSide) {
+            RadioCalls.cut(this);                                          // transmission coupée
+            if (source.getEntity() instanceof Player p && level() instanceof net.minecraft.server.level.ServerLevel sl) {
+                RadioCalls.crime(sl, p, position(), null);                 // meurtre : témoins éventuels
+            }
+        }
         super.die(source);
         if (!level().isClientSide) {
             FactionBosses.onDeath(this, source.getEntity() instanceof net.minecraft.server.level.ServerPlayer sp ? sp : null);

@@ -42,6 +42,22 @@ public final class ModBlocks {
             () -> new WorkbenchBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.ANVIL).sound(net.minecraft.world.level.block.SoundType.METAL),
                     Component.translatable("container.modeminecraft.assembly_table"), ArmamentTableMenu::assembly));
 
+    /** Chambres fortes des boss (mise à jour 0.5) : portes indestructibles et murs renforcés. */
+    public static final java.util.Map<fr.modeminecraft.item.BossCardItem.VaultType, DeferredBlock<Block>> BOSS_VAULT_DOORS =
+            new java.util.EnumMap<>(fr.modeminecraft.item.BossCardItem.VaultType.class);
+
+    static {
+        for (var t : fr.modeminecraft.item.BossCardItem.VaultType.values()) {
+            BOSS_VAULT_DOORS.put(t, BLOCKS.register("boss_vault_door_" + t.id, () -> new fr.modeminecraft.block.BossVaultDoorBlock(t,
+                    BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_DOOR).strength(-1f, 3600000f).noLootTable()
+                            .pushReaction(net.minecraft.world.level.material.PushReaction.BLOCK))));
+        }
+    }
+
+    public static final DeferredBlock<Block> VAULT_WALL = BLOCKS.register("vault_wall",
+            () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.REINFORCED_DEEPSLATE).strength(-1f, 3600000f).noLootTable()
+                    .pushReaction(net.minecraft.world.level.material.PushReaction.BLOCK)));
+
     /** Table de modification : accessoires et skins des armes. */
     public static final DeferredBlock<Block> MODIFICATION_TABLE = BLOCKS.register("modification_table",
             () -> new WorkbenchBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SMITHING_TABLE),

@@ -471,8 +471,204 @@ def assembly_recipes():
             "ingredients": [{"item": f"{MOD}:{i}", "count": c} for i, c in ing.items()], "result": {"id": f"{MOD}:{name}", "count": 1}})
 
 
+# ------------------------------------------------------------------------------------------- tenues d'infiltration
+OUTFITS = {
+    # nom : (couvre-chef, haut, détail du haut, pantalon, bottes, accent, motif)
+    "police_uniform": ("#1c2a48", "#6f95c8", "#1c2a48", "#1c2a48", "#141414", "#e0b030", "plain"),
+    "desert_boss": ("#b89a64", "#c4a46c", "#8a2018", "#b89a64", "#4a3020", "#e8c040", "plain"),
+    "soviet_uniform": ("#4e5a32", "#56633a", "#a02020", "#4a552f", "#1a1a1a", "#c02020", "plain"),
+    "special_forces": ("#5a6240", "#6a6a48", "#2a2e22", "#6a6a48", "#5a4630", "#3a3e2a", "camo"),
+    "cartel_outfit": ("#e8e2d0", "#c83a3a", "#e8c040", "#e8e2d0", "#6a4428", "#2a8a5a", "floral"),
+    "sheriff_outfit": ("#6a4a2a", "#c8a878", "#6a4a2a", "#3a5a8a", "#5a3a1a", "#e8d060", "plain"),
+}
+
+
+def outfit_px(r, base, motif, x, y):
+    c = base
+    if motif == "camo":
+        v = (x * 7 + y * 13 + r.randint(0, 3)) % 9
+        c = hexc("#4a5236") if v < 3 else hexc("#7a6a48") if v < 5 else base
+    elif motif == "floral" and (x * 3 + y * 5) % 7 == 0:
+        c = hexc("#e8d040") if (x + y) % 2 else hexc("#ffffff")
+    return shade(c, 1 + r.uniform(-0.06, 0.06))
+
+
+def armor_layers(name, spec):
+    hat, top, detail, legs, boots, accent, motif = spec
+    hat, top, detail, legs, boots, accent = (hexc(c) for c in (hat, top, detail, legs, boots, accent))
+    r = random.Random(name)
+    l1 = Image.new("RGBA", (64, 32), (0, 0, 0, 0))
+    l2 = Image.new("RGBA", (64, 32), (0, 0, 0, 0))
+    # tête (couvre-chef) : dessus + 4 côtés, partie haute ; visière à l'avant
+    for x in range(0, 32):
+        for y in range(0, 16):
+            if y < 8 and not (8 <= x < 24):
+                continue
+            if y >= 8 and y > 12:
+                continue                                             # bas du visage dégagé
+            l1.putpixel((x, y), outfit_px(r, hat, motif if name == "special_forces" else "plain", x, y))
+    for x in range(8, 16):
+        l1.putpixel((x, 12), shade(hat, 0.6))                        # visière / bord
+    l1.putpixel((11, 10), accent), l1.putpixel((12, 10), accent)     # insigne
+    # corps (16..40, 16..32) et bras (40..56, 16..32)
+    for x in range(16, 56):
+        for y in range(16, 32):
+            if y < 20 and not (20 <= x < 36 or 44 <= x < 52):
+                continue
+            l1.putpixel((x, y), outfit_px(r, top, motif, x, y))
+    for y in range(20, 32):                                          # gilet / plastron / bretelles
+        for x in (20, 21, 26, 27):
+            l1.putpixel((x, y), shade(detail, 1.0))
+    for x in range(20, 28):
+        l1.putpixel((x, 29), shade(detail, 0.8))                     # ceinturon
+    l1.putpixel((22, 22), accent), l1.putpixel((23, 22), accent)     # badge / étoile
+    for x in (44, 45, 46, 47):
+        l1.putpixel((x, 20), accent if name in ("desert_boss", "soviet_uniform") else shade(top, 0.85))   # épaulettes
+    # bottes (bas des jambes, calque 1)
+    for x in range(0, 16):
+        for y in range(16, 32):
+            if y >= 26 or y < 20 and 4 <= x < 12:
+                if y < 20:
+                    continue
+                l1.putpixel((x, y), shade(boots, 1 + r.uniform(-0.06, 0.06)))
+    # pantalon (calque 2) : taille du corps + jambes
+    for x in range(0, 16):
+        for y in range(16, 32):
+            if y < 20 and not (4 <= x < 12):
+                continue
+            l2.putpixel((x, y), outfit_px(r, legs, motif if name == "special_forces" else "plain", x, y))
+    for y in range(20, 32):
+        if name in ("desert_boss", "soviet_uniform", "police_uniform"):
+            l2.putpixel((0, y), accent if name != "police_uniform" else shade(legs, 0.7))   # bande latérale
+    for x in range(16, 40):
+        for y in range(26, 32):
+            if 20 <= x < 28 or 32 <= x < 40 or 16 <= x < 20 or 28 <= x < 32:
+                l2.putpixel((x, y), outfit_px(r, legs, "plain", x, y))
+    d = os.path.join(ASSETS, "textures/models/armor")
+    os.makedirs(d, exist_ok=True)
+    l1.save(os.path.join(d, f"{name}_layer_1.png"))
+    l2.save(os.path.join(d, f"{name}_layer_2.png"))
+
+
+def outfit_icons(name, spec):
+    hat, top, detail, legs, boots, accent, motif = (hexc(c) if c.startswith("#") else c for c in spec)
+    r = random.Random(name + "i")
+    i = Icon(name + "h")                                             # couvre-chef
+    i.rect(3, 5, 12, 9, hat, noise=0.05)
+    i.rect(2, 9, 13, 10, shade(hat, 0.7), bevel=False)
+    i.rect(7, 6, 8, 7, accent, bevel=False)
+    i.save(name + "_helmet")
+    i = Icon(name + "c")                                             # haut
+    i.rect(2, 2, 13, 14, top, noise=0.05)
+    for y in range(2, 6):
+        for x in range(6, 10):
+            i.px(x, y, (0, 0, 0, 0))                                 # encolure
+    for y in range(6, 14):
+        i.px(5, y, detail), i.px(10, y, detail)
+    i.px(4, 7, accent), i.px(11, 7, accent)
+    i.rect(5, 12, 10, 12, shade(detail, 0.8), bevel=False)
+    i.save(name + "_chestplate")
+    i = Icon(name + "l")                                             # pantalon
+    i.rect(3, 2, 12, 5, legs, noise=0.05)
+    i.rect(3, 5, 6, 14, legs, noise=0.05)
+    i.rect(9, 5, 12, 14, legs, noise=0.05)
+    i.rect(3, 2, 12, 2, shade(legs, 0.7), bevel=False)
+    i.save(name + "_leggings")
+    i = Icon(name + "b")                                             # bottes
+    i.rect(2, 4, 5, 12, boots, noise=0.05)
+    i.rect(2, 11, 7, 13, boots, noise=0.05)
+    i.rect(9, 4, 12, 12, boots, noise=0.05)
+    i.rect(9, 11, 14, 13, boots, noise=0.05)
+    i.save(name + "_boots")
+
+
+def outfits():
+    for name, spec in OUTFITS.items():
+        armor_layers(name, spec)
+        outfit_icons(name, spec)
+
+
+# ------------------------------------------------------------------------------------------- chambres fortes des boss
+def it(name, w, lo, hi=None):
+    full = name if ":" in name else f"{MOD}:{name}"
+    e = {"type": "minecraft:item", "name": full, "weight": w}
+    if hi is not None and (lo, hi) != (1, 1):
+        e["functions"] = [{"function": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": lo, "max": hi}}]
+    return e
+
+
+VAULT_LOOT = {
+    "swat_hq": [it("m4", 3, 1, 1), it("hk416", 3, 1, 1), it("mp5", 3, 1, 1), it("benelli_m4", 2, 1, 1), it("ammo_556", 6, 16, 48),
+                it("ammo_9mm", 6, 16, 48), it("shotgun_shell", 3, 8, 24), it("swat_vest", 3, 1, 1), it("mich_2000", 3, 1, 1),
+                it("flashbang", 4, 2, 5), it("crowbar", 2, 1, 1), it("first_aid_kit", 4, 1, 3), it("tactical_battery", 4, 4, 10)],
+    "desert_palace": [it("ak47", 3, 1, 1), it("dragunov", 2, 1, 1), it("rpg7", 2, 1, 1), it("rpg_rocket", 3, 2, 5),
+                      it("minecraft:gold_ingot", 6, 6, 20), it("minecraft:emerald", 6, 8, 24), it("steel_ballistic_plate", 3, 1, 3),
+                      it("titanium_plate", 2, 1, 4), it("ammo_762", 6, 16, 48), it("military_ration", 3, 2, 6)],
+    "forest_bunker": [it("wasp_mg", 2, 1, 1), it("reaper_x", 2, 1, 1), it("drone_controller", 2, 1, 1), it("emp_jammer_rifle", 2, 1, 1),
+                      it("thermal_scope", 2, 1, 1), it("night_vision_scope", 2, 1, 1), it("c4", 4, 1, 4), it("mortar_shell", 4, 2, 8),
+                      it("netherite_ballistic_plate", 2, 1, 2), it("titanium_plate", 3, 2, 6), it("hk416", 2, 1, 1), it("ammo_556", 5, 16, 48),
+                      it("stryker", 1, 1, 1), it("humvee", 1, 1, 1)],
+    "soviet_hq": [it("pkm", 3, 1, 1), it("pp19_bizon", 3, 1, 1), it("ak74u", 3, 1, 1), it("altyn", 3, 1, 1), it("ratnik_pants", 3, 1, 1),
+                  it("fort_defender", 2, 1, 1), it("apfsds_shell", 4, 2, 6), it("he_shell", 4, 2, 6), it("atgm_missile", 3, 1, 3),
+                  it("jerrycan", 4, 1, 3), it("titanium_ingot", 4, 3, 10), it("ammo_545", 5, 16, 48), it("ammo_762x54r", 4, 16, 40)],
+    "cartel_villa": [it("cash_bundle", 8, 16, 48), it("minecraft:gold_block", 5, 2, 6), it("minecraft:emerald", 6, 10, 32),
+                     it("scar_h", 3, 1, 1), it("desert_eagle", 3, 1, 1), it("spas12", 3, 1, 1), it("adrenaline_syringe", 3, 2, 5),
+                     it("fpv_frelon", 2, 1, 2), it("c4", 3, 1, 3), it("ammo_50ae", 4, 12, 30)],
+    "badlands_refinery": [it("barrett_m82", 2, 1, 1), it("colt_python", 3, 1, 1), it("c4", 3, 2, 5), it("minecraft:tnt", 4, 4, 12),
+                          it("jerrycan", 6, 2, 6), it("vehicle_engine", 2, 1, 1), it("wheel_set", 2, 1, 1), it("track_set", 1, 1, 1),
+                          it("steel_ingot", 5, 6, 16), it("minecraft:gold_ingot", 5, 6, 16), it("ammo_50bmg", 4, 8, 24), it("ammo_357", 4, 12, 30)],
+}
+VAULT_OUTFIT = {"swat_hq": "police_uniform", "desert_palace": "desert_boss", "forest_bunker": "special_forces",
+                "soviet_hq": "soviet_uniform", "cartel_villa": "cartel_outfit", "badlands_refinery": "sheriff_outfit"}
+
+
+def vault_loot():
+    for vault, entries in VAULT_LOOT.items():
+        write(os.path.join(DATA, f"loot_table/chests/boss_vault_{vault}.json"), {"type": "minecraft:chest", "pools": [
+            {"rolls": {"type": "minecraft:uniform", "min": 6, "max": 9}, "entries": entries}]})
+        o = VAULT_OUTFIT[vault]
+        pieces = [f"{MOD}:{o}_{p}" for p in ("helmet", "chestplate", "leggings", "boots")]
+        if vault == "desert_palace":
+            # une seule pièce au hasard de la tenue du Boss du Désert par chambre forte
+            outfit_pool = {"rolls": 1, "entries": [{"type": "minecraft:item", "name": p, "weight": 1} for p in pieces]}
+            pools = [outfit_pool]
+        else:
+            pools = [{"rolls": 1, "entries": [{"type": "minecraft:item", "name": p}]} for p in pieces]
+        pools.append({"rolls": {"type": "minecraft:uniform", "min": 3, "max": 5}, "entries": entries})
+        write(os.path.join(DATA, f"loot_table/chests/boss_vault_{vault}_outfit.json"), {"type": "minecraft:chest", "pools": pools})
+
+
+CARD_COLORS = {"swat_hq": ("#2a5ab8", "#e8c040"), "desert_palace": ("#b02a20", "#e8c040"), "forest_bunker": ("#1a1a1a", "#3aa050"),
+               "soviet_hq": ("#b01818", "#f0d020"), "cartel_villa": ("#d8a830", "#20a060"), "badlands_refinery": ("#b06a3a", "#1a1a1a")}
+
+
+def boss_cards():
+    for vault, (body, stripe) in CARD_COLORS.items():
+        i = Icon("card" + vault)
+        i.rect(1, 3, 14, 12, hexc(body), noise=0.04)
+        i.rect(1, 5, 14, 6, hexc(stripe), bevel=False)                       # bande magnétique
+        i.rect(3, 8, 5, 10, hexc("#d8c060"), bevel=False)                    # puce
+        i.rect(8, 8, 12, 8, hexc("#f0f0f0"), bevel=False)
+        i.rect(8, 10, 11, 10, hexc("#c0c0c0"), bevel=False)
+        if vault == "soviet_hq":
+            i.px(12, 10, hexc("#f0d020")), i.px(11, 9, hexc("#f0d020"))      # étoile
+        i.save("boss_card_" + vault)
+    for vault in CARD_COLORS:
+        door = f"boss_vault_door_{vault}"
+        src = os.path.join(ASSETS, "blockstates/vault_door_black.json")
+        with open(src) as f:
+            st = json.load(f)
+        write(os.path.join(ASSETS, f"blockstates/{door}.json"), st)
+    write(os.path.join(ASSETS, "blockstates/vault_wall.json"), {"variants": {"": {"model": f"{MOD}:block/vault_wall"}}})
+    write(os.path.join(ASSETS, "models/block/vault_wall.json"), {"parent": "minecraft:block/cube_column", "textures": {
+        "side": "minecraft:block/reinforced_deepslate_side", "end": "minecraft:block/reinforced_deepslate_top"}})
+
+
 if __name__ == "__main__":
     loot_icons()
+    vault_loot()
+    boss_cards()
+    outfits()
     part_icons()
     assembly_table()
     assembly_recipes()

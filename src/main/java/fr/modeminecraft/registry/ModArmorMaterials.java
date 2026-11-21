@@ -33,5 +33,26 @@ public final class ModArmorMaterials {
             2.5f,                                // robustesse (diamant = 2)
             0.05f));                             // résistance au recul
 
+    /** Tenues d'infiltration (déguisements de faction, mise à jour 0.5) : uniformes en tissu, sauf la tenue du Boss du Désert. */
+    public static final Holder<ArmorMaterial> POLICE_UNIFORM = outfit("police_uniform", 1, 3, 2, 1, 0f);
+    public static final Holder<ArmorMaterial> DESERT_BOSS = outfit("desert_boss", 3, 7, 6, 3, 1.5f);
+    public static final Holder<ArmorMaterial> SOVIET_UNIFORM = outfit("soviet_uniform", 2, 4, 3, 1, 0f);
+    public static final Holder<ArmorMaterial> SPECIAL_FORCES = outfit("special_forces", 2, 4, 3, 1, 0f);
+    public static final Holder<ArmorMaterial> CARTEL_OUTFIT = outfit("cartel_outfit", 1, 3, 2, 1, 0f);
+    public static final Holder<ArmorMaterial> SHERIFF_OUTFIT = outfit("sheriff_outfit", 2, 3, 2, 1, 0f);
+
+    private static Holder<ArmorMaterial> outfit(String name, int helmet, int chest, int legs, int boots, float toughness) {
+        return ARMOR_MATERIALS.register(name, () -> new ArmorMaterial(
+                Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
+                    map.put(ArmorItem.Type.BOOTS, boots);
+                    map.put(ArmorItem.Type.LEGGINGS, legs);
+                    map.put(ArmorItem.Type.CHESTPLATE, chest);
+                    map.put(ArmorItem.Type.HELMET, helmet);
+                    map.put(ArmorItem.Type.BODY, chest);
+                }),
+                12, SoundEvents.ARMOR_EQUIP_LEATHER, () -> Ingredient.of(net.minecraft.world.item.Items.LEATHER),
+                List.of(new ArmorMaterial.Layer(ModeMinecraft.id(name))), toughness, 0f));
+    }
+
     private ModArmorMaterials() {}
 }

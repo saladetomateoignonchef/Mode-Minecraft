@@ -275,6 +275,7 @@ final class CityGenRegions {
         // garnison
         b.bot(23, 1, pz0 + 4, Faction.MILITIA, BotRole.OFFICER, 8);
         b.bot(23, 1, pz0 + 4, Faction.MILITIA, BotRole.BOSS, 8);              // Général Suprême de la Milice
+        BossVaults.build(b, 23, 1, pz0 + 5, 12, false, fr.modeminecraft.item.BossCardItem.VaultType.DESERT_PALACE);     // salle secrète derrière le trône
         b.pair(23, 0, 40, Faction.MILITIA, 18);
         b.pair(14, 0, 30, Faction.MILITIA, 18);
         b.pair(30, 6, 18, Faction.MILITIA, 10);
@@ -680,6 +681,7 @@ final class CityGenRegions {
         b.set(7, -6, 11, Blocks.CARTOGRAPHY_TABLE);
         b.bot(6, -6, 10, Faction.GARRISON, BotRole.OFFICER, 5);
         b.bot(6, -6, 10, Faction.GARRISON, BotRole.BOSS, 5);                   // Commandant des Forces Spéciales
+        BossVaults.build(b, 6, -6, 9, 22, true, fr.modeminecraft.item.BossCardItem.VaultType.FOREST_BUNKER);           // niveau -3 du bunker
         // niveau 1 (nord) : salle radio
         Deco.desk(b, 4, -6, 3, Direction.SOUTH);
         Deco.desk(b, 7, -6, 3, Direction.SOUTH);
@@ -844,6 +846,7 @@ final class CityGenRegions {
                 b.pair(15, 1, 12, Faction.SOVIET, 12);
                 b.bot(20, 1, 20, Faction.SOVIET, BotRole.OFFICER, 10);
                 b.bot(20, 1, 20, Faction.SOVIET, BotRole.BOSS, 8);            // Maréchal de l'Est
+                BossVaults.build(b, 20, 1, 22, 12, false, fr.modeminecraft.item.BossCardItem.VaultType.SOVIET_HQ);    // quartier général
             }
             case "plaza" -> {
                 b.ground(0, 0, 31, 31, Blocks.SNOW_BLOCK.defaultBlockState(), Blocks.STONE.defaultBlockState(), 20);

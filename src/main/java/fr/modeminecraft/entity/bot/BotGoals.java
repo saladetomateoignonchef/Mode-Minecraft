@@ -130,7 +130,8 @@ public final class BotGoals {
                     if (!bot.shouldAttack(e) || bot.distanceTo(drone) > drone.noiseRadius() || !bot.hasLineOfSight(drone)) {
                         continue;
                     }
-                } else if (!bot.shouldAttack(e) || !canSee(bot, e, BotNight.sightRange(bot, e, range))) {
+                } else if (!bot.shouldAttack(e) || !canSee(bot, e, BotNight.sightRange(bot, e,
+                        e instanceof Player pl ? range * Disguise.sightFactor(bot, pl) : range))) {
                     continue;
                 }
                 double d = bot.distanceToSqr(e);
@@ -150,6 +151,9 @@ public final class BotGoals {
         public void start() {
             bot.setTarget(targetMob);
             BotEvents.onTargetAcquired(bot, targetMob);
+            if (targetMob instanceof Player p) {
+                RadioCalls.spotted(bot, p);                                // intrus repéré : appel radio de 30 s
+            }
             super.start();
         }
 
@@ -238,7 +242,7 @@ public final class BotGoals {
          * l'inventaire ou dans la barre d'action (même visible dans le dos) laisse toutes les factions indifférentes.
          */
         private boolean threat(Player p) {
-            return armedInHand(p);
+            return armedInHand(p) && !Disguise.immune(bot, p);             // un « collègue » en uniforme peut être armé
         }
 
         /**
@@ -246,7 +250,7 @@ public final class BotGoals {
          * dans une zone restreinte (abords du commissariat gardés par un agent en faction).
          */
         private boolean curfew(Player p) {
-            if (!bot.faction().group.equals("police") || !fr.modeminecraft.world.night.NightOps.isNight(bot.level())) {
+            if (!bot.faction().group.equals("police") || !fr.modeminecraft.world.night.NightOps.isNight(bot.level()) || Disguise.immune(bot, p)) {
                 return false;
             }
             if (p.isSprinting() && p.distanceTo(bot) < 12) {
@@ -290,9 +294,8 @@ public final class BotGoals {
                 return;
             }
             if (now >= end) {
-                FactionRelations.markHostile(suspect.getUUID(), bot.faction(), now);
                 bot.setTarget(suspect);
-                BotEvents.alertFaction(bot, suspect);
+                RadioCalls.witness(bot, suspect);                          // sommation ignorée : appel radio
             }
         }
 

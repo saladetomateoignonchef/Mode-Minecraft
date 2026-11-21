@@ -117,6 +117,10 @@ public final class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> ROTOR_LOOP = register("mil.rotor_loop");
     public static final DeferredHolder<SoundEvent, SoundEvent> HUGE_EXPLOSION = register("mil.huge_explosion");
     public static final DeferredHolder<SoundEvent, SoundEvent> AIR_RAID_ALARM = register("mil.air_raid_alarm");
+    // ----- mise à jour 0.5 : appel radio, chambres fortes des boss
+    public static final DeferredHolder<SoundEvent, SoundEvent> RADIO_DISPATCH_CALL = register("mil.radio_dispatch_call");
+    public static final DeferredHolder<SoundEvent, SoundEvent> RADIO_CALL_CUT = register("mil.radio_call_cut");
+    public static final DeferredHolder<SoundEvent, SoundEvent> VAULT_DOOR_OPEN = register("mil.vault_door_open");
 
     private static DeferredHolder<SoundEvent, SoundEvent> register(String name) {
         return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(ModeMinecraft.id(name)));

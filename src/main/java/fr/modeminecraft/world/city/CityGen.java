@@ -796,6 +796,7 @@ final class CityGen {
         b.pair(18, 6, 11, Faction.POLICE, 12);
         b.bot(16, 1, 1, Faction.POLICE, BotRole.OFFICER, 10);
         b.bot(16, 1, 1, Faction.SWAT, BotRole.BOSS, 8);                       // Commissaire Divisionnaire SWAT
+        BossVaults.build(b, 16, 1, 3, 15, false, fr.modeminecraft.item.BossCardItem.VaultType.SWAT_HQ);               // sous-sol haute sécurité
         b.bot(15, 1, 5, Faction.CIVILIAN, BotRole.CONTRACTOR, 2);
         b.bot(12, -5, 9, Faction.SWAT, BotRole.SOLDIER, 6);
         b.bot(20, -5, 9, Faction.SWAT, BotRole.SOLDIER, 6);

@@ -1111,6 +1111,39 @@ public final class ModItems {
     public static final DeferredItem<Item> ISKANDER_HE = ammoItem("iskander_he", 1);
     public static final DeferredItem<Item> ISKANDER_CLUSTER = ammoItem("iskander_cluster", 1);
     public static final DeferredItem<Item> ISKANDER_EMP = ammoItem("iskander_emp", 1);
+    /** Tenues d'infiltration (chambres fortes des boss) : 6 tenues de 4 pièces. */
+    public static final java.util.Map<String, DeferredItem<Item>> OUTFITS = new java.util.LinkedHashMap<>();
+
+    static {
+        outfit("police_uniform", fr.modeminecraft.entity.bot.Disguise.Outfit.POLICE, ModArmorMaterials.POLICE_UNIFORM, Rarity.RARE);
+        outfit("desert_boss", fr.modeminecraft.entity.bot.Disguise.Outfit.DESERT, ModArmorMaterials.DESERT_BOSS, Rarity.EPIC);
+        outfit("soviet_uniform", fr.modeminecraft.entity.bot.Disguise.Outfit.SOVIET, ModArmorMaterials.SOVIET_UNIFORM, Rarity.UNCOMMON);
+        outfit("special_forces", fr.modeminecraft.entity.bot.Disguise.Outfit.SPECIAL_FORCES, ModArmorMaterials.SPECIAL_FORCES, Rarity.UNCOMMON);
+        outfit("cartel_outfit", fr.modeminecraft.entity.bot.Disguise.Outfit.CARTEL, ModArmorMaterials.CARTEL_OUTFIT, Rarity.UNCOMMON);
+        outfit("sheriff_outfit", fr.modeminecraft.entity.bot.Disguise.Outfit.SHERIFF, ModArmorMaterials.SHERIFF_OUTFIT, Rarity.UNCOMMON);
+    }
+
+    private static void outfit(String name, fr.modeminecraft.entity.bot.Disguise.Outfit o, net.minecraft.core.Holder<net.minecraft.world.item.ArmorMaterial> m, Rarity r) {
+        String[] pieces = {"helmet", "chestplate", "leggings", "boots"};
+        ArmorItem.Type[] types = {ArmorItem.Type.HELMET, ArmorItem.Type.CHESTPLATE, ArmorItem.Type.LEGGINGS, ArmorItem.Type.BOOTS};
+        for (int i = 0; i < 4; i++) {
+            ArmorItem.Type t = types[i];
+            String id = name + "_" + pieces[i];
+            OUTFITS.put(id, ITEMS.register(id, () -> new fr.modeminecraft.item.DisguiseArmorItem(o, m, t,
+                    new Item.Properties().rarity(r).durability(t.getDurability(14)))));
+        }
+    }
+
+    /** Cartes d'accès nominatives des boss de ville. */
+    public static final java.util.Map<fr.modeminecraft.item.BossCardItem.VaultType, DeferredItem<Item>> BOSS_CARDS =
+            new java.util.EnumMap<>(fr.modeminecraft.item.BossCardItem.VaultType.class);
+
+    static {
+        for (var t : fr.modeminecraft.item.BossCardItem.VaultType.values()) {
+            BOSS_CARDS.put(t, ITEMS.register("boss_card_" + t.id, () -> new fr.modeminecraft.item.BossCardItem(t, new Item.Properties().rarity(Rarity.EPIC))));
+        }
+    }
+
     /** Bidon de carburant militaire (diesel) : +25 % de réservoir. */
     public static final DeferredItem<Item> JERRYCAN = ammoItem("jerrycan", 4);
     public static final DeferredItem<Item> LASER_DESIGNATOR = ITEMS.register("laser_designator",

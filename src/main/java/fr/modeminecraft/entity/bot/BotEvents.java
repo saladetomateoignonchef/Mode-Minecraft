@@ -127,19 +127,8 @@ public final class BotEvents {
         Level level = p.level();
         long now = level.getGameTime();
         boolean silenced = ((fr.modeminecraft.item.gun.GunItem) p.getMainHandItem().getItem()).resolve(p.getMainHandItem()).silenced();
-        double radius = silenced ? 16 : 40;
-        CivilianLife.panic(level, p.position(), radius, 240);                     // les civils crient et courent se mettre à l'abri
-        for (HumanBotEntity bot : level.getEntitiesOfClass(HumanBotEntity.class, p.getBoundingBox().inflate(radius))) {
-            Faction f = bot.faction();
-            if (!f.combatant()) {
-                continue;
-            }
-            if (f == Faction.FALCON || FactionRelations.isHostile(p.getUUID(), f, now)) {
-                continue;
-            }
-            FactionRelations.markHostile(p.getUUID(), f, now);
-            alertFaction(bot, p);
-        }
+        CivilianLife.panic(level, p.position(), silenced ? 8 : 40, 240);           // les civils crient et courent se mettre à l'abri
+        RadioCalls.gunshot((ServerLevel) level, p, silenced);                       // silencieux : 8 blocs
     }
 
     /** Explosion : panique des civils alentour. */
@@ -161,9 +150,8 @@ public final class BotEvents {
         BlockPos pos = event.getPos();
         for (HumanBotEntity bot : p.level().getEntitiesOfClass(HumanBotEntity.class, p.getBoundingBox().inflate(24),
                 b -> b.faction().combatant() && b.faction() != Faction.FALCON && b.home != null && b.home.distSqr(pos) < 64 * 64)) {
-            if (bot.getSensing().hasLineOfSight(p)) {
-                FactionRelations.markHostile(p.getUUID(), bot.faction(), now);
-                alertFaction(bot, p);
+            if (RadioCalls.sees(bot, p)) {
+                RadioCalls.witness(bot, p);                                  // pillage sous ses yeux
                 break;
             }
         }

@@ -117,25 +117,15 @@ public final class Robbery {
         if (p.isCreative() || p.isSpectator()) {
             return false;
         }
-        long now = level.getGameTime();
-        boolean any = false, police = false;
+        boolean any = false;
         for (HumanBotEntity b : level.getEntitiesOfClass(HumanBotEntity.class, p.getBoundingBox().inflate(90),
                 b -> b.isAlive() && lawful(b.faction()))) {
-            if (!sees(b, p)) {
-                continue;
-            }
-            any = true;
-            if (b.faction().group.equals("police")) {
-                police = true;
-            } else {
-                FactionRelations.markHostile(p.getUUID(), b.faction(), now);
-                b.setTarget(p);
-                BotEvents.alertFaction(b, p);
+            if (sees(b, p)) {
+                RadioCalls.witness(b, p);                                   // appel radio : 30 s pour l'en empêcher
+                any = true;
             }
         }
-        if (police) {
-            fr.modeminecraft.world.police.Wanted.alarm(level, p.blockPosition(), p);
-        } else if (any) {
+        if (any) {
             p.displayClientMessage(Component.translatable("message.modeminecraft.robbery_seen").withStyle(ChatFormatting.RED), true);
         }
         return any;

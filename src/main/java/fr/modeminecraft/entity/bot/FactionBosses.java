@@ -32,7 +32,7 @@ import java.util.UUID;
  * - chaque joueur suit sa propre progression (« Chefs vaincus : 3/6 »).
  */
 public final class FactionBosses {
-    public static final List<String> ALL = List.of("boss_swat", "boss_militia", "boss_garrison", "boss_soviet", "boss_cartel", "boss_falcon");
+    public static final List<String> ALL = List.of("boss_swat", "boss_militia", "boss_garrison", "boss_soviet", "boss_cartel", "boss_refinery", "boss_falcon");
 
     public static Legendary legendaryFor(Faction f) {
         return switch (f) {
@@ -100,6 +100,19 @@ public final class FactionBosses {
             bot.spawnAtLocation(new ItemStack(ModItems.GOLDEN_MACHETE.get()));
         }
         bot.spawnAtLocation(new ItemStack(net.minecraft.world.item.Items.EMERALD, 24));
+        // carte d'accès nominative : ouvre la chambre forte du bâtiment principal de sa ville
+        var vault = switch (bot.faction()) {
+            case SWAT, POLICE -> fr.modeminecraft.item.BossCardItem.VaultType.SWAT_HQ;
+            case MILITIA -> fr.modeminecraft.item.BossCardItem.VaultType.DESERT_PALACE;
+            case GARRISON -> fr.modeminecraft.item.BossCardItem.VaultType.FOREST_BUNKER;
+            case SOVIET -> fr.modeminecraft.item.BossCardItem.VaultType.SOVIET_HQ;
+            case CARTEL -> fr.modeminecraft.item.BossCardItem.VaultType.CARTEL_VILLA;
+            case REFINERY, SHERIFF -> fr.modeminecraft.item.BossCardItem.VaultType.BADLANDS_REFINERY;
+            default -> null;
+        };
+        if (vault != null) {
+            bot.spawnAtLocation(new ItemStack(ModItems.BOSS_CARDS.get(vault).get()));
+        }
     }
 
     public static BossEvent.BossBarColor color(Faction f) {
@@ -109,6 +122,7 @@ public final class FactionBosses {
             case GARRISON -> BossEvent.BossBarColor.GREEN;
             case SOVIET -> BossEvent.BossBarColor.RED;
             case CARTEL -> BossEvent.BossBarColor.PINK;
+            case REFINERY -> BossEvent.BossBarColor.PURPLE;
             default -> BossEvent.BossBarColor.WHITE;
         };
     }

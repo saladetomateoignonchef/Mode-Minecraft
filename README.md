@@ -653,6 +653,38 @@ Des **villes générées** apparaissent selon le biome (un centre de ville par r
 - **Bases militaires secrètes** : une batterie **S-400 déployée en défense aérienne automatique** (elle abat les
   hélicoptères et drones des joueurs, et intercepte leurs missiles) et parfois un Iskander armé : objectifs prioritaires.
 
+### Furtivité, appel radio, tenues d'infiltration et chambres fortes des boss
+#### Plus d'alerte télépathique : les témoins et la radio
+- Un crime (meurtre, agression, braquage, coffre forcé, pied-de-biche, coup de feu) n'alerte **personne** si aucun
+  témoin vivant ne l'a **vu** : il faut être dans son **cône de vision** (110°), à portée (réduite la nuit) et avec une
+  **ligne de vue** dégagée. Un coup de feu s'entend à 40 blocs (**8 blocs avec un silencieux**) : ceux qui ne voient pas
+  le tireur viennent seulement voir ce qui se passe.
+- Le témoin passe en alerte et lance un **appel radio de 30 secondes** : **icône radio rouge clignotante**, barre de
+  progression et secondes restantes au-dessus de sa tête (visibles à travers les murs à 48 blocs), grésillements.
+  Pendant l'appel, seuls lui et ses alliés à **portée de voix (12 blocs)** vous attaquent.
+- **Éliminez-le avant la fin** : la transmission est coupée (bruit de coupure) et le reste de la ville n'en saura rien.
+- À **T + 30 s**, l'alerte part sur la fréquence de la faction : tous ses membres à **160 blocs** deviennent hostiles et
+  convergent vers votre dernière position (police : sirènes, voitures de patrouille et SWAT).
+- Les gardes des factions hostiles (bases, usines, cartel…) qui vous repèrent appellent eux aussi des renforts par radio.
+
+#### Tenues d'infiltration (4 pièces chacune)
+- **Uniforme de police** (coffre de la chambre forte du SWAT) : la tenue complète fait de vous un collègue, la police et
+  le SWAT vous ignorent même arme en main.
+- **Tenue du Boss du Désert** : chaque chambre forte du palais ne contient qu'**une pièce au hasard** ; avec les
+  **4 pièces portées**, immunité totale auprès des miliciens et de leurs tourelles.
+- **Uniforme soviétique**, **Forces Spéciales**, **cartel**, **shérif / contremaître** : la faction correspondante vous
+  détecte **65 % moins loin**, sauf à moins de 6 blocs ou avec une arme en main.
+- Un crime commis devant un témoin **brise la couverture** : la tenue ne protège plus de ceux qui vous ont vu.
+
+#### Cartes d'accès des boss et chambres fortes
+- Chaque boss de ville lâche sa **carte d'accès nominative** : SWAT (commissariat central), Dictateur (palais du désert),
+  base secrète de la forêt (niveau -3 du bunker), URSS (QG de l'usine), cartel (hacienda) et le nouveau **Baron du
+  Pétrole** de la raffinerie des Badlands.
+- Une **trappe dissimulée** près du boss descend par une échelle jusqu'à une **porte blindée indestructible** (ni
+  explosifs, ni redstone) : seule la bonne carte l'ouvre (ouverture hydraulique, refermeture automatique après 20 s).
+- Derrière, des **murs de chambre forte** indestructibles, **4 à 6 coffres** au butin propre à chaque ville (armes rares,
+  plaques, lingots, munitions lourdes…), des râteliers d'armes et le coffre de la **tenue** de la faction.
+
 ### Gameplay et progression
 - **Niveaux des armes (1 à 5)** : chaque arme garde ses statistiques (éliminations, tirs à la tête, tirs, ratio)
   et gagne de l'expérience : +10 par élimination, +5 si tir à la tête, +10 pour un gros monstre (50 PV ou plus).

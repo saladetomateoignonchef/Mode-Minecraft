@@ -270,6 +270,7 @@ final class CityGenRegions2 {
         b.turret(8, 11, 8, MountedGunEntity.Kind.M2, 180, Faction.CARTEL);
         b.bot(15, 1, 15, Faction.CARTEL, BotRole.OFFICER, 10);
         b.bot(15, 1, 15, Faction.CARTEL, BotRole.BOSS, 8);                    // El Patrón
+        BossVaults.build(b, 15, 1, 17, 12, false, fr.modeminecraft.item.BossCardItem.VaultType.CARTEL_VILLA);        // derrière le bureau blindé
         b.bot(15, 1, 15, Faction.CARTEL, BotRole.DRONE_OPERATOR, 8);
         b.pair(12, 1, 20, Faction.CARTEL, 12);
         b.pair(16, 0, 30, Faction.CARTEL, 16);
@@ -617,6 +618,8 @@ final class CityGenRegions2 {
                 b.set(7, 3, 7, Blocks.GLOWSTONE);
                 b.bot(7, 1, 8, Faction.REFINERY, BotRole.OFFICER, 10);
                 b.bot(7, 1, 8, Faction.REFINERY, BotRole.DRONE_OPERATOR, 8);
+                b.bot(7, 1, 8, Faction.REFINERY, BotRole.BOSS, 8);            // Baron du Pétrole
+                BossVaults.build(b, 7, 1, 10, 10, true, fr.modeminecraft.item.BossCardItem.VaultType.BADLANDS_REFINERY);  // salle de contrôle blindée
                 b.vehicle(7, 0, 15, fr.modeminecraft.entity.VehicleEntity.Type.JEEP, 90);
             }
             default -> {
