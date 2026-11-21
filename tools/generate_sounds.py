@@ -505,6 +505,8 @@ def main():
     write_ogg(os.path.join(sounds_dir, "bot", "police_siren.ogg"), city_sounds.city_sound("police_siren", 8999))
     add("bot.police_siren", ["bot/police_siren"], "police_siren")
 
+    import military_sounds  # sons de la mise à jour 0.4 (générés par military_sounds.py)
+    military_sounds.register(add)
     with open(os.path.join(ASSETS, "sounds.json"), "w", encoding="utf-8") as f:
         json.dump(events, f, indent=2)
         f.write("\n")

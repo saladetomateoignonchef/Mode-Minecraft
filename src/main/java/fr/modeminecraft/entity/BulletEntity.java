@@ -196,6 +196,10 @@ public class BulletEntity extends ThrowableItemProjectile {
     /** Une balle perforante ne touche pas deux fois le même ennemi. */
     @Override
     protected boolean canHitEntity(Entity target) {
+        // pas son propre véhicule militaire (ses sections avant / arrière comprises)
+        if (target instanceof fr.modeminecraft.entity.military.MilPart part && getOwner() != null && getOwner().getVehicle() == part.getParent()) {
+            return false;
+        }
         return super.canHitEntity(target) && !alreadyHit.contains(target.getId());
     }
 

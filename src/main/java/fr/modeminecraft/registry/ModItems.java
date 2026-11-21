@@ -1060,6 +1060,47 @@ public final class ModItems {
     public static final DeferredItem<Item> ADRENALINE_SYRINGE = ITEMS.register("adrenaline_syringe",
             () -> new fr.modeminecraft.item.MedicalItem(fr.modeminecraft.item.MedicalItem.Kind.ADRENALINE, new Item.Properties().stacksTo(4).rarity(Rarity.UNCOMMON)));
     // Véhicules
+    // ================= VÉHICULES MILITAIRES & MUNITIONS LOURDES (mise à jour 0.4) =================
+    public static final java.util.Map<fr.modeminecraft.entity.military.MilType, DeferredItem<Item>> MIL_VEHICLES =
+            new java.util.EnumMap<>(fr.modeminecraft.entity.military.MilType.class);
+
+    static {
+        for (var t : fr.modeminecraft.entity.military.MilType.values()) {
+            Rarity r = t.has(fr.modeminecraft.entity.military.MilType.Flag.STRATEGIC) || t.health >= 500 ? Rarity.EPIC
+                    : t.health >= 200 || t.heli() ? Rarity.RARE : Rarity.UNCOMMON;
+            MIL_VEHICLES.put(t, ITEMS.register(t.id, () -> new fr.modeminecraft.item.military.MilVehicleItem(t, new Item.Properties().rarity(r))));
+        }
+    }
+
+    /** Caisse de 14,5 mm (KPVT). */
+    public static final DeferredItem<Item> AMMO_BOX_145 = ITEMS.register("ammo_box_145", () -> new fr.modeminecraft.item.TurretAmmoItem(new Item.Properties()));
+    public static final DeferredItem<Item> AP_I_BELT = ammoItem("ap_i_belt", 16);
+    public static final DeferredItem<Item> HE_I_BELT = ammoItem("he_i_belt", 16);
+    public static final DeferredItem<Item> APFSDS_SHELL = ammoItem("apfsds_shell", 8);
+    public static final DeferredItem<Item> HE_SHELL = ammoItem("he_shell", 8);
+    public static final DeferredItem<Item> HEAT_SHELL = ammoItem("heat_shell", 8);
+    public static final DeferredItem<Item> CANNON_ATGM_MISSILE = ammoItem("cannon_atgm_missile", 4);
+    public static final DeferredItem<Item> GRAD_ROCKET = ammoItem("grad_rocket", 16);
+    public static final DeferredItem<Item> MLRS_ROCKET = ammoItem("mlrs_rocket", 6);
+    public static final DeferredItem<Item> ATACMS_MISSILE = ammoItem("atacms_missile", 1);
+    public static final DeferredItem<Item> S8_ROCKET = ammoItem("s8_rocket", 20);
+    public static final DeferredItem<Item> HYDRA_ROCKET = ammoItem("hydra_rocket", 19);
+    public static final DeferredItem<Item> ATGM_MISSILE = ammoItem("atgm_missile", 4);
+    /** Bidon de carburant militaire (diesel) : +25 % de réservoir. */
+    public static final DeferredItem<Item> JERRYCAN = ammoItem("jerrycan", 4);
+    public static final DeferredItem<Item> LASER_DESIGNATOR = ITEMS.register("laser_designator",
+            () -> new fr.modeminecraft.item.military.LaserDesignatorItem(new Item.Properties().rarity(Rarity.RARE)));
+
+    private static DeferredItem<Item> ammoItem(String name, int stack) {
+        return ITEMS.register(name, () -> new Item(new Item.Properties().stacksTo(stack)) {
+            @Override
+            public void appendHoverText(net.minecraft.world.item.ItemStack st, TooltipContext context, java.util.List<net.minecraft.network.chat.Component> tooltip,
+                                        net.minecraft.world.item.TooltipFlag flag) {
+                tooltip.add(net.minecraft.network.chat.Component.translatable("tooltip.modeminecraft." + name).withStyle(net.minecraft.ChatFormatting.GRAY));
+            }
+        });
+    }
+
     public static final DeferredItem<Item> QUAD = ITEMS.register("quad",
             () -> new fr.modeminecraft.item.VehicleItem(fr.modeminecraft.entity.VehicleEntity.Type.QUAD, new Item.Properties()));
     public static final DeferredItem<Item> POLICE_CAR = ITEMS.register("police_car",

@@ -28,6 +28,11 @@ public abstract class CameraMixin {
                                     CallbackInfo ci) {
         if (!detached && entity == Minecraft.getInstance().player) {
             // Tourelle : en visée, l'œil vient dans l'axe des anneaux du viseur (et la mire tremble au tir)
+            var gunner = fr.modeminecraft.client.MilClient.cameraPosition(partialTick);
+            if (gunner != null) {
+                setPosition(gunner);
+                return;
+            }
             var turret = fr.modeminecraft.client.TurretClient.cameraPosition(getPosition(), partialTick);
             if (turret != null) {
                 setPosition(turret);

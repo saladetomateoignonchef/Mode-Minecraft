@@ -111,6 +111,103 @@ def loot_icons():
     i.save("military_ration")
 
 
+# ------------------------------------------------------------------------------------------- munitions lourdes
+def diag(icon, length, width, colors, start=(2, 13)):
+    """Objet allongé en diagonale (bas-gauche vers haut-droite) : colors = liste (fraction de longueur, couleur)."""
+    x0, y0 = start
+    for i in range(length):
+        f = i / max(1, length - 1)
+        col = colors[-1][1]
+        for frac, c in colors:
+            if f <= frac:
+                col = c
+                break
+        for w in range(-(width // 2), width - width // 2):
+            x, y = x0 + i, y0 - i + w
+            if 0 <= x < 16 and 0 <= y < 16:
+                icon.px(x, y, shade(col, 1.15 if w < 0 else 0.85 if w > 0 else 1))
+
+
+def heavy_ammo_icons():
+    brass, steel, olive, white, black, red = hexc("#c8a040"), hexc("#8a9098"), hexc("#5a6a38"), hexc("#e0e2da"), hexc("#26282a"), hexc("#b02a20")
+    # bandes de 25 / 30 mm (AP-I : pointes noires et rouges ; HE-I : pointes jaunes et rouges)
+    for name, tip in (("ap_i_belt", black), ("he_i_belt", hexc("#d8c030"))):
+        i = Icon(name)
+        for k in range(4):
+            x = 2 + k * 3
+            i.rect(x, 5, x + 1, 11, brass, bevel=False)
+            i.rect(x, 2, x + 1, 4, tip, bevel=False)
+            i.px(x, 2, red), i.px(x + 1, 2, red)
+            i.rect(x, 12, x + 2, 13, hexc("#505458"), bevel=False)        # maillons
+        i.save(name)
+    # obus de char
+    i = Icon("apfsds")
+    diag(i, 13, 2, [(0.15, brass), (0.3, hexc("#7a7a6a")), (0.85, black), (1, steel)])
+    i.px(3, 12, hexc("#7a7a6a")), i.px(4, 13, hexc("#7a7a6a"))           # sabot
+    i.save("apfsds_shell")
+    i = Icon("he_shell")
+    diag(i, 12, 3, [(0.4, brass), (0.85, olive), (1, red)])
+    i.save("he_shell")
+    i = Icon("heat_shell")
+    diag(i, 12, 3, [(0.4, brass), (0.8, hexc("#5a5e62")), (1, black)])
+    i.save("heat_shell")
+    i = Icon("cannon_atgm")
+    diag(i, 12, 3, [(0.4, brass), (0.9, olive), (1, hexc("#303828"))])
+    i.px(9, 6, red)
+    i.save("cannon_atgm_missile")
+    # roquettes et missiles
+    for name, body, tip, n, w in (("grad_rocket", olive, red, 14, 2), ("s8_rocket", olive, hexc("#c0c0b0"), 12, 2),
+                                  ("hydra_rocket", white, olive, 12, 2), ("mlrs_rocket", white, hexc("#909498"), 14, 3),
+                                  ("atacms_missile", white, black, 14, 4), ("atgm_missile", olive, black, 12, 3)):
+        i = Icon(name)
+        diag(i, n, w, [(0.12, hexc("#3a3a3a")), (0.85, body), (1, tip)], start=(1, 14))
+        # ailerons
+        i.px(1, 12, body), i.px(3, 14, body), i.px(0, 13, shade(body, 0.8))
+        i.save(name)
+    # caisse de 14,5 mm
+    i = Icon("ammo_box_145")
+    i.rect(2, 5, 13, 13, hexc("#4e5a30"), noise=0.06)
+    i.rect(2, 4, 13, 5, hexc("#3c4626"), bevel=False)
+    i.rect(6, 7, 9, 9, hexc("#d8d0a0"), bevel=False)
+    i.rect(5, 2, 10, 3, hexc("#505458"), bevel=False)                      # poignée
+    i.save("ammo_box_145")
+    # bidon de carburant (jerrican)
+    i = Icon("jerrycan")
+    i.rect(3, 3, 12, 14, hexc("#4f5d34"), noise=0.05)
+    for y in (6, 10):
+        for x in range(4, 12):
+            i.px(x, y, hexc("#3a4626"))                                     # nervures en X
+    i.rect(4, 1, 6, 2, hexc("#383c40"), bevel=False)                       # poignées
+    i.rect(8, 1, 10, 2, hexc("#383c40"), bevel=False)
+    i.rect(11, 1, 12, 2, hexc("#b0a040"), bevel=False)                     # bouchon
+    i.save("jerrycan")
+    # désignateur laser
+    i = Icon("designator")
+    i.rect(2, 5, 13, 11, hexc("#3a3e32"), noise=0.05)
+    i.rect(11, 6, 13, 10, hexc("#202224"), bevel=False)
+    i.px(12, 7, hexc("#ff2020")), i.px(12, 8, hexc("#c01010"))
+    i.rect(3, 3, 6, 4, hexc("#2a2c2e"), bevel=False)                       # oculaire
+    i.rect(5, 12, 7, 14, hexc("#2a2c2e"), bevel=False)                     # poignée
+    i.save("laser_designator")
+
+
+def shell_texture():
+    """Texture des projectiles en vol : 8 lignes de couleur (voir ShellRenderer)."""
+    img = Image.new("RGBA", (16, 64))
+    rows = ["#c8a040", "#26282a", "#5a6a38", "#e0e2da", "#b02a20", "#7a7e84", "#ffd070", "#ffffff"]
+    r = random.Random(7)
+    for k, h in enumerate(rows):
+        c = hexc(h)
+        for y in range(k * 8, k * 8 + 8):
+            for x in range(16):
+                img.putpixel((x, y), shade(c, 1 + r.uniform(-0.06, 0.06)) if k != 6 else c)
+    p = os.path.join(ASSETS, "textures/entity/shell_colors.png")
+    os.makedirs(os.path.dirname(p), exist_ok=True)
+    img.save(p)
+
+
 if __name__ == "__main__":
     loot_icons()
+    heavy_ammo_icons()
+    shell_texture()
     print("ok")

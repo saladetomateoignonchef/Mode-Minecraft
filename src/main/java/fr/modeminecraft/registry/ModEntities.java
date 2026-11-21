@@ -39,6 +39,24 @@ public final class ModEntities {
             () -> EntityType.Builder.<RocketEntity>of(RocketEntity::new, MobCategory.MISC)
                     .sized(0.4f, 0.4f).clientTrackingRange(10).updateInterval(1).build("missile"));
 
+    /** Véhicules militaires (mise à jour 0.4) : un type d'entité par modèle (taille propre, /summon par nom). */
+    public static final java.util.Map<fr.modeminecraft.entity.military.MilType, DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.entity.military.MilVehicleEntity>>>
+            MIL_VEHICLE_TYPES = new java.util.EnumMap<>(fr.modeminecraft.entity.military.MilType.class);
+
+    static {
+        for (var t : fr.modeminecraft.entity.military.MilType.values()) {
+            float[] d = fr.modeminecraft.entity.military.MilVehicleEntity.dims(t);
+            MIL_VEHICLE_TYPES.put(t, ENTITY_TYPES.register(t.id, () -> EntityType.Builder.<fr.modeminecraft.entity.military.MilVehicleEntity>of(
+                    (et, level) -> new fr.modeminecraft.entity.military.MilVehicleEntity(et, level, t), MobCategory.MISC)
+                    .sized(d[1], d[2]).clientTrackingRange(16).updateInterval(1).build(t.id)));
+        }
+    }
+
+    /** Obus, roquettes et missiles des véhicules. */
+    public static final DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.entity.military.ShellEntity>> SHELL = ENTITY_TYPES.register("heavy_shell",
+            () -> EntityType.Builder.<fr.modeminecraft.entity.military.ShellEntity>of(fr.modeminecraft.entity.military.ShellEntity::new, MobCategory.MISC)
+                    .sized(0.3f, 0.3f).clientTrackingRange(16).updateInterval(1).build("heavy_shell"));
+
     /** Carreau d'arbalète (récupérable). */
     public static final DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.entity.BoltEntity>> BOLT = ENTITY_TYPES.register("bolt",
             () -> EntityType.Builder.<fr.modeminecraft.entity.BoltEntity>of(fr.modeminecraft.entity.BoltEntity::new, MobCategory.MISC)

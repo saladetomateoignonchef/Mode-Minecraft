@@ -91,7 +91,7 @@ public final class GunClientEvents {
         if (player == null) {
             return;
         }
-        boolean mounted = player.getVehicle() instanceof fr.modeminecraft.entity.MountedGunEntity;
+        boolean mounted = player.getVehicle() instanceof fr.modeminecraft.entity.MountedGunEntity || MilClient.armedSeat(player);
         boolean gun = (player.getMainHandItem().getItem() instanceof GunItem || mounted) && mc.screen == null
                 && !player.isSpectator() && mc.mouseHandler.isMouseGrabbed();
         boolean trigger = gun && mc.options.keyAttack.isDown();
@@ -126,7 +126,8 @@ public final class GunClientEvents {
         if (mc.player != null && event.isAttack() && mc.player.getMainHandItem().getItem() instanceof fr.modeminecraft.item.melee.MeleeWeaponItem) {
             fr.modeminecraft.item.melee.MeleeEvents.advanceCombo(mc.player); // animation du coup suivant du combo
         }
-        boolean mounted = mc.player != null && mc.player.getVehicle() instanceof fr.modeminecraft.entity.MountedGunEntity;
+        boolean mounted = mc.player != null && (mc.player.getVehicle() instanceof fr.modeminecraft.entity.MountedGunEntity
+                || MilClient.armedSeat(mc.player));
         if (mc.player == null || !(mc.player.getMainHandItem().getItem() instanceof GunItem) && !mounted) {
             return;
         }

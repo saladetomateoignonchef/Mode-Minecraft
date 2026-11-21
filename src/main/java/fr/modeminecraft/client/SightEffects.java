@@ -91,8 +91,8 @@ public final class SightEffects {
         // Vision thermique / nocturne : effet d'image tant que l'on vise
         boolean emp = player.hasEffect(fr.modeminecraft.registry.ModEffects.EMP);
         String wanted = mode == null || emp ? null : mode.overlay().postEffect;
-        if (DroneClient.thermalActive()) {
-            wanted = fr.modeminecraft.item.gun.SightOverlay.THERMAL.postEffect;       // optique thermique du Reaper-X
+        if (DroneClient.thermalActive() || MilClient.thermalActive()) {
+            wanted = fr.modeminecraft.item.gun.SightOverlay.THERMAL.postEffect;       // optique thermique (drone, véhicule)
         }
         if (wanted == null) {
             clearPost(mc);
@@ -100,7 +100,8 @@ public final class SightEffects {
             mc.gameRenderer.loadEffect(ModeMinecraft.id("shaders/post/" + wanted + ".json"));
             activePostEffect = wanted;
         }
-        thermal = aim != null && !emp && aim.has(AttachmentItem.Special.THERMAL) || DroneClient.thermalActive();
+        thermal = aim != null && !emp && aim.has(AttachmentItem.Special.THERMAL) || DroneClient.thermalActive()
+                || MilClient.thermalActive();
 
         // Ce que l'on vise (lunette numérique, télémètre, rubis)
         aimedAt = aim == null ? null : pick(player, SIGHT_RANGE);

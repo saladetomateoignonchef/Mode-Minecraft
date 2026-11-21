@@ -85,6 +85,10 @@ public final class ClientSetup {
         event.registerEntityRenderer(ModEntities.AIRDROP.get(), AirdropRenderer::new);
         event.registerEntityRenderer(ModEntities.GEYSER.get(), net.minecraft.client.renderer.entity.NoopRenderer::new);
         event.registerEntityRenderer(ModEntities.VEHICLE.get(), VehicleRenderer::new);
+        for (var h : ModEntities.MIL_VEHICLE_TYPES.values()) {
+            event.registerEntityRenderer(h.get(), MilVehicleRenderer::new);
+        }
+        event.registerEntityRenderer(ModEntities.SHELL.get(), ShellRenderer::new);
         event.registerEntityRenderer(ModEntities.DRONE.get(), DroneRenderer::new);
         event.registerEntityRenderer(ModEntities.THROWN_GRENADE.get(), ExplosiveRenderers.Grenade::new);
         event.registerEntityRenderer(ModEntities.PLACED_EXPLOSIVE.get(), ExplosiveRenderers.Placed::new);
@@ -108,6 +112,7 @@ public final class ClientSetup {
     @SubscribeEvent
     public static void registerKeys(RegisterKeyMappingsEvent event) {
         event.register(ModKeyMappings.RELOAD);
+        event.register(ModKeyMappings.VEHICLE_ZOOM);
         event.register(ModKeyMappings.FIRE_MODE);
         event.register(ModKeyMappings.CHECK_CHAMBER);
         event.register(ModKeyMappings.AMMO_TYPE);
@@ -168,6 +173,7 @@ public final class ClientSetup {
         event.registerAbove(VanillaGuiLayers.CROSSHAIR, ModeMinecraft.id("robbery"), RobberyClient::render);
         event.registerAboveAll(ModeMinecraft.id("flashbang"), FlashClient::render);
         event.registerAboveAll(ModeMinecraft.id("drone_hud"), DroneClient::renderHud);
+        event.registerAboveAll(ModeMinecraft.id("military_hud"), MilClient::renderHud);
         event.registerAboveAll(ModeMinecraft.id("strobe_dazzle"), FlashlightClient::renderDazzle);
         event.registerAbove(VanillaGuiLayers.HOTBAR, ModeMinecraft.id("mounted_gun"), GunHudLayer::renderMounted);
     }

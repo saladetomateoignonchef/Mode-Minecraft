@@ -35,7 +35,8 @@ public final class ModCreativeTabs {
 
     /** Munitions et charges sans classe dédiée. */
     private static final Set<String> AMMO_IDS = Set.of("pzf3_warhead", "stinger_missile", "javelin_missile", "plasma_ball", "grenade_40mm",
-            "rpg_rocket", "mortar_shell");
+            "rpg_rocket", "mortar_shell", "ap_i_belt", "he_i_belt", "apfsds_shell", "he_shell", "heat_shell", "cannon_atgm_missile",
+            "grad_rocket", "mlrs_rocket", "atacms_missile", "s8_rocket", "hydra_rocket", "atgm_missile");
     /** Drones, véhicules et ce qui va avec (brouilleur EMP, clé à molette, bidons). */
     private static final Set<String> DRONE_IDS = Set.of("emp_jammer_rifle", "wrench", "jerrycan");
     /** Objets présents dans deux onglets (le pied-de-biche est une arme ET un outil d'effraction). */
@@ -51,7 +52,8 @@ public final class ModCreativeTabs {
         }
         if (DRONE_IDS.contains(path) || item instanceof fr.modeminecraft.entity.drone.DroneItem
                 || item instanceof fr.modeminecraft.entity.drone.DroneControllerItem || item instanceof fr.modeminecraft.entity.drone.DroneModuleItem
-                || item instanceof fr.modeminecraft.item.VehicleItem) {
+                || item instanceof fr.modeminecraft.item.VehicleItem || item instanceof fr.modeminecraft.item.military.MilVehicleItem
+                || item instanceof fr.modeminecraft.item.military.LaserDesignatorItem) {
             return Tab.DRONES;
         }
         if (item instanceof GunItem) {

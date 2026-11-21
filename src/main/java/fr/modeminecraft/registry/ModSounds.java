@@ -104,6 +104,20 @@ public final class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> TRANSFORMER_HUM = register("city.transformer_hum");
     public static final DeferredHolder<SoundEvent, SoundEvent> SPRAY_PAINT = register("city.spray_paint");
 
+    // ----- mise à jour 0.4 : véhicules militaires et missiles
+    public static final DeferredHolder<SoundEvent, SoundEvent> TANK_CANNON = register("mil.tank_cannon");
+    public static final DeferredHolder<SoundEvent, SoundEvent> AUTOCANNON = register("mil.autocannon");
+    public static final DeferredHolder<SoundEvent, SoundEvent> ROCKET_LAUNCH = register("mil.rocket_launch");
+    public static final DeferredHolder<SoundEvent, SoundEvent> MISSILE_LAUNCH = register("mil.missile_launch");
+    public static final DeferredHolder<SoundEvent, SoundEvent> VEHICLE_MG_LIGHT = register("mil.mg_light");
+    public static final DeferredHolder<SoundEvent, SoundEvent> VEHICLE_MG_HEAVY = register("mil.mg_heavy");
+    public static final DeferredHolder<SoundEvent, SoundEvent> DIESEL_LOOP = register("mil.diesel_loop");
+    public static final DeferredHolder<SoundEvent, SoundEvent> TRACKS_LOOP = register("mil.tracks_loop");
+    public static final DeferredHolder<SoundEvent, SoundEvent> TURBINE_LOOP = register("mil.turbine_loop");
+    public static final DeferredHolder<SoundEvent, SoundEvent> ROTOR_LOOP = register("mil.rotor_loop");
+    public static final DeferredHolder<SoundEvent, SoundEvent> HUGE_EXPLOSION = register("mil.huge_explosion");
+    public static final DeferredHolder<SoundEvent, SoundEvent> AIR_RAID_ALARM = register("mil.air_raid_alarm");
+
     private static DeferredHolder<SoundEvent, SoundEvent> register(String name) {
         return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(ModeMinecraft.id(name)));
     }

@@ -549,5 +549,83 @@
     "sounds": [
       "modeminecraft:bot/police_siren"
     ]
+  },
+  "mil.tank_cannon": {
+    "subtitle": "subtitles.modeminecraft.tank_cannon",
+    "sounds": [
+      "modeminecraft:mil/tank_cannon_0",
+      "modeminecraft:mil/tank_cannon_1"
+    ]
+  },
+  "mil.autocannon": {
+    "subtitle": "subtitles.modeminecraft.autocannon",
+    "sounds": [
+      "modeminecraft:mil/autocannon_0",
+      "modeminecraft:mil/autocannon_1"
+    ]
+  },
+  "mil.rocket_launch": {
+    "subtitle": "subtitles.modeminecraft.rocket_launch",
+    "sounds": [
+      "modeminecraft:mil/rocket_launch_0",
+      "modeminecraft:mil/rocket_launch_1"
+    ]
+  },
+  "mil.missile_launch": {
+    "subtitle": "subtitles.modeminecraft.missile_launch",
+    "sounds": [
+      "modeminecraft:mil/missile_launch_0"
+    ]
+  },
+  "mil.mg_light": {
+    "subtitle": "subtitles.modeminecraft.vehicle_mg",
+    "sounds": [
+      "modeminecraft:mil/mg_light_0",
+      "modeminecraft:mil/mg_light_1"
+    ]
+  },
+  "mil.mg_heavy": {
+    "subtitle": "subtitles.modeminecraft.vehicle_mg",
+    "sounds": [
+      "modeminecraft:mil/mg_heavy_0",
+      "modeminecraft:mil/mg_heavy_1"
+    ]
+  },
+  "mil.diesel_loop": {
+    "subtitle": "subtitles.modeminecraft.diesel",
+    "sounds": [
+      "modeminecraft:mil/diesel_loop_0"
+    ]
+  },
+  "mil.tracks_loop": {
+    "subtitle": "subtitles.modeminecraft.tracks",
+    "sounds": [
+      "modeminecraft:mil/tracks_loop_0"
+    ]
+  },
+  "mil.turbine_loop": {
+    "subtitle": "subtitles.modeminecraft.turbine",
+    "sounds": [
+      "modeminecraft:mil/turbine_loop_0"
+    ]
+  },
+  "mil.rotor_loop": {
+    "subtitle": "subtitles.modeminecraft.rotor",
+    "sounds": [
+      "modeminecraft:mil/rotor_loop_0"
+    ]
+  },
+  "mil.huge_explosion": {
+    "subtitle": "subtitles.modeminecraft.huge_explosion",
+    "sounds": [
+      "modeminecraft:mil/huge_explosion_0",
+      "modeminecraft:mil/huge_explosion_1"
+    ]
+  },
+  "mil.air_raid_alarm": {
+    "subtitle": "subtitles.modeminecraft.air_raid_alarm",
+    "sounds": [
+      "modeminecraft:mil/air_raid_alarm_0"
+    ]
   }
 }

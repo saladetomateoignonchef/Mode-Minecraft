@@ -72,5 +72,9 @@ public final class ModKeyMappings {
     public static final KeyMapping SIREN = new KeyMapping("key.modeminecraft.siren",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_H, CATEGORY);
 
+    /** Dans un véhicule militaire (tireur, commandant, pilote) : zoom x1 / x4 / x8. */
+    public static final KeyMapping VEHICLE_ZOOM = new KeyMapping("key.modeminecraft.vehicle_zoom",
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_Z, CATEGORY);
+
     private ModKeyMappings() {}
 }

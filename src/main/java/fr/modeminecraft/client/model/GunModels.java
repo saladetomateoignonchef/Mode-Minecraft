@@ -124,6 +124,17 @@ public final class GunModels {
             event.register(fr.modeminecraft.client.VehicleRenderer.part(vt.id, "body"));
             event.register(fr.modeminecraft.client.VehicleRenderer.part(vt.id, "wheel"));
         }
+        for (var mt : fr.modeminecraft.entity.military.MilType.values()) {
+            var g = mt.geo();
+            event.register(fr.modeminecraft.client.MilVehicleRenderer.part(mt.id, "hull"));
+            if (g.turret() != null && !mt.has(fr.modeminecraft.entity.military.MilType.Flag.STRATEGIC))
+                event.register(fr.modeminecraft.client.MilVehicleRenderer.part(mt.id, "turret"));
+            if (g.gun() != null) event.register(fr.modeminecraft.client.MilVehicleRenderer.part(mt.id, "gun"));
+            if (g.wheels().length > 0) event.register(fr.modeminecraft.client.MilVehicleRenderer.part(mt.id, "wheel"));
+            if (g.rotor() != null) event.register(fr.modeminecraft.client.MilVehicleRenderer.part(mt.id, "rotor"));
+            if (g.tail() != null) event.register(fr.modeminecraft.client.MilVehicleRenderer.part(mt.id, "tail_rotor"));
+            if (g.radar() != null) event.register(fr.modeminecraft.client.MilVehicleRenderer.part(mt.id, "radar"));
+        }
         event.register(ModelResourceLocation.standalone(ModeMinecraft.id("item/parts/p90_round")));
         event.register(fr.modeminecraft.client.BulletRenderer.BULLET);
         event.register(fr.modeminecraft.client.BulletRenderer.PELLET);

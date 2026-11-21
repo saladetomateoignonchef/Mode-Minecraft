@@ -570,6 +570,40 @@ Des **villes générées** apparaissent selon le biome (un centre de ville par r
   **neige** viaduc soviétique en béton brut et métal rouillé ; **jungle** pont suspendu (pylônes et câbles) ;
   **mesa** pont à chevalets en bois massif. Les ponts des routes entre villes prennent le même style.
 
+#### Véhicules militaires (28 modèles 3D)
+- **Soviétiques / russes** : UAZ-469, GAZ-2975 Tigr (vitres pare-balles, tourelle Kord / PKM), KamAZ-4310 (10 places,
+  coffre de 54), BRDM-2 (amphibie, KPVT 14,5 + PKT), BTR-80 (8x8 amphibie, KPVT à forte élévation), BMP-2 (30 mm 2A42 +
+  Konkurs), BM-21 Grad (40 roquettes de 122 mm, salve de 40 en 20 s), ZSU-23-4 Shilka (4 x 23 mm + radar de poursuite),
+  Mi-24 Hind (YakB, roquettes S-8, missiles Shturm), T-90M (125 mm, Relikt, brouilleur **Shtora**), T-80BVM (turbine,
+  marche arrière rapide, neige), T-14 Armata (capsule blindée, protection active **Afganit** : 4 roquettes / missiles
+  détruits en vol), BMPT Terminator (2 x 30 mm, 4 Ataka, 2 AG-17D), 2S25 Sprut-SD (125 mm, amphibie).
+- **Américains** : Humvee M1151 (M2 .50 ou Mk 19), M-ATV (coque en V : -80 % contre les mines), M939, Stryker (M2
+  téléopérée, thermique), M113 (amphibie), M2A3 Bradley (25 mm + TOW), M1A2 Abrams (120 mm, blindage frontal maximal),
+  M142 HIMARS (roquettes GPS de 227 mm / ATACMS), M1097 Avenger (8 Stinger + M3P), UH-60 Black Hawk (2 miniguns M134),
+  AH-64E Apache (M230 30 mm, 38 Hydra, 8 Hellfire).
+- **Commandes** : clic droit pour monter (première place libre), **C** changer de place (conducteur, tireur,
+  commandant, passagers...), ZQSD conduire. Chenilles : pivot sur place. Hélicoptères : **Espace** monter,
+  **Ctrl** descendre, Z / S avancer / reculer, Q / D tourner (le rotor met ~5 s à prendre son régime).
+  Tireur : la tourelle suit le regard (vitesse de pointage, élévation limitée), **clic gauche** arme principale, **clic
+  droit** arme secondaire, **R** type de munition, **Z** zoom x4 / x8, **N** vision thermique, **X** fumigènes.
+  Vue du tireur dans l'axe du canon, réticule et télémètre. Maj + clic droit : coffre (UAZ 18, Tigr 27, camions 54).
+- **Soutes** : clic droit sur le véhicule avec la munition (caisses de 7,62 / 12,7 / 14,5 mm, bandes AP-I et HE-I de
+  25-30 mm, obus APFSDS / HE-FRAG / HEAT-MP / missile Refleks, roquettes 122 mm / S-8 / Hydra / 227 mm, ATACMS, missiles
+  antichars guidés, Stinger). Les véhicules posés ont leurs soutes à moitié pleines.
+- **Carburant** : bidon (clic droit, +25 %) ; à sec, le véhicule s'arrête (un hélicoptère redescend en autorotation).
+  **Réparation** : clé à molette + plaques d'acier (de titane pour les chars lourds) : +15 % et modules remis en état.
+- **Blindage directionnel** : avant > flancs > arrière (un char encaisse jusqu'à 85-90 % de l'avant). Un obus ou une
+  roquette dans le **moteur** (arrière) immobilise et met le feu ; dans le bas des flancs, les **chenilles / roues**
+  sont détruites (-70 % de vitesse). Les armes légères ne font presque rien aux blindés (les mitrailleuses lourdes
+  entament les blindés légers). Les passagers à l'abri dans la caisse ne prennent ni balles ni éclats.
+- **Munitions** : APFSDS (flèche hypersonique, perforation maximale), HE-FRAG (explosion de 7 blocs), HEAT (charge
+  creuse), Refleks / missiles antichars (suivent le réticule du tireur), AP-I (perforantes incendiaires), HE-I
+  (micro-explosions), Stinger (verrouillage infrarouge 1,5 s, bip continu), roquettes 227 mm / ATACMS guidées GPS sur
+  la marque du **désignateur laser** (sinon sur le réticule). Les explosions détruisent vraiment le décor. Les
+  fumigènes et le Shtora font décrocher les missiles guidés.
+- **Écrasement** : chars et gros blindés couchent les arbres (tronc entier), clôtures, vitres, plantes, écrasent les
+  voitures et renversent les piétons.
+
 ### Gameplay et progression
 - **Niveaux des armes (1 à 5)** : chaque arme garde ses statistiques (éliminations, tirs à la tête, tirs, ratio)
   et gagne de l'expérience : +10 par élimination, +5 si tir à la tête, +10 pour un gros monstre (50 PV ou plus).
