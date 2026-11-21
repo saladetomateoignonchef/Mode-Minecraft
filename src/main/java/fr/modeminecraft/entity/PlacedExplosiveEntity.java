@@ -37,7 +37,12 @@ import java.util.UUID;
  * Frapper l'objet le reprend (sauf le C4 armé collé à une créature).
  */
 public class PlacedExplosiveEntity extends Entity {
-    public enum Kind { C4, CLAYMORE, MORTAR }
+    /** TM-62 (soviétique) et M15 (américaine) : mines antichars, déclenchées par le poids d'un véhicule seulement. */
+    public enum Kind { C4, CLAYMORE, MORTAR, TM62, M15 }
+
+    public boolean antiTank() {
+        return kind() == Kind.TM62 || kind() == Kind.M15;
+    }
 
     private static final EntityDataAccessor<Integer> KIND = SynchedEntityData.defineId(PlacedExplosiveEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> ANGLE = SynchedEntityData.defineId(PlacedExplosiveEntity.class, EntityDataSerializers.INT);
@@ -86,6 +91,8 @@ public class PlacedExplosiveEntity extends Entity {
             case C4 -> ModItems.C4.get();
             case CLAYMORE -> ModItems.CLAYMORE_MINE.get();
             case MORTAR -> ModItems.MORTAR.get();
+            case TM62 -> ModItems.TM62_MINE.get();
+            case M15 -> ModItems.M15_MINE.get();
         };
     }
 
@@ -110,10 +117,19 @@ public class PlacedExplosiveEntity extends Entity {
             }
         }
         if (level().isClientSide) {
-            if (kind() != Kind.MORTAR && tickCount % 20 < 2) {
+            if (kind() != Kind.MORTAR && !antiTank() && tickCount % 20 < 2) {
                 level().addParticle(new DustParticleOptions(new Vector3f(1, 0.05f, 0.05f), 0.5f), getX(), getY() + 0.2, getZ(), 0, 0, 0);
             }
             return;
+        }
+        if (antiTank() && tickCount > 40 && tickCount % 2 == 0) {
+            // mine antichar : seul le poids d'un véhicule la déclenche (un piéton peut marcher dessus)
+            AABB box = new AABB(position(), position()).inflate(0.9, 0.2, 0.9).expandTowards(0, 1.2, 0);
+            for (Entity e : level().getEntities(this, box, e -> e instanceof fr.modeminecraft.entity.military.MilVehicleEntity
+                    || e instanceof fr.modeminecraft.entity.military.MilPart || e instanceof fr.modeminecraft.entity.VehicleEntity)) {
+                explodeAntiTank(e);
+                return;
+            }
         }
         if (kind() == Kind.CLAYMORE && tickCount > 40) {
             // Mine Claymore : un ennemi dans le cône de 60° devant elle, à moins de 3,5 blocs
@@ -133,14 +149,34 @@ public class PlacedExplosiveEntity extends Entity {
 
     private void explodeClaymore(Vec3 front) {
         ServerLevel level = (ServerLevel) level();
+        discard();
         Player ownerPlayer = owner == null ? null : level.getPlayerByUUID(owner);
         level.explode(this, getX(), getY() + 0.3, getZ(), 1.0f, Level.ExplosionInteraction.NONE);
         Detonations.shrapnel(level, position(), ownerPlayer, 40, front, 0.6, 10, 6, 9);
         discard();
     }
 
+    private void explodeAntiTank(Entity hit) {
+        ServerLevel level = (ServerLevel) level();
+        discard();
+        var v = hit instanceof fr.modeminecraft.entity.military.MilPart part ? part.getParent()
+                : hit instanceof fr.modeminecraft.entity.military.MilVehicleEntity mv ? mv : null;
+        level.explode(this, getX(), getY() + 0.2, getZ(), 3.5f, Level.ExplosionInteraction.TNT);
+        if (v != null) {
+            // charge sous la caisse : chenilles / roues arrachées ; coque en V du M-ATV : -80 %
+            v.mineHit(position(), 200 * v.mineFactor());
+        } else if (hit instanceof fr.modeminecraft.entity.VehicleEntity car) {
+            car.hurt(level.damageSources().explosion(this, null), 200);
+        }
+        discard();
+    }
+
     /** Détonateur : le C4 explose. */
     public void detonate() {
+        if (isRemoved()) {
+            return;
+        }
+        discard();
         level().explode(this, getX(), getY(), getZ(), 4.0f, Level.ExplosionInteraction.TNT);
         discard();
     }
@@ -202,8 +238,9 @@ public class PlacedExplosiveEntity extends Entity {
             discard();
             return true;
         }
-        if (source.is(net.minecraft.tags.DamageTypeTags.IS_EXPLOSION) && kind() != Kind.MORTAR) {
-            if (kind() == Kind.C4) detonate(); else explodeClaymore(Vec3.directionFromRotation(0, getYRot())); // réaction en chaîne
+        if (source.is(net.minecraft.tags.DamageTypeTags.IS_EXPLOSION) && kind() != Kind.MORTAR && !isRemoved()) {
+            // réaction en chaîne (la mine disparaît avant d'exploser : pas d'explosions en boucle)
+            if (kind() == Kind.C4) detonate(); else if (antiTank()) explodeAntiTank(null); else explodeClaymore(Vec3.directionFromRotation(0, getYRot()));
             return true;
         }
         return false;

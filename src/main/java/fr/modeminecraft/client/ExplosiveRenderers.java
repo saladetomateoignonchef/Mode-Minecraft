@@ -57,6 +57,10 @@ public final class ExplosiveRenderers {
             pose.mulPose(Axis.YP.rotationDegrees(-e.getYRot() + 180));
             if (e.kind() == PlacedExplosiveEntity.Kind.MORTAR) {
                 pose.translate(0, 0.5, 0);
+            } else if (e.antiTank()) {
+                pose.translate(0, 0.04, 0);                                     // à plat, à demi enterrée
+                pose.mulPose(Axis.XP.rotationDegrees(90));
+                pose.scale(0.8f, 0.8f, 0.8f);
             } else {
                 pose.translate(0, 0.25, 0);
             }

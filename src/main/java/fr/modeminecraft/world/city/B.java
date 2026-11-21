@@ -303,6 +303,17 @@ public final class B {
         level.addFreshEntity(v);
     }
 
+    /** Mine antichar posée (champ de mines). */
+    void mine(int x, int y, int z, boolean soviet) {
+        if (!inside(x, y, z)) {
+            return;
+        }
+        BlockPos p = pos(x, y, z);
+        level.addFreshEntity(new fr.modeminecraft.entity.PlacedExplosiveEntity(level.getLevel(),
+                soviet ? fr.modeminecraft.entity.PlacedExplosiveEntity.Kind.TM62 : fr.modeminecraft.entity.PlacedExplosiveEntity.Kind.M15,
+                net.minecraft.world.phys.Vec3.atBottomCenterOf(p), r.nextFloat() * 360, null));
+    }
+
     int nextInt(int n) {
         return r.nextInt(n);
     }

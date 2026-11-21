@@ -1,0 +1,38 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "vehicles",
+  "ingredients": [
+    {
+      "item": "modeminecraft:vehicle_engine",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:track_set",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:titanium_plate",
+      "count": 14
+    },
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 16
+    },
+    {
+      "item": "modeminecraft:autocannon_mount",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:launcher_module",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:fire_control_module",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:bmpt_terminator",
+    "count": 1
+  }
+}

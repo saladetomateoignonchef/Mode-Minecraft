@@ -45,14 +45,31 @@ public class ArmamentTableMenu extends AbstractContainerMenu {
         return new ArmamentTableMenu(ModMenus.ARTILLERY_TABLE.get(), containerId, inventory, access);
     }
 
+    public static ArmamentTableMenu assembly(int containerId, Inventory inventory) {
+        return new ArmamentTableMenu(ModMenus.ASSEMBLY_TABLE.get(), containerId, inventory, ContainerLevelAccess.NULL);
+    }
+
+    public static ArmamentTableMenu assembly(int containerId, Inventory inventory, ContainerLevelAccess access) {
+        return new ArmamentTableMenu(ModMenus.ASSEMBLY_TABLE.get(), containerId, inventory, access);
+    }
+
     public boolean isArtillery() {
         return getType() == ModMenus.ARTILLERY_TABLE.get();
     }
 
+    public boolean isAssembly() {
+        return getType() == ModMenus.ASSEMBLY_TABLE.get();
+    }
+
     /** Onglets de cette table. */
     public List<ArmamentRecipe.Category> categories() {
-        return isArtillery() ? List.of(ArmamentRecipe.Category.ARTILLERY)
-                : java.util.Arrays.stream(ArmamentRecipe.Category.values()).filter(c -> c != ArmamentRecipe.Category.ARTILLERY).toList();
+        if (isArtillery()) {
+            return List.of(ArmamentRecipe.Category.ARTILLERY);
+        }
+        if (isAssembly()) {
+            return List.of(ArmamentRecipe.Category.VEHICLE_PARTS, ArmamentRecipe.Category.VEHICLES);
+        }
+        return java.util.Arrays.stream(ArmamentRecipe.Category.values()).filter(c -> c.ordinal() < ArmamentRecipe.Category.ARTILLERY.ordinal()).toList();
     }
 
     private ArmamentTableMenu(net.minecraft.world.inventory.MenuType<?> type, int containerId, Inventory inventory, ContainerLevelAccess access) {
@@ -73,9 +90,8 @@ public class ArmamentTableMenu extends AbstractContainerMenu {
     }
 
     public List<RecipeHolder<ArmamentRecipe>> recipes() {
-        boolean art = isArtillery();
-        return ModRecipes.armamentRecipes(player.level()).stream()
-                .filter(r -> (r.value().category() == ArmamentRecipe.Category.ARTILLERY) == art).toList();
+        List<ArmamentRecipe.Category> cats = categories();
+        return ModRecipes.armamentRecipes(player.level()).stream().filter(r -> cats.contains(r.value().category())).toList();
     }
 
     @Override
@@ -110,6 +126,7 @@ public class ArmamentTableMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        return stillValid(access, player, isArtillery() ? ModBlocks.ARTILLERY_TABLE.get() : ModBlocks.ARMAMENT_TABLE.get());
+        return stillValid(access, player, isArtillery() ? ModBlocks.ARTILLERY_TABLE.get() : isAssembly() ? ModBlocks.ASSEMBLY_TABLE.get()
+                : ModBlocks.ARMAMENT_TABLE.get());
     }
 }

@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "vehicle_parts",
+  "ingredients": [
+    {
+      "item": "modeminecraft:titanium_ingot",
+      "count": 4
+    },
+    {
+      "item": "modeminecraft:steel_ingot",
+      "count": 8
+    },
+    {
+      "item": "minecraft:iron_block",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:cannon_barrel",
+    "count": 1
+  }
+}

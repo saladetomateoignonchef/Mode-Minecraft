@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "vehicles",
+  "ingredients": [
+    {
+      "item": "modeminecraft:vehicle_engine",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:wheel_set",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 4
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:uaz_469",
+    "count": 1
+  }
+}

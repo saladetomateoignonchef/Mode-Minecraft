@@ -624,6 +624,11 @@ public final class ModItems {
     public static final DeferredItem<Item> MORTAR = ITEMS.register("mortar", () -> new fr.modeminecraft.item.explosive.PlaceableExplosiveItem(
             fr.modeminecraft.entity.PlacedExplosiveEntity.Kind.MORTAR, new Item.Properties().rarity(Rarity.RARE)));
     public static final DeferredItem<Item> MORTAR_SHELL = ITEMS.registerSimpleItem("mortar_shell", new Item.Properties().stacksTo(16));
+    /** Mines antichars (mise à jour 0.4). */
+    public static final DeferredItem<Item> TM62_MINE = ITEMS.register("tm62_mine", () -> new fr.modeminecraft.item.explosive.PlaceableExplosiveItem(
+            fr.modeminecraft.entity.PlacedExplosiveEntity.Kind.TM62, new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final DeferredItem<Item> M15_MINE = ITEMS.register("m15_mine", () -> new fr.modeminecraft.item.explosive.PlaceableExplosiveItem(
+            fr.modeminecraft.entity.PlacedExplosiveEntity.Kind.M15, new Item.Properties().rarity(Rarity.UNCOMMON)));
     public static final DeferredItem<Item> GAS_MASK = ITEMS.register("gas_mask", () -> new fr.modeminecraft.item.explosive.GasMaskItem(new Item.Properties()));
 
     // ---------- Accessoires ----------
@@ -892,6 +897,17 @@ public final class ModItems {
     // ---------- Tables ----------
     public static final DeferredItem<BlockItem> ARMAMENT_TABLE = ITEMS.registerSimpleBlockItem(ModBlocks.ARMAMENT_TABLE);
     public static final DeferredItem<BlockItem> ARTILLERY_TABLE = ITEMS.registerSimpleBlockItem(ModBlocks.ARTILLERY_TABLE);
+    public static final DeferredItem<BlockItem> ASSEMBLY_TABLE = ITEMS.registerSimpleBlockItem(ModBlocks.ASSEMBLY_TABLE);
+    /** Pièces détachées des véhicules (établi d'assemblage, bases militaires, hangars). */
+    public static final DeferredItem<Item> VEHICLE_ENGINE = ammoItem("vehicle_engine", 4);
+    public static final DeferredItem<Item> GAS_TURBINE = ammoItem("gas_turbine", 4);
+    public static final DeferredItem<Item> TRACK_SET = ammoItem("track_set", 4);
+    public static final DeferredItem<Item> WHEEL_SET = ammoItem("wheel_set", 4);
+    public static final DeferredItem<Item> CANNON_BARREL = ammoItem("cannon_barrel", 2);
+    public static final DeferredItem<Item> AUTOCANNON_MOUNT = ammoItem("autocannon_mount", 4);
+    public static final DeferredItem<Item> FIRE_CONTROL_MODULE = ammoItem("fire_control_module", 8);
+    public static final DeferredItem<Item> ROTOR_ASSEMBLY = ammoItem("rotor_assembly", 2);
+    public static final DeferredItem<Item> LAUNCHER_MODULE = ammoItem("launcher_module", 4);
     public static final DeferredItem<BlockItem> MODIFICATION_TABLE = ITEMS.registerSimpleBlockItem(ModBlocks.MODIFICATION_TABLE);
     public static final DeferredItem<BlockItem> WEAPON_RACK = ITEMS.registerSimpleBlockItem(ModBlocks.WEAPON_RACK);
     public static final DeferredItem<BlockItem> TROPHY_WEAPON_RACK = ITEMS.registerSimpleBlockItem(ModBlocks.TROPHY_WEAPON_RACK);

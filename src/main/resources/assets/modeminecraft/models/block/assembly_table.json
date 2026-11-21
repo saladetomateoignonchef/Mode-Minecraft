@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "modeminecraft:block/assembly_table_side",
+    "north": "modeminecraft:block/assembly_table_side",
+    "south": "modeminecraft:block/assembly_table_side",
+    "east": "modeminecraft:block/assembly_table_side",
+    "west": "modeminecraft:block/assembly_table_side",
+    "up": "modeminecraft:block/assembly_table_top",
+    "down": "minecraft:block/iron_block"
+  }
+}

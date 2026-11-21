@@ -42,7 +42,9 @@ public record ArmamentRecipe(Category category, List<SizedIngredient> ingredient
     public enum Category implements net.minecraft.util.StringRepresentable {
         WEAPONS("weapons"), AMMO("ammo"), SPECIAL_AMMO("special_ammo"), ATTACHMENTS("attachments"), ARMOR("armor"),
         /** Établi d'artillerie : munitions lourdes, roquettes, missiles, carburant. */
-        ARTILLERY("artillery");
+        ARTILLERY("artillery"),
+        /** Établi d'assemblage : pièces détachées et véhicules complets. */
+        VEHICLE_PARTS("vehicle_parts"), VEHICLES("vehicles");
 
         public static final Codec<Category> CODEC = net.minecraft.util.StringRepresentable.fromEnum(Category::values);
         public static final StreamCodec<net.minecraft.network.FriendlyByteBuf, Category> STREAM_CODEC =

@@ -1,0 +1,30 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "vehicles",
+  "ingredients": [
+    {
+      "item": "modeminecraft:vehicle_engine",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:wheel_set",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 8
+    },
+    {
+      "item": "modeminecraft:launcher_module",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:fire_control_module",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:m142_himars",
+    "count": 1
+  }
+}

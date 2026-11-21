@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "vehicles",
+  "ingredients": [
+    {
+      "item": "modeminecraft:vehicle_engine",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:wheel_set",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 8
+    },
+    {
+      "item": "modeminecraft:autocannon_mount",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:humvee",
+    "count": 1
+  }
+}

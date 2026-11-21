@@ -1284,6 +1284,9 @@ public class MilVehicleEntity extends Entity {
     }
 
     private boolean hurtInternal(float amount, Entity by, Vec3 from, boolean heavy, float armor) {
+        if (destroyed || isRemoved()) {
+            return false;                                                  // déjà en train d'exploser
+        }
         float hp = health() - amount * armor;
         entityData.set(HEALTH, hp);
         level().playSound(null, getX(), getY(), getZ(), heavy ? SoundEvents.ANVIL_LAND : SoundEvents.CHAIN_HIT, SoundSource.NEUTRAL,
@@ -1356,12 +1359,36 @@ public class MilVehicleEntity extends Entity {
         }
     }
 
+    /** Mine antichar sous le véhicule : gros dégâts et train de roulement détruit (sauf coque en V). */
+    public void mineHit(Vec3 at, float damage) {
+        if (level().isClientSide) {
+            return;
+        }
+        hurtInternal(damage, null, at, true, 1f);
+        if (!type().has(MilType.Flag.MINE_PROOF) && !is(MOBILITY_DOWN)) {
+            setState(MOBILITY_DOWN, true);
+            announce(type().tracked() ? "message.modeminecraft.mil.track_hit" : "message.modeminecraft.mil.wheel_hit");
+        }
+        for (Entity p : getPassengers()) {
+            MilType.Seat s = seat(p);
+            if (s != null && !s.enclosed() && !type().has(MilType.Flag.MINE_PROOF)) {
+                p.hurt(damageSources().explosion(null, null), 8);
+            }
+        }
+    }
+
     /** Explosion de la mine sous le véhicule (coque en V du M-ATV : -80 %). */
     public float mineFactor() {
         return type().has(MilType.Flag.MINE_PROOF) ? 0.2f : 1f;
     }
 
+    private boolean destroyed;
+
     private void destroy(Entity by) {
+        if (destroyed) {
+            return;
+        }
+        destroyed = true;
         ServerLevel sl = (ServerLevel) level();
         float[] d = dims(type());
         for (Entity p : List.copyOf(getPassengers())) {

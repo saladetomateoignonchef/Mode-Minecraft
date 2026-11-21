@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "vehicles",
+  "ingredients": [
+    {
+      "item": "modeminecraft:gas_turbine",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:rotor_assembly",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 12
+    },
+    {
+      "item": "modeminecraft:autocannon_mount",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:uh_60_black_hawk",
+    "count": 1
+  }
+}

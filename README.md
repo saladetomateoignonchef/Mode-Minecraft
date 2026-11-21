@@ -612,6 +612,23 @@ Des **villes générées** apparaissent selon le biome (un centre de ville par r
 - **Écrasement** : chars et gros blindés couchent les arbres (tronc entier), clôtures, vitres, plantes, écrasent les
   voitures et renversent les piétons.
 
+#### Ajouts du QCM
+- **Blindés ennemis pilotés par l'IA** : patrouilles de T-80, T-90, T-14, BMP, BTR, BRDM, Shilka, BMPT (grand Nord), d'Abrams,
+  Bradley, Stryker, Humvee, M-ATV (garnison, forêts) ou de blindés de milice. L'équipage repère les cibles jusqu'à
+  100-140 blocs, pointe la tourelle en anticipant le mouvement et la chute de l'obus, et le conducteur présente
+  l'avant blindé à la menace.
+- **Grandes batailles OTAN contre URSS** (événement rare, annoncé dans le chat avec la distance et la direction) :
+  3 blindés et 6 fantassins de chaque camp avancent l'un vers l'autre et s'affrontent, sans la limite d'escarmouche.
+- **Mines antichars** TM-62 et M15 (établi d'artillerie, bases) : seul le poids d'un véhicule les déclenche ; train de
+  roulement arraché et gros dégâts (la coque en V du M-ATV réduit les dégâts de 80 %). Champs de mines entre les
+  deux grillages des bases secrètes.
+- **Fabrication des véhicules** : **établi d'assemblage** (2 pistons, une chaîne, l'établi d'artillerie, 4 blocs de
+  fer, un haut fourneau). Onglet **Pièces** : moteur diesel, turbine à gaz, train de chenilles, train de roues, tube de
+  canon, affût d'arme de bord, module de conduite de tir, ensemble rotor, module lance-missiles (aussi dans les coffres
+  des bases et des hangars). Onglet **Véhicules** : les 28 véhicules à partir de ces pièces et de plaques d'acier /
+  de titane.
+- Écrasement, désignateur laser, vue thermique du tireur et alerte aérienne : voir plus haut.
+
 #### Établi d'artillerie
 - Nouveau bloc (3 plaques d'acier, 2 TNT, la table d'armement, 2 blocs de fer) : onglet **Artillerie** avec les obus
   de char, bandes AP-I / HE-I, caisses de 14,5 mm, roquettes (122 mm, S-8, Hydra, 227 mm guidées), ATACMS, missiles

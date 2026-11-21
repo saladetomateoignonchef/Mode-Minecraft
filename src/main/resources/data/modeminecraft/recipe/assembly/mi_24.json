@@ -1,0 +1,34 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "vehicles",
+  "ingredients": [
+    {
+      "item": "modeminecraft:gas_turbine",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:rotor_assembly",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 14
+    },
+    {
+      "item": "modeminecraft:fire_control_module",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:autocannon_mount",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:launcher_module",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:mi_24",
+    "count": 1
+  }
+}

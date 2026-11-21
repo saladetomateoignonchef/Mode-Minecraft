@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "vehicle_parts",
+  "ingredients": [
+    {
+      "item": "modeminecraft:titanium_ingot",
+      "count": 6
+    },
+    {
+      "item": "modeminecraft:steel_ingot",
+      "count": 4
+    },
+    {
+      "item": "minecraft:blaze_rod",
+      "count": 4
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 4
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:gas_turbine",
+    "count": 1
+  }
+}

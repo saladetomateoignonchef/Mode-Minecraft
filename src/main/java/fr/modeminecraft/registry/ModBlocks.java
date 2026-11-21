@@ -37,6 +37,11 @@ public final class ModBlocks {
             () -> new WorkbenchBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.ANVIL).sound(net.minecraft.world.level.block.SoundType.METAL),
                     Component.translatable("container.modeminecraft.artillery_table"), ArmamentTableMenu::artillery));
 
+    /** Établi d'assemblage : on fabrique les véhicules à partir de pièces (moteur, chenilles, canon, blindage...). */
+    public static final DeferredBlock<Block> ASSEMBLY_TABLE = BLOCKS.register("assembly_table",
+            () -> new WorkbenchBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.ANVIL).sound(net.minecraft.world.level.block.SoundType.METAL),
+                    Component.translatable("container.modeminecraft.assembly_table"), ArmamentTableMenu::assembly));
+
     /** Table de modification : accessoires et skins des armes. */
     public static final DeferredBlock<Block> MODIFICATION_TABLE = BLOCKS.register("modification_table",
             () -> new WorkbenchBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SMITHING_TABLE),

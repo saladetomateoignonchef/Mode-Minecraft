@@ -274,6 +274,7 @@ public final class ClientSetup {
     public static void registerScreens(RegisterMenuScreensEvent event) {
         event.register(ModMenus.ARMAMENT_TABLE.get(), ArmamentTableScreen::new);
         event.register(ModMenus.ARTILLERY_TABLE.get(), ArmamentTableScreen::new);
+        event.register(ModMenus.ASSEMBLY_TABLE.get(), ArmamentTableScreen::new);
         event.register(ModMenus.MODIFICATION_TABLE.get(), ModificationTableScreen::new);
     }
 

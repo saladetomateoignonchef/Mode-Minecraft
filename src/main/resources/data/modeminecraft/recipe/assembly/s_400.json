@@ -1,0 +1,30 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "vehicles",
+  "ingredients": [
+    {
+      "item": "modeminecraft:vehicle_engine",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:wheel_set",
+      "count": 3
+    },
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 12
+    },
+    {
+      "item": "modeminecraft:launcher_module",
+      "count": 4
+    },
+    {
+      "item": "modeminecraft:fire_control_module",
+      "count": 4
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:s_400",
+    "count": 1
+  }
+}

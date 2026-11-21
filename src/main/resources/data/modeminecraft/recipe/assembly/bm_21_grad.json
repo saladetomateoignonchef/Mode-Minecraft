@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "vehicles",
+  "ingredients": [
+    {
+      "item": "modeminecraft:vehicle_engine",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:wheel_set",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 6
+    },
+    {
+      "item": "modeminecraft:launcher_module",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:bm_21_grad",
+    "count": 1
+  }
+}

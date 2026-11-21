@@ -193,6 +193,12 @@ public final class BotEvents {
             if (!p.isSpectator() && overworld.getRandom().nextFloat() < TIGR_CHANCE) {
                 Convoys.spawnTigr(overworld, p.position());
             }
+            if (!p.isSpectator() && overworld.getRandom().nextFloat() < ARMOR_CHANCE) {
+                fr.modeminecraft.entity.military.ArmorPatrols.spawnPatrol(overworld, p.position());
+            }
+            if (!p.isSpectator() && overworld.getRandom().nextFloat() < BATTLE_CHANCE) {
+                fr.modeminecraft.entity.military.ArmorPatrols.startBattle(overworld, p.position());
+            }
             if (!p.isSpectator() && overworld.getRandom().nextFloat() < AIRDROP_CHANCE) {
                 fr.modeminecraft.entity.AirdropEntity.call(overworld, p.position());
             }
@@ -233,6 +239,8 @@ public final class BotEvents {
     public static float CONVOY_CHANCE = 0.05f;
     /** Patrouille mobile en Tigr (par joueur et par minute). */
     public static float TIGR_CHANCE = 0.06f;
+    /** Patrouille de blindés ennemis pilotés par l'IA, et grande bataille OTAN / URSS (rare). */
+    public static float ARMOR_CHANCE = 0.03f, BATTLE_CHANCE = 0.006f;
 
     static void later(HumanBotEntity bot, int delay, Runnable r) {
         LATER.add(new Object[]{bot.level().getGameTime() + delay, r});

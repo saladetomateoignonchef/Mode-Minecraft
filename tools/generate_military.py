@@ -202,6 +202,19 @@ def strategic_icons():
         i.save(name)
 
 
+def mine_icons():
+    for name, body, top in (("tm62_mine", hexc("#4f5d34"), hexc("#3a4626")), ("m15_mine", hexc("#5a6a3a"), hexc("#c8b060"))):
+        i = Icon(name)
+        for y in range(16):
+            for x in range(16):
+                d = ((x - 7.5) ** 2 + (y - 7.5) ** 2) ** 0.5
+                if d < 7:
+                    c = top if d < 2.2 else body if d < 6 else shade(body, 0.75)
+                    i.px(x, y, shade(c, 1.12 if x + y < 14 else 0.92))
+        i.px(7, 7, hexc("#202020")), i.px(8, 8, hexc("#202020"))
+        i.save(name)
+
+
 def shell_texture():
     """Texture des projectiles en vol : 8 lignes de couleur (voir ShellRenderer)."""
     img = Image.new("RGBA", (16, 64))
@@ -309,6 +322,8 @@ ARTILLERY_RECIPES = {
     "iskander_he": (1, [("modeminecraft:titanium_plate", 6), ("minecraft:redstone_block", 2), ("minecraft:tnt", 16), ("minecraft:blaze_rod", 6)]),
     "iskander_cluster": (1, [("modeminecraft:titanium_plate", 6), ("minecraft:redstone_block", 2), ("minecraft:tnt", 12), ("minecraft:blaze_rod", 6), ("minecraft:iron_ingot", 12)]),
     "iskander_emp": (1, [("modeminecraft:titanium_plate", 6), ("minecraft:redstone_block", 4), ("minecraft:tnt", 8), ("minecraft:blaze_rod", 6), ("minecraft:copper_block", 4)]),
+    "tm62_mine": (2, [("minecraft:iron_ingot", 4), ("minecraft:tnt", 2), ("minecraft:stone_pressure_plate", 1)]),
+    "m15_mine": (2, [("minecraft:iron_ingot", 4), ("minecraft:tnt", 2), ("minecraft:heavy_weighted_pressure_plate", 1)]),
     "jerrycan": (1, [("minecraft:iron_ingot", 3), ("minecraft:coal", 4), ("minecraft:dried_kelp_block", 1)]),
     "laser_designator": (1, [("modeminecraft:steel_ingot", 2), ("minecraft:redstone", 6), ("minecraft:glass_pane", 2), ("minecraft:diamond", 1)]),
 }
@@ -320,11 +335,151 @@ def artillery_recipes():
             "ingredients": [{"item": i, "count": c} for i, c in ing], "result": {"id": f"{MOD}:{name}", "count": n}})
 
 
+# ------------------------------------------------------------------------------------------- fabrication des véhicules
+def part_icons():
+    steel, dark, olive, rubber, gold, red = hexc("#8a9098"), hexc("#3a3e42"), hexc("#5a6a38"), hexc("#1e1e1e"), hexc("#c8a040"), hexc("#b02a20")
+    i = Icon("engine")                                                   # moteur diesel V12
+    i.rect(2, 6, 13, 13, dark, noise=0.06)
+    for x in range(3, 13, 2):
+        i.rect(x, 3, x, 6, steel, bevel=False)                           # cylindres
+    i.rect(1, 9, 2, 11, steel, bevel=False)
+    i.rect(13, 8, 14, 10, red, bevel=False)
+    i.save("vehicle_engine")
+    i = Icon("turbine")
+    i.rect(2, 4, 13, 12, steel, noise=0.05)
+    for y in range(5, 12, 2):
+        for x in range(3, 13):
+            i.px(x, y, shade(steel, 0.7))
+    i.rect(13, 6, 15, 10, dark, bevel=False)
+    i.save("gas_turbine")
+    i = Icon("tracks")
+    i.rect(1, 4, 14, 12, rubber, bevel=False)
+    for x in range(1, 15, 2):
+        i.px(x, 4, steel), i.px(x, 12, steel)
+    for cx in (4, 8, 12):
+        i.rect(cx - 1, 7, cx + 1, 9, steel, bevel=False)
+    i.save("track_set")
+    i = Icon("wheels")
+    for cx in (4, 11):
+        i.rect(cx - 3, 4, cx + 3, 12, rubber, bevel=False)
+        i.rect(cx - 1, 7, cx + 1, 9, steel, bevel=False)
+    i.rect(4, 8, 11, 8, dark, bevel=False)
+    i.save("wheel_set")
+    i = Icon("barrel")
+    diag(i, 15, 2, [(0.2, olive), (0.5, dark), (0.6, olive), (1, dark)], start=(0, 15))
+    i.save("cannon_barrel")
+    i = Icon("autocannon")
+    i.rect(2, 8, 8, 12, dark, noise=0.05)
+    i.rect(8, 9, 15, 10, steel, bevel=False)
+    i.rect(3, 6, 6, 8, gold, bevel=False)
+    i.save("autocannon_mount")
+    i = Icon("fcm")
+    i.rect(2, 3, 13, 12, hexc("#2a5a2a"), noise=0.05)
+    for (x, y) in ((4, 5), (8, 5), (11, 8), (5, 9), (9, 10)):
+        i.rect(x, y, x + 1, y + 1, dark, bevel=False)
+    i.px(6, 7, gold), i.px(10, 6, gold), i.px(12, 11, red)
+    i.save("fire_control_module")
+    i = Icon("rotor")
+    i.rect(7, 6, 8, 9, steel, bevel=False)
+    diag(i, 15, 1, [(1, dark)], start=(0, 15))
+    for k in range(15):
+        i.px(k, k, dark)
+    i.save("rotor_assembly")
+    i = Icon("launcher")
+    i.rect(2, 4, 13, 12, olive, noise=0.05)
+    for y in (5, 8, 11):
+        for x in (4, 7, 10):
+            i.px(x, y, dark), i.px(x + 1, y, dark)
+    i.save("launcher_module")
+
+
+def assembly_table():
+    def top(img, r):
+        for y in range(16):
+            for x in range(16):
+                img.putpixel((x, y), shade(hexc("#4a4e52"), 1 + r.uniform(-0.07, 0.07)))
+        for x in range(16):
+            img.putpixel((x, 0), hexc("#e0b020") if x % 4 < 2 else hexc("#202020"))      # bande de sécurité
+            img.putpixel((x, 15), hexc("#e0b020") if x % 4 < 2 else hexc("#202020"))
+        for y in range(5, 11):                                                          # chenille posée
+            for x in range(3, 13):
+                img.putpixel((x, y), hexc("#1e1e1e") if (x + y) % 2 else hexc("#6a6e72"))
+
+    def side(img, r):
+        for y in range(16):
+            for x in range(16):
+                img.putpixel((x, y), shade(hexc("#3a4428"), 1 + r.uniform(-0.06, 0.06)))
+        for x in range(16):
+            img.putpixel((x, 2), hexc("#202020")), img.putpixel((x, 13), hexc("#202020"))
+        for y in range(4, 12):                                                          # palan / crochet
+            img.putpixel((8, y), hexc("#8a9098"))
+        for x in range(6, 11):
+            img.putpixel((x, 11), hexc("#8a9098"))
+        img.putpixel((6, 10), hexc("#8a9098")), img.putpixel((10, 10), hexc("#8a9098"))
+    block_tex("assembly_table_top", top)
+    block_tex("assembly_table_side", side)
+    write(os.path.join(ASSETS, "blockstates/assembly_table.json"), {"variants": {"": {"model": f"{MOD}:block/assembly_table"}}})
+    write(os.path.join(ASSETS, "models/block/assembly_table.json"), {"parent": "minecraft:block/cube", "textures": {
+        "particle": f"{MOD}:block/assembly_table_side", "north": f"{MOD}:block/assembly_table_side", "south": f"{MOD}:block/assembly_table_side",
+        "east": f"{MOD}:block/assembly_table_side", "west": f"{MOD}:block/assembly_table_side", "up": f"{MOD}:block/assembly_table_top",
+        "down": "minecraft:block/iron_block"}})
+    write(os.path.join(ASSETS, "models/item/assembly_table.json"), {"parent": f"{MOD}:block/assembly_table"})
+    write(os.path.join(DATA, "loot_table/blocks/assembly_table.json"), {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [
+        {"type": "minecraft:item", "name": f"{MOD}:assembly_table"}], "conditions": [{"condition": "minecraft:survives_explosion"}]}]})
+    write(os.path.join(DATA, "recipe/assembly_table.json"), {"type": "minecraft:crafting_shaped", "category": "misc",
+        "pattern": ["PCP", "IAI", "IBI"], "key": {"P": {"item": "minecraft:piston"}, "C": {"item": "minecraft:chain"},
+                                                  "A": {"item": f"{MOD}:artillery_table"}, "I": {"item": "minecraft:iron_block"},
+                                                  "B": {"item": "minecraft:blast_furnace"}},
+        "result": {"id": f"{MOD}:assembly_table", "count": 1}})
+
+
+M = "modeminecraft:"
+PART_RECIPES = {
+    "vehicle_engine": [(M + "steel_ingot", 6), ("minecraft:iron_block", 2), ("minecraft:piston", 2), ("minecraft:redstone", 4)],
+    "gas_turbine": [(M + "titanium_ingot", 6), (M + "steel_ingot", 4), ("minecraft:blaze_rod", 4), ("minecraft:redstone", 4)],
+    "track_set": [(M + "steel_plate", 6), ("minecraft:iron_ingot", 12), ("minecraft:chain", 6)],
+    "wheel_set": [("minecraft:iron_ingot", 6), ("minecraft:leather", 4), ("minecraft:slime_ball", 2)],
+    "cannon_barrel": [(M + "titanium_ingot", 4), (M + "steel_ingot", 8), ("minecraft:iron_block", 2)],
+    "autocannon_mount": [(M + "steel_ingot", 6), ("minecraft:iron_ingot", 6), ("minecraft:redstone", 2)],
+    "fire_control_module": [("minecraft:redstone", 8), ("minecraft:gold_ingot", 2), ("minecraft:quartz", 4), ("minecraft:glass_pane", 2), ("minecraft:diamond", 1)],
+    "rotor_assembly": [(M + "titanium_plate", 4), (M + "steel_ingot", 6), ("minecraft:iron_ingot", 4)],
+    "launcher_module": [(M + "steel_plate", 4), (M + "steel_ingot", 6), ("minecraft:redstone", 4)],
+}
+E, T, TR, W, CB, AC, FC, RO, LA, SP, TP = ("vehicle_engine", "gas_turbine", "track_set", "wheel_set", "cannon_barrel", "autocannon_mount",
+                                          "fire_control_module", "rotor_assembly", "launcher_module", "steel_plate", "titanium_plate")
+VEHICLE_RECIPES = {
+    "uaz_469": {E: 1, W: 1, SP: 4}, "tigr": {E: 1, W: 1, SP: 10, AC: 1}, "kamaz": {E: 1, W: 2, SP: 6},
+    "brdm_2": {E: 1, W: 1, SP: 14, AC: 1}, "btr_80": {E: 1, W: 2, SP: 18, AC: 1}, "bmp_2": {E: 1, TR: 1, SP: 20, AC: 1, FC: 1, LA: 1},
+    "bm_21_grad": {E: 1, W: 2, SP: 6, LA: 2}, "zsu_23_4": {E: 1, TR: 1, SP: 16, AC: 2, FC: 2}, "mi_24": {T: 2, RO: 1, SP: 14, FC: 1, AC: 1, LA: 1},
+    "t_90m": {E: 1, TR: 2, TP: 16, SP: 16, CB: 1, FC: 2}, "t_80bvm": {T: 1, TR: 2, TP: 14, SP: 16, CB: 1, FC: 1},
+    "t_14_armata": {E: 1, TR: 2, TP: 24, SP: 16, CB: 1, FC: 3}, "bmpt_terminator": {E: 1, TR: 2, TP: 14, SP: 16, AC: 2, LA: 1, FC: 2},
+    "sprut_sd": {E: 1, TR: 2, SP: 18, CB: 1, FC: 1}, "humvee": {E: 1, W: 1, SP: 8, AC: 1}, "m_atv": {E: 1, W: 1, SP: 14, AC: 1},
+    "m939": {E: 1, W: 2, SP: 6}, "stryker": {E: 1, W: 2, SP: 18, AC: 1, FC: 1}, "m113": {E: 1, TR: 1, SP: 14, AC: 1},
+    "m2a3_bradley": {E: 1, TR: 2, SP: 20, TP: 4, AC: 1, LA: 1, FC: 1}, "m1a2_abrams": {T: 1, TR: 2, TP: 20, SP: 18, CB: 1, FC: 2},
+    "m142_himars": {E: 1, W: 2, SP: 8, LA: 2, FC: 2}, "avenger": {E: 1, W: 1, SP: 8, LA: 1, AC: 1, FC: 2},
+    "uh_60_black_hawk": {T: 2, RO: 1, SP: 12, AC: 2}, "ah_64e_apache": {T: 2, RO: 1, TP: 8, SP: 10, AC: 1, LA: 2, FC: 2},
+    "s_400": {E: 1, W: 3, SP: 12, LA: 4, FC: 4}, "s_500": {E: 1, W: 3, SP: 14, LA: 2, FC: 6}, "iskander": {E: 1, W: 3, SP: 14, LA: 2, FC: 4},
+}
+
+
+def assembly_recipes():
+    for name, ing in PART_RECIPES.items():
+        write(os.path.join(DATA, f"recipe/assembly/{name}.json"), {"type": "modeminecraft:armament", "category": "vehicle_parts",
+            "ingredients": [{"item": i, "count": c} for i, c in ing], "result": {"id": f"{MOD}:{name}", "count": 1}})
+    for name, ing in VEHICLE_RECIPES.items():
+        write(os.path.join(DATA, f"recipe/assembly/{name}.json"), {"type": "modeminecraft:armament", "category": "vehicles",
+            "ingredients": [{"item": f"{MOD}:{i}", "count": c} for i, c in ing.items()], "result": {"id": f"{MOD}:{name}", "count": 1}})
+
+
 if __name__ == "__main__":
     loot_icons()
+    part_icons()
+    assembly_table()
+    assembly_recipes()
     artillery_table()
     artillery_recipes()
     heavy_ammo_icons()
     strategic_icons()
+    mine_icons()
     shell_texture()
     print("ok")

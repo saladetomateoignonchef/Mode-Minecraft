@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "vehicle_parts",
+  "ingredients": [
+    {
+      "item": "modeminecraft:titanium_plate",
+      "count": 4
+    },
+    {
+      "item": "modeminecraft:steel_ingot",
+      "count": 6
+    },
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 4
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:rotor_assembly",
+    "count": 1
+  }
+}

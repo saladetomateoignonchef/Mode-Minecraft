@@ -480,6 +480,13 @@ final class CityGenRegions {
                 Deco.fence(b, 0, 12, 15, 12, 4);
             }
         }
+        // champ de mines antichars entre les deux grillages (mise à jour 0.4)
+        for (int k = 2; k <= 13; k += 4) {
+            if (dx == -rad) b.mine(1 + (k % 2), 0, k, false);
+            if (dx == rad) b.mine(13 + (k % 2), 0, k, false);
+            if (dz == -rad) b.mine(k, 0, 1 + (k % 2), false);
+            if (dz == rad && dx != 0) b.mine(k, 0, 13 + (k % 2), false);
+        }
         switch (type) {
             case "mirador" -> {
                 Deco.watchtower(b, 6, 6, 9, Blocks.SPRUCE_LOG, Blocks.SPRUCE_PLANKS);

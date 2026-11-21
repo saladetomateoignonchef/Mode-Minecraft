@@ -91,6 +91,8 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
     public String debugState = "";
     /** Équipage d'un convoi (disparaît quand aucun joueur n'est proche). */
     public boolean convoy;
+    /** Combattant d'une grande bataille (OTAN contre URSS) : pas de limite d'escarmouche. */
+    public boolean battle;
     /** Faucon Blanc en embuscade nocturne : silencieux et tapi jusqu'au premier coup. */
     public boolean ambush;
 
@@ -326,7 +328,7 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
             if (f == Faction.FALCON) {
                 return other.faction().combatant() || other.faction() == Faction.CIVILIAN;
             }
-            return other.faction() == Faction.FALCON || f.enemyOf(other.faction()) && Skirmishes.allow(this, other);
+            return other.faction() == Faction.FALCON || f.enemyOf(other.faction()) && (battle && other.battle || Skirmishes.allow(this, other));
         }
         if (t instanceof Player p) {
             if (p.isCreative() || p.isSpectator()) {

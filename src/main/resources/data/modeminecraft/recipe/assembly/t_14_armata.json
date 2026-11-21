@@ -1,0 +1,34 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "vehicles",
+  "ingredients": [
+    {
+      "item": "modeminecraft:vehicle_engine",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:track_set",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:titanium_plate",
+      "count": 24
+    },
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 16
+    },
+    {
+      "item": "modeminecraft:cannon_barrel",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:fire_control_module",
+      "count": 3
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:t_14_armata",
+    "count": 1
+  }
+}

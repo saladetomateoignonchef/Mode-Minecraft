@@ -39,7 +39,8 @@ public final class ModCreativeTabs {
             "grad_rocket", "mlrs_rocket", "atacms_missile", "s8_rocket", "hydra_rocket", "atgm_missile", "missile_48n6e3", "missile_9m96e2",
             "missile_77n6n", "missile_40n6m", "iskander_he", "iskander_cluster", "iskander_emp");
     /** Drones, véhicules et ce qui va avec (brouilleur EMP, clé à molette, bidons). */
-    private static final Set<String> DRONE_IDS = Set.of("emp_jammer_rifle", "wrench", "jerrycan");
+    private static final Set<String> DRONE_IDS = Set.of("emp_jammer_rifle", "wrench", "jerrycan", "vehicle_engine", "gas_turbine", "track_set",
+            "wheel_set", "cannon_barrel", "autocannon_mount", "fire_control_module", "rotor_assembly", "launcher_module");
     /** Objets présents dans deux onglets (le pied-de-biche est une arme ET un outil d'effraction). */
     private static final Set<String> ALSO_TOOLS = Set.of("crowbar");
 
