@@ -25,6 +25,11 @@ public class ScenarioData extends SavedData {
         /** Données libres des phases suivantes (missions, grades…). */
         public CompoundTag extra = new CompoundTag();
 
+        /** Ticks restants avant de pouvoir refaire une action datée par `key` (0 si jamais faite ou délai écoulé). */
+        public long wait(String key, long cooldown, long now) {
+            return extra.contains(key) ? Math.max(0, extra.getLong(key) + cooldown - now) : 0;
+        }
+
         CompoundTag save() {
             CompoundTag t = new CompoundTag();
             if (side != null) {

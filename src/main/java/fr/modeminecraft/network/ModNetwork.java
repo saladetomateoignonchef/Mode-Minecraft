@@ -50,6 +50,12 @@ public final class ModNetwork {
                         fr.modeminecraft.scenario.MissionNet.State::handle)
                 .playToServer(fr.modeminecraft.scenario.MissionNet.Action.TYPE, fr.modeminecraft.scenario.MissionNet.Action.STREAM_CODEC,
                         fr.modeminecraft.scenario.MissionNet.Action::handle)
+                .playToClient(fr.modeminecraft.scenario.Armory.Open.TYPE, fr.modeminecraft.scenario.Armory.Open.STREAM_CODEC,
+                        fr.modeminecraft.scenario.Armory.Open::handle)
+                .playToServer(fr.modeminecraft.scenario.Armory.Act.TYPE, fr.modeminecraft.scenario.Armory.Act.STREAM_CODEC,
+                        fr.modeminecraft.scenario.Armory.Act::handle)
+                .playToClient(fr.modeminecraft.scenario.StrategicMapItem.MapData.TYPE, fr.modeminecraft.scenario.StrategicMapItem.MapData.STREAM_CODEC,
+                        fr.modeminecraft.scenario.StrategicMapItem.MapData::handle)
                 .playToClient(ShotFxPayload.TYPE, ShotFxPayload.STREAM_CODEC, ShotFxPayload::handle)
                 .playToClient(CityAmbiencePayload.TYPE, CityAmbiencePayload.STREAM_CODEC, CityAmbiencePayload::handle)
                 .playToClient(HitMarkerPayload.TYPE, HitMarkerPayload.STREAM_CODEC, HitMarkerPayload::handle)

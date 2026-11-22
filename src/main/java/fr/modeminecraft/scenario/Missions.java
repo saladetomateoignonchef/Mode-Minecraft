@@ -94,7 +94,7 @@ public final class Missions {
         return x.getList("Active", Tag.TAG_COMPOUND);
     }
 
-    static CompoundTag entry(ServerPlayer p, String id) {
+    public static CompoundTag entry(ServerPlayer p, String id) {
         for (Tag t : active(p)) {
             if (t instanceof CompoundTag c && c.getString("Id").equals(id)) {
                 return c;
@@ -118,7 +118,7 @@ public final class Missions {
         x.put("Flags", flags);
     }
 
-    private static void dirty(ServerPlayer p) {
+    static void dirty(ServerPlayer p) {
         ScenarioData.get(p.serverLevel()).setDirty();
         MissionNet.sync(p);
     }
@@ -270,12 +270,12 @@ public final class Missions {
     private static final net.minecraft.server.level.TicketType<net.minecraft.world.level.ChunkPos> TARGET_TICKET = net.minecraft.server.level.TicketType.create(
             "modeminecraft_mission_target", java.util.Comparator.comparingLong(net.minecraft.world.level.ChunkPos::toLong), 60);
 
-    private static void keepLoaded(ServerLevel level, BlockPos at) {
+    static void keepLoaded(ServerLevel level, BlockPos at) {
         net.minecraft.world.level.ChunkPos cp = new net.minecraft.world.level.ChunkPos(at);
         level.getChunkSource().addRegionTicket(TARGET_TICKET, cp, 3, cp);
     }
 
-    private static void putTarget(CompoundTag e, BlockPos p) {
+    static void putTarget(CompoundTag e, BlockPos p) {
         e.putInt("TX", p.getX());
         e.putInt("TY", p.getY());
         e.putInt("TZ", p.getZ());
@@ -530,7 +530,7 @@ public final class Missions {
         }
     }
 
-    private static ItemStack item(String id, int n) {
+    static ItemStack item(String id, int n) {
         return new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(ModeMinecraft.MODID, id)), n);
     }
 
@@ -617,7 +617,11 @@ public final class Missions {
             Mission m = Mission.byId(e.getString("Id"));
             int before = e.getInt("Progress");
             if (m == null) {
-                Tasks.tick(p, e);
+                if (e.getString("Id").equals("contract")) {
+                    Armory.tick(p, e);
+                } else {
+                    Tasks.tick(p, e);
+                }
                 changed |= e.getInt("Progress") != before;
                 continue;
             }
@@ -704,6 +708,7 @@ public final class Missions {
         if (hostile) {
             Tasks.onKill(p, dead);
         }
+        Armory.onKill(p, dead);
         if (dead instanceof HumanBotEntity hb && hb.faction() == Scenario.side(p).ally && hb.role() != BotRole.BOSS) {
             Reputation.add(p, -40, "rep.modeminecraft.killed_ally");
         }

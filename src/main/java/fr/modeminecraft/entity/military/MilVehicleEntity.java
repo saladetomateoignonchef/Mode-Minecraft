@@ -2125,6 +2125,33 @@ public class MilVehicleEntity extends Entity {
     }
 
     // ------------------------------------------------------------------ serveur
+    /** Dernier conducteur (démarreur actionné en montant à bord) et délai entre deux essais de démarrage. */
+    private java.util.UUID crankDriver;
+    private int crankCooldown;
+
+    /**
+     * Réservoir vide : le démarreur tourne à vide quand le conducteur essaie de partir (ou s'installe aux commandes),
+     * avec un message sur le HUD (en scénario : où voler du carburant).
+     */
+    private void dryCrank(ServerLevel sl) {
+        if (crankCooldown > 0) {
+            crankCooldown--;
+        }
+        if (!(getControllingPassenger() instanceof Player p) || fuel() > 0 || type().submarine() || is(WRECK) || usvArmed) {
+            crankDriver = getControllingPassenger() == null ? null : crankDriver;
+            return;
+        }
+        boolean boarded = !p.getUUID().equals(crankDriver);
+        crankDriver = p.getUUID();
+        if (crankCooldown == 0 && (boarded || p.zza != 0)) {
+            crankCooldown = 50;
+            sl.playSound(null, getX(), getY(), getZ(), fr.modeminecraft.registry.ModSounds.ENGINE_DRY_CRANK.get(), SoundSource.NEUTRAL, 1.2f, 1f);
+            boolean scenario = sl.getGameRules().getBoolean(fr.modeminecraft.scenario.Scenario.RULE);
+            p.displayClientMessage(Component.translatable(scenario ? "message.modeminecraft.mil.tank_empty" : "message.modeminecraft.mil.no_fuel")
+                    .withStyle(ChatFormatting.RED), true);
+        }
+    }
+
     private void serverTick() {
         MilType t = type();
         ServerLevel sl = (ServerLevel) level();
@@ -2146,6 +2173,7 @@ public class MilVehicleEntity extends Entity {
                 p.displayClientMessage(Component.translatable("message.modeminecraft.mil.no_fuel").withStyle(ChatFormatting.RED), true);
             }
         }
+        dryCrank(sl);
         if (t.heli() && !isControlledByLocalInstance()) {
             // régime du rotor calculé aussi par le serveur (le pilote joueur le calcule de son côté)
             entityData.set(ROTOR, canRun() ? Math.min(1, rotor() + 0.008f) : Math.max(0, rotor() - 0.004f));
@@ -2211,7 +2239,8 @@ public class MilVehicleEntity extends Entity {
             bombCooldown--;
         }
         // aéronef posé près d'une citerne de kérosène (hangar à avions) : ravitaillement automatique
-        if (t.heli() && tickCount % 40 == 0 && onGround() && Math.abs(speed()) < 0.05f && fuel() < 0.999f) {
+        if (t.heli() && tickCount % 40 == 0 && onGround() && Math.abs(speed()) < 0.05f && fuel() < 0.999f
+                && !sl.getGameRules().getBoolean(fr.modeminecraft.scenario.Scenario.RULE)) {         // scénario : pas de carburant libre en base
             BlockPos c = blockPosition();
             for (BlockPos q : BlockPos.betweenClosed(c.offset(-8, -1, -8), c.offset(8, 3, 8))) {
                 if (sl.getBlockState(q).is(fr.modeminecraft.registry.ModBlocks.KEROSENE_TANK.get())) {
@@ -2435,7 +2464,9 @@ public class MilVehicleEntity extends Entity {
                     fillAmmo(1f);
                     flares = 60;
                     supplyCrates = 4;
-                    setFuel(1f);
+                    if (!sl.getGameRules().getBoolean(fr.modeminecraft.scenario.Scenario.RULE)) {
+                        setFuel(1f);                                              // scénario : le carburant se vole
+                    }
                     bombBay.refill(type().defaultBomb());
                     entityData.set(HEALTH, Math.min(type().health, health() + type().health * 0.25f));
                     level().playSound(null, getX(), getY(), getZ(), SoundEvents.ARMOR_EQUIP_NETHERITE.value(), SoundSource.NEUTRAL, 2f, 0.7f);
@@ -3324,11 +3355,11 @@ public class MilVehicleEntity extends Entity {
             }
             return InteractionResult.SUCCESS;
         }
-        if (held.is(ModItems.JERRYCAN.get())) {
+        if (held.is(ModItems.JERRYCAN.get()) || held.is(ModItems.OIL_BARREL.get())) {
             if (fuel() >= 0.99f) {
                 return InteractionResult.PASS;
             }
-            setFuel(fuel() + 0.25f);
+            setFuel(fuel() + (held.is(ModItems.OIL_BARREL.get()) ? 0.6f : 0.25f));
             if (!player.getAbilities().instabuild) {
                 held.shrink(1);
             }

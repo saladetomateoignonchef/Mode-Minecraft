@@ -18,6 +18,10 @@ final class MissionText {
             var item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(e.getString("Item")));
             return Component.translatable("journal.modeminecraft.task.deliver", e.getInt("Goal"), item.getDescription());
         }
+        if (id.equals("contract")) {
+            return Component.translatable("journal.modeminecraft.contract." + e.getString("Kind"),
+                    Component.translatable("entity.modeminecraft.bot." + e.getString("Faction")));
+        }
         return Component.translatable("mission.modeminecraft." + id);
     }
 
@@ -25,6 +29,10 @@ final class MissionText {
         String id = e.getString("Id");
         if (id.equals("task")) {
             return Component.translatable("journal.modeminecraft.task.giver", e.getString("GiverName"), e.getInt("Progress"), e.getInt("Goal"));
+        }
+        if (id.equals("contract")) {
+            return e.getInt("Progress") >= e.getInt("Goal") ? Component.translatable("journal.modeminecraft.contract.claim")
+                    : Component.translatable("journal.modeminecraft.contract.progress", e.getInt("Progress"), e.getInt("Goal"));
         }
         String stage = id.equals("scientist") && e.getBoolean("Freed") ? ".escort" : id.equals("espionage") && e.getInt("Progress") > 0 ? ".report" : "";
         return Component.translatable("mission.modeminecraft." + id + ".objective" + stage, e.getInt("Progress"), e.getInt("Goal"));

@@ -70,7 +70,7 @@ public final class ScenarioNpc {
         var x = Scenario.record(p).extra;
         String key = "Free" + role.name();
         long now = p.level().getGameTime();
-        if (now - x.getLong(key) < 6000) {
+        if (Scenario.record(p).wait(key, 6000, now) > 0) {
             p.displayClientMessage(Component.translatable("message.modeminecraft.staff.free_wait"), true);
             return;
         }

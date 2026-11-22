@@ -101,8 +101,9 @@ public final class MissionNet {
     private static void abandon(ServerPlayer p, String id) {
         CompoundTag e = byIndex(p, id);
         if (e != null) {
-            Missions.abandon(p, e.getString("Id").equals("task") ? null : e.getString("Id"));
-            if (e.getString("Id").equals("task")) {
+            boolean loose = Missions.Mission.byId(e.getString("Id")) == null;          // tâche, contrat de l'armurier
+            Missions.abandon(p, loose ? null : e.getString("Id"));
+            if (loose) {
                 Missions.active(p).remove(e);
                 sync(p);
             }

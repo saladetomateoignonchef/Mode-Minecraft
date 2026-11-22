@@ -143,6 +143,7 @@ public final class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> CIWS_BURST = register("mil.ciws_burst");
     public static final DeferredHolder<SoundEvent, SoundEvent> SHIP_HORN = register("mil.ship_horn");
     public static final DeferredHolder<SoundEvent, SoundEvent> BALLAST_BLOW = register("mil.ballast_blow");
+    public static final DeferredHolder<SoundEvent, SoundEvent> ENGINE_DRY_CRANK = register("mil.engine_dry_crank");
 
     private static DeferredHolder<SoundEvent, SoundEvent> register(String name) {
         return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(ModeMinecraft.id(name)));

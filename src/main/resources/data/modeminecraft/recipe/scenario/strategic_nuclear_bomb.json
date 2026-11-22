@@ -1,0 +1,38 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "artillery",
+  "ingredients": [
+    {
+      "item": "modeminecraft:nuclear_guidance_unit",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:nuclear_neutron_reflector",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:nuclear_implosion_lenses",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:nuclear_krytron_trigger",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:uranium_canister",
+      "count": 8
+    },
+    {
+      "item": "modeminecraft:titanium_plate",
+      "count": 8
+    },
+    {
+      "item": "modeminecraft:precision_detonator",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:strategic_nuclear_bomb",
+    "count": 1
+  }
+}

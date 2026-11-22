@@ -81,6 +81,11 @@ public final class ModItems {
     public static final DeferredItem<Item> NUCLEAR_IMPLOSION_LENSES = ITEMS.registerSimpleItem("nuclear_implosion_lenses", new Item.Properties().stacksTo(1).rarity(Rarity.EPIC));
     public static final DeferredItem<Item> NUCLEAR_KRYTRON_TRIGGER = ITEMS.registerSimpleItem("nuclear_krytron_trigger", new Item.Properties().stacksTo(1).rarity(Rarity.EPIC));
     public static final DeferredItem<Item> SECRET_PLANS = ITEMS.registerSimpleItem("secret_plans", new Item.Properties().stacksTo(1).rarity(Rarity.RARE));
+    /** Fût de pétrole brut / carburant naval (plateformes offshore, raffineries) : +60 % de réservoir. */
+    public static final DeferredItem<Item> OIL_BARREL = ITEMS.registerSimpleItem("oil_barrel", new Item.Properties().stacksTo(4));
+    /** Carte tactique de toutes les bases (vendue par l'armurier). */
+    public static final DeferredItem<Item> STRATEGIC_BASES_MAP = ITEMS.register("strategic_bases_map",
+            () -> new fr.modeminecraft.scenario.StrategicMapItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
     public static final DeferredItem<BlockItem> PRISON_TOILET_SINK = ITEMS.registerSimpleBlockItem(ModBlocks.PRISON_TOILET_SINK);
     public static final DeferredItem<BlockItem> PRISON_BENCH = ITEMS.registerSimpleBlockItem(ModBlocks.PRISON_BENCH);
     public static final DeferredItem<BlockItem> CELL_CONTROL_PANEL = ITEMS.registerSimpleBlockItem(ModBlocks.CELL_CONTROL_PANEL);

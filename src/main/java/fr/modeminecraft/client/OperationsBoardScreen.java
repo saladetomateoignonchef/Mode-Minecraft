@@ -82,7 +82,8 @@ public class OperationsBoardScreen extends Screen {
             g.drawString(font, Component.translatable("gui.modeminecraft.ops.state." + why), px, height - 54, 0xFFFF8060);
         }
         int n = ScenarioClientState.missions.getList("Active", 10).size();
-        g.drawString(font, Component.translatable("gui.modeminecraft.ops.active", n, Missions.MAX_ACTIVE), x, height - 28, 0xFFA0A0A0);
+        Component act = Component.translatable("gui.modeminecraft.ops.active", n, Missions.MAX_ACTIVE);
+        g.drawString(font, act, x + 400 - font.width(act), 24, 0xFFA0A0A0);
     }
 
     @Override

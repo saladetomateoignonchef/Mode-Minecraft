@@ -226,9 +226,10 @@ public class ArmamentTableScreen extends AbstractContainerScreen<ArmamentTableMe
             // Pour un tag (ex. #planches), on fait défiler les possibilités
             ItemStack shown = options[(int) (System.currentTimeMillis() / 1000 % options.length)];
             int have = ArmamentRecipe.count(minecraft.player.getInventory(), ingredient);
-            boolean ok = have >= ingredient.count() || minecraft.player.getAbilities().instabuild;
+            int need = recipe.need(minecraft.player, ingredient);
+            boolean ok = have >= need || minecraft.player.getAbilities().instabuild;
             g.renderItem(shown, x, line - 4);
-            String txt = Math.min(have, 999) + " / " + ingredient.count() + "  " + shown.getHoverName().getString();
+            String txt = Math.min(have, 999) + " / " + need + "  " + shown.getHoverName().getString();
             g.drawString(font, font.plainSubstrByWidth(txt, 98), x + 18, line, ok ? 0x80FF80 : 0xFF6060, false);
             if (mouseX >= x && mouseX < x + 16 && mouseY >= line - 4 && mouseY < line + 12) {
                 g.renderTooltip(font, shown, mouseX, mouseY);

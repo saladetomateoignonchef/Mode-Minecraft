@@ -96,6 +96,20 @@ final class BossVaults {
             int x = xs[i], z = i < 4 ? far : (lz + hz) / 2;
             b.chest(x, f, z, i < 4 ? toDoor : (x < sx ? Direction.EAST : Direction.WEST), table, false);
         }
+        // composant stratégique de la bombe (un seul par chambre forte), dans un coffre au centre de la salle
+        net.minecraft.world.item.Item part = switch (t) {
+            case SWAT_HQ -> fr.modeminecraft.registry.ModItems.NUCLEAR_GUIDANCE_UNIT.get();
+            case DESERT_PALACE -> fr.modeminecraft.registry.ModItems.NUCLEAR_NEUTRON_REFLECTOR.get();
+            case FOREST_BUNKER, SOVIET_HQ -> fr.modeminecraft.registry.ModItems.NUCLEAR_IMPLOSION_LENSES.get();
+            case BADLANDS_REFINERY, OFFSHORE_VAULT -> fr.modeminecraft.registry.ModItems.NUCLEAR_KRYTRON_TRIGGER.get();
+            case CARTEL_VILLA -> null;
+        };
+        if (part != null) {
+            int mz = (lz + hz) / 2;
+            b.set(sx, f - 1, mz, Blocks.GOLD_BLOCK);
+            b.itemChest(sx, f, mz, toDoor, java.util.List.of(new net.minecraft.world.item.ItemStack(part)),
+                    net.minecraft.network.chat.Component.translatable("container.modeminecraft.nuclear_component"));
+        }
         // coffre spécial au fond, au centre, sur un socle doré éclairé : uniquement la tenue de la faction
         // (au palais du désert : une seule pièce au hasard de la tenue du Boss du Désert)
         String outfit = switch (t) {

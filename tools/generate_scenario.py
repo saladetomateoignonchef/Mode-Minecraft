@@ -194,6 +194,23 @@ def items():
         i.rect(4, y, 11, y, hexc("#3050a0"), bevel=False)
     i.rect(2, 3, 13, 4, hexc("#b02020"), bevel=False)                                 # tampon « secret »
     i.save("secret_plans")
+    i = Icon("oil_barrel")
+    i.rect(4, 2, 11, 14, hexc("#1c2a4a"), noise=0.05)                                 # fût de 200 L bleu
+    for y in (2, 7, 13):
+        i.rect(4, y, 11, y, hexc("#101828"), bevel=False)                           # cerclages
+    i.rect(6, 4, 9, 5, hexc("#e8e8e8"), bevel=False)
+    i.px(7, 9, hexc("#202020")), i.px(8, 10, hexc("#202020")), i.px(7, 11, hexc("#202020"))
+    i.px(10, 3, hexc("#d0d4d8"))                                                      # bonde
+    i.save("oil_barrel")
+    i = Icon("strategic_bases_map")
+    i.rect(1, 2, 14, 13, hexc("#cfc49a"), noise=0.04)
+    i.rect(1, 2, 14, 2, hexc("#8a7a50"), bevel=False)
+    i.rect(1, 13, 14, 13, hexc("#8a7a50"), bevel=False)
+    for x, y, c in ((4, 5, "#2a5ad0"), (11, 4, "#c02020"), (7, 9, "#e0a020"), (12, 10, "#202020"), (3, 11, "#20a0c0")):
+        i.rect(x, y, x + 1, y + 1, hexc(c), bevel=False)                               # icônes des bases
+    for x in range(5, 11):
+        i.px(x, 7, hexc("#6a5a30"))
+    i.save("strategic_bases_map")
 
 
 if __name__ == "__main__" and True:

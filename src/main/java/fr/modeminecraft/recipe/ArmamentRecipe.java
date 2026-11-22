@@ -90,12 +90,17 @@ public record ArmamentRecipe(Category category, List<SizedIngredient> ingredient
         return total;
     }
 
+    /** Quantité exigée pour ce joueur (scénario : bombe moins chère grâce aux plans volés et au scientifique). */
+    public int need(Player player, SizedIngredient ingredient) {
+        return fr.modeminecraft.scenario.ScenarioCost.need(player, result, ingredient);
+    }
+
     public boolean canCraft(Player player) {
         if (player.getAbilities().instabuild) {
             return true;
         }
         for (SizedIngredient ingredient : ingredients) {
-            if (count(player.getInventory(), ingredient) < ingredient.count()) {
+            if (count(player.getInventory(), ingredient) < need(player, ingredient)) {
                 return false;
             }
         }
@@ -109,7 +114,7 @@ public record ArmamentRecipe(Category category, List<SizedIngredient> ingredient
         }
         Inventory inventory = player.getInventory();
         for (SizedIngredient ingredient : ingredients) {
-            int remaining = ingredient.count();
+            int remaining = need(player, ingredient);
             for (int i = 0; i < inventory.getContainerSize() && remaining > 0; i++) {
                 ItemStack stack = inventory.getItem(i);
                 if (usable(ingredient, stack)) {

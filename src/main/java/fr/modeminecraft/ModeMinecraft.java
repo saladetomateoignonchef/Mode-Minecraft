@@ -45,6 +45,7 @@ public class ModeMinecraft {
         fr.modeminecraft.registry.ModSounds.SOUNDS.register(modEventBus);
         ModRecipes.TYPES.register(modEventBus);
         ModRecipes.SERIALIZERS.register(modEventBus);
+        fr.modeminecraft.scenario.ScenarioLoot.SERIALIZERS.register(modEventBus);
         ModCreativeTabs.CREATIVE_TABS.register(modEventBus);
 
         LOGGER.info("Mode Minecraft chargé !");

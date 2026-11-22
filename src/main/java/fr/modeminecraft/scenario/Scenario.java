@@ -180,6 +180,11 @@ public final class Scenario {
 
     /** Base principale du camp la plus proche (villes « base » américaines / « soviet »), jusqu'à ~12 régions de distance. */
     public static CityPlanner.City findBase(ServerLevel level, Side side, BlockPos from) {
+        return findCity(level, c -> c.variant().equals(side.baseVariant), from, 12);
+    }
+
+    /** Ville la plus proche qui vérifie `test` (recherche par anneaux de régions, au plus `rings`). */
+    public static CityPlanner.City findCity(ServerLevel level, java.util.function.Predicate<CityPlanner.City> test, BlockPos from, int rings) {
         var placement = CityPlanner.placement(level.registryAccess());
         if (placement == null) {
             return null;
@@ -188,14 +193,14 @@ public final class Scenario {
         int rx0 = Math.floorDiv(from.getX() >> 4, placement.spacing()), rz0 = Math.floorDiv(from.getZ() >> 4, placement.spacing());
         CityPlanner.City best = null;
         double bestD = Double.MAX_VALUE;
-        for (int ring = 0; ring <= 12; ring++) {
+        for (int ring = 0; ring <= rings; ring++) {
             for (int i = -ring; i <= ring; i++) {
                 for (int j = -ring; j <= ring; j++) {
                     if (Math.max(Math.abs(i), Math.abs(j)) != ring) {
                         continue;
                     }
                     CityPlanner.City c = CityPlanner.city(env, rx0 + i, rz0 + j);
-                    if (c != null && c.variant().equals(side.baseVariant)) {
+                    if (c != null && test.test(c)) {
                         double d = Math.hypot(c.middleX() - from.getX(), c.middleZ() - from.getZ());
                         if (d < bestD) {
                             bestD = d;

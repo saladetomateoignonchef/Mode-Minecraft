@@ -565,6 +565,10 @@ final class CityGenRegions2 {
                 }
                 b.fill(1, 0, 7, 1, 13, 7, B.facing(Blocks.LADDER, Direction.WEST));
                 b.walls(2, 14, 2, 13, 14, 13, Blocks.IRON_BARS.defaultBlockState());
+                // entrepôt de bidons au pied de la cuve
+                b.chest(14, 0, 1, Direction.UP, "refinery_fuel", true);
+                b.chest(14, 0, 2, Direction.UP, "refinery_fuel", true);
+                b.chest(13, 0, 1, Direction.UP, "refinery_fuel", true);
                 if (h > 0.5) {
                     b.pair(0, 0, 14, Faction.REFINERY, 20);
                 }
@@ -595,6 +599,7 @@ final class CityGenRegions2 {
                         b.set(alongX ? i : 7, 3, alongX ? 7 : i, B.facing(Blocks.IRON_TRAPDOOR, Direction.NORTH));   // volant de vanne
                     }
                 }
+                b.chest(13, 0, 2, Direction.UP, "refinery_fuel", true);                              // fûts le long de la conduite
                 if (h < 0.4) {                                                                        // camion-citerne
                     b.fill(2, 0, 11, 9, 2, 13, Blocks.LIGHT_GRAY_CONCRETE);
                     b.fill(10, 0, 11, 12, 2, 13, Blocks.RED_CONCRETE);

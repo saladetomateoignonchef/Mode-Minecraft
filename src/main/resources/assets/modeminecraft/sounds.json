@@ -777,5 +777,11 @@
     "sounds": [
       "modeminecraft:mil/ballast_blow_0"
     ]
+  },
+  "mil.engine_dry_crank": {
+    "subtitle": "subtitles.modeminecraft.engine_dry_crank",
+    "sounds": [
+      "modeminecraft:mil/engine_dry_crank_0"
+    ]
   }
 }

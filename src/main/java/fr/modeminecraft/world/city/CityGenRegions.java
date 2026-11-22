@@ -161,6 +161,9 @@ final class CityGenRegions {
         if (north != null && north.type().equals("avenue") && h > 0.4) {
             portrait(b, 4, 2, 1);
         }
+        if (h > 0.7) {
+            b.chest(12, 1, 12, Direction.UP, "desert_uranium", true);                      // cache d'uranium de la milice
+        }
         if (h > 0.88) {
             b.bot(8, 9, 4, Faction.MILITIA, BotRole.SNIPER, 2);
         } else if (h < 0.15) {
@@ -212,6 +215,14 @@ final class CityGenRegions {
             b.turret(c[0] + 3, 14, c[1] + 3, c[0] < 10 && c[1] < 10 ? MountedGunEntity.Kind.M2 : MountedGunEntity.Kind.MAXIM,
                     c[1] < 10 ? 180 : 0, Faction.MILITIA);
         }
+        // dépôt d'uranium de la milice (rez-de-chaussée de la tour sud-est) : conteneurs plombés radioactifs
+        int ux = n - 5, uz = n - 5;
+        b.fill(ux, 0, uz, ux + 3, 0, uz + 3, Blocks.YELLOW_GLAZED_TERRACOTTA);
+        b.chest(ux + 2, 1, uz + 2, Direction.UP, "desert_uranium", true);
+        b.chest(ux + 3, 1, uz + 2, Direction.UP, "desert_uranium", true);
+        b.chest(ux + 2, 1, uz + 3, Direction.UP, "desert_uranium", true);
+        b.set(ux + 3, 1, uz + 3, Blocks.IRON_BLOCK);
+        b.set(ux + 3, 2, uz + 3, Blocks.GREEN_STAINED_GLASS);
         // porte d'entrée gardée (sud)
         b.fill(21, 1, n - 1, 26, 5, n - 1, Blocks.AIR.defaultBlockState());
         Deco.sandbags(b, 18, 0, n + 1 > n ? n - 3 : n - 3, 20, n - 3);

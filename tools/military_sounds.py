@@ -359,6 +359,22 @@ def ballast_blow(seed):
     return gs.normalize(blast * 0.8 + boil)
 
 
+def dry_crank(seed):
+    """Démarreur à vide : le moteur tourne au démarreur (« rrr-rrr-rrr ») sans jamais prendre, puis le clic du relais."""
+    rng = np.random.default_rng(seed)
+    t = gs.t_axis(2.4)
+    n = len(t)
+    on = (t < 1.9).astype(float)
+    comp = 0.55 + 0.45 * np.sin(2 * np.pi * 5.5 * t) ** 2                 # compressions des cylindres
+    whine = np.sin(2 * np.pi * np.cumsum(170 + 25 * np.sin(2 * np.pi * 5.5 * t)) / SR) * 0.35
+    grind = gs.band(gs.noise(n, rng), lo=120, hi=1800) * comp
+    x = (whine + grind) * comp * on * gs.env(t, 0.03, 2.2)
+    click = np.zeros(n)
+    k = int(1.95 * SR)
+    click[k:k + int(0.012 * SR)] = gs.band(gs.noise(int(0.012 * SR), rng), lo=1500, hi=6000)[: len(click[k:k + int(0.012 * SR)])] * 1.5
+    return gs.normalize(x + click, 0.85)
+
+
 SOUNDS = {
     "mil.radio_dispatch_call": (lambda s: radio_call(s), 2, "radio_call"),
     "mil.radio_call_cut": (lambda s: radio_cut(s), 1, "radio_cut"),
@@ -396,6 +412,7 @@ SOUNDS = {
     "mil.ciws_burst": (lambda s: ciws_burst(s), 2, "ciws"),
     "mil.ship_horn": (lambda s: ship_horn(s), 1, "ship_horn"),
     "mil.ballast_blow": (lambda s: ballast_blow(s), 1, "ballast_blow"),
+    "mil.engine_dry_crank": (lambda s: dry_crank(s), 1, "engine_dry_crank"),
 }
 
 

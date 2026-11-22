@@ -303,7 +303,8 @@ public final class B {
         BlockPos p = pos(x, y, z);
         var v = fr.modeminecraft.entity.military.MilVehicleEntity.create(level.getLevel(), type, p.getX() + 0.5, p.getY(), p.getZ() + 0.5, yaw);
         v.fillAmmo(0.5f);
-        v.setFuel(0.25f + r.nextFloat() * 0.3f);
+        // scénario : réservoirs à sec, il faut voler du carburant (plateformes offshore, raffineries)
+        v.setFuel(level.getLevel().getGameRules().getBoolean(fr.modeminecraft.scenario.Scenario.RULE) ? 0 : 0.25f + r.nextFloat() * 0.3f);
         level.addFreshEntity(v);
     }
 

@@ -91,7 +91,8 @@ public class ArmamentTableMenu extends AbstractContainerMenu {
 
     public List<RecipeHolder<ArmamentRecipe>> recipes() {
         List<ArmamentRecipe.Category> cats = categories();
-        return ModRecipes.armamentRecipes(player.level()).stream().filter(r -> cats.contains(r.value().category())).toList();
+        return ModRecipes.armamentRecipes(player.level()).stream().filter(r -> cats.contains(r.value().category())
+                && fr.modeminecraft.scenario.ScenarioCost.visible(r.id(), player)).toList();
     }
 
     @Override
