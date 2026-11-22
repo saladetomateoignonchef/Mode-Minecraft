@@ -220,13 +220,13 @@ public final class BotGoals {
 
         @Override
         public boolean canUse() {
-            if (!warns() || bot.getTarget() != null || bot.level().getGameTime() < cooldownUntil || bot.tickCount % 5 != 0
+            if (!warns() || bot.getTarget() != null || bot.level().getNearestPlayer(bot, 20) == null || bot.level().getGameTime() < cooldownUntil || bot.tickCount % 5 != 0
                     || bot.getPersistentData().getBoolean("modeminecraft_prisoner")) {                 // détenu : pas de sommation
                 return false;
             }
             long now = bot.level().getGameTime();
             for (Player p : bot.level().getEntitiesOfClass(Player.class, bot.getBoundingBox().inflate(20))) {
-                if (!p.isCreative() && !p.isSpectator() && (threat(p) || curfew(p)) && !FactionRelations.isHostile(p.getUUID(), bot.faction(), now)
+                if (!p.isCreative() && !p.isSpectator() && !FactionRelations.isAlly(p.getUUID(), bot.faction()) && (threat(p) || curfew(p)) && !FactionRelations.isHostile(p.getUUID(), bot.faction(), now)
                         && canSee(bot, p, 20)) {
                     suspect = p;
                     curfewWarning = !threat(p);

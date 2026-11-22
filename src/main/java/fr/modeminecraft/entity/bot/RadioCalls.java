@@ -92,7 +92,7 @@ public final class RadioCalls {
 
     /** Ce bot est témoin d'un crime de `p` : rancune, alliés à portée de voix, appel radio de 30 s. */
     public static void witness(HumanBotEntity bot, Player p) {
-        if (p.isCreative() || p.isSpectator() || !bot.isAlive()) {
+        if (p.isCreative() || p.isSpectator() || !bot.isAlive() || FactionRelations.isAlly(p.getUUID(), bot.faction())) {
             return;
         }
         long now = bot.level().getGameTime();
@@ -117,6 +117,9 @@ public final class RadioCalls {
 
     /** Un garde d'une faction hostile repère l'intrus : il le signale par radio (30 s pour l'en empêcher). */
     static void spotted(HumanBotEntity bot, Player p) {
+        if (FactionRelations.isAlly(p.getUUID(), bot.faction())) {
+            return;
+        }
         long now = bot.level().getGameTime();
         if (!p.isCreative() && hasRadio(bot.faction()) && bot.radioEnd() <= now && !FactionRelations.isHostile(p.getUUID(), bot.faction(), now)
                 && !fr.modeminecraft.scenario.Gadgets.jammed(bot.level(), bot.position())
