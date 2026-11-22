@@ -955,6 +955,41 @@ Les 6 grades vont de Soldat (0) à Général (3000). Chaque grade donne :
 - **Cinématiques et briefings radio** : arrivée, alerte au bombardier, interception, frappe sur la base, frappe finale.
 - **Victoire** : larguer la bombe sur la base stratégique ennemie. L'écran de victoire s'affiche, puis la partie continue librement.
 
+### Correctifs des tests en jeu, train des villes du Mesa et avion léger civil (mise à jour 0.10)
+**Correctifs**
+- **Armes de bots** : la tête d'un bot armé ne se retourne plus de plus de 80° par rapport au corps et le bras porte-arme
+  reste dans un cône fixe (plus de fusil tenu à l'envers).
+- **Tourelles** : tireur de mitrailleuse fixe, de lanceur statique ou poste de tireur d'un véhicule (joueur ou PNJ) : l'arme
+  personnelle est masquée (3e et 1re personne) et ne peut plus servir (tir, coups, grenades).
+- **Mode créatif** : 7 onglets (armes et accessoires, munitions et explosifs, tenues et équipements, véhicules terrestres,
+  aviation et drones, marine et sous-marins, blocs, décoration et clés).
+- **Criquets** : bruit nocturne supprimé (son, fichier, sous-titre, générateur), rien ne le remplace.
+- **Largages** : chaque arme à feu tirée au sort reçoit dans le même coffre les munitions exactes qui lui correspondent.
+- **Villes** : contour irrégulier (désert, métropole, cité soviétique : lobes, quartiers qui s'étirent le long des avenues,
+  plus de grand carré) et quartiers variés (désert : riad, maison-tour, oasis, marché couvert, chantier, place à fontaine ;
+  métropole : types mélangés par zone) ; deux parcelles voisines n'ont jamais le même type.
+- **Éclairage** : tout intérieur reçoit des luminaires jusqu'à une lumière supérieure à 10 (plafonnier, lanterne ou balise
+  au sol selon la hauteur), et les structures du mod n'accueillent plus de monstres vanilla.
+- **Coffres des boss** : désert = une seule pièce sur 4 de la tenue du Chef du Désert par ville (4 villes pour la tenue
+  complète) ; villa du cartel = tenue du cartel ; raffinerie du Mesa = tenue de shérif / contremaître (+ carburant et pièce nucléaire).
+
+**Train des villes du Mesa**
+- Les villes frontières du Mesa ont une **gare** (quai de 80 blocs, guichet) et sont reliées deux à deux par une **voie ferrée**
+  (ballast, remblai, courbes, rampes, ponts à chevalets) qui suit le profil des routes.
+- Un **train** (locomotive à vapeur + 2 ou 3 wagons) est mis en service quand un joueur s'approche d'une gare. Conducteur PNJ :
+  il roule de ville en ville, freine, s'arrête **25 s** portes ouvertes, siffle et repart. Il ne roule que là où les chunks sont chargés.
+- **Conduire soi-même** : Shift + clic droit sur la locomotive (déloge le conducteur) ; Z accélère, S freine puis recule, H sifflet,
+  O portes. Les voyageurs montent par les portes ouvertes et passent d'un wagon à l'autre en roulant avec Z / S.
+- **Billets** : le guichetier (clic droit) vend un *Ticket de train Mesa* contre 2 émeraudes ou 1 lingot d'or. Les 2 contrôleurs
+  arpentent le couloir et vérifient les voyageurs à moins de 2 blocs : ticket composté (consommé) pour le trajet, sinon coup de
+  **matraque électrique** : étourdissement de 5 s (immobile, sans arme, caméra qui tremble, 0,5 PV au plus), puis expulsion
+  sur le quai à l'arrêt suivant. Impossible de descendre en marche.
+
+**Avion léger biplace civil** (`light_civil_plane`)
+- Monoplan à aile haute et hélice bipale, 8 blocs d'envergure, 6,5 de long, train fixe, fuselage blanc à bandes rouge et bleue,
+  **aucun armement**, pilote + passager. Décollage en 15 à 20 blocs, 120 minutes d'autonomie, ignoré des défenses antiaériennes
+  (sauf s'il survole une base ou une cité soviétique à moins de 60 blocs du sol). Recette à l'établi d'assemblage.
+
 ### Gameplay et progression
 - **Niveaux des armes (1 à 5)** : chaque arme garde ses statistiques (éliminations, tirs à la tête, tirs, ratio)
   et gagne de l'expérience : +10 par élimination, +5 si tir à la tête, +10 pour un gros monstre (50 PV ou plus).

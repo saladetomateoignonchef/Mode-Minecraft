@@ -204,8 +204,8 @@ public final class CityLayout {
     /** Parcelle d'une ville : plan de base, contour irrégulier et quartiers variés. */
     public Plot plot(int dx, int dz) {
         Plot p = rawPlot(dx, dz);
-        if (p == null || !organic()) {
-            return p;
+        if (p == null || !organic() || Math.abs(dx) > rad || Math.abs(dz) > rad) {
+            return p;                                              // hors du plan (voisines interrogées par les bâtiments)
         }
         if (shapeable(p) && outside(p.ax(), p.az())) {
             return null;
