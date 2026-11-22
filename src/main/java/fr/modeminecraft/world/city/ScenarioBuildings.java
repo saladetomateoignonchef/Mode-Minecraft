@@ -130,6 +130,11 @@ public final class ScenarioBuildings {
 
     /** Drapeau national (bannière murale) : bannière étoilée / drapeau rouge frappé de l'étoile. */
     static void flag(B b, int x, int y, int z, Direction facing, Side side) {
+        flag(b, x, y, z, facing, side, true);
+    }
+
+    /** Élément de drapeau : avec canton (carré étoilé / étoile jaune) ou seulement les bandes (bas des grands drapeaux). */
+    static void flag(B b, int x, int y, int z, Direction facing, Side side, boolean canton) {
         if (!b.inside(x, y, z)) {
             return;
         }
@@ -140,8 +145,10 @@ public final class ScenarioBuildings {
         BannerPatternLayers.Builder layers = new BannerPatternLayers.Builder();
         if (us) {
             layers.add(lookup.getOrThrow(BannerPatterns.STRIPE_SMALL), DyeColor.RED);
-            layers.add(lookup.getOrThrow(BannerPatterns.SQUARE_TOP_LEFT), DyeColor.BLUE);
-        } else {
+            if (canton) {
+                layers.add(lookup.getOrThrow(BannerPatterns.SQUARE_TOP_LEFT), DyeColor.BLUE);
+            }
+        } else if (canton) {
             layers.add(lookup.getOrThrow(BannerPatterns.SQUARE_TOP_LEFT), DyeColor.YELLOW);
             layers.add(lookup.getOrThrow(BannerPatterns.HALF_HORIZONTAL_MIRROR), DyeColor.RED);
             layers.add(lookup.getOrThrow(BannerPatterns.STRIPE_BOTTOM), DyeColor.RED);
@@ -262,64 +269,9 @@ public final class ScenarioBuildings {
         return s == Side.US ? new String[]{"", us, "", ""} : new String[]{"", ru, fr, ""};
     }
 
-    // ------------------------------------------------------------------ centre de recrutement (32 x 16)
+    // ------------------------------------------------------------------ centre de commandement et des missions (32 x 32)
     static void recruitment(B b, Side side) {
-        boolean us = side == Side.US;
-        Faction f = side.ally;
-        box(b, 3, 2, 28, 13, 6, wall(side), us ? Blocks.POLISHED_ANDESITE : Blocks.DARK_OAK_PLANKS, Blocks.GRAY_CONCRETE);
-        windows(b, 5, 26, 13, 2, 3);
-        windows(b, 5, 26, 2, 2, 3);
-        // entrée vitrée, enseigne lumineuse, drapeaux
-        b.fill(15, 0, 13, 16, 2, 13, Blocks.AIR);
-        Deco.door(b, 15, 0, 13, Direction.SOUTH, Blocks.IRON_DOOR);
-        Deco.door(b, 16, 0, 13, Direction.SOUTH, Blocks.IRON_DOOR);
-        b.set(14, 1, 14, B.facing(Blocks.STONE_BUTTON, Direction.SOUTH));
-        b.set(17, 1, 12, B.facing(Blocks.STONE_BUTTON, Direction.NORTH));
-        b.fill(12, 4, 14, 19, 4, 14, Blocks.SEA_LANTERN);
-        String[] t = us ? new String[]{"", "RECRUITMENT", "CENTER", ""} : new String[]{"", "ВОЕНКОМАТ", "Recrutement", ""};
-        sign(b, 15, 4, 14, Direction.SOUTH, t);
-        sign(b, 16, 4, 14, Direction.SOUTH, t);
-        flag(b, 13, 2, 14, Direction.SOUTH, side);
-        flag(b, 18, 2, 14, Direction.SOUTH, side);
-        b.fill(13, -1, 14, 18, -1, 15, Blocks.SMOOTH_STONE);
-        // bureau de l'officier recruteur : cartes d'état-major, radio
-        for (int x = 12; x <= 19; x++) {
-            b.set(x, 0, 6, B.slab(Blocks.SMOOTH_QUARTZ_SLAB, true));
-        }
-        b.set(13, 1, 6, Blocks.CARTOGRAPHY_TABLE);
-        b.set(18, 1, 6, Blocks.NOTE_BLOCK);
-        b.set(18, 2, 6, Blocks.LIGHTNING_ROD);                                                   // antenne de la radio
-        b.set(15, 1, 6, B.facing(Blocks.LECTERN, Direction.SOUTH));
-        b.set(16, 0, 4, B.stairs(Blocks.DARK_OAK_STAIRS, Direction.NORTH));
-        b.bot(15, 0, 4, f, BotRole.RECRUITER, 2);
-        // carte murale du monde (bleu : océans, vert : terres, rouge / bleu : bases)
-        for (int x = 9; x <= 22; x++) {
-            for (int y = 1; y <= 4; y++) {
-                boolean land = (x * 7 + y * 3) % 5 > 1;
-                b.set(x, y, 3, land ? Blocks.GREEN_CONCRETE : Blocks.BLUE_CONCRETE);
-            }
-        }
-        b.set(11, 3, 3, Blocks.RED_CONCRETE);
-        b.set(20, 2, 3, us ? Blocks.LIGHT_BLUE_CONCRETE : Blocks.YELLOW_CONCRETE);
-        // salle d'attente : bancs, affiches, plantes, horloge, garde
-        for (int x = 6; x <= 10; x++) {
-            b.set(x, 0, 10, B.stairs(Blocks.SPRUCE_STAIRS, Direction.NORTH));
-            b.set(x + 15, 0, 10, B.stairs(Blocks.SPRUCE_STAIRS, Direction.NORTH));
-        }
-        b.set(4, 0, 12, Blocks.POTTED_FERN);
-        b.set(27, 0, 12, Blocks.POTTED_FERN);
-        b.set(27, 3, 7, B.facing(ModBlocks.WALL_CLOCK.get(), Direction.WEST));
-        flag(b, 4, 3, 7, Direction.EAST, side);
-        for (int y = 1; y <= 5; y += 4) {
-            b.fill(5, y, 3, 26, y, 3, Blocks.AIR);
-        }
-        b.fill(5, 5, 3, 26, 5, 12, Blocks.AIR);
-        b.fill(4, 5, 3, 27, 5, 12, Blocks.AIR);
-        for (int x = 6; x <= 26; x += 5) {
-            b.set(x, 5, 8, Blocks.SEA_LANTERN);
-        }
-        b.bot(20, 0, 11, f, BotRole.SOLDIER, 3);
-        b.bot(12, 0, 15, f, BotRole.SOLDIER, 2);
+        CommandCenter.build(b, side);
     }
 
     // ------------------------------------------------------------------ armurerie fortifiée

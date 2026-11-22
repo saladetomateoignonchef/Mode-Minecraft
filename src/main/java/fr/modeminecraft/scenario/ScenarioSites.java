@@ -12,8 +12,8 @@ public final class ScenarioSites {
 
     /** Bâtiments : parcelle d'ancrage US et URSS, taille (chunks), lit et casier du logement (repère du bâtiment). */
     public enum Site {
-        DORMITORY(-4, -2, -5, -8, 2, 1, new int[]{7, 0, 2}, new int[]{7, 0, 3}, Grade.SOLDIER),
-        RECRUITMENT(-3, -3, -5, -7, 2, 1, null, null, Grade.SOLDIER),
+        DORMITORY(-4, -1, -5, -8, 2, 1, new int[]{7, 0, 2}, new int[]{7, 0, 3}, Grade.SOLDIER),
+        RECRUITMENT(-3, -3, -5, -7, 2, 2, null, null, Grade.SOLDIER),
         ARMORY(-4, -3, -2, -8, 1, 1, null, null, Grade.SOLDIER),
         CANTEEN(-1, -3, -1, -8, 1, 1, null, null, Grade.SOLDIER),
         INFIRMARY(0, -3, -2, -7, 1, 1, null, null, Grade.SOLDIER),

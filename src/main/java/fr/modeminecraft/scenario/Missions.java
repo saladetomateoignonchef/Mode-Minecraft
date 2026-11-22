@@ -687,7 +687,7 @@ public final class Missions {
         }
         CityPlanner.City c = Quarters.base(p);
         if (c != null) {
-            BlockPos rc = ScenarioSites.at(c, Scenario.side(p), ScenarioSites.Site.RECRUITMENT, new int[]{16, 0, 8});
+            BlockPos rc = ScenarioSites.at(c, Scenario.side(p), ScenarioSites.Site.RECRUITMENT, new int[]{16, 0, 14});
             if (sci.blockPosition().distSqr(rc) < 14 * 14) {
                 sci.discard();                                                  // pris en charge par l'état-major
                 complete(p, e, Mission.SCIENTIST);
