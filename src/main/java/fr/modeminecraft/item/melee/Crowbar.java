@@ -102,6 +102,10 @@ public final class Crowbar {
         if (s.getBlock() instanceof LockedDoorBlock) {
             LockedDoorBlock.force(level, pos);
         } else if (s.getBlock() instanceof PoliceLockerBlock) {
+            if (s.getBlock() instanceof fr.modeminecraft.scenario.BarracksLockerBlock && player instanceof net.minecraft.server.level.ServerPlayer sp
+                    && level.getBlockEntity(pos) instanceof fr.modeminecraft.scenario.BarracksLockerBlockEntity be && be.owner != null && !be.owner.equals(sp.getUUID())) {
+                fr.modeminecraft.scenario.Reputation.add(sp, -50, "rep.modeminecraft.stole");    // vol dans sa propre base
+            }
             PoliceLockerBlock.force(level, pos, player);
         } else if (s.getBlock() instanceof SlidingJailDoorBlock) {
             fr.modeminecraft.block.police.JailDoorBlockEntity.release(level, SlidingJailDoorBlock.lower(s, pos));

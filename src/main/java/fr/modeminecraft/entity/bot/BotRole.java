@@ -14,7 +14,14 @@ public enum BotRole {
     /** Chef unique d'une faction (100 PV, arme légendaire). */
     BOSS,
     /** Opérateur de drones : déploie un micro-drone de reconnaissance ou un drone kamikaze dès que l'alarme sonne. */
-    DRONE_OPERATOR;
+    DRONE_OPERATOR,
+    /** Scénario « Course à l'arme nucléaire » : officier recruteur, armurier, cuisinier, infirmier, scientifique transfuge. */
+    RECRUITER, ARMORER, COOK, MEDIC, SCIENTIST;
+
+    /** Personnel de base (ne patrouille pas, parle au joueur). */
+    public boolean staff() {
+        return this == RECRUITER || this == ARMORER || this == COOK || this == MEDIC;
+    }
 
     public boolean falcon() {
         return ordinal() >= COMMANDER.ordinal() && ordinal() <= BRUTE.ordinal();

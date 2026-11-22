@@ -449,6 +449,8 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
         }
     }
 
+    private int lastAllyShot = -1000;
+
     @Override
     public boolean hurt(DamageSource source, float amount) {
         if (level().isClientSide) {
@@ -456,6 +458,11 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
         }
         if (source.getEntity() instanceof HumanBotEntity ally && ally.faction().group.equals(faction().group)) {
             return false;                                            // balle perdue d'un allié : ignorée
+        }
+        if (source.getEntity() instanceof net.minecraft.server.level.ServerPlayer sp && tickCount - lastAllyShot > 40
+                && fr.modeminecraft.scenario.Scenario.side(sp) != null && fr.modeminecraft.scenario.Scenario.side(sp).ally == faction()) {
+            lastAllyShot = tickCount;
+            fr.modeminecraft.scenario.Reputation.add(sp, -10, "rep.modeminecraft.shot_ally");   // tir sur un allié
         }
         if (source.getDirectEntity() instanceof Projectile) {
             lastRangedHit = level().getGameTime();
@@ -810,6 +817,14 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
 
     @Override
     protected net.minecraft.world.InteractionResult mobInteract(Player player, net.minecraft.world.InteractionHand hand) {
+        // scénario : personnel de base, scientifique, petites tâches des soldats de sa base
+        if (isAlive() && hand == net.minecraft.world.InteractionHand.MAIN_HAND && player instanceof net.minecraft.server.level.ServerPlayer sp
+                && tradingPlayer == null && fr.modeminecraft.scenario.ScenarioNpc.interact(this, sp)) {
+            return net.minecraft.world.InteractionResult.SUCCESS;
+        }
+        if (level().isClientSide && (role().staff() || role() == BotRole.SCIENTIST)) {
+            return net.minecraft.world.InteractionResult.SUCCESS;
+        }
         if (role() == BotRole.CONTRACTOR && isAlive()) {
             if (!level().isClientSide) {
                 getLookControl().setLookAt(player);
@@ -832,6 +847,13 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
     @Override
     public void setTradingPlayer(Player player) {
         tradingPlayer = player;
+    }
+
+    /** Boutique du personnel de base (offres calculées pour ce joueur : grade, camp). */
+    public void openShop(Player player, net.minecraft.world.item.trading.MerchantOffers custom) {
+        offers = custom;
+        setTradingPlayer(player);
+        openTradingScreen(player, getDisplayName(), 1);
     }
 
     @Override
@@ -890,6 +912,10 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
     protected net.minecraft.network.chat.Component getTypeName() {
         if (role() == BotRole.CONTRACTOR) {
             return net.minecraft.network.chat.Component.translatable("entity.modeminecraft.bot.contractor");
+        }
+        if (role().staff() || role() == BotRole.SCIENTIST) {
+            return net.minecraft.network.chat.Component.translatable("entity.modeminecraft.bot." + role().name().toLowerCase()
+                    + (role() == BotRole.SCIENTIST ? "" : "." + faction().id));
         }
         if (role() == BotRole.BOSS) {
             return net.minecraft.network.chat.Component.translatable("entity.modeminecraft.bot.boss_" + faction().id);

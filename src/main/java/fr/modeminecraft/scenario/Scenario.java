@@ -65,6 +65,10 @@ public final class Scenario {
             begin(sp);
         }
         sync(sp);
+        if (r.side != null) {
+            Reputation.nameplate(sp);
+            MissionNet.sync(sp);
+        }
     }
 
     /** Ouvre le choix du camp : joueur immobile et invulnérable jusqu'à sa décision. */
@@ -123,6 +127,7 @@ public final class Scenario {
             sp.setRespawnPosition(level.dimension(), dorm.bed(), dorm.yaw(), false, false);   // couchette : point de réveil à côté
             fr.modeminecraft.scenario.BarracksLockerBlock.assign(level, dorm.locker(), sp);
             r.base = new BlockPos(base.middleX(), base.baseY(), base.middleZ());
+            Reputation.nameplate(sp);
             r.bed = dorm.bed();
             r.locker = dorm.locker();
             sp.displayClientMessage(Component.translatable("message.modeminecraft.scenario.arrived." + side.id).withStyle(ChatFormatting.GOLD), false);

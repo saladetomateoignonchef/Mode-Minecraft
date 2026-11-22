@@ -71,6 +71,16 @@ public final class ModItems {
     public static final DeferredItem<BlockItem> MILITARY_BUNK_BED_US = ITEMS.registerSimpleBlockItem(ModBlocks.MILITARY_BUNK_BED_US);
     public static final DeferredItem<BlockItem> MILITARY_BUNK_BED_SOVIET = ITEMS.registerSimpleBlockItem(ModBlocks.MILITARY_BUNK_BED_SOVIET);
     public static final DeferredItem<BlockItem> BARRACKS_LOCKER = ITEMS.registerSimpleBlockItem(ModBlocks.BARRACKS_LOCKER);
+    public static final DeferredItem<BlockItem> PLANS_TERMINAL = ITEMS.registerSimpleBlockItem(ModBlocks.PLANS_TERMINAL);
+    public static final DeferredItem<Item> RANK_SECURITY_DOOR = ITEMS.register("rank_security_door",
+            () -> new net.minecraft.world.item.DoubleHighBlockItem(ModBlocks.RANK_SECURITY_DOOR.get(), new Item.Properties()));
+    /** Scénario « Course à l'arme nucléaire » : uranium des milices du désert, 4 composants de la bombe, plans volés. */
+    public static final DeferredItem<Item> URANIUM_CANISTER = ITEMS.registerSimpleItem("uranium_canister", new Item.Properties().stacksTo(16).rarity(Rarity.RARE));
+    public static final DeferredItem<Item> NUCLEAR_GUIDANCE_UNIT = ITEMS.registerSimpleItem("nuclear_guidance_unit", new Item.Properties().stacksTo(1).rarity(Rarity.EPIC));
+    public static final DeferredItem<Item> NUCLEAR_NEUTRON_REFLECTOR = ITEMS.registerSimpleItem("nuclear_neutron_reflector", new Item.Properties().stacksTo(1).rarity(Rarity.EPIC));
+    public static final DeferredItem<Item> NUCLEAR_IMPLOSION_LENSES = ITEMS.registerSimpleItem("nuclear_implosion_lenses", new Item.Properties().stacksTo(1).rarity(Rarity.EPIC));
+    public static final DeferredItem<Item> NUCLEAR_KRYTRON_TRIGGER = ITEMS.registerSimpleItem("nuclear_krytron_trigger", new Item.Properties().stacksTo(1).rarity(Rarity.EPIC));
+    public static final DeferredItem<Item> SECRET_PLANS = ITEMS.registerSimpleItem("secret_plans", new Item.Properties().stacksTo(1).rarity(Rarity.RARE));
     public static final DeferredItem<BlockItem> PRISON_TOILET_SINK = ITEMS.registerSimpleBlockItem(ModBlocks.PRISON_TOILET_SINK);
     public static final DeferredItem<BlockItem> PRISON_BENCH = ITEMS.registerSimpleBlockItem(ModBlocks.PRISON_BENCH);
     public static final DeferredItem<BlockItem> CELL_CONTROL_PANEL = ITEMS.registerSimpleBlockItem(ModBlocks.CELL_CONTROL_PANEL);

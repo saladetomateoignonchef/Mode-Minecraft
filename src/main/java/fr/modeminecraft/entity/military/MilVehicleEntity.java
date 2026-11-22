@@ -952,6 +952,7 @@ public class MilVehicleEntity extends Entity {
             return;
         }
         destroyed = true;
+        fr.modeminecraft.scenario.Missions.onVehicleLost(this, by);
         setState(SINKING, true);
         setState(BURNING, true);
         entityData.set(HEALTH, 0f);
@@ -3264,6 +3265,7 @@ public class MilVehicleEntity extends Entity {
             return;
         }
         destroyed = true;
+        fr.modeminecraft.scenario.Missions.onVehicleLost(this, by);
         ServerLevel sl = (ServerLevel) level();
         float[] d = dims(type());
         for (Entity p : List.copyOf(getPassengers())) {
@@ -3358,6 +3360,9 @@ public class MilVehicleEntity extends Entity {
             }
         }
         if (getPassengers().size() < t.seats.size()) {
+            if (player instanceof net.minecraft.server.level.ServerPlayer sp && !fr.modeminecraft.scenario.VehicleAccess.allowed(sp, this)) {
+                return InteractionResult.FAIL;                                   // grade insuffisant pour ce véhicule de la base
+            }
             stealCheck(player);
             player.startRiding(this);
             return InteractionResult.SUCCESS;

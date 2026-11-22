@@ -149,6 +149,10 @@ public final class ModBlocks {
             () -> new fr.modeminecraft.scenario.MilitaryBunkBedBlock(steel()));
     public static final DeferredBlock<Block> MILITARY_BUNK_BED_SOVIET = BLOCKS.register("military_bunk_bed_soviet",
             () -> new fr.modeminecraft.scenario.MilitaryBunkBedBlock(steel()));
+    public static final DeferredBlock<Block> RANK_SECURITY_DOOR = BLOCKS.register("rank_security_door",
+            () -> new fr.modeminecraft.scenario.RankDoorBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_DOOR).strength(-1f, 1200f)));
+    public static final DeferredBlock<Block> PLANS_TERMINAL = BLOCKS.register("plans_terminal",
+            () -> new fr.modeminecraft.scenario.PlansTerminalBlock(steel()));
     public static final DeferredBlock<Block> BARRACKS_LOCKER = BLOCKS.register("barracks_locker",
             () -> new fr.modeminecraft.scenario.BarracksLockerBlock(steel()));
     public static final DeferredBlock<Block> PRISON_BUNK_BED = BLOCKS.register("prison_bunk_bed",

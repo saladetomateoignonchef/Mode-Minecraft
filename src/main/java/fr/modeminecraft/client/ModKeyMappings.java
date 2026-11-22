@@ -80,5 +80,9 @@ public final class ModKeyMappings {
     public static final KeyMapping BOMB_BAY = new KeyMapping("key.modeminecraft.bomb_bay",
             net.neoforged.neoforge.client.settings.KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_O, CATEGORY);
 
+    /** Scénario : Journal de bord tactique (missions actives, épinglage). */
+    public static final KeyMapping JOURNAL = new KeyMapping("key.modeminecraft.journal",
+            net.neoforged.neoforge.client.settings.KeyConflictContext.IN_GAME, InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_J, CATEGORY);
+
     private ModKeyMappings() {}
 }

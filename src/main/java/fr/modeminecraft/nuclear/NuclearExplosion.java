@@ -62,6 +62,7 @@ public final class NuclearExplosion {
     private static final List<Blast> ACTIVE = new ArrayList<>();
 
     public static void start(ServerLevel level, BlockPos c, Entity owner) {
+        fr.modeminecraft.scenario.Missions.onNuke(level, net.minecraft.world.phys.Vec3.atCenterOf(c), owner);
         Vec3 at = Vec3.atCenterOf(c);
         Blast b = new Blast(level, c, owner);
         ModeMinecraft.LOGGER.info("Détonation nucléaire à {}", c);

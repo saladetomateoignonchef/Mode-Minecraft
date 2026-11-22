@@ -100,3 +100,103 @@ if __name__ == "__main__":
     bunk("military_bunk_bed_soviet", (84, 96, 66), (116, 112, 70), (204, 196, 170))
     locker()
     print("ok")
+
+
+# ------------------------------------------------------------------ porte à contrôle d'accréditation (grades)
+def rank_door():
+    import json as _json
+    import zipfile
+    bottom = metal(61, (58, 62, 70))
+    shade(bottom, 0, 0, 16, 1, -25)
+    shade(bottom, 0, 0, 1, 16, -25)
+    shade(bottom, 15, 0, 16, 16, -25)
+    shade(bottom, 3, 2, 13, 3, 30)                                                # bande de grade (dorée)
+    px = bottom.load()
+    for y in range(4, 16, 4):
+        shade(bottom, 2, y, 14, y + 1, -18)
+    save(bottom, "block/rank_security_door_bottom.png")
+    top = metal(62, (58, 62, 70))
+    shade(top, 0, 15, 16, 16, -25)
+    shade(top, 0, 0, 1, 16, -25)
+    shade(top, 15, 0, 16, 16, -25)
+    shade(top, 3, 3, 13, 9, 70)                                                   # hublot
+    px = top.load()
+    for x in range(4, 12):
+        for y in range(4, 8):
+            px[x, y] = (120, 160, 190, 255)
+    shade(top, 11, 11, 14, 15, -40)                                               # lecteur de badge
+    px[12, 12] = (40, 220, 60, 255)
+    px[12, 13] = (220, 40, 40, 255)
+    save(top, "block/rank_security_door_top.png")
+    item = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    item.paste(bottom.resize((8, 8)), (4, 8))
+    item.paste(top.resize((8, 8)), (4, 0))
+    save(item, "item/rank_security_door.png")
+    with zipfile.ZipFile(gp.VANILLA) as z:
+        bs = _json.loads(z.read("assets/minecraft/blockstates/iron_door.json"))
+    for part in ("bottom_left", "bottom_left_open", "bottom_right", "bottom_right_open", "top_left", "top_left_open", "top_right", "top_right_open"):
+        write(os.path.join(ASSETS, f"models/block/rank_security_door_{part}.json"), {"parent": f"minecraft:block/door_{part}", "textures": {
+            "bottom": f"{MOD}:block/rank_security_door_bottom", "top": f"{MOD}:block/rank_security_door_top"}})
+    variants = {}
+    for key, v in bs["variants"].items():
+        v2 = dict(v)
+        v2["model"] = v["model"].replace("minecraft:block/iron_door_", f"{MOD}:block/rank_security_door_")
+        for rank in range(1, 6):
+            variants[f"{key},rank={rank}"] = v2
+    write(os.path.join(ASSETS, "blockstates/rank_security_door.json"), {"variants": variants})
+    write(os.path.join(ASSETS, "models/item/rank_security_door.json"), {"parent": "minecraft:item/generated",
+                                                                         "layers": None} if False else
+          {"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/rank_security_door"}})
+    gp.write(os.path.join(gp.DATA, "loot_table/blocks/rank_security_door.json"), {"type": "minecraft:block", "pools": []})
+
+
+# ------------------------------------------------------------------ objets du scénario
+def items():
+    import generate_military as gm
+    from generate_military import Icon, hexc, shade as sh
+    i = Icon("uranium_canister")
+    i.rect(4, 2, 11, 14, hexc("#5a6068"), noise=0.05)
+    i.rect(4, 2, 11, 3, hexc("#3a3e44"), bevel=False)
+    i.rect(4, 13, 11, 14, hexc("#3a3e44"), bevel=False)
+    i.rect(5, 6, 10, 9, hexc("#e0c020"), bevel=False)                               # trèfle radioactif
+    i.px(7, 7, hexc("#202020")), i.px(8, 7, hexc("#202020")), i.px(7, 8, hexc("#202020"))
+    i.px(6, 11, hexc("#80ff60")), i.px(9, 11, hexc("#80ff60"))                       # lueur verte
+    i.save("uranium_canister")
+    i = Icon("nuclear_guidance_unit")
+    i.rect(2, 4, 13, 12, hexc("#30343a"), noise=0.04)
+    i.rect(4, 6, 8, 9, hexc("#40d070"), bevel=False)                                 # écran d'altimètre
+    i.px(5, 7, hexc("#c0ffd0"))
+    for x in (10, 12):
+        i.px(x, 6, hexc("#e0c040")), i.px(x, 9, hexc("#e04040"))
+    i.rect(2, 12, 13, 13, hexc("#b0b4b8"), bevel=False)
+    i.save("nuclear_guidance_unit")
+    i = Icon("nuclear_neutron_reflector")
+    for y in range(3, 14):
+        for x in range(3, 14):
+            if (x - 8) ** 2 + (y - 8) ** 2 <= 26:
+                i.px(x, y, hexc("#9aa4ae") if (x + y) % 3 else hexc("#c8d0d8"))
+    i.rect(7, 7, 9, 9, hexc("#40484f"), bevel=False)
+    i.save("nuclear_neutron_reflector")
+    i = Icon("nuclear_implosion_lenses")
+    for k, (x, y) in enumerate(((3, 3), (8, 3), (3, 8), (8, 8))):
+        i.rect(x, y, x + 4, y + 4, hexc("#c06830") if k % 2 else hexc("#d8a040"), bevel=True)
+    i.save("nuclear_implosion_lenses")
+    i = Icon("nuclear_krytron_trigger")
+    i.rect(5, 2, 10, 12, hexc("#d8e0e8"), noise=0.03)
+    i.rect(6, 4, 9, 8, hexc("#80c8ff"), bevel=False)                                  # tube krytron
+    i.px(7, 5, hexc("#ffffff"))
+    i.rect(4, 12, 11, 14, hexc("#202428"), bevel=False)
+    i.px(5, 13, hexc("#e03030")), i.px(9, 13, hexc("#30e030"))
+    i.save("nuclear_krytron_trigger")
+    i = Icon("secret_plans")
+    i.rect(2, 3, 13, 12, hexc("#d8d0b8"), noise=0.03)
+    for y in (5, 7, 9):
+        i.rect(4, y, 11, y, hexc("#3050a0"), bevel=False)
+    i.rect(2, 3, 13, 4, hexc("#b02020"), bevel=False)                                 # tampon « secret »
+    i.save("secret_plans")
+
+
+if __name__ == "__main__" and True:
+    rank_door()
+    items()
+    print("ok2")

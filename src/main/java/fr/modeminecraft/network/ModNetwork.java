@@ -44,6 +44,12 @@ public final class ModNetwork {
                         fr.modeminecraft.scenario.ScenarioPayloads.Choose::handle)
                 .playToClient(fr.modeminecraft.scenario.ScenarioPayloads.Sync.TYPE, fr.modeminecraft.scenario.ScenarioPayloads.Sync.STREAM_CODEC,
                         fr.modeminecraft.scenario.ScenarioPayloads.Sync::handle)
+                .playToClient(fr.modeminecraft.scenario.ScenarioPayloads.VictoryScreen.TYPE, fr.modeminecraft.scenario.ScenarioPayloads.VictoryScreen.STREAM_CODEC,
+                        fr.modeminecraft.scenario.ScenarioPayloads.VictoryScreen::handle)
+                .playToClient(fr.modeminecraft.scenario.MissionNet.State.TYPE, fr.modeminecraft.scenario.MissionNet.State.STREAM_CODEC,
+                        fr.modeminecraft.scenario.MissionNet.State::handle)
+                .playToServer(fr.modeminecraft.scenario.MissionNet.Action.TYPE, fr.modeminecraft.scenario.MissionNet.Action.STREAM_CODEC,
+                        fr.modeminecraft.scenario.MissionNet.Action::handle)
                 .playToClient(ShotFxPayload.TYPE, ShotFxPayload.STREAM_CODEC, ShotFxPayload::handle)
                 .playToClient(CityAmbiencePayload.TYPE, CityAmbiencePayload.STREAM_CODEC, CityAmbiencePayload::handle)
                 .playToClient(HitMarkerPayload.TYPE, HitMarkerPayload.STREAM_CODEC, HitMarkerPayload::handle)

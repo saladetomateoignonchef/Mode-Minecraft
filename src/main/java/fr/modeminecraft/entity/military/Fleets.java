@@ -26,13 +26,17 @@ public final class Fleets {
 
     /** Navire à flot à (x, z), sa quille à la ligne de flottaison sous `surface`, équipage complet, soutes pleines. */
     public static MilVehicleEntity launch(ServerLevel level, MilType t, double x, double surface, double z, float yaw, boolean patrol) {
+        return launch(level, t, x, surface, z, yaw, patrol, factionOf(t));
+    }
+
+    public static MilVehicleEntity launch(ServerLevel level, MilType t, double x, double surface, double z, float yaw, boolean patrol, Faction crew) {
         MilVehicleEntity v = MilVehicleEntity.create(level, t, x, surface - t.draft(), z, yaw);
         v.fillAmmo(1f);
         v.setFuel(1f);
         v.patrol = patrol;
         v.autoDefense = true;
         level.addFreshEntity(v);
-        crew(level, v, factionOf(t));
+        crew(level, v, crew);
         return v;
     }
 

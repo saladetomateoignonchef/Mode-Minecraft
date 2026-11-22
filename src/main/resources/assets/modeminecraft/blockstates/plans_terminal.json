@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/surveillance_monitor"
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/surveillance_monitor",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/surveillance_monitor",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/surveillance_monitor",
+      "y": 270
+    }
+  }
+}

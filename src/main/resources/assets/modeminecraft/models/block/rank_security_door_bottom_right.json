@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_bottom_right",
+  "textures": {
+    "bottom": "modeminecraft:block/rank_security_door_bottom",
+    "top": "modeminecraft:block/rank_security_door_top"
+  }
+}

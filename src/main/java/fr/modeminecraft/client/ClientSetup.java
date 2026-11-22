@@ -115,6 +115,7 @@ public final class ClientSetup {
     @SubscribeEvent
     public static void registerKeys(RegisterKeyMappingsEvent event) {
         event.register(ModKeyMappings.RELOAD);
+        event.register(ModKeyMappings.JOURNAL);
         event.register(ModKeyMappings.VEHICLE_ZOOM);
         event.register(ModKeyMappings.BOMB_BAY);
         event.register(ModKeyMappings.FIRE_MODE);
@@ -178,6 +179,7 @@ public final class ClientSetup {
         event.registerAboveAll(ModeMinecraft.id("flashbang"), FlashClient::render);
         event.registerAboveAll(ModeMinecraft.id("drone_hud"), DroneClient::renderHud);
         event.registerAboveAll(ModeMinecraft.id("military_hud"), MilClient::renderHud);
+        event.registerAboveAll(ModeMinecraft.id("scenario_hud"), ScenarioHud::render);
         event.registerAboveAll(ModeMinecraft.id("strobe_dazzle"), FlashlightClient::renderDazzle);
         event.registerAbove(VanillaGuiLayers.HOTBAR, ModeMinecraft.id("mounted_gun"), GunHudLayer::renderMounted);
     }

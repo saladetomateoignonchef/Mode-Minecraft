@@ -40,6 +40,17 @@ public final class CityLayout {
         return dx >= x0 && dx <= x1 && dz >= z0 && dz <= z1;
     }
 
+    /** Parcelle d'un bâtiment du scénario dans la base de ce camp, ou null. */
+    private static Plot scenario(fr.modeminecraft.scenario.Side side, int dx, int dz) {
+        var site = fr.modeminecraft.scenario.ScenarioSites.siteAt(side, dx, dz);
+        if (site == null) {
+            return null;
+        }
+        int[] a = site.anchor(side);
+        int below = site == fr.modeminecraft.scenario.ScenarioSites.Site.GENERAL_BUNKER ? 10 : 2;
+        return new Plot(site.plot(), 14, below, a[0], a[1], site.w, site.h);
+    }
+
     private static Plot multi(String type, int above, int ax, int az, int w, int h) {
         return new Plot(type, above, 2, ax, az, w, h);
     }
@@ -110,9 +121,10 @@ public final class CityLayout {
                 if (dx == 0 && dz == 0) {
                     return Plot.of("bunker", 10, dx, dz);
                 }
-                // scénario « Course à l'arme nucléaire » : dortoir des recrues (parcelles réservées)
-                if (in(dx, dz, -4, -2, -3, -2)) {
-                    return multi("dormitory", 10, -4, -2, 2, 1);
+                // scénario « Course à l'arme nucléaire » : bâtiments de la base (parcelles réservées)
+                Plot sc = scenario(fr.modeminecraft.scenario.Side.US, dx, dz);
+                if (sc != null) {
+                    return sc;
                 }
                 if (in(dx, dz, -4, 3, 1, 4)) {
                     return multi("airstrip", 16, -4, 3, 6, 2);                     // piste d'atterrissage (96 m)
@@ -141,8 +153,9 @@ public final class CityLayout {
                 if (dz == rad) {
                     return Plot.of("station", 10, dx, dz);
                 }
-                if (in(dx, dz, -5, -8, -4, -8)) {
-                    return multi("dormitory", 10, -5, -8, 2, 1);                    // scénario : dortoir des recrues
+                Plot sc = scenario(fr.modeminecraft.scenario.Side.SOVIET, dx, dz);  // scénario : bâtiments de la base
+                if (sc != null) {
+                    return sc;
                 }
                 // aérodrome militaire en bordure nord de la ville : piste de 112 m, méga-hangar dans son axe (sa porte
                 // donne sur le seuil de piste : les avions sortent du hangar et décollent tout droit)

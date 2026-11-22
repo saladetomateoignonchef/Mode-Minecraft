@@ -113,6 +113,11 @@ public final class MilClient {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onTickPre(ClientTickEvent.Pre event) {
         Minecraft mc = Minecraft.getInstance();
+        while (ModKeyMappings.JOURNAL.consumeClick()) {
+            if (mc.screen == null && fr.modeminecraft.scenario.ScenarioClientState.side != null) {
+                mc.setScreen(new JournalScreen());
+            }
+        }
         MilVehicleEntity v = vehicle();
         if (v == null) {
             zoom = 1;

@@ -65,4 +65,20 @@ public final class ScenarioPayloads {
             });
         }
     }
+
+    /** Serveur -> client : écran de victoire (camp, réputation, jours de guerre). */
+    public record VictoryScreen(String side, int reputation, int days) implements CustomPacketPayload {
+        public static final Type<VictoryScreen> TYPE = new Type<>(ModeMinecraft.id("scenario_victory"));
+        public static final StreamCodec<ByteBuf, VictoryScreen> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.STRING_UTF8, VictoryScreen::side,
+                ByteBufCodecs.VAR_INT, VictoryScreen::reputation, ByteBufCodecs.VAR_INT, VictoryScreen::days, VictoryScreen::new);
+
+        @Override
+        public Type<? extends CustomPacketPayload> type() {
+            return TYPE;
+        }
+
+        public static void handle(VictoryScreen p, IPayloadContext ctx) {
+            ctx.enqueueWork(() -> fr.modeminecraft.client.VictoryScreenUi.open(p.side(), p.reputation(), p.days()));
+        }
+    }
 }
