@@ -2329,5 +2329,8 @@
   "cinematic.modeminecraft.final.soviet": "The Kremlin gave the order. The bomb is armed: drop it on the American strategic base.",
   "cinematic.modeminecraft.defect.title": "DEFECTION",
   "cinematic.modeminecraft.defect.us": "You switched sides. Your former brothers in arms will not forget.",
-  "cinematic.modeminecraft.defect.soviet": "You switched sides. Your former comrades will not forget."
+  "cinematic.modeminecraft.defect.soviet": "You switched sides. Your former comrades will not forget.",
+  "item.modeminecraft.light_civil_plane": "Civil light two-seat plane",
+  "entity.modeminecraft.light_civil_plane": "Civil light two-seat plane",
+  "tooltip.modeminecraft.mil.light_civil_plane": "Two-seat touring plane, unarmed: takes off in 15 to 20 blocks, very fuel-efficient, ignored by anti-air batteries (unless it flies low over a military zone)"
 }

@@ -21,6 +21,7 @@ public final class Fleets {
             case US -> Faction.GARRISON;
             case SOVIET -> Faction.SOVIET;
             case MERC -> Faction.OFFSHORE;
+            case CIVIL -> Faction.CIVILIAN;
         };
     }
 

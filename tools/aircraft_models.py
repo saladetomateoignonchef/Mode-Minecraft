@@ -371,6 +371,39 @@ def make(V0):
         v.seat(0.3, cy - 0.1, 0.0)
         return v
 
+    # ---------------------------------------------------------------- civil
+    @reg
+    def light_civil():
+        """Petit avion de tourisme biplace (type Cessna 172) : 8 m d'envergure, 6,5 m de long, aile haute haubanée, hélice
+        bipale, train tricycle fixe, fuselage blanc à bandes rouge et bleue, verrière panoramique. Aucun armement."""
+        v = V("light_civil_plane", 3.0)
+        p, cy = "cs_white", 1.25
+        fuselage(v, p, -3.2, 2.5, cy, 0.58, nose=0.9, tail=2.4, tail_r=0.25)
+        v.cyl("hull", "x", (cy - 0.04, 0.0), 0.52, 1.9, 2.8, p)                      # capot moteur
+        v.cyl("hull", "x", (cy - 0.04, 0.0), 0.2, 2.8, 3.1, "cs_red")                # cône d'hélice
+        for s in (-1, 1):                                                           # bandes rouge et bleue le long du fuselage
+            v.box("hull", -2.6, 1.9, cy + 0.02, cy + 0.17, s * 0.575, s * 0.605, "cs_red")
+            v.box("hull", -2.6, 1.9, cy - 0.2, cy - 0.06, s * 0.575, s * 0.605, "cs_blue")
+        canopy(v, -1.1, 1.2, cy + 0.38, 1.15, 0.58, key="glass", frame=p)           # verrière panoramique
+        wings(v, p, 1.0, 1.5, 1.1, 4.0, cy + 0.98, 0.16, sweep=0.0, z0=0.45, steps=8)  # aile haute : 8 m d'envergure
+        for s in (-1, 1):                                                           # haubans de l'aile
+            for i in range(4):
+                v.box("hull", 0.25, 0.4, cy - 0.45 + i * 0.36, cy - 0.05 + i * 0.36, s * (0.6 + i * 0.45), s * (0.85 + i * 0.45), "metal")
+            v.box("hull", 1.0 - 1.5, 1.0, cy + 0.98, cy + 1.14, s * 3.95, s * 4.0, "cs_red")   # saumons colorés
+        tailplane(v, p, -3.2, 0.8, 0.55, 1.5, cy + 0.12)
+        fin(v, "cs_red", -3.3, 1.0, 0.5, 1.15, cy + 0.2, sweep=0.5)
+        v.props.append((3.15, cy - 0.04, 0.0))
+        # train d'atterrissage tricycle fixe (toujours visible, donc dans la caisse)
+        for z in (-1.0, 1.0):
+            v.box("hull", 0.3, 0.45, 0.3, cy - 0.45, z * 0.55, z * 0.55 + 0.06, "metal")
+            v.box("hull", 0.3, 0.45, 0.3, 0.42, z * 0.55, z, "metal")
+            v.cyl("hull", "z", (0.38, 0.28), 0.28, z - 0.1, z + 0.1, "tire")
+        v.box("hull", 1.85, 1.95, 0.25, cy - 0.5, -0.04, 0.04, "metal")
+        v.cyl("hull", "z", (1.9, 0.22), 0.22, -0.08, 0.08, "tire")
+        v.seat(0.3, cy - 0.1, -0.3)                                                 # pilote (siège gauche)
+        v.seat(0.3, cy - 0.1, 0.3)                                                  # passager
+        return v
+
     @reg
     def f86():
         v = V("f86_sabre", 4.0)
@@ -577,4 +610,5 @@ PLANE_COLORS = {
     "us_camo": ["#6d6a4c", "#55603e", "#7a6d50"], "us_gray": ["#8c949c", "#858d95", "#939ba3"], "us_dark": ["#5d6670", "#57606a", "#636c76"],
     "a10_gray": ["#6b7366", "#656d60", "#71796c"], "stealth": ["#1c1e22", "#202226", "#191b1f"], "stealth2": "#2a2c31",
     "f22_gray": ["#7d858c", "#777f86", "#838b92"], "f22_d": "#565d63", "gold_glass": "#b89a40", "grille": "#3a3c40",
+    "cs_white": ["#f2f2f0", "#eaeae8", "#f6f6f4"], "cs_red": "#c0281f", "cs_blue": "#2b4a9e",
 }

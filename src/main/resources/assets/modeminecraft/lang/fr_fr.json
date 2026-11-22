@@ -2329,5 +2329,8 @@
   "cinematic.modeminecraft.final.soviet": "Le Kremlin a donné l'ordre. La bombe est armée : larguez-la sur la base stratégique américaine.",
   "cinematic.modeminecraft.defect.title": "DÉSERTION",
   "cinematic.modeminecraft.defect.us": "Vous avez changé de camp. Vos anciens frères d'armes ne l'oublieront pas.",
-  "cinematic.modeminecraft.defect.soviet": "Vous avez changé de camp. Vos anciens camarades ne l'oublieront pas."
+  "cinematic.modeminecraft.defect.soviet": "Vous avez changé de camp. Vos anciens camarades ne l'oublieront pas.",
+  "item.modeminecraft.light_civil_plane": "Avion léger biplace civil",
+  "entity.modeminecraft.light_civil_plane": "Avion léger biplace civil",
+  "tooltip.modeminecraft.mil.light_civil_plane": "Avion de tourisme biplace, aucun armement : décollage en 15 à 20 blocs, très économe en carburant, ignoré des batteries antiaériennes (sauf s'il survole une zone militaire à basse altitude)"
 }

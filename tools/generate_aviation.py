@@ -101,6 +101,7 @@ def crate():
 PLANES = {
     # nom : (catégorie, ingrédients)
     "il2_sturmovik": [("aircraft_engine", 1), ("titanium_plate", 8), ("steel_plate", 10), ("minecraft:glass", 4), ("wheel_set", 1)],
+    "light_civil_plane": [("aircraft_engine", 1), ("steel_plate", 6), ("minecraft:iron_ingot", 6), ("minecraft:white_wool", 8), ("minecraft:glass", 6), ("wheel_set", 1)],
     "la7": [("aircraft_engine", 1), ("steel_plate", 10), ("minecraft:iron_ingot", 8), ("minecraft:glass", 4), ("wheel_set", 1)],
     "p51_mustang": [("aircraft_engine", 1), ("steel_plate", 12), ("minecraft:iron_ingot", 8), ("minecraft:glass", 4), ("wheel_set", 1)],
     "mig15": [("jet_engine", 1), ("steel_plate", 12), ("titanium_plate", 4), ("pressurized_cockpit", 1), ("wheel_set", 1)],
