@@ -45,6 +45,9 @@ public final class Disguise {
 
     /** Immunité totale (police, désert) : le bot n'attaque pas, ne fait pas de sommation, tant que la couverture tient. */
     public static boolean immune(HumanBotEntity bot, Player p) {
+        if (FactionRelations.isAlly(p.getUUID(), bot.faction())) {
+            return true;                                               // l'armée de son camp : ni sommation ni arrestation, armé ou non
+        }
         Outfit o = worn(p);
         if (o != Outfit.POLICE && o != Outfit.DESERT || !matches(o, bot.faction())) {
             return false;
