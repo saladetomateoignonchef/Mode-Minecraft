@@ -1186,6 +1186,17 @@ public final class ModItems {
     public static final DeferredItem<Item> AGM_MISSILE = ammoItem("agm_missile", 4);
     public static final DeferredItem<Item> ARM_MISSILE = ammoItem("arm_missile", 4);
     public static final DeferredItem<Item> CRUISE_MISSILE = ammoItem("cruise_missile", 1);
+    // ------------------------------------------------------------------ guerre navale (phase 27)
+    public static final DeferredItem<Item> NAVAL_SHELL = ammoItem("naval_shell", 32);
+    public static final DeferredItem<Item> CIWS_BELT = ammoItem("ciws_belt", 16);
+    public static final DeferredItem<Item> ASHM_MISSILE = ammoItem("ashm_missile", 2);
+    public static final DeferredItem<Item> HYPERSONIC_MISSILE = ammoItem("hypersonic_missile", 1);
+    public static final DeferredItem<Item> NAVAL_SAM_MISSILE = ammoItem("naval_sam_missile", 4);
+    public static final DeferredItem<Item> TORPEDO = ammoItem("torpedo", 2);
+    public static final DeferredItem<Item> ASW_ROCKET = ammoItem("asw_rocket", 8);
+    public static final DeferredItem<Item> SHIP_HULL_SECTION = ammoItem("ship_hull_section", 16);
+    public static final DeferredItem<Item> SONAR_ARRAY = ammoItem("sonar_array", 4);
+    public static final DeferredItem<Item> NAVAL_REACTOR = ITEMS.registerSimpleItem("naval_reactor", new Item.Properties().stacksTo(1).rarity(Rarity.EPIC));
     public static final DeferredItem<Item> BOMB_GUIDED = ITEMS.register("guided_bomb",
             () -> new fr.modeminecraft.nuclear.BombItem(fr.modeminecraft.nuclear.BombItem.Kind.GUIDED, new Item.Properties().stacksTo(4)));
     public static final DeferredItem<Item> JET_ENGINE = ITEMS.registerSimpleItem("jet_engine", new Item.Properties().stacksTo(4));

@@ -13,7 +13,7 @@ public class BossCardItem extends Item {
     /** Les 6 chambres fortes (tag VaultType du cahier des charges). */
     public enum VaultType {
         SWAT_HQ("swat_hq"), DESERT_PALACE("desert_palace"), FOREST_BUNKER("forest_bunker"), SOVIET_HQ("soviet_hq"),
-        CARTEL_VILLA("cartel_villa"), BADLANDS_REFINERY("badlands_refinery");
+        CARTEL_VILLA("cartel_villa"), BADLANDS_REFINERY("badlands_refinery"), OFFSHORE_VAULT("offshore_vault");
 
         public final String id;
 

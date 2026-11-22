@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "artillery",
+  "ingredients": [
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 2
+    },
+    {
+      "item": "minecraft:tnt",
+      "count": 3
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 4
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:asw_rocket",
+    "count": 4
+  }
+}

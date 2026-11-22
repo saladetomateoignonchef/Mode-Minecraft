@@ -192,6 +192,31 @@
           "type": "minecraft:item",
           "name": "modeminecraft:jet_engine",
           "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "modeminecraft:naval_shell",
+          "weight": 3,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 2,
+                "max": 8
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "modeminecraft:torpedo",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "modeminecraft:sonar_array",
+          "weight": 1
         }
       ]
     },

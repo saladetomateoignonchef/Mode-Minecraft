@@ -136,6 +136,13 @@ public final class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> FLARE_LAUNCH = register("mil.flare_launch");
     public static final DeferredHolder<SoundEvent, SoundEvent> MISSILE_WARNING = register("mil.missile_warning");
     public static final DeferredHolder<SoundEvent, SoundEvent> EJECTION_SEAT = register("mil.ejection_seat");
+    // marine (phase 27)
+    public static final DeferredHolder<SoundEvent, SoundEvent> SONAR_PING = register("mil.sonar_ping");
+    public static final DeferredHolder<SoundEvent, SoundEvent> TORPEDO_LAUNCH = register("mil.torpedo_launch");
+    public static final DeferredHolder<SoundEvent, SoundEvent> SHIP_SINKING_GROAN = register("mil.ship_sinking_groan");
+    public static final DeferredHolder<SoundEvent, SoundEvent> CIWS_BURST = register("mil.ciws_burst");
+    public static final DeferredHolder<SoundEvent, SoundEvent> SHIP_HORN = register("mil.ship_horn");
+    public static final DeferredHolder<SoundEvent, SoundEvent> BALLAST_BLOW = register("mil.ballast_blow");
 
     private static DeferredHolder<SoundEvent, SoundEvent> register(String name) {
         return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(ModeMinecraft.id(name)));

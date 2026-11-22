@@ -54,6 +54,10 @@ public class BossVaultDoorBlock extends DoorBlock {
             BlockPos lower = state.getValue(HALF) == DoubleBlockHalf.LOWER ? pos : pos.below();
             world.scheduleTick(lower, this, 400);
             player.displayClientMessage(Component.translatable("message.modeminecraft.boss_vault.open").withStyle(ChatFormatting.GOLD), true);
+            if (world instanceof net.minecraft.server.level.ServerLevel sl) {
+                // forcer une chambre forte devant des témoins : appel radio (l'US Army devient hostile)
+                fr.modeminecraft.entity.bot.RadioCalls.crime(sl, player, net.minecraft.world.phys.Vec3.atCenterOf(pos), null);
+            }
         }
         return ItemInteractionResult.CONSUME;
     }

@@ -16,7 +16,8 @@ public enum Faction {
             new Loadout(List.of("ak47", "ak74u", "ak47", "rpg7"), List.of("dragunov"), List.of("ssh40", "pasgt"), List.of("vest_6b3"), List.of(), List.of("m65_combat_boots"), "frag_grenade")),
     REBEL("rebel", Attitude.PROVOKED, 5, "rebel", 0x6A7A3A,
             new Loadout(List.of("kar98k", "fn_fal", "remington_870"), List.of("kar98k"), List.of(), List.of(), List.of("bdu_woodland_pants"), List.of("m65_combat_boots"), "molotov")),
-    GARRISON("garrison", Attitude.HOSTILE, 5, "garrison", 0x4B5A2A,
+    /** Nation Américaine (US Armed Forces) : non hostile tant qu'on ne l'agresse pas (appel radio de 30 s des témoins). */
+    GARRISON("garrison", Attitude.PROVOKED, 5, "garrison", 0x4B5A2A,
             new Loadout(List.of("hk416", "m4", "m249"), List.of("m24"), List.of("ops_core_fast"), List.of("iotv_vest"), List.of("crye_g3_pants"), List.of("lowa_zephyr_boots"), "frag_grenade")),
     SOVIET("soviet", Attitude.HOSTILE_INDOORS, 5, "soviet", 0x8A2A2A,
             new Loadout(List.of("ak74u", "pp19_bizon", "ak74u"), List.of("dragunov"), List.of("altyn"), List.of("vest_6b3"), List.of("ratnik_pants"), List.of(), "frag_grenade")),
@@ -34,7 +35,11 @@ public enum Faction {
             new Loadout(List.of("m16a4"), List.of("barrett_m82"), List.of("mich_2000"), List.of("avs_plate_carrier"), List.of(), List.of(), "frag_grenade")),
     CIVILIAN("civilian", Attitude.PASSIVE, 8, "civilian", 0xA0A0A0, Loadout.NONE),
     TRADER("trader", Attitude.PASSIVE, 4, "trader", 0x5A3A6A, Loadout.NONE),
-    FALCON("falcon", Attitude.HOSTILE_ALL, 6, "falcon", 0xF0F0F0, Loadout.NONE);
+    FALCON("falcon", Attitude.HOSTILE_ALL, 6, "falcon", 0xF0F0F0, Loadout.NONE),
+    /** Mercenaires Offshore de la plateforme pétrolière : agressifs à vue envers le joueur et toutes les nations. */
+    OFFSHORE("offshore", Attitude.HOSTILE, 5, "offshore", 0xC05A14,
+            new Loadout(List.of("scar_h", "hk416", "mp5", "spas12", "rpg7"), List.of("barrett_m82"), List.of("ops_core_fast", "mich_2000"),
+                    List.of("jpc_plate_carrier", "avs_plate_carrier"), List.of(), List.of("salomon_forces_boots"), "frag_grenade"));
 
     /** Comportement envers un joueur. */
     public enum Attitude {
@@ -72,12 +77,19 @@ public enum Faction {
 
     /**
      * Factions qui ne se supportent pas (elles s'ouvrent le feu dessus à vue) : forces de l'ordre (police, SWAT,
-     * shérifs) contre milices, cartels et gangs ; garnison américaine / OTAN contre forces soviétiques.
+     * shérifs) contre milices, cartels et gangs ; Nation Américaine contre URSS, milices et cartels ; Mercenaires
+     * Offshore contre toutes les nations.
      * Les Faucons Blancs, eux, attaquent tout le monde (géré à part).
      */
     public boolean enemyOf(Faction o) {
         return law() && o.outlaw() || o.law() && outlaw()
-                || this == GARRISON && o == SOVIET || this == SOVIET && o == GARRISON;
+                || this == GARRISON && (o == SOVIET || o == MILITIA || o == CARTEL) || o == GARRISON && (this == SOVIET || this == MILITIA || this == CARTEL)
+                || this == OFFSHORE && o.nation() || o == OFFSHORE && nation();
+    }
+
+    /** Nations et forces de l'ordre (cibles des Mercenaires Offshore). */
+    private boolean nation() {
+        return this == GARRISON || this == SOVIET || this == POLICE || this == SWAT || this == SHERIFF;
     }
 
     private boolean law() {

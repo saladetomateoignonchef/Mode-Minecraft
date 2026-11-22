@@ -1,0 +1,42 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "vehicles",
+  "ingredients": [
+    {
+      "item": "modeminecraft:ship_hull_section",
+      "count": 24
+    },
+    {
+      "item": "modeminecraft:naval_reactor",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:gas_turbine",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:cannon_barrel",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:launcher_module",
+      "count": 6
+    },
+    {
+      "item": "modeminecraft:fire_control_module",
+      "count": 6
+    },
+    {
+      "item": "modeminecraft:sonar_array",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:avionics_suite",
+      "count": 3
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:kirov_cruiser",
+    "count": 1
+  }
+}

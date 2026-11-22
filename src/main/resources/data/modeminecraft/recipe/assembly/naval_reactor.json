@@ -1,0 +1,30 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "vehicle_parts",
+  "ingredients": [
+    {
+      "item": "modeminecraft:enriched_uranium_core",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:lead_ingot",
+      "count": 16
+    },
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 12
+    },
+    {
+      "item": "modeminecraft:titanium_plate",
+      "count": 6
+    },
+    {
+      "item": "minecraft:water_bucket",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:naval_reactor",
+    "count": 1
+  }
+}

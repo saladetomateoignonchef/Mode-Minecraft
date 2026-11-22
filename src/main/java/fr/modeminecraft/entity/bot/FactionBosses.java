@@ -32,7 +32,7 @@ import java.util.UUID;
  * - chaque joueur suit sa propre progression (« Chefs vaincus : 3/6 »).
  */
 public final class FactionBosses {
-    public static final List<String> ALL = List.of("boss_swat", "boss_militia", "boss_garrison", "boss_soviet", "boss_cartel", "boss_refinery", "boss_falcon");
+    public static final List<String> ALL = List.of("boss_swat", "boss_militia", "boss_garrison", "boss_soviet", "boss_cartel", "boss_refinery", "boss_falcon", "boss_offshore");
 
     public static Legendary legendaryFor(Faction f) {
         return switch (f) {
@@ -65,9 +65,11 @@ public final class FactionBosses {
                 bot.setItemSlot(EquipmentSlot.HEAD, new ItemStack(HumanBotEntity.item("altyn")));
                 bot.setItemSlot(EquipmentSlot.CHEST, new ItemStack(HumanBotEntity.item("swat_vest")));
             }
-            case GARRISON -> {
+            case GARRISON -> bot.setItemSlot(EquipmentSlot.CHEST, new ItemStack(HumanBotEntity.item("jpc_plate_carrier")));   // Général 4 étoiles
+            case OFFSHORE -> {
+                bot.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(HumanBotEntity.item("scar_h")));
+                bot.setItemSlot(EquipmentSlot.CHEST, new ItemStack(HumanBotEntity.item("avs_plate_carrier")));
                 bot.setItemSlot(EquipmentSlot.HEAD, new ItemStack(HumanBotEntity.item("ops_core_fast")));
-                bot.setItemSlot(EquipmentSlot.CHEST, new ItemStack(HumanBotEntity.item("jpc_plate_carrier")));
             }
             case SOVIET -> bot.setItemSlot(EquipmentSlot.CHEST, new ItemStack(HumanBotEntity.item("fort_defender")));
             case CARTEL -> {
@@ -108,6 +110,7 @@ public final class FactionBosses {
             case SOVIET -> fr.modeminecraft.item.BossCardItem.VaultType.SOVIET_HQ;
             case CARTEL -> fr.modeminecraft.item.BossCardItem.VaultType.CARTEL_VILLA;
             case REFINERY, SHERIFF -> fr.modeminecraft.item.BossCardItem.VaultType.BADLANDS_REFINERY;
+            case OFFSHORE -> fr.modeminecraft.item.BossCardItem.VaultType.OFFSHORE_VAULT;
             default -> null;
         };
         if (vault != null) {
@@ -123,6 +126,7 @@ public final class FactionBosses {
             case SOVIET -> BossEvent.BossBarColor.RED;
             case CARTEL -> BossEvent.BossBarColor.PINK;
             case REFINERY -> BossEvent.BossBarColor.PURPLE;
+            case OFFSHORE -> BossEvent.BossBarColor.YELLOW;
             default -> BossEvent.BossBarColor.WHITE;
         };
     }

@@ -48,6 +48,21 @@ public class ShellEntity extends Projectile {
     private int life;
     /** Dernière salve de leurres déjà « jugée » (une chance de décrocher par salve). */
     private long flareSeen;
+    /** Missile naval tiré d'un silo (VLS) : éjection verticale puis profil de vol propre à la munition. */
+    private boolean vls;
+
+    public void vls() {
+        vls = true;
+    }
+
+    public int launcherId() {
+        return launcher;
+    }
+
+    /** Peut être abattu (CIWS, S-400, missiles antiaériens) : pas les hypersoniques (Mach 8+, manœuvres terminales). */
+    public boolean interceptable() {
+        return shell() != MilAmmo.Shell.HYPERSONIC && !visual();
+    }
 
     public ShellEntity(EntityType<? extends ShellEntity> type, Level level) {
         super(type, level);
@@ -198,6 +213,10 @@ public class ShellEntity extends Projectile {
             discard();
             return;
         }
+        if (s == MilAmmo.Shell.TORPEDO || s == MilAmmo.Shell.ASW && wet()) {
+            underwater(s);
+            return;
+        }
         if (mode == 5 || mode == 6) {
             // visuel : pas de collision
             if (mode == 5) {
@@ -304,6 +323,18 @@ public class ShellEntity extends Projectile {
 
     private void trail(MilAmmo.Shell s) {
         Vec3 back = position().subtract(getDeltaMovement().scale(0.5));
+        if (s == MilAmmo.Shell.HYPERSONIC) {
+            // traînée de plasma
+            Vec3 step = getDeltaMovement().scale(1 / 6.0);
+            for (int i = 0; i < 6; i++) {
+                Vec3 q = position().subtract(step.scale(i));
+                level().addParticle(ParticleTypes.SOUL_FIRE_FLAME, q.x, q.y, q.z, 0, 0, 0);
+                if (i % 2 == 0) {
+                    level().addParticle(ParticleTypes.END_ROD, q.x, q.y, q.z, 0, 0, 0);
+                }
+            }
+            return;
+        }
         if (s.rocket()) {
             level().addParticle(ParticleTypes.FLAME, back.x, back.y, back.z, 0, 0, 0);
             level().addParticle(life < 40 ? ParticleTypes.LARGE_SMOKE : ParticleTypes.SMOKE, back.x, back.y, back.z, 0, 0.01, 0);
@@ -366,6 +397,35 @@ public class ShellEntity extends Projectile {
                     }
                 }
             }
+        } else if (mode == 3 && gpsTarget != null && (vls || s == MilAmmo.Shell.ASHM || s == MilAmmo.Shell.HYPERSONIC)) {
+            Vec3 flat = new Vec3(gpsTarget.x - getX(), 0, gpsTarget.z - getZ());
+            double far = flat.length();
+            Vec3 ahead = far < 1 ? gpsTarget : position().add(flat.normalize().scale(Math.min(far, 30)));
+            int sea = level().getSeaLevel();
+            if (vls && life < 6) {
+                setDeltaMovement(0, 1.0, 0);                                       // éjection du silo
+                setNoGravity(true);
+                return;
+            }
+            if (s == MilAmmo.Shell.ASHM) {
+                // antinavire : vol rasant à 3 blocs des vagues, puis remontée et piqué sur le navire (autodirecteur radar)
+                seek(150, 45);
+                aim = far > 35 ? new Vec3(ahead.x, sea + 3, ahead.z) : gpsTarget;
+                turn = 8;
+            } else if (s == MilAmmo.Shell.HYPERSONIC) {
+                // Zircon / CPS : croisière haute à Mach 8+, piqué terminal quasi vertical
+                seek(220, 60);
+                aim = far > 140 ? new Vec3(ahead.x, Math.max(gpsTarget.y, sea) + 70, ahead.z) : gpsTarget;
+                turn = 18;
+            } else {
+                // Tomahawk / Kalibr : suivi de terrain à 14 blocs, piqué final
+                int ground = level().getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, (int) Math.floor(ahead.x), (int) Math.floor(ahead.z));
+                aim = far > 45 ? new Vec3(ahead.x, Math.max(ground, sea) + 14, ahead.z) : gpsTarget;
+                turn = 7;
+            }
+            if (vls && life < 30) {
+                turn = Math.max(turn, 14);                                         // basculement rapide après l'éjection
+            }
         } else if (mode == 3 && gpsTarget != null) {
             Vec3 flat = new Vec3(gpsTarget.x - getX(), 0, gpsTarget.z - getZ());
             // trajectoire en cloche : montée tant qu'on est loin, puis piqué sur les coordonnées
@@ -393,6 +453,123 @@ public class ShellEntity extends Projectile {
         setDeltaMovement(next.scale(speed));
         setNoGravity(true);
         hasImpulse = true;
+    }
+
+    /** Autodirecteur terminal des missiles navals : accroche le navire le plus proche du point visé. */
+    private void seek(double within, double radius) {
+        if (life % 10 != 0 || gpsTarget == null || position().distanceTo(gpsTarget) > within) {
+            return;
+        }
+        Entity l = launcher < 0 ? null : level().getEntity(launcher);
+        MilVehicleEntity best = null;
+        double bestD = radius * radius;
+        for (MilVehicleEntity v : level().getEntitiesOfClass(MilVehicleEntity.class, new net.minecraft.world.phys.AABB(gpsTarget, gpsTarget).inflate(radius, 30, radius),
+                v -> v != l && !v.type().heli() && !v.is(MilVehicleEntity.SINKING))) {
+            double d = v.distanceToSqr(gpsTarget);
+            if (d < bestD) {
+                bestD = d;
+                best = v;
+            }
+        }
+        if (best != null) {
+            gpsTarget = best.position().add(0, Math.min(3, best.getBbHeight() * 0.4), 0).add(best.getDeltaMovement().scale(position().distanceTo(best.position()) / Math.max(1, shell().speed)));
+        }
+    }
+
+    private boolean wet() {
+        return level().getFluidState(blockPosition()).is(net.minecraft.tags.FluidTags.WATER);
+    }
+
+    /**
+     * Torpille lourde (533 mm) et charge anti-sous-marine : sous l'eau seulement. La torpille file à ~1,3 bloc / tick
+     * en gardant 2 blocs d'immersion, son autodirecteur acoustique accroche la coque la plus proche devant elle
+     * (70 blocs, cône de 60°) ; sillage de bulles. La charge ASM coule et explose près d'un sous-marin (ou au fond).
+     */
+    private void underwater(MilAmmo.Shell s) {
+        Vec3 v = getDeltaMovement();
+        boolean wet = wet();
+        if (level() instanceof ServerLevel sl) {
+            keepLoaded(sl);
+        }
+        if (s == MilAmmo.Shell.ASW) {
+            v = new Vec3(v.x * 0.8, Math.max(-0.45, v.y * 0.8 - 0.04), v.z * 0.8);
+            if (!level().isClientSide) {
+                for (MilVehicleEntity sub : level().getEntitiesOfClass(MilVehicleEntity.class, getBoundingBox().inflate(8), m -> m.type().submarine())) {
+                    sub.blastHit(position(), s.damage);
+                    detonate(position());
+                    return;
+                }
+                if (life > 400) {
+                    detonate(position());
+                    return;
+                }
+            }
+        } else if (!wet) {
+            v = new Vec3(v.x * 0.98, v.y - 0.05, v.z * 0.98);                     // largage au-dessus de l'eau
+            if (life > 80) {
+                discard();
+                return;
+            }
+        } else if (!level().isClientSide) {
+            Entity l = launcher < 0 ? null : level().getEntity(launcher);
+            Vec3 heading = new Vec3(v.x, 0, v.z).lengthSqr() < 1e-4 ? new Vec3(1, 0, 0) : new Vec3(v.x, 0, v.z).normalize();
+            if (life % 10 == 0 && life > 20) {
+                MilVehicleEntity best = null;
+                double bestD = 70 * 70;
+                for (MilVehicleEntity m : level().getEntitiesOfClass(MilVehicleEntity.class, getBoundingBox().inflate(70, 40, 70),
+                        m -> m != l && m.type().naval() && !m.is(MilVehicleEntity.SINKING))) {
+                    Vec3 to = m.position().subtract(position());
+                    double d = to.lengthSqr();
+                    if (d < bestD && new Vec3(to.x, 0, to.z).normalize().dot(heading) > 0.5) {
+                        bestD = d;
+                        best = m;
+                    }
+                }
+                if (best != null) {
+                    guideId = best.getId();
+                    mode = 2;
+                }
+            }
+            Vec3 aim = null;
+            Entity t = mode == 2 && guideId >= 0 ? level().getEntity(guideId) : null;
+            if (t instanceof MilVehicleEntity m && m.isAlive()) {
+                aim = m.position().add(0, m.type().draft() * 0.5, 0);
+            } else if (gpsTarget != null) {
+                aim = new Vec3(gpsTarget.x, getY(), gpsTarget.z);
+            }
+            double speed = s.speed;
+            Vec3 cur = v.lengthSqr() < 1e-6 ? heading : v.normalize();
+            Vec3 want = aim == null ? new Vec3(cur.x, 0, cur.z).normalize() : aim.subtract(position()).normalize();
+            double angle = Math.acos(Mth.clamp(cur.dot(want), -1, 1)), max = Math.toRadians(3);
+            Vec3 next = angle <= max ? want : cur.add(want.subtract(cur).scale(max / angle)).normalize();
+            // garde 2 blocs d'eau au-dessus d'elle
+            if (!level().getFluidState(net.minecraft.core.BlockPos.containing(position().add(0, 2, 0))).is(net.minecraft.tags.FluidTags.WATER)) {
+                next = new Vec3(next.x, Math.min(next.y, -0.15), next.z).normalize();
+            }
+            v = next.scale(speed);
+            if (life % 20 == 0) {
+                level().playSound(null, getX(), getY(), getZ(), net.minecraft.sounds.SoundEvents.BUBBLE_COLUMN_WHIRLPOOL_INSIDE, net.minecraft.sounds.SoundSource.NEUTRAL, 1.5f, 1.4f);
+            }
+        }
+        setDeltaMovement(v);
+        setNoGravity(true);
+        HitResult hit = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
+        if (hit.getType() != HitResult.Type.MISS && !net.neoforged.neoforge.event.EventHooks.onProjectileImpact(this, hit)) {
+            onHit(hit);
+            if (isRemoved()) {
+                return;
+            }
+        }
+        Vec3 p = position().add(getDeltaMovement());
+        setPos(p.x, p.y, p.z);
+        updateRotation();
+        if (level().isClientSide && wet) {
+            Vec3 back = position().subtract(getDeltaMovement().scale(0.8));
+            for (int i = 0; i < 3; i++) {
+                level().addParticle(ParticleTypes.BUBBLE, back.x + random.nextGaussian() * 0.1, back.y + random.nextGaussian() * 0.1, back.z + random.nextGaussian() * 0.1, 0, 0.05, 0);
+            }
+            level().addParticle(ParticleTypes.BUBBLE_COLUMN_UP, back.x, back.y, back.z, 0, 0.1, 0);
+        }
     }
 
     private boolean smokeBetween(Vec3 a, Vec3 b) {

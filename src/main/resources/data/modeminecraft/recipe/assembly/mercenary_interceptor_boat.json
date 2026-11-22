@@ -1,0 +1,30 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "vehicles",
+  "ingredients": [
+    {
+      "item": "modeminecraft:ship_hull_section",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:vehicle_engine",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:autocannon_mount",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:launcher_module",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 8
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:mercenary_interceptor_boat",
+    "count": 1
+  }
+}

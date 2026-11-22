@@ -1,0 +1,30 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "vehicles",
+  "ingredients": [
+    {
+      "item": "modeminecraft:ship_hull_section",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:vehicle_engine",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:c4",
+      "count": 6
+    },
+    {
+      "item": "minecraft:tnt",
+      "count": 8
+    },
+    {
+      "item": "modeminecraft:avionics_suite",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:mercenary_explosive_usv",
+    "count": 1
+  }
+}

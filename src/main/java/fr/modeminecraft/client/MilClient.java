@@ -118,7 +118,20 @@ public final class MilClient {
             zoom = 1;
             thermal = false;
             MilVehicleEntity.bombSightActive = false;
+            NavalClient.reset();
             return;
+        }
+        if (v.type().naval()) {
+            while (ModKeyMappings.UNDERBARREL.consumeClick()) {
+                NavalClient.cycle(v);                                    // V : sonar / périscope
+            }
+            if (v.officer(mc.player)) {
+                while (mc.options.keyUse.consumeClick()) {
+                    if (mc.screen == null && !(v.seatOf(mc.player) == 0 && !v.type().submarine())) {
+                        mc.setScreen(new FireControlScreen(v));          // console de tir (coordonnées)
+                    }
+                }
+            }
         }
         if (v.type().plane()) {
             // B-29 : G train, O trappes, V viseur Norden, Espace largage (H : clé d'armement, voir DEPLOY)
@@ -145,7 +158,7 @@ public final class MilClient {
             }
         }
         MilType.Seat s = seat();
-        if ((s != null && (s.primary() >= 0 || s.secondary() >= 0) || v.canBomb(mc.player)) && mc.level != null) {
+        if ((s != null && (s.primary() >= 0 || s.secondary() >= 0) || v.canBomb(mc.player) || v.officer(mc.player)) && mc.level != null) {
             Vec3 aim = crosshairPoint(v);
             v.setAim(mc.player, aim);                                   // tourelle locale orientée sans attendre le serveur
             if (mc.player.tickCount % 2 == 0) {
@@ -248,6 +261,10 @@ public final class MilClient {
         }
         if (MilVehicleEntity.bombSightActive) {
             return v.getPosition(partial).add(v.toWorld(9.3, 0.9, 0).subtract(v.position()));       // sous le nez vitré
+        }
+        Vec3 scope = NavalClient.periscope(v, partial);
+        if (scope != null) {
+            return scope;
         }
         MilType.Seat s = v.weaponSeat(mc.player);
         if (s == null || s.role() != MilType.Role.GUNNER || s.primary() < 0 || v.type().weapons.get(s.primary()).free()) {
@@ -438,6 +455,9 @@ public final class MilClient {
         bar(g, font, x, y, "hud.modeminecraft.mil.fuel", v.fuel(), v.fuel() > 0.2f ? 0xFF4AA0E0 : 0xFFE04040, Math.round(v.fuel() * 100) + " %");
         y += 11;
         float kmh = Math.abs(v.speed()) / (t.heli() ? 0.0095f : 0.0111f);
+        if (t.naval()) {
+            kmh = Math.abs(v.speed()) / 0.0111f;
+        }
         String turret = t.geo().turret() != null ? "   " + Component.translatable("hud.modeminecraft.mil.turret").getString() + " "
                 + Math.round(Mth.wrapDegrees(v.turret(1)) + 360) % 360 + "°" : "";
         String alt = t.heli() ? "   " + Component.translatable("hud.modeminecraft.mil.altitude").getString() + " "
@@ -512,7 +532,8 @@ public final class MilClient {
             warn.add(Component.translatable("hud.modeminecraft.mil.engine_down").getString());
         }
         if (v.is(MilVehicleEntity.MOBILITY_DOWN)) {
-            warn.add(Component.translatable(t.tracked() ? "hud.modeminecraft.mil.tracks_down" : "hud.modeminecraft.mil.wheels_down").getString());
+            warn.add(Component.translatable(t.naval() ? "hud.modeminecraft.naval.propulsion_down" : t.tracked() ? "hud.modeminecraft.mil.tracks_down"
+                    : "hud.modeminecraft.mil.wheels_down").getString());
         }
         if (v.is(MilVehicleEntity.BURNING)) {
             warn.add(Component.translatable("hud.modeminecraft.mil.fire").getString());
@@ -595,8 +616,14 @@ public final class MilClient {
                         (int) Math.hypot(imp.x - v.getX(), imp.z - v.getZ())), cx, cy + 48, 0xFFFF6060);
             }
         }
+        if (t.naval()) {
+            NavalClient.hud(g, v, 6, 6 + hudLines * 11 + 6);
+        }
         if (!t.plane()) {
             g.pose().popPose();
+        }
+        if (t.naval()) {
+            NavalClient.overlay(g, v, delta.getGameTimeDeltaPartialTick(false));
         }
         if (thermal) {
             g.fill(0, 0, g.guiWidth(), g.guiHeight(), 0x18FFFFFF);

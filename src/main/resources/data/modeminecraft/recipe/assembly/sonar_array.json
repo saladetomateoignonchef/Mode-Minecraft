@@ -1,0 +1,30 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "vehicle_parts",
+  "ingredients": [
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 2
+    },
+    {
+      "item": "minecraft:quartz",
+      "count": 8
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 8
+    },
+    {
+      "item": "minecraft:note_block",
+      "count": 4
+    },
+    {
+      "item": "minecraft:prismarine_shard",
+      "count": 6
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:sonar_array",
+    "count": 1
+  }
+}

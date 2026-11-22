@@ -297,6 +297,68 @@ def ejection(seed):
     return gs.normalize(bang + rocket, 0.9)
 
 
+def sonar_ping(seed):
+    """Sonar actif : « ping » sinusoïdal pur, longue réverbération sous-marine."""
+    t = gs.t_axis(3.0)
+    ping = np.sin(2 * np.pi * 1450 * t) * gs.env(t, 0.005, 0.25)
+    x = gs.echo(ping, [0.45, 1.1, 1.9], [0.45, 0.25, 0.12])
+    return gs.normalize(x, 0.8)
+
+
+def torpedo_launch(seed):
+    """Tube lance-torpilles : chasse d'air comprimé, coup sourd, hélices qui s'éloignent."""
+    rng = np.random.default_rng(seed)
+    t = gs.t_axis(2.2)
+    n = len(t)
+    thud = np.sin(2 * np.pi * 48 * t) * gs.env(t, 0.003, 0.18)
+    air = gs.band(gs.noise(n, rng), lo=150, hi=2500) * gs.env(t, 0.01, 0.35)
+    whine = np.sin(2 * np.pi * np.cumsum(620 + 80 * t) / SR) * gs.env(t, 0.3, 1.4) * 0.25
+    bubbles = gs.band(gs.noise(n, rng), lo=600, hi=3500) * (rng.random(n) < 0.004).astype(float) * 3 * np.exp(-t / 1.2)
+    return gs.normalize(thud * 1.3 + air + whine + bubbles)
+
+
+def ship_sinking_groan(seed):
+    """Coque qui cède : grincement métallique grave et modulé, craquements, eau qui s'engouffre."""
+    rng = np.random.default_rng(seed)
+    t = gs.t_axis(5.0)
+    n = len(t)
+    f = 70 + 25 * np.sin(2 * np.pi * 0.35 * t) + 12 * np.sin(2 * np.pi * 1.7 * t)
+    groan = np.sign(np.sin(2 * np.pi * np.cumsum(f) / SR)) * 0.5 + np.sin(2 * np.pi * np.cumsum(f * 2.01) / SR)
+    groan = gs.band(groan, lo=40, hi=900) * gs.env(t, 0.6, 3.5)
+    creak = gs.band(gs.noise(n, rng), lo=800, hi=4000) * (rng.random(n) < 0.0008).astype(float) * 6
+    creak = np.convolve(creak, np.exp(-np.arange(int(0.04 * SR)) / (0.01 * SR)), mode="same")
+    water = gs.band(gs.noise(n, rng), lo=100, hi=1500) * gs.env(t, 1.0, 3.0) * 0.5
+    return gs.normalize(gs.echo(groan + creak * 0.4 + water, [0.5, 1.2], [0.3, 0.15]))
+
+
+def ciws_burst(seed):
+    """CIWS Phalanx / AK-630 : rafale continue à 4 500 coups / min (« brrrt » grave et déchirant)."""
+    rng = np.random.default_rng(seed)
+    t = gs.t_axis(0.35)
+    n = len(t)
+    buzz = np.sign(np.sin(2 * np.pi * 75 * t)) * 0.6 + np.sin(2 * np.pi * 150 * t)
+    noise = gs.band(gs.noise(n, rng), lo=200, hi=6000) * (0.6 + 0.4 * np.sign(np.sin(2 * np.pi * 75 * t)))
+    return gs.normalize((buzz * 0.5 + noise) * gs.env(t, 0.005, 0.3))
+
+
+def ship_horn(seed):
+    """Corne de brume : accord grave tenu (deux notes battantes), réverbération sur l'eau."""
+    t = gs.t_axis(3.5)
+    x = sum(a * np.sin(2 * np.pi * f * t) for f, a in ((92, 1.0), (93.5, 0.8), (184, 0.5), (276, 0.25), (368, 0.12)))
+    x = x * np.clip(t / 0.15, 0, 1) * np.clip((3.0 - t) / 0.4, 0, 1)
+    return gs.normalize(gs.echo(x, [0.6, 1.4], [0.3, 0.15]), 0.85)
+
+
+def ballast_blow(seed):
+    """Chasse aux ballasts : air comprimé violent, bouillonnement."""
+    rng = np.random.default_rng(seed)
+    t = gs.t_axis(3.0)
+    n = len(t)
+    blast = gs.band(gs.noise(n, rng), lo=300, hi=6000) * gs.env(t, 0.02, 1.2)
+    boil = gs.band(gs.noise(n, rng), lo=80, hi=900) * (0.5 + 0.5 * np.sin(2 * np.pi * 7 * t)) * gs.env(t, 0.3, 2.0)
+    return gs.normalize(blast * 0.8 + boil)
+
+
 SOUNDS = {
     "mil.radio_dispatch_call": (lambda s: radio_call(s), 2, "radio_call"),
     "mil.radio_call_cut": (lambda s: radio_cut(s), 1, "radio_cut"),
@@ -328,6 +390,12 @@ SOUNDS = {
     "mil.flare_launch": (lambda s: flare(s), 1, "flare_launch"),
     "mil.missile_warning": (lambda s: missile_warning(s), 1, "missile_warning"),
     "mil.ejection_seat": (lambda s: ejection(s), 1, "ejection_seat"),
+    "mil.sonar_ping": (lambda s: sonar_ping(s), 1, "sonar_ping"),
+    "mil.torpedo_launch": (lambda s: torpedo_launch(s), 1, "torpedo_launch"),
+    "mil.ship_sinking_groan": (lambda s: ship_sinking_groan(s), 2, "ship_sinking"),
+    "mil.ciws_burst": (lambda s: ciws_burst(s), 2, "ciws"),
+    "mil.ship_horn": (lambda s: ship_horn(s), 1, "ship_horn"),
+    "mil.ballast_blow": (lambda s: ballast_blow(s), 1, "ballast_blow"),
 }
 
 

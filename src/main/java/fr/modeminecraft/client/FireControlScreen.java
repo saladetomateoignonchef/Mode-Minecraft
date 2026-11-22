@@ -48,11 +48,20 @@ public class FireControlScreen extends Screen {
         last = p;
     }
 
+    /** Saisie de coordonnées X / Z : Iskander et console de tir navale (officier d'armes). */
     private boolean iskander() {
-        return v.type() == MilType.ISKANDER;
+        return v.type() == MilType.ISKANDER || v.type().naval();
+    }
+
+    private boolean naval() {
+        return v.type().naval();
     }
 
     private List<MilAmmo> ammoList() {
+        if (naval()) {
+            int st = v.info().getInt("station");
+            return st >= 0 && st < v.type().weapons.size() ? v.type().weapons.get(st).ammo() : List.of();
+        }
         return v.type().weapons.isEmpty() ? List.of() : v.type().weapons.get(0).ammo();
     }
 
@@ -83,8 +92,13 @@ public class FireControlScreen extends Screen {
             }).bounds(px, py + 24, 180, 18).build());
             py += 48;
         }
-        ammoButton = addRenderableWidget(Button.builder(Component.empty(), b -> ammo = (ammo + 1) % Math.max(1, ammoList().size()))
-                .bounds(px, py, 180, 18).build());
+        ammoButton = addRenderableWidget(Button.builder(Component.empty(), b -> {
+            if (naval()) {
+                PacketDistributor.sendToServer(new fr.modeminecraft.network.MilControlPayload(fr.modeminecraft.network.MilControlPayload.AMMO));
+            } else {
+                ammo = (ammo + 1) % Math.max(1, ammoList().size());
+            }
+        }).bounds(px, py, 180, 18).build());
         fireButton = addRenderableWidget(Button.builder(Component.translatable("gui.modeminecraft.fire_control.launch"), b -> fire())
                 .bounds(px, py + 24, 180, 22).build());
         if (!iskander()) {
@@ -169,12 +183,19 @@ public class FireControlScreen extends Screen {
         super.render(g, mouseX, mouseY, partial);
         var info = v.info();
         List<MilAmmo> list = ammoList();
-        if (!list.isEmpty()) {
+        if (naval()) {
+            int st = info.getInt("station");
+            int n = 0;
+            for (MilAmmo a : list) {
+                n += info.getInt(a.name());
+            }
+            ammoButton.setMessage(Component.translatable("gui.modeminecraft.fire_control.station", AirClient.stationName(v), n));
+        } else if (!list.isEmpty()) {
             MilAmmo a = list.get(Math.floorMod(ammo, list.size()));
             ammoButton.setMessage(Component.translatable("gui.modeminecraft.fire_control.missile",
                     Component.translatable("item.modeminecraft." + BuiltInRegistries.ITEM.getKey(a.item()).getPath()), info.getInt(a.name())));
         }
-        boolean deployed = v.is(MilVehicleEntity.DEPLOYED);
+        boolean deployed = v.is(MilVehicleEntity.DEPLOYED) || naval();
         fireButton.active = deployed && (iskander() || !selected.isEmpty() || marker != null);
         int top = 12;
         g.drawCenteredString(font, Component.translatable("entity.modeminecraft." + v.type().id), width / 2, top, 0xFFE8D890);
@@ -186,8 +207,13 @@ public class FireControlScreen extends Screen {
             g.drawString(font, "Z", cx + 16, cy - 36, 0xFFFFFFFF);
             try {
                 double d = Math.hypot(Integer.parseInt(xBox.getValue()) - v.getX(), Integer.parseInt(zBox.getValue()) - v.getZ());
-                g.drawCenteredString(font, Component.translatable("gui.modeminecraft.fire_control.distance", (int) d, 70 / 20 + (int) (d / 7 / 20)),
-                        cx, cy + 60, d > 1000 || d < 60 ? 0xFFE06060 : 0xFFD0D0D0);
+                if (naval()) {
+                    g.drawCenteredString(font, Component.translatable("gui.modeminecraft.fire_control.naval_distance", (int) d),
+                            cx, cy + 60, d > 1200 ? 0xFFE06060 : 0xFFD0D0D0);
+                } else {
+                    g.drawCenteredString(font, Component.translatable("gui.modeminecraft.fire_control.distance", (int) d, 70 / 20 + (int) (d / 7 / 20)),
+                            cx, cy + 60, d > 1000 || d < 60 ? 0xFFE06060 : 0xFFD0D0D0);
+                }
             } catch (NumberFormatException ignored) {
             }
             return;

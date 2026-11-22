@@ -55,7 +55,8 @@ public final class GunClientEvents {
                 PacketDistributor.sendToServer(fr.modeminecraft.network.LaserPayload.INSTANCE);
             }
         }
-        while (ModKeyMappings.UNDERBARREL.consumeClick()) {
+        while (!(mc.player != null && mc.player.getVehicle() instanceof fr.modeminecraft.entity.military.MilVehicleEntity mv && (mv.type().naval() || mv.type().plane()))
+                && ModKeyMappings.UNDERBARREL.consumeClick()) {
             if (holdingGun) {
                 PacketDistributor.sendToServer(UnderbarrelPayload.INSTANCE);
             }

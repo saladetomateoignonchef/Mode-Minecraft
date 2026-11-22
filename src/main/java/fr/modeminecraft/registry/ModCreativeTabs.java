@@ -38,11 +38,12 @@ public final class ModCreativeTabs {
             "rpg_rocket", "mortar_shell", "ap_i_belt", "he_i_belt", "apfsds_shell", "he_shell", "heat_shell", "cannon_atgm_missile",
             "grad_rocket", "rocket_107", "mlrs_rocket", "atacms_missile", "s8_rocket", "hydra_rocket", "atgm_missile", "missile_48n6e3", "missile_9m96e2",
             "missile_77n6n", "missile_40n6m", "iskander_he", "iskander_cluster", "iskander_emp",
-            "aam_ir_missile", "aam_radar_missile", "agm_missile", "arm_missile", "cruise_missile");
+            "aam_ir_missile", "aam_radar_missile", "agm_missile", "arm_missile", "cruise_missile",
+            "naval_shell", "ciws_belt", "ashm_missile", "hypersonic_missile", "naval_sam_missile", "torpedo", "asw_rocket");
     /** Drones, véhicules et ce qui va avec (brouilleur EMP, clé à molette, bidons). */
     private static final Set<String> DRONE_IDS = Set.of("emp_jammer_rifle", "wrench", "jerrycan", "vehicle_engine", "gas_turbine", "track_set",
             "wheel_set", "cannon_barrel", "autocannon_mount", "fire_control_module", "rotor_assembly", "launcher_module", "type63_launcher", "iron_pipe", "aircraft_engine", "pressurized_cockpit",
-            "jet_engine", "avionics_suite", "radar_absorbent_panel");
+            "jet_engine", "avionics_suite", "radar_absorbent_panel", "ship_hull_section", "sonar_array", "naval_reactor");
     /** Objets présents dans deux onglets (le pied-de-biche est une arme ET un outil d'effraction). */
     private static final Set<String> ALSO_TOOLS = Set.of("crowbar");
 

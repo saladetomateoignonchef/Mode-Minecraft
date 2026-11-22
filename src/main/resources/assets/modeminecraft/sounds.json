@@ -739,5 +739,43 @@
     "sounds": [
       "modeminecraft:mil/ejection_seat_0"
     ]
+  },
+  "mil.sonar_ping": {
+    "subtitle": "subtitles.modeminecraft.sonar_ping",
+    "sounds": [
+      "modeminecraft:mil/sonar_ping_0"
+    ]
+  },
+  "mil.torpedo_launch": {
+    "subtitle": "subtitles.modeminecraft.torpedo_launch",
+    "sounds": [
+      "modeminecraft:mil/torpedo_launch_0"
+    ]
+  },
+  "mil.ship_sinking_groan": {
+    "subtitle": "subtitles.modeminecraft.ship_sinking",
+    "sounds": [
+      "modeminecraft:mil/ship_sinking_groan_0",
+      "modeminecraft:mil/ship_sinking_groan_1"
+    ]
+  },
+  "mil.ciws_burst": {
+    "subtitle": "subtitles.modeminecraft.ciws",
+    "sounds": [
+      "modeminecraft:mil/ciws_burst_0",
+      "modeminecraft:mil/ciws_burst_1"
+    ]
+  },
+  "mil.ship_horn": {
+    "subtitle": "subtitles.modeminecraft.ship_horn",
+    "sounds": [
+      "modeminecraft:mil/ship_horn_0"
+    ]
+  },
+  "mil.ballast_blow": {
+    "subtitle": "subtitles.modeminecraft.ballast_blow",
+    "sounds": [
+      "modeminecraft:mil/ballast_blow_0"
+    ]
   }
 }

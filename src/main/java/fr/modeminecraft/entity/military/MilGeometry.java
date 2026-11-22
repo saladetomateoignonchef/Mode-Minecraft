@@ -275,6 +275,71 @@ public final class MilGeometry {
                 new float[][]{{5.6f, 1.75f, 0.0f}},
                 new float[][]{{3.8f, 1.95f, 1.75f, 0f}, {3.8f, 1.95f, -0.3f, 0f}, {3.8f, 1.95f, 0.3f, 0f}, {-0.5f, 0.9f, -0.4f, 0f}, {-0.5f, 0.9f, 0.4f, 0f}, {-1.5f, 0.9f, -0.4f, 0f}, {-1.5f, 0.9f, 0.4f, 0f}},
                 new float[][]{}, 6.8f));
+        put("kirov_cruiser", new Geo(33f, 8.0f, new Vec3(38, 7.06, 0.0), new Vec3(39.92, 7.9399999999999995, 0.0), null, null, null,
+                new float[][]{},
+                new float[][]{{10f, 15.0f, 0f}, {-38f, 8.0f, 0f}, {6f, 15.0f, 1.5f}, {0f, 8.0f, 3.5f}, {-3f, 8.0f, 3.5f}, {-6f, 8.0f, 3.5f}},
+                new float[][]{{46.0f, 7.9399999999999995f, 0.0f, 2f}, {15.4f, 16.6f, 5.5f, 0f}, {26f, 8.0f, -3.0f, 0f}, {26f, 8.0f, 3.0f, 0f}, {26f, 8.0f, 0f, 0f}, {10f, 2f, -7.6f, 0f}, {10f, 2f, 7.6f, 0f}, {-29f, 8.0f, 0f, 0f}, {-40f, 8.0f, 0f, 0f}},
+                new float[][]{}, 8.0f));
+        put("admiral_gorshkov", new Geo(19f, 8.0f, new Vec3(20, 5.06, 0.0), new Vec3(21.44, 5.72, 0.0), null, null, null,
+                new float[][]{},
+                new float[][]{{6f, 11.0f, 0f}, {16f, 6.0f, 0f}, {4f, 11.0f, 1.2f}, {-3f, 6.0f, 2.5f}},
+                new float[][]{{26.0f, 5.72f, 0.0f, 2f}, {-7.6f, 9.6f, 2.5f, 0f}, {13f, 6.0f, -1.5f, 0f}, {13f, 6.0f, 1.5f, 0f}, {13f, 6.0f, 0f, 0f}, {-4f, 1.6f, -4.4f, 0f}, {-4f, 1.6f, 4.4f, 0f}, {12f, 6.0f, 0f, 0f}, {-10f, 6.0f, 0f, 0f}},
+                new float[][]{}, 4.6f));
+        put("slava_cruiser", new Geo(26f, 8.0f, new Vec3(30, 6.06, 0.0), new Vec3(31.68, 6.83, 0.0), null, null, null,
+                new float[][]{},
+                new float[][]{{10f, 13.0f, 0f}, {26f, 7.0f, 0f}, {6f, 13.0f, 1.2f}, {-2f, 7.0f, 3f}},
+                new float[][]{{37.0f, 6.83f, 0.0f, 2f}, {-12.6f, 10.6f, 3.5f, 0f}, {24f, 7.5f, -4.6f, 0f}, {24f, 7.5f, 4.6f, 0f}, {10f, 7.0f, 0f, 0f}, {-6f, 2f, -6.2f, 0f}, {-6f, 2f, 6.2f, 0f}, {-21f, 7.0f, 0f, 0f}, {20f, 7.0f, 1.5f, 0f}},
+                new float[][]{}, 6.6f));
+        put("udaloy_destroyer", new Geo(23f, 8.0f, new Vec3(26, 5.659999999999999, 0.0), new Vec3(27.56, 6.374999999999999, 0.0), null, null, null,
+                new float[][]{},
+                new float[][]{{14f, 12.6f, 0f}, {22f, 6.6f, 0f}, {10f, 12.6f, 1.2f}, {-8f, 6.6f, 3f}},
+                new float[][]{{32.5f, 6.374999999999999f, 0.0f, 2f}, {-12.6f, 10.2f, 3f, 0f}, {21f, 6.6f, -1.5f, 0f}, {21f, 6.6f, 1.5f, 0f}, {21f, 6.6f, 0f, 0f}, {-2f, 1.8f, -5.2f, 0f}, {-2f, 1.8f, 5.2f, 0f}, {-15f, 6.6f, 0f, 0f}, {20f, 6.8999999999999995f, 2.8f, 0f}},
+                new float[][]{}, 5.6f));
+        put("buyan_corvette", new Geo(12f, 8.0f, new Vec3(9, 3.66, 0.0), new Vec3(10.08, 4.155, 0.0), null, null, null,
+                new float[][]{},
+                new float[][]{{3f, 7.6f, 0f}, {8f, 4.6f, 0f}, {1f, 7.6f, 1f}},
+                new float[][]{{13.5f, 4.155f, 0.0f, 2f}, {-10.6f, 4.26f, 0f, 0f}, {-8f, 4.6f, -1f, 0f}, {-8f, 4.6f, 1f, 0f}, {-8.5f, 4.6f, 0f, 0f}, {0f, 1.2f, -3.3f, 0f}, {0f, 1.2f, 3.3f, 0f}, {-8f, 4.6f, 0f, 0f}, {-8f, 4.6f, 0f, 0f}},
+                new float[][]{}, 3.4f));
+        put("arleigh_burke", new Geo(22f, 8.0f, new Vec3(25, 5.46, 0.0), new Vec3(26.32, 6.065, 0.0), null, null, null,
+                new float[][]{},
+                new float[][]{{12f, 13.4f, 0f}, {22f, 6.4f, 0f}, {8f, 13.4f, 1.2f}, {-6f, 6.4f, 3f}},
+                new float[][]{{30.5f, 6.065f, 0.0f, 2f}, {16.4f, 13.0f, 0f, 0f}, {-12f, 6.4f, -2.5f, 0f}, {-12f, 6.4f, 2.5f, 0f}, {20f, 6.4f, 0f, 0f}, {-5f, 1.8f, -4.8f, 0f}, {-5f, 1.8f, 4.8f, 0f}, {-18f, 6.4f, 0f, 0f}, {20f, 6.4f, 1.0f, 0f}},
+                new float[][]{}, 5.2f));
+        put("ticonderoga_cruiser", new Geo(26f, 8.5f, new Vec3(30, 5.859999999999999, 0.0), new Vec3(31.32, 6.465, 0.0), null, null, null,
+                new float[][]{},
+                new float[][]{{14f, 13.8f, 0f}, {26f, 6.8f, 0f}, {10f, 13.8f, 1.2f}, {-10f, 6.8f, 3f}},
+                new float[][]{{35.5f, 6.465f, 0.0f, 2f}, {17.4f, 13.4f, 0f, 0f}, {-16f, 6.8f, -3f, 0f}, {-16f, 6.8f, 3f, 0f}, {23f, 6.8f, 0f, 0f}, {-4f, 1.9f, -5.4f, 0f}, {-4f, 1.9f, 5.4f, 0f}, {-24f, 6.8f, 0f, 0f}, {24f, 6.8f, 1.0f, 0f}},
+                new float[][]{}, 5.8f));
+        put("zumwalt_destroyer", new Geo(26f, 8.0f, new Vec3(22, 6.06, 0.0), new Vec3(23.2, 6.609999999999999, 0.0), null, null, null,
+                new float[][]{},
+                new float[][]{{10f, 14.0f, 0f}, {20f, 7.0f, 0f}, {6f, 14.0f, 1.2f}, {-8f, 7.0f, 3f}},
+                new float[][]{{27.0f, 6.609999999999999f, 0.0f, 2f}, {-12.6f, 15.6f, 0f, 0f}, {-20f, 7.0f, -5f, 0f}, {-20f, 7.0f, 5f, 0f}, {0f, 7.0f, 5f, 0f}, {-5f, 2f, -5.6f, 0f}, {-5f, 2f, 5.6f, 0f}, {-24f, 7.0f, 5f, 0f}, {-24f, 7.0f, 0f, 0f}},
+                new float[][]{}, 6.0f));
+        put("ohio_submarine", new Geo(25f, 8.5f, null, null, null, null, null,
+                new float[][]{},
+                new float[][]{{12f, 8.2f, 0f}, {10f, 4.1f, 0f}, {8f, 4.1f, 0.8f}, {4f, 4.1f, -0.8f}},
+                new float[][]{{30f, 3.6f, 0f, 0f}, {12f, 11.2f, 0f, 0f}, {-2f, 7.2f, 1f, 0f}, {-2f, 7.2f, -1f, 0f}, {-2f, 7.2f, 0f, 0f}, {33f, 2.6f, -1.2f, 0f}, {33f, 2.6f, 1.2f, 0f}, {12f, 11.2f, 0f, 0f}, {30f, 3.6f, 0f, 0f}},
+                new float[][]{}, 3.6f));
+        put("virginia_submarine", new Geo(18f, 8.5f, null, null, null, null, null,
+                new float[][]{},
+                new float[][]{{11f, 6.199999999999999f, 0f}, {9f, 3.1999999999999997f, 0f}, {6f, 3.1999999999999997f, 0.6f}},
+                new float[][]{{22f, 2.8f, 0f, 0f}, {11f, 8.6f, 0f, 0f}, {18f, 5.6f, 0.5f, 0f}, {18f, 5.6f, -0.5f, 0f}, {18f, 5.6f, 0f, 0f}, {24f, 1.9999999999999998f, -1.0f, 0f}, {24f, 1.9999999999999998f, 1.0f, 0f}, {11f, 8.6f, 0f, 0f}, {22f, 2.8f, 0f, 0f}},
+                new float[][]{}, 2.8f));
+        put("mercenary_rhib", new Geo(4f, 8.0f, null, null, null, null, null,
+                new float[][]{},
+                new float[][]{{0.0f, 1.2f, 0f}, {2.6f, 1.2f, 0f}, {-1.4f, 1.2f, -0.7f}, {-1.4f, 1.2f, 0.7f}, {-2.6f, 1.2f, 0f}},
+                new float[][]{{3.9f, 1.9f, 0f, 0f}},
+                new float[][]{}, 1.87f));
+        put("mercenary_interceptor_boat", new Geo(5f, 8.0f, null, null, null, null, null,
+                new float[][]{},
+                new float[][]{{0.6f, 1.6f, 0f}, {3.6f, 1.6f, 0f}, {-2.4f, 1.6f, 0f}},
+                new float[][]{{5.8f, 2.2f, 0f, 0f}, {-3.0f, 2.0f, -0.3f, 0f}, {-3.0f, 2.0f, 0.3f, 0f}},
+                new float[][]{}, 1.8f));
+        put("mercenary_explosive_usv", new Geo(3f, 8.5f, null, null, null, null, null,
+                new float[][]{},
+                new float[][]{{-0.4f, 0.9f, 0f}},
+                new float[][]{},
+                new float[][]{}, 0.9f));
     }
 
     private MilGeometry() {}

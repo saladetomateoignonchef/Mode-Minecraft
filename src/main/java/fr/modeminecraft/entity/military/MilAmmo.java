@@ -43,7 +43,15 @@ public enum MilAmmo {
     AAM_RADAR(() -> ModItems.AAM_RADAR_MISSILE.get(), 1, Shell.AAM_RADAR),
     AGM(() -> ModItems.AGM_MISSILE.get(), 1, Shell.AGM),
     ARM(() -> ModItems.ARM_MISSILE.get(), 1, Shell.ARM),
-    CRUISE(() -> ModItems.CRUISE_MISSILE.get(), 1, Shell.CRUISE);
+    CRUISE(() -> ModItems.CRUISE_MISSILE.get(), 1, Shell.CRUISE),
+    // marine
+    NAVAL_SHELL(() -> ModItems.NAVAL_SHELL.get(), 4, Shell.NAVAL_HE),
+    CIWS_ROUNDS(() -> ModItems.CIWS_BELT.get(), 500, Shell.MG_145),
+    ASHM(() -> ModItems.ASHM_MISSILE.get(), 1, Shell.ASHM),
+    HYPERSONIC(() -> ModItems.HYPERSONIC_MISSILE.get(), 1, Shell.HYPERSONIC),
+    NAVAL_SAM(() -> ModItems.NAVAL_SAM_MISSILE.get(), 1, Shell.SAM_LONG),
+    TORPEDO(() -> ModItems.TORPEDO.get(), 1, Shell.TORPEDO),
+    ASW_ROCKET(() -> ModItems.ASW_ROCKET.get(), 4, Shell.ASW);
 
     private final Supplier<Item> item;
     public final int perItem;
@@ -93,7 +101,13 @@ public enum MilAmmo {
         AAM_RADAR(6.0f, 0.0f, 80, 4.0f, 0.5f, true),
         AGM(4.2f, 0.0f, 120, 4.5f, 0.95f, true),
         ARM(5.0f, 0.0f, 110, 4.5f, 0.8f, true),
-        CRUISE(3.6f, 0.0f, 160, 9.0f, 0.7f, true);
+        CRUISE(3.6f, 0.0f, 160, 9.0f, 0.7f, true),
+        /** Marine : obus de 100 à 130 mm, antinavire rasant, hypersonique (Zircon, CPS), torpille lourde, roquette ASM. */
+        NAVAL_HE(6.0f, 0.03f, 60, 5.0f, 0.4f, false),
+        ASHM(4.0f, 0.0f, 110, 5.5f, 0.8f, true),
+        HYPERSONIC(9.0f, 0.0f, 150, 6.0f, 1.0f, true),
+        TORPEDO(1.3f, 0.0f, 95, 5.0f, 0.9f, true),
+        ASW(2.6f, 0.03f, 70, 4.5f, 0.5f, false);
 
         public final float speed, gravity, damage, blast, pierce;
         public final boolean guided;
@@ -114,7 +128,7 @@ public enum MilAmmo {
 
         /** Roquette / missile (traînée de fumée, détruit par le système de protection active). */
         public boolean rocket() {
-            return ordinal() >= ROCKET_122.ordinal() || this == REFLEKS;
+            return (ordinal() >= ROCKET_122.ordinal() || this == REFLEKS) && this != NAVAL_HE && this != TORPEDO;
         }
     }
 

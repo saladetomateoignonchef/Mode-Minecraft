@@ -43,13 +43,17 @@ public record StrategicFirePayload(int action, List<Integer> targets, int ammo, 
                     }
                 }
                 case FIRE_STRIKE -> {
+                    if (v.type().naval()) {
+                        v.navalStrike(sp, p.x(), p.z());
+                        return;
+                    }
                     if (v.seatOf(sp) == 1) {
                         v.saveTarget(p.x(), p.z());
                     }
                     StrategicSystems.fireIskander(v, sp, p.x(), p.z(), p.ammo());
                 }
                 case SAVE_TARGET -> {
-                    if (v.seatOf(sp) == 1) {
+                    if (v.seatOf(sp) == 1 || v.officer(sp)) {
                         v.saveTarget(p.x(), p.z());
                     }
                 }

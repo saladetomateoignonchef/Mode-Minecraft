@@ -1,0 +1,8 @@
+{
+  "type": "modeminecraft:naval",
+  "kind": "naval_base",
+  "biomes": "#minecraft:is_ocean",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none"
+}

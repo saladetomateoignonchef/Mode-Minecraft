@@ -836,6 +836,42 @@ Des **villes générées** apparaissent selon le biome (un centre de ville par r
   aéronef dans leur espace aérien fait décoller deux intercepteurs (MiG-29, Su-57, MiG-25 / F-22, F-15E, F-16C) qui
   attaquent au canon et aux missiles, lancent des leurres et évitent le sol. Les furtifs passent inaperçus.
 
+### Nation américaine, Mercenaires Offshore et guerre navale (mise à jour 0.8)
+#### L'US Army et les Mercenaires Offshore
+- **US Army** (ex-garnison) : neutre par défaut. Elle devient hostile si vous attaquez un de ses soldats, volez un véhicule dans une base américaine ou une patrouille, ou forcez une salle blindée devant témoins (appel radio de 30 s). Elle est en guerre contre l'URSS, la Milice, les Cartels, les Mercenaires Offshore et les Faucons.
+- Patrouilles en **Humvee** à 3 (conducteur, passager au M4A1, tireur de M2 .50).
+- Boss : **Général 4 étoiles de l'US Army** (100 PV) → *Carte d'accès : Pentagone / Commandement US* (tenue complète de l'US Army dans la chambre forte).
+- **Mercenaires Offshore** : hostiles à tous (SCAR-H, HK416, MP5, SPAS-12, Barrett, RPG-7, tourelles M2). Boss **Blackwater-01** (100 PV) sur sa plateforme pétrolière → *Carte d'accès : salle des coffres offshore* (or, pétrole, armes lourdes, pièces de drone, munitions).
+
+#### 13 bâtiments de guerre (établi d'assemblage)
+| Camp | Navires |
+|---|---|
+| URSS / Russie | Croiseur **Kirov** (95 blocs), frégate **Amiral Gorshkov** (Zircon hypersonique), croiseur **Slava**, destroyer **Oudaloï**, corvette **Bouïan-M** |
+| États-Unis | Destroyer **Arleigh Burke**, croiseur **Ticonderoga**, destroyer furtif **Zumwalt**, sous-marins **Ohio** (154 Tomahawk) et **Virginia** |
+| Mercenaires | **Semi-rigide** (5 places, M240B), intercepteur **Viper-Craft** (20 mm + roquettes), **drone naval explosif** |
+
+Mise à l'eau : clic droit vers une étendue d'eau. Commandes : **Z / S** chadburn (la vitesse suit avec l'inertie du navire), **Q / D** barre (efficace seulement avec de l'erre), **C** changer de place (commandant, canonnier, officier d'armes, matelots), **R** station d'armes, **H** corne de brume (drone explosif : armer le pilote automatique puis sauter à l'eau), **V** vue suivante : sonar passif (relèvements des bâtiments en route), sonar actif (ping toutes les 3 s, échos avec distance, sous-marins compris), et pour les sous-marins périscope optique / thermique (jusqu'à 18 blocs d'immersion). Sous-marins : **Ctrl** plonger (jusqu'à 50 blocs), **Espace** remonter. L'équipage reste à l'abri (pas de noyade).
+
+- **Canonnier** : canon de 100 à 155 mm en tourelle (obus navals, portée de plus d'un kilomètre).
+- **Officier d'armes** : clic gauche = tir de la station choisie vers le réticule ; clic droit = **console de tir** (coordonnées X / Z, marque du désignateur laser) pour les missiles de croisière. Seul à bord, le commandant tire les stations au clic droit.
+- **Défense automatique** dès qu'il y a un équipage : missiles antiaériens navals (SM-2/6, S-300F…) sur les aéronefs et missiles ennemis, puis **CIWS** (Phalanx, Kashtan, AK-630, 20 / 30 mm) au dernier moment, qui détruit les missiles en approche. Les F-117 et B-2 restent invisibles aux radars navals.
+- **Avaries** : un coup sous la ligne de flottaison ouvre une voie d'eau (le navire s'enfonce et ralentit, les pompes l'assèchent lentement) ; une torpille endommage la propulsion. À 0 PV le navire gîte, fume, s'enfonce et coule ; l'équipage se jette à l'eau.
+- **Ravitaillement** : à quai près d'une citerne de kérosène (carburant) et d'une caisse de munitions d'aviation (soutes).
+
+#### Munitions navales (établi d'artillerie)
+- **Torpille lourde 533 mm** : sous l'eau seulement, sillage de bulles, autodirecteur acoustique (70 blocs), 95 dégâts, voie d'eau et propulsion endommagée.
+- **Roquette anti-sous-marine** (RBU-6000, ASROC) : tir en cloche, la charge coule et explose près d'un sous-marin.
+- **Missile antinavire rasant** (Harpoon, Granit, Moskit…) : vol à 3 blocs des vagues, remontée et piqué terminal, 110 dégâts.
+- **Missile hypersonique** (Zircon, CPS) : Mach 8+, traînée de plasma, piqué quasi vertical, 150 dégâts — **inarrêtable** (ni CIWS, ni S-400).
+- **Missile de croisière** (Tomahawk, Kalibr) : suivi de terrain à 14 blocs, jusqu'à 1 200 blocs, sur coordonnées.
+- **Obus naval**, **bande de CIWS**, **missile antiaérien naval**.
+
+#### Structures maritimes (étendue d'eau libre de 140 x 140 blocs et 12 de fond obligatoire)
+- **Plateforme pétrolière offshore** (64 x 64, 45 blocs de haut, à plus de 250 blocs des côtes) : piles en treillis, derrick, torchère, cuves, grues, coursives, quartiers, salle des serveurs, hélipad, quai inférieur avec les embarcations des mercenaires, tourelles M2, boss Blackwater-01 et sa chambre forte.
+- **Porte-avions** au mouillage : **USS Gerald R. Ford** (130 x 34, catapultes EMALS) ou **Amiral Kouznetsov** (120 x 30, tremplin, silos Granit) en eaux froides, 4 à 6 chasseurs sur le pont (F-16 / F-22 ou MiG-29 / Su-57), défense rapprochée, deux navires d'escorte. Si un véhicule ennemi approche à moins de 500 blocs, deux chasseurs décollent, l'interceptent, puis reviennent apponter.
+- **Bases navales côtières** (américaines, soviétiques en eaux froides) : quai, trois jetées, portiques, dépôt de carburant et de torpilles, batteries côtières, **cale sèche couverte** (50 x 22 x 16) avec un sous-marin ou une corvette, navires à quai qui appareillent si une menace approche.
+- **Patrouilles en haute mer** : semi-rigides et intercepteurs mercenaires, destroyers soviétiques ou américains, sous-marins.
+
 ### Gameplay et progression
 - **Niveaux des armes (1 à 5)** : chaque arme garde ses statistiques (éliminations, tirs à la tête, tirs, ratio)
   et gagne de l'expérience : +10 par élimination, +5 si tir à la tête, +10 pour un gros monstre (50 PV ou plus).

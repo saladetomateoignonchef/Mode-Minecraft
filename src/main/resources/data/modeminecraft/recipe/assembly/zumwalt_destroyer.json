@@ -1,0 +1,38 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "vehicles",
+  "ingredients": [
+    {
+      "item": "modeminecraft:ship_hull_section",
+      "count": 18
+    },
+    {
+      "item": "modeminecraft:gas_turbine",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:cannon_barrel",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:launcher_module",
+      "count": 5
+    },
+    {
+      "item": "modeminecraft:radar_absorbent_panel",
+      "count": 32
+    },
+    {
+      "item": "modeminecraft:fire_control_module",
+      "count": 5
+    },
+    {
+      "item": "modeminecraft:avionics_suite",
+      "count": 4
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:zumwalt_destroyer",
+    "count": 1
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "vehicles",
+  "ingredients": [
+    {
+      "item": "modeminecraft:rubberized_canvas",
+      "count": 8
+    },
+    {
+      "item": "modeminecraft:vehicle_engine",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 4
+    },
+    {
+      "item": "minecraft:oak_planks",
+      "count": 8
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:mercenary_rhib",
+    "count": 1
+  }
+}

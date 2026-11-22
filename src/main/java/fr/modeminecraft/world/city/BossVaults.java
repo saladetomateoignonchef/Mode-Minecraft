@@ -81,6 +81,7 @@ final class BossVaults {
             case SOVIET_HQ -> Blocks.RED_TERRACOTTA;
             case CARTEL_VILLA -> Blocks.POLISHED_DIORITE;
             case BADLANDS_REFINERY -> Blocks.COPPER_BLOCK;
+            case OFFSHORE_VAULT -> Blocks.IRON_BLOCK;
         };
         b.fill(sx - 4, f - 1, lz, sx + 4, f - 1, hz, floor);
         for (int x = sx - 3; x <= sx + 3; x += 3) {
@@ -104,7 +105,11 @@ final class BossVaults {
             case SOVIET_HQ -> "soviet_uniform";
             case CARTEL_VILLA -> "cartel_outfit";
             case BADLANDS_REFINERY -> "sheriff_outfit";
+            case OFFSHORE_VAULT -> null;                          // pas de tenue : lingots, pétrole, armes lourdes
         };
+        if (outfit == null) {
+            return;
+        }
         String[] pieces = {"helmet", "chestplate", "leggings", "boots"};
         java.util.List<net.minecraft.world.item.ItemStack> suit = new java.util.ArrayList<>();
         if (t == BossCardItem.VaultType.DESERT_PALACE) {

@@ -219,23 +219,72 @@ public enum MilType {
     F_22("f22_raptor", Side.US, Chassis.PLANE, 440, 520, 0.75f, 0.75f, 0.75f, 1200, 0, Flag.NONE,
             List.of(seat(Role.PILOT, true, 1, 0)),
             List.of(gun("m61a2", Kind.AUTOCANNON, 0, 1, 1500, MilAmmo.HE_I, MilAmmo.AP_I), gun("aim120d", Kind.AAM, 3, 15, 6, MilAmmo.AAM_RADAR),
-                    gun("aim9x", Kind.AAM, 5, 15, 2, MilAmmo.AAM_IR)));
+                    gun("aim9x", Kind.AAM, 5, 15, 2, MilAmmo.AAM_IR))),
+    // ------------------------------------------------------------ marine (cahier des charges « Guerre navale »)
+    // places : 0 commandant (barre), 1 canonnier (tourelle principale), 2 officier d'armes (stations : R, clic G)
+    KIROV("kirov_cruiser", Side.SOVIET, Chassis.SHIP, 50, 4000, 0.4f, 0.5f, 0.55f, 6000, 54, Flag.RADAR,
+            ship(Role.GUNNER, 6), List.of(naval("ak130", 0, 25, 200, MilAmmo.NAVAL_SHELL), auto("kashtan", Kind.CIWS, 1, 3000, MilAmmo.CIWS_ROUNDS),
+                    gun("granit", Kind.NAVAL_MISSILE, 2, 40, 20, MilAmmo.ASHM), auto("s300f", Kind.SAM, 7, 96, MilAmmo.NAVAL_SAM),
+                    gun("usetk80", Kind.TORPEDO, 5, 60, 10, MilAmmo.TORPEDO), gun("rbu6000", Kind.ASW, 8, 20, 24, MilAmmo.ASW_ROCKET))),
+    GORSHKOV("admiral_gorshkov", Side.SOVIET, Chassis.SHIP, 55, 2200, 0.5f, 0.6f, 0.65f, 4000, 27, Flag.RADAR,
+            ship(Role.GUNNER, 4), List.of(naval("a192", 0, 25, 200, MilAmmo.NAVAL_SHELL), auto("duet", Kind.CIWS, 1, 2000, MilAmmo.CIWS_ROUNDS),
+                    gun("ukks", Kind.NAVAL_MISSILE, 4, 40, 16, MilAmmo.HYPERSONIC, MilAmmo.ASHM, MilAmmo.CRUISE),
+                    auto("redut", Kind.SAM, 7, 32, MilAmmo.NAVAL_SAM))),
+    SLAVA("slava_cruiser", Side.SOVIET, Chassis.SHIP, 50, 3200, 0.45f, 0.55f, 0.6f, 5000, 36, Flag.RADAR,
+            ship(Role.GUNNER, 5), List.of(naval("ak130", 0, 25, 200, MilAmmo.NAVAL_SHELL), auto("ak630", Kind.CIWS, 1, 3000, MilAmmo.CIWS_ROUNDS),
+                    gun("vulkan", Kind.NAVAL_MISSILE, 2, 40, 16, MilAmmo.ASHM), auto("s300f", Kind.SAM, 7, 64, MilAmmo.NAVAL_SAM),
+                    gun("rbu6000", Kind.ASW, 8, 20, 24, MilAmmo.ASW_ROCKET))),
+    UDALOY("udaloy_destroyer", Side.SOVIET, Chassis.SHIP, 55, 2600, 0.5f, 0.6f, 0.65f, 4500, 27, Flag.RADAR,
+            ship(Role.GUNNER, 4), List.of(naval("ak130", 0, 25, 200, MilAmmo.NAVAL_SHELL), auto("ak630", Kind.CIWS, 1, 2000, MilAmmo.CIWS_ROUNDS),
+                    gun("moskit", Kind.NAVAL_MISSILE, 2, 40, 8, MilAmmo.ASHM, MilAmmo.CRUISE), gun("set65", Kind.TORPEDO, 5, 60, 8, MilAmmo.TORPEDO),
+                    gun("rbu6000", Kind.ASW, 8, 20, 24, MilAmmo.ASW_ROCKET), auto("kinzhal", Kind.SAM, 7, 24, MilAmmo.NAVAL_SAM))),
+    BUYAN("buyan_corvette", Side.SOVIET, Chassis.SHIP, 60, 1200, 0.6f, 0.7f, 0.75f, 2000, 9, Flag.NONE,
+            ship(Role.GUNNER, 2), List.of(naval("a190", 0, 20, 150, MilAmmo.NAVAL_SHELL), auto("duet", Kind.CIWS, 1, 2000, MilAmmo.CIWS_ROUNDS),
+                    gun("kalibr", Kind.NAVAL_MISSILE, 4, 50, 8, MilAmmo.CRUISE))),
+    ARLEIGH_BURKE("arleigh_burke", Side.US, Chassis.SHIP, 58, 2600, 0.5f, 0.6f, 0.65f, 4500, 27, Flag.RADAR,
+            ship(Role.GUNNER, 4), List.of(naval("mk45", 0, 22, 200, MilAmmo.NAVAL_SHELL), auto("phalanx", Kind.CIWS, 1, 3000, MilAmmo.CIWS_ROUNDS),
+                    gun("mk41", Kind.NAVAL_MISSILE, 4, 40, 56, MilAmmo.CRUISE, MilAmmo.ASHM), auto("sm6", Kind.SAM, 7, 40, MilAmmo.NAVAL_SAM),
+                    gun("mk32", Kind.TORPEDO, 5, 60, 6, MilAmmo.TORPEDO), gun("asroc", Kind.ASW, 8, 30, 8, MilAmmo.ASW_ROCKET))),
+    TICONDEROGA("ticonderoga_cruiser", Side.US, Chassis.SHIP, 55, 3000, 0.45f, 0.55f, 0.6f, 5000, 36, Flag.RADAR,
+            ship(Role.GUNNER, 5), List.of(naval("mk45", 0, 22, 200, MilAmmo.NAVAL_SHELL), auto("phalanx", Kind.CIWS, 1, 3000, MilAmmo.CIWS_ROUNDS),
+                    gun("mk41", Kind.NAVAL_MISSILE, 4, 40, 61, MilAmmo.CRUISE), gun("harpoon", Kind.NAVAL_MISSILE, 2, 40, 8, MilAmmo.ASHM),
+                    auto("sm2", Kind.SAM, 7, 61, MilAmmo.NAVAL_SAM))),
+    ZUMWALT("zumwalt_destroyer", Side.US, Chassis.SHIP, 55, 2800, 0.45f, 0.55f, 0.6f, 4800, 27, Flag.NONE,
+            ship(Role.GUNNER, 4), List.of(naval("ags", 0, 30, 150, MilAmmo.NAVAL_SHELL), auto("mk46", Kind.CIWS, 1, 2000, MilAmmo.CIWS_ROUNDS),
+                    gun("mk57", Kind.NAVAL_MISSILE, 4, 40, 80, MilAmmo.HYPERSONIC, MilAmmo.CRUISE))),
+    OHIO("ohio_submarine", Side.US, Chassis.SUB, 40, 2400, 0.5f, 0.55f, 0.6f, 9000, 18, Flag.NONE,
+            sub(5), List.of(gun("tomahawk", Kind.NAVAL_MISSILE, 4, 40, 154, MilAmmo.CRUISE), gun("mk48", Kind.TORPEDO, 5, 50, 24, MilAmmo.TORPEDO))),
+    VIRGINIA("virginia_submarine", Side.US, Chassis.SUB, 50, 1800, 0.55f, 0.6f, 0.65f, 9000, 9, Flag.NONE,
+            sub(3), List.of(gun("tomahawk", Kind.NAVAL_MISSILE, 4, 40, 12, MilAmmo.CRUISE), gun("mk48", Kind.TORPEDO, 5, 40, 26, MilAmmo.TORPEDO))),
+    RHIB("mercenary_rhib", Side.MERC, Chassis.SHIP, 95, 120, 0.9f, 0.9f, 0.9f, 300, 0, Flag.NONE,
+            List.of(seat(Role.DRIVER, false), seat(Role.GUNNER, false, 0), seat(Role.PASSENGER, false), seat(Role.PASSENGER, false),
+                    seat(Role.PASSENGER, false)),
+            List.of(free("m240b", Kind.MG, 0, 2, -20, 30, 1000, MilAmmo.MG_762))),
+    INTERCEPTOR_BOAT("mercenary_interceptor_boat", Side.MERC, Chassis.SHIP, 85, 250, 0.7f, 0.75f, 0.8f, 400, 0, Flag.BULLETPROOF,
+            List.of(seat(Role.DRIVER, true), seat(Role.GUNNER, false, 0), seat(Role.GUNNER, false, 1)),
+            List.of(free("m621", Kind.AUTOCANNON, 0, 3, -15, 40, 500, MilAmmo.HE_I, MilAmmo.AP_I),
+                    free("mrl8", Kind.ROCKETS, 1, 6, -5, 40, 8, MilAmmo.S8))),
+    EXPLOSIVE_USV("mercenary_explosive_usv", Side.MERC, Chassis.SHIP, 90, 60, 0.9f, 0.9f, 0.9f, 200, 0, Flag.NONE,
+            List.of(seat(Role.DRIVER, false)), List.of());
 
-    public enum Side { SOVIET, US }
+    public enum Side { SOVIET, US, MERC }
 
     /** HELI : hélicoptère ; PLANE : avion à voilure fixe (vitesse de sustentation, piste, train d'atterrissage). */
-    public enum Chassis { WHEELS, TRACKS, HELI, PLANE }
+    public enum Chassis { WHEELS, TRACKS, HELI, PLANE, SHIP, SUB }
 
     /** Rôle d'une place. */
-    public enum Role { DRIVER, PILOT, GUNNER, COMMANDER, PASSENGER, DOOR_GUNNER, GRENADIER, OPERATOR, BOMBARDIER }
+    public enum Role { DRIVER, PILOT, GUNNER, COMMANDER, PASSENGER, DOOR_GUNNER, GRENADIER, OPERATOR, BOMBARDIER, WEAPONS_OFFICER }
 
     /** AAM : missile air-air (verrouillage d'un aéronef) ; AGM : air-sol (véhicule verrouillé ou point visé) ;
      *  ARM : anti-radar (radar ennemi le plus proche devant l'avion) ; CRUISE : missile de croisière (point visé, GPS). */
-    public enum Kind { MG, AUTOCANNON, CANNON, GRENADE, ROCKETS, ATGM, SAM, AAM, AGM, ARM, CRUISE;
+    public enum Kind { MG, AUTOCANNON, CANNON, GRENADE, ROCKETS, ATGM, SAM, AAM, AGM, ARM, CRUISE,
+        /** Marine : missile en silo (antinavire rasant, hypersonique ou croisière selon la munition), torpille,
+         *  roquette anti-sous-marine, défense rapprochée automatique (CIWS). */
+        NAVAL_MISSILE, TORPEDO, ASW, CIWS;
 
         /** Missile tiré par un avion (station d'armes). */
         public boolean airMissile() {
-            return this == AAM || this == AGM || this == ARM || this == CRUISE;
+            return this == AAM || this == AGM || this == ARM || this == CRUISE || this == NAVAL_MISSILE;
         }
     }
 
@@ -396,6 +445,15 @@ public enum MilType {
     /** Stations d'armes du pilote (clic gauche, R pour changer) : armes fixes hors canon principal, puis -1 = bombes. */
     public List<Integer> stations() {
         List<Integer> l = new java.util.ArrayList<>();
+        if (naval()) {
+            for (int i = 0; i < weapons.size(); i++) {
+                Kind k = weapons.get(i).kind();
+                if (k == Kind.NAVAL_MISSILE || k == Kind.TORPEDO || k == Kind.ASW) {
+                    l.add(i);
+                }
+            }
+            return l;
+        }
         int g = planeGun();
         for (int i = 0; i < weapons.size(); i++) {
             if (i != g && !weapons.get(i).free()) {
@@ -409,6 +467,46 @@ public enum MilType {
             l.add(g);
         }
         return l;
+    }
+
+    // ------------------------------------------------------------------ marine
+    /** Bâtiment de surface ou sous-marin. */
+    public boolean naval() {
+        return chassis == Chassis.SHIP || chassis == Chassis.SUB;
+    }
+
+    public boolean submarine() {
+        return chassis == Chassis.SUB;
+    }
+
+    /** Tirant d'eau (blocs sous la ligne de flottaison, en surface). */
+    public float draft() {
+        return switch (this) {
+            case KIROV, ZUMWALT -> 3.0f;
+            case SLAVA, TICONDEROGA -> 2.7f;
+            case UDALOY, ARLEIGH_BURKE -> 2.5f;
+            case GORSHKOV -> 2.2f;
+            case BUYAN -> 1.4f;
+            case OHIO -> 6.4f;
+            case VIRGINIA -> 4.9f;
+            case INTERCEPTOR_BOAT -> 0.5f;
+            default -> 0.35f;
+        };
+    }
+
+    /** Taux de giration maximal (degrés / tick) : les petites embarcations virent sec, les croiseurs lentement. */
+    public float rudder() {
+        return switch (this) {
+            case RHIB, INTERCEPTOR_BOAT, EXPLOSIVE_USV -> 3.5f;
+            case BUYAN -> 1.4f;
+            case KIROV, OHIO -> 0.5f;
+            default -> 0.8f;
+        };
+    }
+
+    /** Arme qui tire toute seule (défense rapprochée, missiles antiaériens navals). */
+    public static boolean automatic(Weapon w) {
+        return w.kind() == Kind.CIWS || w.kind() == Kind.SAM && w.ammo().contains(MilAmmo.NAVAL_SAM);
     }
 
     /** Pas de blindage digne de ce nom (camions, 4x4 non blindés) : le moteur avant est fragile, les roues aussi. */
@@ -445,6 +543,34 @@ public enum MilType {
     /** Arme à visée libre (tourelleau, sabord) : elle tire là où regarde son servant. */
     private static Weapon free(String key, Kind kind, int muzzle, int cooldown, float minPitch, float maxPitch, int capacity, MilAmmo... ammo) {
         return new Weapon(key, kind, muzzle, cooldown, minPitch, maxPitch, capacity, 0, true, List.of(ammo));
+    }
+
+    /** Équipage d'un bâtiment de surface : commandant, canonnier, officier d'armes, puis `extra` matelots. */
+    private static List<Seat> ship(Role gunner, int extra) {
+        List<Seat> l = new java.util.ArrayList<>(List.of(seat(Role.DRIVER, true), seat(gunner, true, 0), seat(Role.WEAPONS_OFFICER, true)));
+        for (int i = 0; i < extra; i++) {
+            l.add(seat(Role.PASSENGER, true));
+        }
+        return l;
+    }
+
+    /** Équipage d'un sous-marin : commandant, officier d'armes, matelots. */
+    private static List<Seat> sub(int extra) {
+        List<Seat> l = new java.util.ArrayList<>(List.of(seat(Role.DRIVER, true), seat(Role.WEAPONS_OFFICER, true)));
+        for (int i = 0; i < extra; i++) {
+            l.add(seat(Role.PASSENGER, true));
+        }
+        return l;
+    }
+
+    /** Canon naval en tourelle (pointé par le canonnier). */
+    private static Weapon naval(String key, int muzzle, int cooldown, int capacity, MilAmmo... ammo) {
+        return new Weapon(key, Kind.CANNON, muzzle, cooldown, -5, 60, capacity, 1.6f, false, List.of(ammo));
+    }
+
+    /** Système automatique (CIWS, missiles antiaériens navals) : aucun servant, il défend le navire tout seul. */
+    private static Weapon auto(String key, Kind kind, int muzzle, int capacity, MilAmmo... ammo) {
+        return new Weapon(key, kind, muzzle, 1, -10, 90, capacity, 0, true, List.of(ammo));
     }
 
     /** Arme fixe d'avion, dans l'axe du fuselage (canon de bord, paniers de roquettes, rails de missiles). */

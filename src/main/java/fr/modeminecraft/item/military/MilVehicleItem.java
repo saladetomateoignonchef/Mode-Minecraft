@@ -24,6 +24,9 @@ public class MilVehicleItem extends Item {
 
     @Override
     public InteractionResult useOn(UseOnContext ctx) {
+        if (type.naval()) {
+            return InteractionResult.PASS;                                       // navires : posés sur l'eau (voir use)
+        }
         if (!ctx.getLevel().isClientSide) {
             BlockPos p = ctx.getClickedPos().relative(ctx.getClickedFace());
             float yaw = ctx.getPlayer() != null ? ctx.getPlayer().getYRot() : 0;
@@ -47,6 +50,48 @@ public class MilVehicleItem extends Item {
         return InteractionResult.sidedSuccess(ctx.getLevel().isClientSide);
     }
 
+    /** Navire : clic droit vers une étendue d'eau libre, il est mis à l'eau à sa ligne de flottaison. */
+    @Override
+    public net.minecraft.world.InteractionResultHolder<ItemStack> use(net.minecraft.world.level.Level level, net.minecraft.world.entity.player.Player player,
+                                                                      net.minecraft.world.InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (!type.naval()) {
+            return net.minecraft.world.InteractionResultHolder.pass(stack);
+        }
+        var hit = getPlayerPOVHitResult(level, player, net.minecraft.world.level.ClipContext.Fluid.SOURCE_ONLY);
+        if (hit.getType() != net.minecraft.world.phys.HitResult.Type.BLOCK
+                || !level.getFluidState(hit.getBlockPos()).is(net.minecraft.tags.FluidTags.WATER)) {
+            return net.minecraft.world.InteractionResultHolder.pass(stack);
+        }
+        if (!level.isClientSide) {
+            BlockPos p = hit.getBlockPos();
+            while (level.getFluidState(p.above()).is(net.minecraft.tags.FluidTags.WATER)) {
+                p = p.above();
+            }
+            double surf = p.getY() + 0.9;
+            // le navire est mis à l'eau devant le joueur (pas sur lui)
+            float yaw = player.getYRot();
+            double rad = Math.toRadians(yaw), back = MilVehicleEntity.dims(type)[1] * 0.5 + 2;
+            double x = hit.getLocation().x - Math.sin(rad) * 0, z = hit.getLocation().z;
+            double dx = x - player.getX(), dz = z - player.getZ(), dist = Math.hypot(dx, dz);
+            if (dist < back) {
+                x = player.getX() - Math.sin(rad) * back;
+                z = player.getZ() + Math.cos(rad) * back;
+            }
+            MilVehicleEntity v = MilVehicleEntity.create(level, type, x, surf - type.draft(), z, yaw);
+            if (!level.noCollision(v, v.getBoundingBox().deflate(0.1))) {
+                player.displayClientMessage(Component.translatable("message.modeminecraft.naval.need_water").withStyle(ChatFormatting.RED), true);
+                return net.minecraft.world.InteractionResultHolder.fail(stack);
+            }
+            v.fillAmmo(0.5f);
+            level.addFreshEntity(v);
+            if (!player.getAbilities().instabuild) {
+                stack.shrink(1);
+            }
+        }
+        return net.minecraft.world.InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+    }
+
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext c, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(Component.translatable("tooltip.modeminecraft.mil.stats", type.kmh, (int) type.health, type.seats.size())
@@ -55,7 +100,8 @@ public class MilVehicleItem extends Item {
         if (type.plane() && type.rcs() < 1) {
             tooltip.add(Component.translatable("tooltip.modeminecraft.mil.stealth").withStyle(ChatFormatting.DARK_PURPLE));
         }
-        tooltip.add(Component.translatable(type.plane() && type != fr.modeminecraft.entity.military.MilType.B29_SUPERFORTRESS ? "tooltip.modeminecraft.mil.controls_jet"
+        tooltip.add(Component.translatable(type.submarine() ? "tooltip.modeminecraft.mil.controls_sub" : type.naval() ? "tooltip.modeminecraft.mil.controls_ship"
+                : type.plane() && type != fr.modeminecraft.entity.military.MilType.B29_SUPERFORTRESS ? "tooltip.modeminecraft.mil.controls_jet"
                 : type.plane() ? "tooltip.modeminecraft.mil.controls_plane" : type.heli() ? "tooltip.modeminecraft.mil.controls_heli" : "tooltip.modeminecraft.mil.controls")
                 .withStyle(ChatFormatting.DARK_GRAY));
     }

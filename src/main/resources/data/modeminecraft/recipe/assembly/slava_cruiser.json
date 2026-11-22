@@ -1,0 +1,38 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "vehicles",
+  "ingredients": [
+    {
+      "item": "modeminecraft:ship_hull_section",
+      "count": 18
+    },
+    {
+      "item": "modeminecraft:gas_turbine",
+      "count": 4
+    },
+    {
+      "item": "modeminecraft:cannon_barrel",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:launcher_module",
+      "count": 4
+    },
+    {
+      "item": "modeminecraft:fire_control_module",
+      "count": 5
+    },
+    {
+      "item": "modeminecraft:sonar_array",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:avionics_suite",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:slava_cruiser",
+    "count": 1
+  }
+}

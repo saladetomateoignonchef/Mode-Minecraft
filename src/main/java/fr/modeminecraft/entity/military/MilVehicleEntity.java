@@ -91,6 +91,16 @@ public class MilVehicleEntity extends Entity {
     public static final int GEAR_UP = 512, BAY_OPEN = 1024, NUKE_ARMED = 2048;
     /** Aviation : missile en approche (alarme), postcombustion, signature radar trahie (soute ouverte il y a < 3 s). */
     public static final int MISSILE_WARN = 4096, AFTERBURNER = 8192, STEALTH_BREAK = 16384;
+    /** Marine : navire qui sombre (gîte, fumée, s'enfonce), voie d'eau, sous-marin en plongée. */
+    public static final int SINKING = 32768, FLOODING = 65536, SUBMERGED = 131072;
+    /** Marine : chadburn (consigne de vitesse, -0,4 à 1), immersion visée du sous-marin, voies d'eau (0 à 1). */
+    private float throttle;
+    public float subDepth;
+    private float flood;
+    private int sinkTicks;
+    /** Défense automatique : dernière cible de chaque missile antiaérien naval (pas deux missiles sur la même). */
+    private final java.util.Map<Integer, Long> samTargets = new java.util.HashMap<>();
+    private int samCooldown;
     /** Soute à bombes (avions). */
     public final fr.modeminecraft.nuclear.BombBay bombBay = new fr.modeminecraft.nuclear.BombBay();
     /** Assiette de l'avion (degrés, positif = nez en l'air) et viseur de bombardement actif (client du pilote). */
@@ -275,6 +285,20 @@ public class MilVehicleEntity extends Entity {
             case F_22 -> new float[]{17.8f, 4.0f, 3.8f};
             case S_400, ISKANDER -> new float[]{12.6f, 2.8f, 3.0f};
             case S_500 -> new float[]{13.6f, 2.9f, 3.1f};
+            // marine (longueur réelle du modèle ; la hauteur est celle de la coque jusqu'au pont)
+            case KIROV -> new float[]{95f, 16f, 9.5f};
+            case GORSHKOV -> new float[]{55f, 9.0f, 6.5f};
+            case SLAVA -> new float[]{75f, 13.5f, 8.0f};
+            case UDALOY -> new float[]{65f, 11.4f, 7.5f};
+            case BUYAN -> new float[]{32f, 6.8f, 4.5f};
+            case ARLEIGH_BURKE -> new float[]{62f, 10.5f, 7.0f};
+            case TICONDEROGA -> new float[]{72f, 12.0f, 7.5f};
+            case ZUMWALT -> new float[]{74f, 12.0f, 8.0f};
+            case OHIO -> new float[]{70f, 7.2f, 7.2f};
+            case VIRGINIA -> new float[]{50f, 5.6f, 5.6f};
+            case RHIB -> new float[]{8.5f, 3.4f, 1.6f};
+            case INTERCEPTOR_BOAT -> new float[]{12f, 3.6f, 2.2f};
+            case EXPLOSIVE_USV -> new float[]{5.6f, 1.8f, 1.1f};
         };
     }
 
@@ -342,7 +366,7 @@ public class MilVehicleEntity extends Entity {
 
     @Override
     public float maxUpStep() {
-        return type().heli() ? 0.6f : type().tracked() ? 1.25f : 1.05f;
+        return type().naval() ? 0.2f : type().heli() ? 0.6f : type().tracked() ? 1.25f : 1.05f;
     }
 
     // ------------------------------------------------------------------ places
@@ -495,7 +519,9 @@ public class MilVehicleEntity extends Entity {
         pitchO = gunPitch(1);
         if (isControlledByLocalInstance()) {
             lerpSteps = 0;
-            if (type().heli()) {
+            if (type().naval()) {
+                sail();
+            } else if (type().heli()) {
                 fly();
             } else {
                 drive();
@@ -509,6 +535,9 @@ public class MilVehicleEntity extends Entity {
             setPos(getX() + (lerpX - getX()) * k, getY() + (lerpY - getY()) * k, getZ() + (lerpZ - getZ()) * k);
             setYRot(getYRot() + (float) Mth.wrapDegrees(lerpYaw - getYRot()) * (float) k);
             lerpSteps--;
+        }
+        if (type().naval()) {
+            navalAttitude();
         }
         wheelRot += speed() * 1.8f;
         rotorAngle += rotor() * 47f;
@@ -546,7 +575,7 @@ public class MilVehicleEntity extends Entity {
             return new float[]{p.zza, p.xxa};
         }
         if (c instanceof HumanBotEntity bot && !level().isClientSide) {
-            return type().plane() ? new float[]{aiThrottle, 0} : MilAI.drive(this, bot);
+            return type().plane() ? new float[]{aiThrottle, 0} : type().naval() ? NavalAI.drive(this, bot) : MilAI.drive(this, bot);
         }
         return new float[]{0, 0};
     }
@@ -638,6 +667,536 @@ public class MilVehicleEntity extends Entity {
         stuckTicks = before.distanceToSqr(position()) < 0.0004 && forward != 0 ? stuckTicks + 1 : 0;
         entityData.set(SPEED, speed);
         entityData.set(STEER, steer);
+    }
+
+    // ------------------------------------------------------------------ marine : navigation, plongée, naufrage
+    /** Drone naval explosif (USV) armé : il fonce tout droit, sans pilote, jusqu'à l'impact. */
+    public boolean usvArmed;
+    /** Port d'attache (patrouille autour), navire à quai (ne bouge pas sans menace), place sur le pont d'un porte-avions. */
+    public BlockPos navalHome, carrierSpot, carrierLaunch;
+    /** Ticks de tolérance après un catapultage (le train frotte la rampe du tremplin sans que l'avion s'écrase). */
+    public int launchGrace;
+    public boolean moored;
+    public float carrierYaw;
+
+    /** Appontage : l'avion de l'IA se pose sur sa place du porte-avions (brin d'arrêt), moteurs coupés, pilote débarqué. */
+    public void recoverOnDeck() {
+        if (carrierSpot == null) {
+            return;
+        }
+        fr.modeminecraft.ModeMinecraft.LOGGER.info("Appontage ({}) sur le porte-avions en {}", type().id, carrierSpot);
+        for (Entity p : List.copyOf(getPassengers())) {
+            p.stopRiding();
+            if (p instanceof HumanBotEntity) {
+                p.discard();
+            }
+        }
+        setPos(carrierSpot.getX() + 0.5, carrierSpot.getY(), carrierSpot.getZ() + 0.5);
+        setYRot(carrierYaw);
+        yRotO = carrierYaw;
+        setDeltaMovement(Vec3.ZERO);
+        speed = 0;
+        entityData.set(SPEED, 0f);
+        setState(GEAR_UP, false);
+        setState(AFTERBURNER, false);
+        patrol = false;
+        planeInit = false;
+        AirAI.forget(this);
+    }
+
+    /** Hauteur de la surface de l'eau au-dessus (ou juste sous) le navire, NaN s'il n'est pas sur l'eau. */
+    public double waterSurface() {
+        BlockPos.MutableBlockPos p = new BlockPos.MutableBlockPos(getX(), getY() + 0.5, getZ());
+        if (!level().getFluidState(p).is(net.minecraft.tags.FluidTags.WATER)) {
+            for (int k = 0; k < 6; k++) {
+                p.move(0, -1, 0);
+                if (level().getFluidState(p).is(net.minecraft.tags.FluidTags.WATER)) {
+                    return p.getY() + 0.9;
+                }
+            }
+            return Double.NaN;
+        }
+        for (int k = 0; k < 90 && level().getFluidState(p.above()).is(net.minecraft.tags.FluidTags.WATER); k++) {
+            p.move(0, 1, 0);
+        }
+        return p.getY() + 0.9;
+    }
+
+    /** Immersion du sous-marin (blocs entre la surface et le sommet du kiosque), 0 en surface. */
+    public double depth() {
+        double s = waterSurface();
+        return Double.isNaN(s) ? 0 : Math.max(0, s - (getY() + dims(type())[2]));
+    }
+
+    /** Voies d'eau (0 à 1) : valeur du serveur, synchronisée pour le client qui pilote. */
+    public float floodLevel() {
+        return level().isClientSide ? info().getFloat("flood") : flood;
+    }
+
+    /** Consigne de vitesse du chadburn (-0,4 à 1). */
+    public float throttle() {
+        return throttle;
+    }
+
+    /**
+     * Navigation : Z / S règlent le chadburn (la vitesse suit avec l'inertie du navire), Q / D le gouvernail (efficace
+     * seulement avec de l'erre). Le navire flotte à sa ligne de flottaison ; un sous-marin plonge (Ctrl) ou remonte
+     * (Espace) jusqu'à 50 blocs. Un fond trop haut ou la côte l'arrêtent (échouage).
+     */
+    private void sail() {
+        MilType t = type();
+        if (is(SINKING)) {
+            return;                                                          // simulé par sinkTick (serveur)
+        }
+        float[] d = dims(t);
+        double surf = waterSurface();
+        boolean afloat = !Double.isNaN(surf);
+        Entity c = getControllingPassenger();
+        boolean drone = usvArmed && c == null;
+        boolean run = canRun() || drone && fuel() > 0;
+        float[] in = drone ? new float[]{1, 0} : canRun() ? input() : new float[]{0, 0};
+        float max = t.maxSpeed() * (is(MOBILITY_DOWN) ? 0.3f : 1f) * (1 - floodLevel() * 0.6f);
+        if (c instanceof Player) {
+            throttle = Mth.clamp(throttle + in[0] * 0.02f, -0.4f, 1f);       // chadburn : on le règle, il reste en place
+        } else {
+            throttle = Mth.lerp(0.1f, throttle, in[0]);
+        }
+        float target = afloat && run ? throttle * max : 0;
+        float inertia = t.health >= 1500 ? 0.003f : t.health >= 1000 ? 0.005f : t.health >= 500 ? 0.01f : 0.04f;
+        float acc = t.maxSpeed() * inertia;
+        speed += Mth.clamp(target - speed, -acc * 1.5f, acc);
+        if (Math.abs(speed) < 0.002f && target == 0) {
+            speed = 0;
+        }
+        boolean small = t.rudder() > 2;
+        steer = Mth.lerp(small ? 0.3f : 0.05f, steer, -in[1]);
+        float eff = Mth.clamp(Math.abs(speed) / Math.max(0.01f, t.maxSpeed() * 0.25f), 0, 1);
+        setYRot(getYRot() + steer * t.rudder() * (0.12f + 0.88f * eff) * (speed < -0.01f ? -1 : 1));
+        Vec3 dm = getDeltaMovement();
+        double vy;
+        if (afloat) {
+            double keel = surf - t.draft() * (1 + floodLevel() * 0.5f);
+            if (t.submarine()) {
+                int lift = c instanceof Player && level().isClientSide ? heliLift.getAsInt() : c instanceof HumanBotEntity bot ? NavalAI.dive(this, bot) : 0;
+                subDepth = Mth.clamp(subDepth - lift * 0.2f, 0, 50);
+                keel -= subDepth;
+            }
+            vy = Mth.clamp((keel - getY()) * (t.submarine() ? 0.1 : 0.06), t.submarine() ? -0.18 : -0.2, t.submarine() ? 0.18 : 0.2);
+        } else {
+            vy = onGround() ? -0.04 : Math.max(-1.5, dm.y - 0.08);              // échoué / à terre
+            speed *= 0.8f;
+        }
+        double rad = Math.toRadians(getYRot());
+        Vec3 dir = new Vec3(-Math.sin(rad), 0, Math.cos(rad));
+        if (afloat && Math.abs(speed) > 0.01f) {
+            // étrave (ou poupe en marche arrière) contre la côte ou un haut-fond : échouage
+            double fwd = Math.signum(speed) * (d[0] / 2 + Math.abs(speed) * 2);
+            Vec3 tip = toWorld(fwd, Math.min(t.draft() * 0.5, d[2] * 0.5), 0);
+            BlockPos bp = BlockPos.containing(tip);
+            if (!level().getBlockState(bp).getCollisionShape(level(), bp).isEmpty()) {
+                speed *= -0.1f;
+                throttle = 0;
+            }
+        }
+        setDeltaMovement(dir.x * speed, vy, dir.z * speed);
+        move(MoverType.SELF, getDeltaMovement());
+        if (horizontalCollision && Math.abs(speed) > 0.1f) {
+            speed *= -0.2f;
+        }
+        entityData.set(SPEED, speed);
+        entityData.set(STEER, steer);
+    }
+
+    /** Assiette visuelle : gîte dans les virages, étrave levée des vedettes rapides, gîte et piqué du naufrage. */
+    private void navalAttitude() {
+        MilType t = type();
+        float max = Math.max(0.01f, t.maxSpeed());
+        float k = Math.min(1, Math.abs(speed()) / max);
+        float wantRoll, wantTilt, rate;
+        if (is(SINKING)) {
+            wantRoll = t.submarine() ? 10 : 26;
+            wantTilt = -7;
+            rate = 0.008f;
+        } else {
+            boolean small = t.rudder() > 2;
+            wantRoll = steering() * k * (small ? 12 : 3) + (small ? Mth.sin(tickCount * 0.23f) * 1.5f * k : Mth.sin(tickCount * 0.05f) * 0.6f);
+            wantTilt = small ? k * 6 + Mth.sin(tickCount * 0.31f) * 1.2f * k : Mth.sin(tickCount * 0.04f) * 0.3f;
+            rate = 0.1f;
+        }
+        roll = Mth.lerp(rate, roll, wantRoll);
+        tilt = Mth.lerp(rate, tilt, wantTilt);
+    }
+
+    /** Navire, côté serveur : plongée, équipage à l'abri, voies d'eau, drone explosif, défense automatique. */
+    private boolean navalTick(ServerLevel sl, long now) {
+        MilType t = type();
+        if (is(SINKING)) {
+            sinkTick(sl);
+            return true;
+        }
+        double surf = waterSurface();
+        boolean under = t.submarine() && !Double.isNaN(surf) && getY() + dims(t)[2] < surf - 0.3;
+        if (under != is(SUBMERGED)) {
+            setState(SUBMERGED, under);
+        }
+        for (Entity p : getPassengers()) {
+            if (p instanceof LivingEntity le && (under || seat(p) != null && seat(p).enclosed())) {
+                le.setAirSupply(le.getMaxAirSupply());                       // coque étanche
+            }
+        }
+        if (flood > 0) {
+            flood = Math.max(0, flood - (is(ENGINE_DOWN) ? 0.0001f : 0.0004f));       // pompes d'assèchement
+            if (flood >= 0.999f) {
+                startSinking(null);
+                return true;
+            }
+            if (flood == 0) {
+                setState(FLOODING, false);
+            }
+            if (tickCount % 20 == 0) {
+                infoDirty = true;
+            }
+        }
+        if (horizontalCollision && Math.abs(speed()) > 0.35f && tickCount % 10 == 0) {
+            hurtInternal(t.health * 0.02f, null, toWorld(dims(t)[0] / 2, 1, 0), true);   // éperonnage / échouage brutal
+        }
+        if (tickCount % 40 == 0 && Math.abs(speed()) < 0.05f) {
+            resupply(sl);
+        }
+        if (t == MilType.EXPLOSIVE_USV && usvImpact(sl)) {
+            return true;
+        }
+        if (!getPassengers().isEmpty() || autoDefense) {
+            navalDefense(sl, now);
+        }
+        if (tickCount % 10 == 0) {
+            infoDirty = true;
+        }
+        return false;
+    }
+
+    /** À quai près d'une citerne de carburant (plein) ou d'une caisse de munitions (réarmement), dans les 14 blocs. */
+    private void resupply(ServerLevel sl) {
+        boolean fuel = false, ammo = false;
+        BlockPos c = blockPosition();
+        int up = (int) Math.ceil(type().draft()) + 4;
+        for (BlockPos q : BlockPos.betweenClosed(c.offset(-14, 0, -14), c.offset(14, up, 14))) {
+            var st = sl.getBlockState(q);
+            fuel |= st.is(fr.modeminecraft.registry.ModBlocks.KEROSENE_TANK.get());
+            ammo |= st.is(fr.modeminecraft.registry.ModBlocks.AVIATION_AMMO_CRATE.get());
+            if (fuel && ammo) {
+                break;
+            }
+        }
+        if (fuel && fuel() < 0.999f) {
+            setFuel(fuel() + 0.04f);
+        }
+        if (ammo) {
+            for (MilType.Weapon w : type().weapons) {
+                for (MilAmmo a : w.ammo()) {
+                    if (room(a) > 0) {
+                        stock.put(a, ammo(a) + Math.max(1, w.capacity() / 40));
+                    }
+                }
+            }
+            infoDirty = true;
+        }
+        if ((fuel || ammo) && getControllingPassenger() instanceof Player pl && tickCount % 200 == 0) {
+            pl.displayClientMessage(Component.translatable("message.modeminecraft.naval.resupply", Math.round(fuel() * 100)), true);
+        }
+    }
+
+    /** Drone naval explosif : charge de 450 kg qui saute au contact d'une coque, d'un quai ou d'une côte. */
+    private boolean usvImpact(ServerLevel sl) {
+        if (Math.abs(speed()) < 0.3f && !usvArmed) {
+            return false;
+        }
+        boolean hit = horizontalCollision;
+        Vec3 bow = toWorld(dims(type())[0] / 2 + 1, 0.5, 0);
+        BlockPos bp = BlockPos.containing(bow);
+        hit |= !sl.getBlockState(bp).getCollisionShape(sl, bp).isEmpty();
+        for (Entity e : sl.getEntities(this, getBoundingBox().inflate(1.5), e -> e instanceof MilVehicleEntity || e instanceof MilPart mp && mp.getParent() != this)) {
+            hit = true;
+        }
+        if (!hit) {
+            return false;
+        }
+        Entity owner = getControllingPassenger();
+        for (Entity p : List.copyOf(getPassengers())) {
+            p.stopRiding();
+        }
+        for (MilVehicleEntity v : sl.getEntitiesOfClass(MilVehicleEntity.class, getBoundingBox().inflate(12), v -> v != this)) {
+            v.blastHit(position(), 140);
+        }
+        sl.explode(this, owner instanceof LivingEntity le ? damageSources().explosion(this, le) : null, null, getX(), getY() + 0.5, getZ(), 6f, false,
+                Level.ExplosionInteraction.TNT);
+        sl.sendParticles(ParticleTypes.EXPLOSION_EMITTER, getX(), getY() + 1, getZ(), 2, 1, 1, 1, 0);
+        level().playSound(null, getX(), getY(), getZ(), ModSounds.HUGE_EXPLOSION.get(), SoundSource.NEUTRAL, 6f, 1.1f);
+        destroyed = true;
+        discard();
+        return true;
+    }
+
+    /** Touche H (commandant d'un drone naval) : armement du pilote automatique (il continue seul tout droit). */
+    public void toggleUsv(Entity by) {
+        usvArmed = !usvArmed;
+        if (by instanceof Player p) {
+            p.displayClientMessage(Component.translatable(usvArmed ? "message.modeminecraft.naval.usv_armed" : "message.modeminecraft.naval.usv_safe")
+                    .withStyle(usvArmed ? ChatFormatting.RED : ChatFormatting.GREEN), true);
+        }
+    }
+
+    /** Coque percée à 0 PV : le navire gîte, fume, s'enfonce et coule ; l'équipage se jette à l'eau. */
+    private void startSinking(Entity by) {
+        if (is(SINKING) || !(level() instanceof ServerLevel sl)) {
+            return;
+        }
+        destroyed = true;
+        setState(SINKING, true);
+        setState(BURNING, true);
+        entityData.set(HEALTH, 0f);
+        throttle = 0;
+        sinkTicks = 0;
+        announce("message.modeminecraft.naval.abandon_ship");
+        for (Entity p : List.copyOf(getPassengers())) {
+            p.stopRiding();
+        }
+        float[] d = dims(type());
+        sl.explode(this, getX(), getY() + d[2], getZ(), type().health >= 1000 ? 5f : 3f, Level.ExplosionInteraction.NONE);
+        sl.sendParticles(ParticleTypes.EXPLOSION_EMITTER, getX(), getY() + d[2], getZ(), 2, d[1] * 0.3, 1, d[1] * 0.3, 0);
+        level().playSound(null, getX(), getY(), getZ(), ModSounds.SHIP_SINKING_GROAN.get(), SoundSource.NEUTRAL, 8f, type().health >= 1000 ? 0.8f : 1.1f);
+    }
+
+    private void sinkTick(ServerLevel sl) {
+        sinkTicks++;
+        float[] d = dims(type());
+        speed *= 0.97f;
+        double rad = Math.toRadians(getYRot());
+        setDeltaMovement(-Math.sin(rad) * speed, -0.025 - Math.min(0.06, sinkTicks * 0.00008), Math.cos(rad) * speed);
+        move(MoverType.SELF, getDeltaMovement());
+        entityData.set(SPEED, speed);
+        if (tickCount % 3 == 0) {
+            double surf = waterSurface();
+            for (int i = 0; i < 2; i++) {
+                Vec3 at = toWorld((random.nextFloat() - 0.5f) * d[0] * 0.8, d[2], (random.nextFloat() - 0.5f) * d[1] * 0.6);
+                if (Double.isNaN(surf) || at.y > surf) {
+                    sl.sendParticles(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, at.x, at.y, at.z, 1, 0.5, 0.2, 0.5, 0.01);
+                    sl.sendParticles(ParticleTypes.LARGE_SMOKE, at.x, at.y, at.z, 2, 0.6, 0.3, 0.6, 0.03);
+                    sl.sendParticles(ParticleTypes.FLAME, at.x, at.y, at.z, 3, 0.6, 0.3, 0.6, 0.02);
+                } else {
+                    sl.sendParticles(ParticleTypes.BUBBLE_COLUMN_UP, at.x, at.y, at.z, 6, 0.8, 0.5, 0.8, 0.1);
+                }
+            }
+            if (!Double.isNaN(surf)) {
+                Vec3 side = toWorld((random.nextFloat() - 0.5f) * d[0], 0, (random.nextBoolean() ? 1 : -1) * d[1] * 0.55);
+                sl.sendParticles(ParticleTypes.SPLASH, side.x, surf, side.z, 12, 1.5, 0.1, 1.5, 0.1);
+                sl.sendParticles(ParticleTypes.BUBBLE_POP, side.x, surf, side.z, 6, 1.5, 0.1, 1.5, 0.05);
+            }
+        }
+        if (sinkTicks % 140 == 70) {
+            level().playSound(null, getX(), getY(), getZ(), ModSounds.SHIP_SINKING_GROAN.get(), SoundSource.NEUTRAL, 6f, 0.7f + random.nextFloat() * 0.2f);
+        }
+        if (sinkTicks > 900 || onGround() && sinkTicks > 240) {
+            spawnAtLocation(new ItemStack(ModItems.STEEL_PLATE.get(), 4 + random.nextInt(8)));
+            discard();
+        }
+    }
+
+    /** Place de l'officier d'armes (-1 : aucune). */
+    private int officerSeat() {
+        for (int i = 0; i < type().seats.size(); i++) {
+            if (type().seats.get(i).role() == MilType.Role.WEAPONS_OFFICER) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /** `e` sert-il les stations d'armes du navire (officier d'armes, ou commandant seul à bord) ? */
+    public boolean officer(Entity e) {
+        int o = officerSeat();
+        if (o < 0 || !type().naval()) {
+            return false;
+        }
+        int s = seatOf(e);
+        return s == o || s == 0 && e instanceof Player && occupant(o) == null;
+    }
+
+    /** Officier d'armes : clic gauche (clic droit pour un commandant seul en surface) = tir de la station choisie. */
+    private void navalWeapons(Entity p, long now) {
+        int st = currentStation();
+        if (st < 0) {
+            return;
+        }
+        boolean pull;
+        if (p instanceof Player pl) {
+            boolean surfaceSolo = seatOf(p) == 0 && !type().submarine();
+            pull = surfaceSolo ? TriggerHandler.isRightHeld(pl) : TriggerHandler.isTriggerDown(pl);
+        } else if (p instanceof HumanBotEntity bot) {
+            pull = NavalAI.wantsLaunch(this, bot);
+        } else {
+            return;
+        }
+        if (pull) {
+            fire(st, p, now);
+        }
+    }
+
+    /** Point visé par l'officier d'armes : coordonnées de la console (missiles de croisière), sinon le réticule (eau comprise). */
+    private Vec3 navalTarget(Entity shooter, MilAmmo.Shell sh) {
+        if (navalPoint != null && level().getGameTime() - navalPointTime < 10) {
+            return navalPoint;
+        }
+        if (shooter instanceof HumanBotEntity bot && NavalAI.target(this, bot) instanceof Entity e) {
+            return e.position().add(0, e.getBbHeight() * 0.3, 0);
+        }
+        Vec3 ap = aimPoint(shooter);
+        if (ap != null) {
+            return ap;
+        }
+        Vec3 eye = shooter.getEyePosition();
+        Vec3 end = eye.add(shooter.getLookAngle().scale(800));
+        var hit = level().clip(new ClipContext(eye, end, ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, shooter));
+        return hit.getType() == HitResult.Type.MISS ? end : hit.getLocation();
+    }
+
+    private Vec3 navalPoint;
+    private long navalPointTime;
+
+    /** Console de tir navale (clic droit de l'officier d'armes) : tir de la station choisie sur (x, z). */
+    public void navalStrike(Entity by, int x, int z) {
+        if (!officer(by) || !(level() instanceof ServerLevel sl)) {
+            return;
+        }
+        saveTarget(x, z);
+        int y = sl.hasChunk(x >> 4, z >> 4) ? sl.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, x, z) : sl.getSeaLevel();
+        navalPoint = new Vec3(x + 0.5, Math.max(y, sl.getSeaLevel()), z + 0.5);
+        navalPointTime = sl.getGameTime();
+        int st = currentStation();
+        if (st >= 0) {
+            fire(st, by, sl.getGameTime());
+        }
+        navalPoint = null;
+    }
+
+    /** Navire ou aéronef ennemi de ce navire (camps opposés, mercenaires contre tous). */
+    public boolean hostileTo(MilVehicleEntity o) {
+        if (o == this || o.getPassengers().isEmpty() && !o.patrol) {
+            return false;
+        }
+        MilType.Side a = type().side, b = o.type().side;
+        return a != b || a == MilType.Side.MERC;
+    }
+
+    /** Missile ou roquette en approche, tiré par un ennemi. */
+    private boolean incoming(ShellEntity s) {
+        if (s.visual() || !(s.shell().rocket() || s.shell().guided) || !s.interceptable()
+                || s.shell() == MilAmmo.Shell.TORPEDO || s.shell() == MilAmmo.Shell.ASW) {
+            return false;
+        }
+        Entity o = s.getOwner();
+        if (o != null && (hasPassenger(o) || o.getVehicle() instanceof MilVehicleEntity mv && !hostileTo(mv) && mv != this)) {
+            return false;
+        }
+        if (level().getEntity(s.launcherId()) instanceof MilVehicleEntity mv && (mv == this || !hostileTo(mv))) {
+            return false;
+        }
+        Vec3 v = s.getDeltaMovement(), to = position().subtract(s.position());
+        if (v.dot(to) <= 0) {
+            return false;
+        }
+        double t = Mth.clamp(to.dot(v) / Math.max(1e-6, v.lengthSqr()), 0, 400);
+        return s.position().add(v.scale(t)).distanceTo(position()) < dims(type())[0] * 0.6 + 12;
+    }
+
+    /**
+     * Défense automatique du navire (dès qu'il a un équipage) : missiles antiaériens navals sur les aéronefs ennemis et
+     * les missiles en approche (jusqu'à 260 blocs), puis CIWS (20 / 30 mm, 4 500 coups / min) au dernier moment
+     * (45 blocs) : il détruit les missiles (sauf hypersoniques) et crible les aéronefs proches.
+     */
+    private void navalDefense(ServerLevel sl, long now) {
+        MilType t = type();
+        int ciws = -1, sam = -1;
+        for (int i = 0; i < t.weapons.size(); i++) {
+            MilType.Weapon w = t.weapons.get(i);
+            if (w.kind() == MilType.Kind.CIWS) {
+                ciws = i;
+            } else if (MilType.automatic(w) && w.kind() == MilType.Kind.SAM) {
+                sam = i;
+            }
+        }
+        if (ciws < 0 && sam < 0 || tickCount % 2 != 0 && ciws < 0) {
+            return;
+        }
+        Entity best = null;
+        double bestD = 1e18;
+        boolean bestMissile = false;
+        for (Entity e : sl.getEntities(this, getBoundingBox().inflate(260, 160, 260), e -> e instanceof ShellEntity || e instanceof MilVehicleEntity)) {
+            boolean missile = e instanceof ShellEntity s && incoming(s);
+            boolean air = e instanceof MilVehicleEntity mv && (mv.type().heli()) && !mv.is(WRECK) && mv.airborne() && hostileTo(mv) && radarSees(this, mv);
+            if (!missile && !air) {
+                continue;
+            }
+            double d = e.distanceToSqr(this) * (missile ? 0.25 : 1);                   // les missiles d'abord
+            if (d < bestD) {
+                bestD = d;
+                best = e;
+                bestMissile = missile;
+            }
+        }
+        samTargets.values().removeIf(at -> now - at > 200);
+        if (best == null) {
+            return;
+        }
+        double dist = best.distanceTo(this);
+        if (samCooldown > 0) {
+            samCooldown--;
+        }
+        if (sam >= 0 && dist > 50 && samCooldown <= 0 && !samTargets.containsKey(best.getId()) && ammo(selectedAmmo(sam)) > 0) {
+            MilAmmo a = selectedAmmo(sam);
+            stock.put(a, ammo(a) - 1);
+            infoDirty = true;
+            Vec3 pos = muzzle(t.weapons.get(sam), this, 0)[0];
+            ShellEntity s = new ShellEntity(sl, getControllingPassenger(), a.shell, this);
+            s.setPos(pos.x, pos.y + 1, pos.z);
+            s.coldLaunch(best);
+            sl.addFreshEntity(s);
+            samTargets.put(best.getId(), now);
+            samCooldown = bestMissile ? 12 : 30;
+            sl.playSound(null, pos.x, pos.y, pos.z, ModSounds.MISSILE_LAUNCH.get(), SoundSource.NEUTRAL, 5f, 0.9f);
+        }
+        if (ciws >= 0 && dist < (bestMissile ? 45 : 70) && ammo(selectedAmmo(ciws)) > 0) {
+            MilAmmo a = selectedAmmo(ciws);
+            stock.put(a, Math.max(0, ammo(a) - 2));
+            Vec3 pos = muzzle(t.weapons.get(ciws), this, 0)[0];
+            Vec3 aim = best.position().add(0, best.getBbHeight() / 2, 0).add(best.getDeltaMovement().scale(dist / 8));
+            Vec3 dir = aim.subtract(pos).normalize();
+            LivingEntity gunner = getControllingPassenger();
+            for (Entity p : getPassengers()) {
+                if (gunner == null && p instanceof LivingEntity le) {
+                    gunner = le;
+                }
+            }
+            if (gunner != null) {
+                var b = new fr.modeminecraft.entity.BulletEntity(sl, gunner, 14, 2, true, fr.modeminecraft.item.gun.AmmoType.STANDARD);
+                b.setPos(pos.x, pos.y, pos.z);
+                b.setDeltaMovement(dir.add(random.nextGaussian() * 0.015, random.nextGaussian() * 0.015, random.nextGaussian() * 0.015).normalize().scale(8));
+                sl.addFreshEntity(b);
+            } else {
+                Vec3 mid = pos.add(aim.subtract(pos).scale(0.5));
+                sl.sendParticles(ParticleTypes.CRIT, mid.x, mid.y, mid.z, 4, dir.x * 4, dir.y * 4, dir.z * 4, 0.1);   // traçants seuls
+            }
+            sl.sendParticles(ParticleTypes.FLAME, pos.x, pos.y, pos.z, 2, 0.05, 0.05, 0.05, 0.01);
+            if (tickCount % 3 == 0) {
+                sl.playSound(null, pos.x, pos.y, pos.z, ModSounds.CIWS_BURST.get(), SoundSource.NEUTRAL, 5f, 1f);
+                infoDirty = true;
+            }
+            if (bestMissile && random.nextFloat() < 0.12f) {
+                sl.sendParticles(ParticleTypes.EXPLOSION, best.getX(), best.getY(), best.getZ(), 2, 0.3, 0.3, 0.3, 0);
+                sl.playSound(null, best.getX(), best.getY(), best.getZ(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.NEUTRAL, 3f, 1.3f);
+                best.discard();                                                   // missile détruit en vol
+            }
+        }
     }
 
     // ------------------------------------------------------------------ vol (hélicoptères)
@@ -1229,6 +1788,7 @@ public class MilVehicleEntity extends Entity {
         if (level().isClientSide || !type().heli() || is(WRECK)) {
             return;
         }
+
         if (tail && !is(TAIL_HIT)) {
             setState(TAIL_HIT, true);
             announce("message.modeminecraft.mil.tail_rotor_hit");
@@ -1277,6 +1837,9 @@ public class MilVehicleEntity extends Entity {
 
     /** Écrasement : explosion (puissance 7, incendies), occupants tués, épave en feu pendant 30 s. */
     private void crashImpact() {
+        if (carrierSpot != null) {
+            fr.modeminecraft.ModeMinecraft.LOGGER.info("Écrasement d'un avion embarqué ({}) en {}", type().id, blockPosition());
+        }
         if (!(level() instanceof ServerLevel sl) || is(WRECK)) {
             return;
         }
@@ -1321,7 +1884,7 @@ public class MilVehicleEntity extends Entity {
 
     @Override
     public boolean isControlledByLocalInstance() {
-        if (is(CRASHING) || is(WRECK)) {
+        if (is(CRASHING) || is(WRECK) || is(SINKING)) {
             return !level().isClientSide;                                     // plus aucune commande : le serveur simule la chute
         }
         Entity c = getControllingPassenger();
@@ -1510,7 +2073,7 @@ public class MilVehicleEntity extends Entity {
     public static boolean isAircraft(Entity e) {
         return e instanceof MilVehicleEntity v && v.type().heli() && !v.onGround()
                 || e instanceof fr.modeminecraft.entity.drone.DroneEntity
-                || e instanceof ShellEntity s && s.shell().rocket()
+                || e instanceof ShellEntity s && s.shell().rocket() && s.interceptable()       // hypersoniques : hors d'atteinte
                 || e instanceof fr.modeminecraft.entity.AirdropEntity;
     }
 
@@ -1566,7 +2129,7 @@ public class MilVehicleEntity extends Entity {
         ServerLevel sl = (ServerLevel) level();
         long now = sl.getGameTime();
         // patrouille sans joueur à proximité : disparaît avec son équipage
-        if (patrol && tickCount % 200 == 0 && sl.getNearestPlayer(this, t.plane() ? 640 : 192) == null) {
+        if (patrol && tickCount % 200 == 0 && sl.getNearestPlayer(this, t.plane() ? 640 : t.naval() ? 420 : 192) == null) {
             for (Entity p : List.copyOf(getPassengers())) {
                 p.discard();
             }
@@ -1574,9 +2137,9 @@ public class MilVehicleEntity extends Entity {
             return;
         }
         // carburant (moteur qui tourne)
-        if (canRun()) {
+        if (canRun() && !t.submarine()) {                                          // sous-marins : propulsion nucléaire
             float load = (0.15f + Math.abs(speed()) / Math.max(0.01f, t.maxSpeed())) * (is(AFTERBURNER) ? 3 : 1);
-            float minutes = t.plane() ? 20 : t.heli() ? 14 : 22;
+            float minutes = t.plane() ? 20 : t.heli() ? 14 : t.naval() ? (t.health >= 1000 ? 120 : 45) : 22;
             setFuel(fuel() - load / (minutes * 1200f));
             if (fuel() <= 0 && getControllingPassenger() instanceof Player p) {
                 p.displayClientMessage(Component.translatable("message.modeminecraft.mil.no_fuel").withStyle(ChatFormatting.RED), true);
@@ -1698,18 +2261,31 @@ public class MilVehicleEntity extends Entity {
                 hurtInternal(t.health * 0.02f, null, position().add(0, -1, 0), false);              // atterrissage sur le ventre
                 sl.sendParticles(ParticleTypes.LAVA, getX(), getY(), getZ(), 3, 2, 0.1, 2, 0);
             }
-            if (horizontalCollision && hs > 0.6 && !onGround()) {
+            if (launchGrace > 0) {
+                launchGrace--;
+            } else if (horizontalCollision && hs > 0.6 && !onGround()) {
                 startCrash(false);
                 crashImpact();                                                     // contre une falaise / un immeuble
                 return;
             }
             lastVy = vy;
         }
+        if (t.naval()) {
+            if (navalTick(sl, now)) {
+                return;
+            }
+        }
         // armes
         for (Entity p : getPassengers()) {
             if (t.plane() && (seatOf(p) == 0 || canBomb(p))) {
                 planeWeapons(p, now);
                 continue;
+            }
+            if (t.naval() && officer(p)) {
+                navalWeapons(p, now);
+                if (seatOf(p) != 0 || t.submarine()) {
+                    continue;
+                }
             }
             MilType.Seat s = weaponSeat(p);
             if (s == null) {
@@ -1755,7 +2331,7 @@ public class MilVehicleEntity extends Entity {
             crush(sl);
         }
         // l'eau noie les moteurs non amphibies
-        if (!t.heli() && !t.has(MilType.Flag.AMPHIBIOUS) && getFluidHeight(net.minecraft.tags.FluidTags.WATER) > dims(t)[2] * 0.5) {
+        if (!t.heli() && !t.naval() && !t.has(MilType.Flag.AMPHIBIOUS) && getFluidHeight(net.minecraft.tags.FluidTags.WATER) > dims(t)[2] * 0.5) {
             if (!is(ENGINE_DOWN)) {
                 setState(ENGINE_DOWN, true);
             }
@@ -1875,6 +2451,24 @@ public class MilVehicleEntity extends Entity {
         }
     }
 
+    /** IA navale : choisit la station de l'arme `wi`. */
+    public void selectStation(int wi) {
+        int k = type().stations().indexOf(wi);
+        if (k >= 0 && k != station) {
+            station = k;
+            infoDirty = true;
+        }
+    }
+
+    /** Munitions restantes de l'arme (toutes munitions confondues). */
+    public int stock(MilType.Weapon w) {
+        int n = 0;
+        for (MilAmmo a : w.ammo()) {
+            n += ammo(a);
+        }
+        return n;
+    }
+
     /** IA aérienne : verrouillage d'une cible par l'autodirecteur de l'arme `wi` (1,5 s dans le cône du nez). */
     void aiLock(Entity t, int wi) {
         if (t == null) {
@@ -1909,8 +2503,8 @@ public class MilVehicleEntity extends Entity {
      */
     @Override
     public boolean isAlwaysTicking() {
-        if (type().plane()) {
-            return true;                                // avions : toujours dans la liste des entités simulées (pas de bascule)
+        if (type().plane() || type().naval()) {
+            return true;                                // avions, navires : toujours dans la liste des entités simulées (pas de bascule)
         }
         for (Entity p : getPassengers()) {
             if (p instanceof Player) {
@@ -1955,7 +2549,7 @@ public class MilVehicleEntity extends Entity {
     }
 
     private boolean crusher() {
-        return type().tracked() || type().has(MilType.Flag.HEAVY) || type().health >= 200 && !type().heli();
+        return !type().naval() && (type().tracked() || type().has(MilType.Flag.HEAVY) || type().health >= 200 && !type().heli());
     }
 
     /** Écrase ce qui est devant : arbres (tronc entier), feuillages, clôtures, vitres, plantes, voitures, piétons. */
@@ -2088,7 +2682,7 @@ public class MilVehicleEntity extends Entity {
 
     /** Touche R : munition suivante de l'arme principale (ou secondaire si la principale n'en a qu'une). */
     public void cycleAmmo(Entity e) {
-        if (type().plane() && seatOf(e) == 0) {
+        if (type().plane() && seatOf(e) == 0 || officer(e)) {
             cycleStation(e);
             return;
         }
@@ -2155,8 +2749,25 @@ public class MilVehicleEntity extends Entity {
         LivingEntity owner = shooter instanceof LivingEntity le ? le : null;
         ServerLevel sl = (ServerLevel) level();
         MilAmmo.Shell sh = a.shell;
+        boolean navalLaunch = type().naval() && (w.kind() == MilType.Kind.NAVAL_MISSILE || w.kind() == MilType.Kind.TORPEDO || w.kind() == MilType.Kind.ASW);
+        Vec3 navalTgt = null;
+        double launchSpeed = -1;
+        if (navalLaunch) {
+            // silos verticaux, tubes inclinés, tubes lance-torpilles, lance-roquettes anti-sous-marins (tir en cloche)
+            navalTgt = navalTarget(shooter, sh);
+            Vec3 flat = new Vec3(navalTgt.x - pos.x, 0, navalTgt.z - pos.z);
+            Vec3 fd = flat.lengthSqr() < 1 ? toWorld(1, 0, 0).subtract(position()) : flat.normalize();
+            if (w.kind() == MilType.Kind.NAVAL_MISSILE) {
+                dir = w.muzzle() == 4 || type().submarine() ? new Vec3(0, 1, 0) : fd.add(0, 0.5, 0).normalize();
+            } else if (w.kind() == MilType.Kind.TORPEDO) {
+                dir = fd;
+            } else {
+                dir = fd.add(0, 1, 0).normalize();
+                launchSpeed = Math.min(sh.speed, Math.sqrt(Math.max(4, flat.length()) * sh.gravity));
+            }
+        }
         // convergence : le projectile part de la bouche, vers le point exact sous le réticule
-        Vec3 ap = shooter instanceof Player ? aimPoint(shooter) : null;
+        Vec3 ap = shooter instanceof Player && !navalLaunch ? aimPoint(shooter) : null;
         if (ap != null && ap.distanceToSqr(pos) > 9) {
             Vec3 target = ap;
             if (!sh.bullet() && !sh.rocket() && !sh.guided && sh.gravity > 0) {
@@ -2168,7 +2779,7 @@ public class MilVehicleEntity extends Entity {
                 dir = nd;
             }
         }
-        float spread = w.kind() == MilType.Kind.MG ? 0.012f : w.kind() == MilType.Kind.ROCKETS && w.cooldown() <= 10 ? 0.03f : 0.004f;
+        float spread = navalLaunch ? 0.002f : w.kind() == MilType.Kind.MG ? 0.012f : w.kind() == MilType.Kind.ROCKETS && w.cooldown() <= 10 ? 0.03f : 0.004f;
         dir = dir.add(random.nextGaussian() * spread, random.nextGaussian() * spread, random.nextGaussian() * spread).normalize();
         Vec3 carrier = type().plane() ? position().subtract(xo, yo, zo) : Vec3.ZERO;
         if (sh.bullet()) {
@@ -2182,8 +2793,20 @@ public class MilVehicleEntity extends Entity {
             // missiles et roquettes : départ devant les tubes, hors de la boîte de collision du lanceur
             Vec3 out = sh.rocket() || sh.guided ? pos.add(dir.scale(1.2)) : pos;
             s.setPos(out.x, out.y, out.z);
-            s.setDeltaMovement(dir.scale(sh.speed * (sh.guided && sh != MilAmmo.Shell.SAM ? 0.7 : 1)).add(carrier));
-            if (sh == MilAmmo.Shell.ATGM || sh == MilAmmo.Shell.REFLEKS) {
+            s.setDeltaMovement(dir.scale(launchSpeed > 0 ? launchSpeed : sh.speed * (sh.guided && sh != MilAmmo.Shell.SAM ? 0.7 : 1)).add(carrier));
+            if (navalLaunch) {
+                if (sh == MilAmmo.Shell.TORPEDO) {
+                    s.setPos(pos.x + dir.x * 2, pos.y - 1.2, pos.z + dir.z * 2);         // sous la flottaison
+                    s.setDeltaMovement(dir.scale(sh.speed * 0.6));
+                    s.gps(navalTgt);
+                } else if (sh.guided) {
+                    s.gps(navalTgt);
+                    s.vls();
+                    if (sh == MilAmmo.Shell.CRUISE || sh == MilAmmo.Shell.HYPERSONIC) {
+                        ShellEntity.preloadPath(sl, pos, navalTgt);
+                    }
+                }
+            } else if (sh == MilAmmo.Shell.ATGM || sh == MilAmmo.Shell.REFLEKS) {
                 s.beamRider(shooter);                                       // suit le réticule du tireur (SACLOS)
             } else if (sh == MilAmmo.Shell.SAM) {
                 s.home(lockTarget >= 0 ? sl.getEntity(lockTarget) : null);      // sans verrouillage : tir libre, vol droit
@@ -2224,7 +2847,10 @@ public class MilVehicleEntity extends Entity {
             case CANNON -> ModSounds.TANK_CANNON.get();
             case AUTOCANNON -> ModSounds.AUTOCANNON.get();
             case ROCKETS -> ModSounds.ROCKET_LAUNCH.get();
-            case ATGM, SAM, AAM, AGM, ARM, CRUISE -> ModSounds.MISSILE_LAUNCH.get();
+            case ATGM, SAM, AAM, AGM, ARM, CRUISE, NAVAL_MISSILE -> ModSounds.MISSILE_LAUNCH.get();
+            case TORPEDO -> ModSounds.TORPEDO_LAUNCH.get();
+            case ASW -> ModSounds.ROCKET_LAUNCH.get();
+            case CIWS -> ModSounds.CIWS_BURST.get();
             case GRENADE -> ModSounds.AUTOCANNON.get();
             case MG -> sh == MilAmmo.Shell.MG_762 ? ModSounds.VEHICLE_MG_LIGHT.get() : ModSounds.VEHICLE_MG_HEAVY.get();
         };
@@ -2232,7 +2858,7 @@ public class MilVehicleEntity extends Entity {
                 0.95f + random.nextFloat() * 0.1f);
         if (w.kind() == MilType.Kind.CANNON) {
             fr.modeminecraft.entity.bot.CivilianLife.panic(sl, pos, 48, 200);
-            if (type().heli()) {
+            if (type().heli() || type().naval()) {
                 return;
             }
             setDeltaMovement(getDeltaMovement().add(dir.x * -0.05, 0, dir.z * -0.05));
@@ -2335,6 +2961,14 @@ public class MilVehicleEntity extends Entity {
             toggleArm(by);
             return;
         }
+        if (type() == MilType.EXPLOSIVE_USV && seatOf(by) == 0) {
+            toggleUsv(by);
+            return;
+        }
+        if (type().naval()) {
+            level().playSound(null, getX(), getY(), getZ(), ModSounds.SHIP_HORN.get(), SoundSource.NEUTRAL, 10f, type().health >= 1000 ? 0.8f : 1.1f);
+            return;
+        }
         if (!type().has(MilType.Flag.STRATEGIC) && !raisable() || Math.abs(speed()) > 0.02f) {
             return;
         }
@@ -2398,6 +3032,12 @@ public class MilVehicleEntity extends Entity {
         }
         t.putInt("smoke", smoke);
         t.putInt("aps", aps);
+        if (type().naval()) {
+            t.putInt("station", currentStation());
+            t.putFloat("flood", flood);
+            t.putFloat("throttle", throttle);
+            t.putBoolean("usv", usvArmed);
+        }
         if (type().plane()) {
             t.putInt("bombs", bombBay.bombs());
             t.putBoolean("nuke", bombBay.hasNuke());
@@ -2471,6 +3111,15 @@ public class MilVehicleEntity extends Entity {
         float dmg = s.damage * k;
         hurtInternal(dmg / Math.max(0.05f, armor), shell.getOwner(), at, true, armor);
         modules(at, s.pierce >= 0.3f || s.blast >= 3);
+        if (s == MilAmmo.Shell.TORPEDO && type().naval() && !is(SINKING)) {
+            // torpille : explosion sous la quille, compartiments noyés, propulsion endommagée (immobilisation partielle)
+            flood = Math.min(1, flood + (type().health >= 1500 ? 0.25f : 0.4f));
+            setState(FLOODING, true);
+            if (!is(MOBILITY_DOWN)) {
+                setState(MOBILITY_DOWN, true);
+                announce("message.modeminecraft.naval.torpedo_hit");
+            }
+        }
         // missile sol-air / antichar / obus antiaérien sur un hélicoptère en vol : rotor de queue arraché (vrille)
         if (type().heli() && !is(WRECK) && airborne() && (s.guided || s.blast >= 2)) {
             boolean rear = armorAt(at) == type().armorRear;
@@ -2496,6 +3145,10 @@ public class MilVehicleEntity extends Entity {
             modules(from, true);
         }
         if (hp <= 0) {
+            if (type().naval()) {
+                startSinking(by);
+                return true;
+            }
             if (type().heli() && airborne() && hp > -type().health * 0.5f) {
                 entityData.set(HEALTH, 1f);                                      // abattu en vol : il s'écrase
                 startCrash(random.nextFloat() < 0.5f);
@@ -2520,6 +3173,22 @@ public class MilVehicleEntity extends Entity {
     /** Modules : moteur (arrière, ou avant des camions) et chenilles / roues (bas des flancs). */
     private void modules(Vec3 at, boolean big) {
         if (!big || type().heli()) {
+            return;
+        }
+        if (type().naval()) {
+            // compartiments : un coup sous la ligne de flottaison ouvre une voie d'eau, à l'arrière il touche les machines
+            double water = getY() + type().draft();
+            if (at.y < water + 0.6 || type().submarine() && is(SUBMERGED)) {
+                flood = Math.min(1, flood + (type().health >= 1500 ? 0.025f : 0.05f));
+                setState(FLOODING, true);
+                announce("message.modeminecraft.naval.flooding");
+            }
+            if (armorAt(at) == type().armorRear && random.nextFloat() < 0.25f && !is(ENGINE_DOWN)) {
+                setState(ENGINE_DOWN, true);
+                setState(BURNING, true);
+                burnTicks = 400;
+                announce("message.modeminecraft.naval.engine_hit");
+            }
             return;
         }
         Vec3 to = at.subtract(position());
@@ -2689,10 +3358,26 @@ public class MilVehicleEntity extends Entity {
             }
         }
         if (getPassengers().size() < t.seats.size()) {
+            stealCheck(player);
             player.startRiding(this);
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
+    }
+
+    /**
+     * Vol d'un véhicule américain dans une base US (ou d'une patrouille US) : c'est un crime pour la Nation Américaine,
+     * qui n'est pas hostile par défaut. Les soldats témoins lancent leur appel radio de 30 s.
+     */
+    private void stealCheck(Player player) {
+        if (!(level() instanceof ServerLevel sl) || player.isCreative() || type().side != MilType.Side.US) {
+            return;
+        }
+        var city = fr.modeminecraft.world.city.CityPlanner.cityAtCached(fr.modeminecraft.world.city.CityPlanner.Env.of(sl), getBlockX(), getBlockZ(), 16);
+        boolean usBase = city != null && city.variant().equals("base");
+        if (usBase || patrol) {
+            fr.modeminecraft.entity.bot.RadioCalls.crime(sl, player, position(), null);
+        }
     }
 
     /** Clé à molette + plaques d'acier (ou de titane pour les chars lourds) : +15 % de blindage, modules réparés. */
@@ -2780,6 +3465,15 @@ public class MilVehicleEntity extends Entity {
         entityData.set(FUEL, tag.contains("Fuel") ? tag.getFloat("Fuel") : 0.6f);
         entityData.set(STATE, tag.getInt("State") & (ENGINE_DOWN | MOBILITY_DOWN | DEPLOYED | WRECK | GEAR_UP | NUKE_ARMED));
         entityData.set(TURRET, tag.getFloat("Turret"));
+        throttle = tag.getFloat("Throttle");
+        subDepth = tag.getFloat("SubDepth");
+        flood = tag.getFloat("Flood");
+        usvArmed = tag.getBoolean("UsvArmed");
+        moored = tag.getBoolean("Moored");
+        navalHome = tag.contains("NavalHome") ? BlockPos.of(tag.getLong("NavalHome")) : null;
+        carrierSpot = tag.contains("CarrierSpot") ? BlockPos.of(tag.getLong("CarrierSpot")) : null;
+        carrierYaw = tag.getFloat("CarrierYaw");
+        carrierLaunch = tag.contains("CarrierLaunch") ? BlockPos.of(tag.getLong("CarrierLaunch")) : null;
         hasSavedTarget = tag.getBoolean("HasSavedTarget");
         destroyed = is(WRECK);
         lastTargetX = tag.getInt("LastTargetX");
@@ -2827,6 +3521,21 @@ public class MilVehicleEntity extends Entity {
         tag.putFloat("Fuel", fuel());
         tag.putInt("State", state());
         tag.putFloat("Turret", entityData.get(TURRET));
+        tag.putFloat("Throttle", throttle);
+        tag.putFloat("SubDepth", subDepth);
+        tag.putFloat("Flood", flood);
+        tag.putBoolean("UsvArmed", usvArmed);
+        tag.putBoolean("Moored", moored);
+        if (navalHome != null) {
+            tag.putLong("NavalHome", navalHome.asLong());
+        }
+        if (carrierSpot != null) {
+            tag.putLong("CarrierSpot", carrierSpot.asLong());
+            tag.putFloat("CarrierYaw", carrierYaw);
+            if (carrierLaunch != null) {
+                tag.putLong("CarrierLaunch", carrierLaunch.asLong());
+            }
+        }
         if (hasSavedTarget) {
             tag.putBoolean("HasSavedTarget", true);
             tag.putInt("LastTargetX", lastTargetX);

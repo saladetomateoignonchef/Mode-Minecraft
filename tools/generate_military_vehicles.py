@@ -1245,6 +1245,14 @@ PAINTS.update({k for k, val in am.PLANE_COLORS.items() if not k.endswith("glass"
 MATERIAL.update({"gold_glass": "glass"})
 _planes = am.make(V)
 VEHICLES += _planes
+import ship_models as sm  # noqa: E402
+COLORS.update(sm.SHIP_COLORS)
+PAINTS.update({k for k in sm.SHIP_COLORS if k not in ("window",)})
+_ships = sm.make(V)
+VEHICLES += _ships
+SHIPS = {"kirov_cruiser", "admiral_gorshkov", "slava_cruiser", "udaloy_destroyer", "buyan_corvette", "arleigh_burke",
+         "ticonderoga_cruiser", "zumwalt_destroyer", "ohio_submarine", "virginia_submarine", "mercenary_rhib",
+         "mercenary_interceptor_boat", "mercenary_explosive_usv"}
 PLANES = {"b29_superfortress", "il2_sturmovik", "la7", "mig15", "tu95_bear", "mig21", "mig25", "su25", "mig29", "su34", "su57",
           "p51_mustang", "f86_sabre", "f4_phantom", "c130_hercules", "a10_thunderbolt", "f117_nighthawk", "f15e_strike_eagle",
           "f16_falcon", "b2_spirit", "f22_raptor"}

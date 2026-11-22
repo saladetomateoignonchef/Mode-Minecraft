@@ -381,6 +381,16 @@ def outfits(faction, rng, seed):
         return {"top": with_details(cloth("#4b5a2a", wood, s), belt("#2a2a1e")), "sleeve": cloth("#4b5a2a", wood, s + 1),
                 "pants": cloth("#4b5a2a", wood, s + 2), "boots": "#1a1a14", "gloves": "#2a2e22",
                 "head_over": mask_lower("#2a3020", s, top_row=5) if rng.random() < 0.4 else None}
+    if faction == "offshore":
+        # combinaison étanche noire à bandes orange foncé, gilet tactique, cagoule
+        suit = rng.choice(["#18191c", "#1e2024", "#222326"])
+        stripe = lambda f, x, y: (190, 80, 20) if y in (2, 3) and f in ("left", "right") or (f == "front" and x in (0, 7) and y > 1) else None
+        vest = lambda f, x, y: (52, 56, 50) if f in ("front", "back") and 1 <= x <= 6 and 1 <= y <= 9 else None
+        pouches = lambda f, x, y: (34, 36, 32) if f == "front" and y in (7, 8) and x in (1, 2, 5, 6) else None
+        return {"top": with_details(cloth(suit, seed=s), combine(vest, pouches, stripe, belt("#2a2a2a", "#909090"))),
+                "sleeve": with_details(cloth(suit, seed=s), lambda f, x, y: (190, 80, 20) if y == 1 else None),
+                "pants": cloth(suit, seed=s), "boots": "#101012", "gloves": "#2a2a2a",
+                "head_over": mask_lower("#141416", s, top_row=3) if rng.random() < 0.8 else None}
     if faction == "soviet":
         coat = rng.choice(["#4a4a3e", "#3e463a", "#5a5248"])
         fur_collar = lambda f, x, y: (90, 74, 58) if y <= 1 and f in ("front", "back", "left", "right") else None
@@ -523,6 +533,29 @@ def bosses():
                                "head_over": mask_lower("#1a1c18", 103, top_row=0) if False else
                                (lambda f, x, y, W, H: None if f == "front" and y == 4 and 1 <= x <= 6 else (26, 28, 24) if f != "bottom" else None)}, 103)
 
+    # --- Général 4 étoiles de l'US Army : uniforme de service vert, 4 étoiles d'argent, casquette à visière
+    rng = random.Random(110)
+    p = person(rng, SKIN_TONES[:3])
+    p.update(beard=None, hair="#b0b0b0", hair_style="short")
+    agsu = "#3e4a36"
+    stars4 = lambda f, x, y: (230, 230, 235) if f == "front" and y == 0 and x in (0, 1, 6, 7) else None
+    ribbons = lambda f, x, y: [(180, 30, 30), (30, 60, 160), (220, 190, 60)][(x + y) % 3] if f == "front" and x in (1, 2) and y in (2, 3) else None
+    tie = lambda f, x, y: (40, 40, 40) if f == "front" and x in (3, 4) and y <= 4 else (230, 228, 220) if f == "front" and x in (2, 5) and y <= 1 else None
+    out["garrison"] = skin(p, {"top": with_details(cloth(agsu, seed=8), combine(stars4, ribbons, tie, belt("#2a2a22", "#d0b040", 9))),
+                               "sleeve": with_details(cloth(agsu, seed=8), lambda f, x, y: (200, 170, 60) if y == 10 else None),
+                               "pants": cloth("#3a4434", seed=8), "boots": "#141210", "gloves": None,
+                               "head_over": cap("#3e4a36", "#1a1a1a", "#1a1a1a", "#d0b040")}, 110)
+
+    # --- Commandant « Blackwater-01 » : combinaison noire, plastron lourd, béret, bandes orange
+    rng = random.Random(111)
+    p = person(rng, SKIN_TONES[:4])
+    p.update(beard="stubble", hair="#2a2018", hair_style="short")
+    plate = lambda f, x, y: (40, 42, 44) if f in ("front", "back") and 1 <= x <= 6 and 1 <= y <= 9 else None
+    orange = lambda f, x, y: (200, 90, 20) if f == "front" and y == 5 else None
+    out["offshore"] = skin(p, {"top": with_details(cloth("#141518", seed=9), combine(plate, orange, belt("#2a2a2a", "#c0c0c0"))),
+                               "sleeve": cloth("#141518", seed=9), "pants": cloth("#141518", seed=9), "boots": "#0c0c0e",
+                               "gloves": "#1a1a1a", "head_over": cap("#1a1a1a")}, 111)
+
     # --- Maréchal de l'Est : long manteau d'officier gris acier, chapka fourrée, plastron blindé
     rng = random.Random(104)
     p = person(rng, SKIN_TONES[:2])
@@ -578,7 +611,7 @@ def falcon_cape():
 
 
 FACTIONS = {"police": 6, "swat": 4, "militia": 6, "rebel": 5, "garrison": 5, "soviet": 5, "arctic": 4, "mine_security": 4,
-            "cartel": 6, "gang": 5, "sheriff": 5, "refinery": 4, "civilian": 8, "trader": 4, "falcon": 6}
+            "cartel": 6, "gang": 5, "sheriff": 5, "refinery": 4, "civilian": 8, "trader": 4, "falcon": 6, "offshore": 5}
 TONES = {"militia": SKIN_TONES[1:5], "cartel": SKIN_TONES[1:5], "soviet": SKIN_TONES[:2], "arctic": SKIN_TONES[:3]}
 
 

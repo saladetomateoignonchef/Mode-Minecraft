@@ -37,6 +37,17 @@ public class MilVehicleRenderer extends EntityRenderer<MilVehicleEntity> {
 
     public static final String[] PARTS = {"hull", "turret", "gun", "wheel", "rotor", "tail_rotor", "radar"};
 
+    /** Navires : éclairage pris au niveau du pont (la quille est sous l'eau, souvent dans l'ombre). */
+    @Override
+    protected int getSkyLightLevel(MilVehicleEntity v, net.minecraft.core.BlockPos pos) {
+        return super.getSkyLightLevel(v, v.type().naval() ? pos.above((int) Math.ceil(v.type().draft()) + 2) : pos);
+    }
+
+    @Override
+    protected int getBlockLightLevel(MilVehicleEntity v, net.minecraft.core.BlockPos pos) {
+        return super.getBlockLightLevel(v, v.type().naval() ? pos.above((int) Math.ceil(v.type().draft()) + 2) : pos);
+    }
+
     @Override
     public boolean shouldRender(MilVehicleEntity v, net.minecraft.client.renderer.culling.Frustum frustum, double x, double y, double z) {
         return frustum.isVisible(v.getBoundingBox().inflate(MilVehicleEntity.dims(v.type())[0] / 2 + 2));
@@ -71,6 +82,13 @@ public class MilVehicleRenderer extends EntityRenderer<MilVehicleEntity> {
             pose.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partial, v.tiltO, v.tilt)));
             pose.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partial, v.rollO, v.roll)));
             pose.translate(-hx, -hy, 0);
+        } else if (t.naval()) {
+            // navire : gîte et assiette autour de la ligne de flottaison
+            float hy = t.draft();
+            pose.translate(0, hy, 0);
+            pose.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partial, v.tiltO, v.tilt)));
+            pose.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partial, v.rollO, v.roll)));
+            pose.translate(0, -hy, 0);
         } else if (t.heli()) {
             pose.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partial, v.tiltO, v.tilt)));
             pose.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partial, v.rollO, v.roll)));

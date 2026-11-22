@@ -51,6 +51,8 @@ public final class AirAI {
         Vec3 home;
         boolean gun, missile;
         float orbit;
+        /** Ticks sans cible (chasseur embarqué : retour au porte-avions). */
+        int idle;
     }
 
     private static final Map<Integer, Brain> BRAINS = new HashMap<>();
@@ -151,6 +153,7 @@ public final class AirAI {
         Vec3 goal;
         v.aiThrottle = 1;
         if (t != null) {
+            b.idle = 0;
             // poursuite : point d'anticipation (vitesse de la cible x temps de vol des obus)
             Vec3 tp = t.position().add(0, t.getBbHeight() / 2, 0);
             Vec3 tv = t.position().subtract(t.xo, t.yo, t.zo);
@@ -180,6 +183,17 @@ public final class AirAI {
             if (d < 25) {
                 goal = v.position().add(nose.scale(60)).add(0, 20, 0);
             }
+        } else if (v.carrierSpot != null && (++b.idle > 1200 || v.fuel() < 0.25f)) {
+            // chasseur embarqué sans cible : retour au porte-avions, approche par l'arrière, appontage
+            v.aiLock(null, -1);
+            Vec3 spot = Vec3.atBottomCenterOf(v.carrierSpot);
+            double flat = Math.hypot(spot.x - v.getX(), spot.z - v.getZ());
+            if (flat < 45 && v.getY() < spot.y + 75) {
+                v.recoverOnDeck();
+                return;
+            }
+            goal = spot.add(0, flat > 150 ? 70 : 50, 0);                  // au-dessus de l'îlot et des mâts
+            v.aiThrottle = flat > 150 ? 0.8f : 0.5f;
         } else {
             v.aiLock(null, -1);
             // patrouille : orbite de 130 blocs autour de la zone, à 75 blocs au-dessus du sol
@@ -240,6 +254,9 @@ public final class AirAI {
             if (p.isSpectator()) {
                 continue;
             }
+            if (now % 200 == 0) {
+                carrierWatch(level, p, now);
+            }
             var city = CityPlanner.cityAtCached(CityPlanner.Env.of(level), p.getBlockX(), p.getBlockZ(), 160);
             if (city == null || !city.kind().equals("base") && !city.kind().equals("soviet")) {
                 continue;
@@ -284,6 +301,36 @@ public final class AirAI {
     }
 
     /**
+     * Porte-avions : un joueur à bord d'un véhicule ennemi (camp opposé, ou en guerre avec la nation) à moins de 500
+     * blocs : deux chasseurs du pont décollent (catapulte / tremplin), l'interceptent, puis reviennent apponter.
+     */
+    private static void carrierWatch(ServerLevel level, ServerPlayer p, long now) {
+        if (!(p.getVehicle() instanceof MilVehicleEntity mine) || p.isCreative()
+                || now - SCRAMBLED.getOrDefault(p.getUUID(), -100000L) < 2400) {
+            return;
+        }
+        MilVehicleEntity jet = null;
+        for (MilVehicleEntity v : level.getEntitiesOfClass(MilVehicleEntity.class, p.getBoundingBox().inflate(500, 200, 500),
+                v -> v.carrierSpot != null && v.getPassengers().isEmpty() && v.groundedNow())) {
+            jet = v;
+            break;
+        }
+        if (jet == null) {
+            return;
+        }
+        Faction f = jet.type().side == MilType.Side.SOVIET ? Faction.SOVIET : Faction.GARRISON;
+        boolean enemy = mine.type().side != jet.type().side || f == Faction.SOVIET || fr.modeminecraft.entity.bot.FactionRelations.isHostile(p.getUUID(), f, now);
+        if (!enemy) {
+            return;
+        }
+        SCRAMBLED.put(p.getUUID(), now);
+        if (launchFromHangars(level, jet.position(), 140, f, 2, mine.type().heli() ? mine : null) > 0) {
+            p.displayClientMessage(Component.translatable(f == Faction.SOVIET ? "message.modeminecraft.naval.carrier_scramble_sov"
+                    : "message.modeminecraft.naval.carrier_scramble_us").withStyle(ChatFormatting.RED), false);
+        }
+    }
+
+    /**
      * Décollage d'alerte depuis les méga-hangars : les chasseurs garés du bon camp (sans équipage) reçoivent un pilote,
      * le plein et les munitions, puis sortent du hangar et décollent sur la piste. Renvoie le nombre d'avions lancés.
      */
@@ -299,7 +346,12 @@ public final class AirAI {
             v.fillAmmo(1f);
             v.setFuel(1f);
             v.patrol = true;
-            v.setAirspeed(0);                                                     // moteurs lancés : décollage d'alerte
+            if (v.carrierLaunch != null) {
+                // porte-avions : l'avion est amené sur sa catapulte (axe du pont dégagé) et catapulté
+                v.moveTo(v.carrierLaunch.getX() + 0.5, v.carrierLaunch.getY(), v.carrierLaunch.getZ() + 0.5, v.carrierYaw, 0);
+                v.launchGrace = 80;
+            }
+            v.setAirspeed(v.carrierSpot != null ? v.type().maxSpeed() * 0.8f : 0);   // catapulte / tremplin du porte-avions
             v.holdChunks();
             HumanBotEntity b = ModEntities.HUMAN_BOT.get().create(level);
             b.moveTo(v.getX(), v.getY() + 1, v.getZ(), v.getYRot(), 0);

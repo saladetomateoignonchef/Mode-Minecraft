@@ -79,9 +79,12 @@ public final class Convoys {
         if (!level.isLoaded(start) || !level.getFluidState(start.below()).isEmpty()) {
             return;
         }
-        Faction f = AirdropEntity.localFaction(level, start) == Faction.SOVIET ? Faction.SOVIET : Faction.MILITIA;
+        Faction local = AirdropEntity.localFaction(level, start);
+        Faction f = local == Faction.SOVIET ? Faction.SOVIET : local == Faction.GARRISON ? Faction.GARRISON : Faction.MILITIA;
         float yaw = (float) (Mth.atan2(dest.getZ() - start.getZ(), dest.getX() - start.getX()) * Mth.RAD_TO_DEG) - 90;
-        var tigr = fr.modeminecraft.entity.military.MilVehicleEntity.create(level, fr.modeminecraft.entity.military.MilType.TIGR,
+        // patrouille US : Humvee M1151 (conducteur, passager au M4A1, tireur à la M2 .50) ; ailleurs : Tigr
+        var vehicleType = f == Faction.GARRISON ? fr.modeminecraft.entity.military.MilType.HUMVEE : fr.modeminecraft.entity.military.MilType.TIGR;
+        var tigr = fr.modeminecraft.entity.military.MilVehicleEntity.create(level, vehicleType,
                 start.getX() + 0.5, start.getY() + 0.3, start.getZ() + 0.5, yaw);
         tigr.fillAmmo(1f);
         tigr.setFuel(1f);
@@ -91,7 +94,7 @@ public final class Convoys {
         bot(level, start, f, BotRole.OFFICER).startRiding(tigr, true);                  // conducteur
         bot(level, start, f, BotRole.SOLDIER).startRiding(tigr, true);                  // passager avant
         bot(level, start, f, BotRole.GUNNER).startRiding(tigr, true);                   // tireur de tourelle
-        fr.modeminecraft.ModeMinecraft.LOGGER.info("Patrouille Tigr ({}) de {} vers {}", f.id, start, dest);
+        fr.modeminecraft.ModeMinecraft.LOGGER.info("Patrouille {} ({}) de {} vers {}", vehicleType.id, f.id, start, dest);
     }
 
     private static VehicleEntity vehicle(ServerLevel level, VehicleEntity.Type type, BlockPos pos, float yaw, Faction f, int crew) {

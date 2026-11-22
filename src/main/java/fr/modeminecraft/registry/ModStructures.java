@@ -21,6 +21,11 @@ public final class ModStructures {
             TYPES.register("camp", () -> () -> fr.modeminecraft.world.city.CampStructure.CODEC);
     public static final DeferredHolder<StructurePieceType, StructurePieceType> CAMP_PIECE = PIECES.register("camp_piece",
             () -> (StructurePieceType) fr.modeminecraft.world.city.CampPiece::new);
+    /** Structures maritimes : plateforme offshore, porte-avions, base navale. */
+    public static final DeferredHolder<StructureType<?>, StructureType<fr.modeminecraft.world.city.NavalStructure>> NAVAL =
+            TYPES.register("naval", () -> () -> fr.modeminecraft.world.city.NavalStructure.CODEC);
+    public static final DeferredHolder<StructurePieceType, StructurePieceType> NAVAL_PIECE = PIECES.register("naval_piece",
+            () -> (StructurePieceType) fr.modeminecraft.world.city.NavalPiece::new);
     public static final DeferredHolder<StructurePieceType, StructurePieceType> CITY_PIECE = PIECES.register("city_piece",
             () -> (StructurePieceType) CityPiece::new);
 

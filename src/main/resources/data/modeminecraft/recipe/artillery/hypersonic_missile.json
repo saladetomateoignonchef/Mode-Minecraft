@@ -1,0 +1,30 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "artillery",
+  "ingredients": [
+    {
+      "item": "modeminecraft:titanium_plate",
+      "count": 8
+    },
+    {
+      "item": "minecraft:tnt",
+      "count": 12
+    },
+    {
+      "item": "minecraft:blaze_rod",
+      "count": 8
+    },
+    {
+      "item": "modeminecraft:avionics_suite",
+      "count": 2
+    },
+    {
+      "item": "minecraft:fire_charge",
+      "count": 4
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:hypersonic_missile",
+    "count": 1
+  }
+}

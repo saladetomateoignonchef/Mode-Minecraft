@@ -1,0 +1,22 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "artillery",
+  "ingredients": [
+    {
+      "item": "minecraft:copper_ingot",
+      "count": 6
+    },
+    {
+      "item": "modeminecraft:titanium_ingot",
+      "count": 2
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 8
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:ciws_belt",
+    "count": 1
+  }
+}

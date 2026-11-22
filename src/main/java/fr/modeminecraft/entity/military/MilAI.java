@@ -102,7 +102,8 @@ public final class MilAI {
         MilAmmo a = w.ammo().get(0);
         double d = v.distanceTo(t);
         double flight = d / Math.max(0.5, a.shell.speed);
-        Vec3 p = t.position().add(0, t.getBbHeight() * 0.5, 0).add(t.getDeltaMovement().scale(flight));
+        Entity body = t.getVehicle() instanceof MilVehicleEntity mv ? mv : t;            // équipage à bord : on vise la caisse / la coque
+        Vec3 p = body.position().add(0, body.getBbHeight() * 0.5, 0).add(body.getDeltaMovement().scale(flight));
         float[] r = v.aimAt(p);
         // compensation de la chute (obus explosifs, grenades, roquettes)
         r[1] += (float) Math.toDegrees(Math.atan(a.shell.gravity * flight * flight / 2 / Math.max(1, d)));
@@ -114,7 +115,7 @@ public final class MilAI {
         if (gunner.getTarget() != null && gunner.getTarget().isAlive() || (v.tickCount + v.getId()) % 20 != 0) {
             return;
         }
-        double range = w.kind() == MilType.Kind.CANNON || w.kind() == MilType.Kind.ROCKETS ? 140 : 100;
+        double range = v.type().naval() && w.kind() == MilType.Kind.CANNON ? 320 : w.kind() == MilType.Kind.CANNON || w.kind() == MilType.Kind.ROCKETS ? 140 : 100;
         LivingEntity best = null;
         double bestD = range * range;
         for (LivingEntity e : v.level().getEntitiesOfClass(LivingEntity.class, v.getBoundingBox().inflate(range), e -> e.isAlive() && !v.hasPassenger(e))) {
@@ -160,7 +161,7 @@ public final class MilAI {
         }
         LivingEntity t = bot.getTarget();
         double d = v.distanceTo(t);
-        if (d > (w.kind() == MilType.Kind.MG ? 90 : 150) || w.kind() == MilType.Kind.ROCKETS && d < 40) {
+        if (d > (w.kind() == MilType.Kind.MG ? 90 : v.type().naval() ? 330 : 150) || w.kind() == MilType.Kind.ROCKETS && d < 40) {
             return false;
         }
         float[] want = aim(v, bot, w);
