@@ -38,11 +38,11 @@ public final class StrategicSystems {
         List<RadarPayload.Blip> out = new ArrayList<>();
         double r = range(v.type());
         long now = v.level().getGameTime();
-        for (Entity e : v.level().getEntities(v, new AABB(v.position(), v.position()).inflate(r, 400, r), MilVehicleEntity::isAircraft)) {
+        for (Entity e : v.level().getEntities(v, new AABB(v.position(), v.position()).inflate(r, 400, r), e -> MilVehicleEntity.radarSees(v, e))) {
             if (v.hasPassenger(e) || e instanceof ShellEntity s && (s.visual() || s.getOwner() != null && v.hasPassenger(s.getOwner()))) {
                 continue;
             }
-            byte kind = e instanceof MilVehicleEntity ? HELI : e instanceof fr.modeminecraft.entity.drone.DroneEntity ? DRONE
+            byte kind = e instanceof MilVehicleEntity mv ? (mv.type().plane() ? PLANE : HELI) : e instanceof fr.modeminecraft.entity.drone.DroneEntity ? DRONE
                     : e instanceof fr.modeminecraft.entity.AirdropEntity ? PLANE : MISSILE;
             out.add(new RadarPayload.Blip(e.getId(), (float) (e.getX() - v.getX()), (float) (e.getZ() - v.getZ()), (float) (e.getY() - v.getY()), kind));
         }
@@ -94,7 +94,7 @@ public final class StrategicSystems {
         }
         // défense aérienne automatique (S-400 des bases) : hélicoptères et drones des joueurs
         if (v.autoDefense && v.tickCount % 60 == 0) {
-            for (Entity e : sl.getEntities(v, v.getBoundingBox().inflate(300, 200, 300), MilVehicleEntity::isAircraft)) {
+            for (Entity e : sl.getEntities(v, v.getBoundingBox().inflate(300, 200, 300), e -> MilVehicleEntity.radarSees(v, e))) {
                 boolean hostile = e instanceof MilVehicleEntity mv && mv.getControllingPassenger() instanceof Player p && !p.isCreative()
                         || e instanceof fr.modeminecraft.entity.drone.DroneEntity d && d.owner != null;
                 if (hostile) {

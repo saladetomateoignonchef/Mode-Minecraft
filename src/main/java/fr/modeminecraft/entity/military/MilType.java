@@ -141,7 +141,85 @@ public enum MilType {
             List.of(free("m2_dorsal_front", Kind.MG, 0, 2, -8, 85, 1000, MilAmmo.MG_127),
                     free("m2_dorsal_rear", Kind.MG, 1, 2, -8, 85, 1000, MilAmmo.MG_127),
                     free("m2_ventral", Kind.MG, 2, 2, -85, 8, 1000, MilAmmo.MG_127),
-                    free("m2_tail", Kind.MG, 3, 2, -40, 40, 1000, MilAmmo.MG_127)));
+                    free("m2_tail", Kind.MG, 3, 2, -40, 40, 1000, MilAmmo.MG_127))),
+    // ------------------------------------------------------------ aviation (cahier des charges « Aviation militaire »)
+    // pilote : clic droit = canon de bord, clic gauche = station d'armes choisie avec R (roquettes, missiles, bombes)
+    IL_2("il2_sturmovik", Side.SOVIET, Chassis.PLANE, 230, 650, 0.5f, 0.6f, 0.7f, 900, 0, Flag.BULLETPROOF,
+            List.of(seat(Role.PILOT, true, 1, 0)),
+            List.of(gun("vya23", Kind.AUTOCANNON, 0, 3, 1500, MilAmmo.HE_I, MilAmmo.AP_I), gun("rs82", Kind.ROCKETS, 1, 6, 16, MilAmmo.S8))),
+    LA_7("la7", Side.SOVIET, Chassis.PLANE, 270, 380, 0.85f, 0.85f, 0.85f, 600, 0, Flag.NONE,
+            List.of(seat(Role.PILOT, true, 0, 0)),
+            List.of(gun("b20", Kind.AUTOCANNON, 0, 2, 1800, MilAmmo.HE_I, MilAmmo.AP_I))),
+    MIG_15("mig15", Side.SOVIET, Chassis.PLANE, 330, 420, 0.8f, 0.8f, 0.8f, 700, 0, Flag.NONE,
+            List.of(seat(Role.PILOT, true, 1, 0)),
+            List.of(gun("nr23", Kind.AUTOCANNON, 0, 3, 1200, MilAmmo.HE_I, MilAmmo.AP_I), gun("n37", Kind.AUTOCANNON, 0, 9, 400, MilAmmo.HE_I))),
+    TU_95("tu95_bear", Side.SOVIET, Chassis.PLANE, 260, 1300, 0.7f, 0.7f, 0.75f, 3000, 0, Flag.NONE,
+            List.of(seat(Role.PILOT, true, 0), seat(Role.BOMBARDIER, true), seat(Role.GUNNER, true, 1), seat(Role.GUNNER, true, 2)),
+            List.of(gun("kh55", Kind.CRUISE, 3, 60, 6, MilAmmo.CRUISE),
+                    free("am23_tail", Kind.AUTOCANNON, 7, 3, -40, 40, 1200, MilAmmo.HE_I),
+                    free("am23_dorsal", Kind.AUTOCANNON, 8, 3, -8, 85, 1200, MilAmmo.HE_I))),
+    MIG_21("mig21", Side.SOVIET, Chassis.PLANE, 400, 340, 0.85f, 0.85f, 0.85f, 600, 0, Flag.NONE,
+            List.of(seat(Role.PILOT, true, 1, 0)),
+            List.of(gun("gsh23", Kind.AUTOCANNON, 0, 2, 1200, MilAmmo.HE_I, MilAmmo.AP_I), gun("r60", Kind.AAM, 3, 15, 6, MilAmmo.AAM_IR),
+                    gun("s5", Kind.ROCKETS, 1, 4, 32, MilAmmo.S8))),
+    MIG_25("mig25", Side.SOVIET, Chassis.PLANE, 430, 450, 0.8f, 0.8f, 0.8f, 1400, 0, Flag.NONE,
+            List.of(seat(Role.PILOT, true, 0)),
+            List.of(gun("r40", Kind.AAM, 3, 25, 6, MilAmmo.AAM_RADAR))),
+    SU_25("su25", Side.SOVIET, Chassis.PLANE, 320, 800, 0.45f, 0.55f, 0.65f, 800, 0, Flag.BULLETPROOF,
+            List.of(seat(Role.PILOT, true, 1, 0)),
+            List.of(gun("gsh302", Kind.AUTOCANNON, 0, 2, 2000, MilAmmo.AP_I, MilAmmo.HE_I), gun("s8", Kind.ROCKETS, 1, 3, 80, MilAmmo.S8),
+                    gun("kh25", Kind.AGM, 3, 30, 4, MilAmmo.AGM))),
+    MIG_29("mig29", Side.SOVIET, Chassis.PLANE, 420, 420, 0.8f, 0.8f, 0.8f, 900, 0, Flag.NONE,
+            List.of(seat(Role.PILOT, true, 1, 0)),
+            List.of(gun("gsh301", Kind.AUTOCANNON, 0, 2, 1500, MilAmmo.HE_I, MilAmmo.AP_I), gun("r73", Kind.AAM, 3, 15, 4, MilAmmo.AAM_IR),
+                    gun("r27", Kind.AAM, 5, 20, 4, MilAmmo.AAM_RADAR))),
+    SU_34("su34", Side.SOVIET, Chassis.PLANE, 380, 700, 0.6f, 0.65f, 0.7f, 1600, 0, Flag.BULLETPROOF,
+            List.of(seat(Role.PILOT, true, 1, 0), seat(Role.BOMBARDIER, true)),
+            List.of(gun("gsh301", Kind.AUTOCANNON, 0, 2, 1800, MilAmmo.HE_I, MilAmmo.AP_I), gun("kh29", Kind.AGM, 3, 25, 3, MilAmmo.AGM),
+                    gun("r77", Kind.AAM, 5, 20, 3, MilAmmo.AAM_RADAR))),
+    SU_57("su57", Side.SOVIET, Chassis.PLANE, 440, 520, 0.75f, 0.75f, 0.75f, 1200, 0, Flag.NONE,
+            List.of(seat(Role.PILOT, true, 1, 0)),
+            List.of(gun("gsh301", Kind.AUTOCANNON, 0, 2, 1500, MilAmmo.HE_I, MilAmmo.AP_I), gun("r77m", Kind.AAM, 3, 15, 4, MilAmmo.AAM_RADAR),
+                    gun("kh59", Kind.AGM, 5, 25, 4, MilAmmo.AGM))),
+    P_51("p51_mustang", Side.US, Chassis.PLANE, 280, 380, 0.85f, 0.85f, 0.85f, 900, 0, Flag.NONE,
+            List.of(seat(Role.PILOT, true, 1, 0)),
+            List.of(gun("m2_wing", Kind.MG, 0, 1, 2400, MilAmmo.MG_127), gun("hvar", Kind.ROCKETS, 1, 6, 10, MilAmmo.HYDRA))),
+    F_86("f86_sabre", Side.US, Chassis.PLANE, 330, 400, 0.8f, 0.8f, 0.8f, 700, 0, Flag.NONE,
+            List.of(seat(Role.PILOT, true, 1, 0)),
+            List.of(gun("m3", Kind.MG, 0, 1, 2400, MilAmmo.MG_127), gun("hvar", Kind.ROCKETS, 1, 5, 8, MilAmmo.HYDRA))),
+    F_4E("f4_phantom", Side.US, Chassis.PLANE, 400, 600, 0.75f, 0.75f, 0.8f, 1400, 0, Flag.NONE,
+            List.of(seat(Role.PILOT, true, 1, 0), seat(Role.BOMBARDIER, true)),
+            List.of(gun("m61", Kind.AUTOCANNON, 0, 1, 1800, MilAmmo.HE_I, MilAmmo.AP_I), gun("aim9", Kind.AAM, 3, 15, 4, MilAmmo.AAM_IR),
+                    gun("aim7", Kind.AAM, 5, 20, 4, MilAmmo.AAM_RADAR))),
+    C_130("c130_hercules", Side.US, Chassis.PLANE, 240, 1100, 0.75f, 0.75f, 0.75f, 2500, 27, Flag.NONE,
+            List.of(seat(Role.PILOT, true), seat(Role.PILOT, true), seat(Role.PASSENGER, true), seat(Role.PASSENGER, true),
+                    seat(Role.PASSENGER, true), seat(Role.PASSENGER, true), seat(Role.PASSENGER, true), seat(Role.PASSENGER, true),
+                    seat(Role.PASSENGER, true), seat(Role.PASSENGER, true), seat(Role.PASSENGER, true), seat(Role.PASSENGER, true),
+                    seat(Role.PASSENGER, true), seat(Role.PASSENGER, true), seat(Role.PASSENGER, true), seat(Role.PASSENGER, true),
+                    seat(Role.PASSENGER, true), seat(Role.PASSENGER, true)),
+            List.of()),
+    A_10("a10_thunderbolt", Side.US, Chassis.PLANE, 300, 1100, 0.4f, 0.5f, 0.6f, 1200, 0, Flag.BULLETPROOF,
+            List.of(seat(Role.PILOT, true, 1, 0)),
+            List.of(gun("gau8", Kind.AUTOCANNON, 0, 1, 3000, MilAmmo.AP_I, MilAmmo.HE_I), gun("hydra", Kind.ROCKETS, 1, 3, 76, MilAmmo.HYDRA),
+                    gun("agm65", Kind.AGM, 3, 25, 6, MilAmmo.AGM))),
+    F_117("f117_nighthawk", Side.US, Chassis.PLANE, 340, 420, 0.8f, 0.8f, 0.8f, 1000, 0, Flag.NONE,
+            List.of(seat(Role.PILOT, true, 0)),
+            List.of(gun("agm88", Kind.ARM, 3, 30, 2, MilAmmo.ARM), gun("agm65", Kind.AGM, 5, 30, 2, MilAmmo.AGM))),
+    F_15E("f15e_strike_eagle", Side.US, Chassis.PLANE, 420, 620, 0.75f, 0.75f, 0.8f, 1600, 0, Flag.NONE,
+            List.of(seat(Role.PILOT, true, 1, 0), seat(Role.BOMBARDIER, true)),
+            List.of(gun("m61", Kind.AUTOCANNON, 0, 1, 1800, MilAmmo.HE_I, MilAmmo.AP_I), gun("aim120", Kind.AAM, 3, 18, 4, MilAmmo.AAM_RADAR),
+                    gun("aim9x", Kind.AAM, 5, 15, 4, MilAmmo.AAM_IR))),
+    F_16C("f16_falcon", Side.US, Chassis.PLANE, 420, 420, 0.8f, 0.8f, 0.8f, 1000, 0, Flag.NONE,
+            List.of(seat(Role.PILOT, true, 1, 0)),
+            List.of(gun("m61", Kind.AUTOCANNON, 0, 1, 1500, MilAmmo.HE_I, MilAmmo.AP_I),
+                    gun("aim_mix", Kind.AAM, 3, 15, 6, MilAmmo.AAM_IR, MilAmmo.AAM_RADAR), gun("hydra", Kind.ROCKETS, 1, 3, 38, MilAmmo.HYDRA))),
+    B_2("b2_spirit", Side.US, Chassis.PLANE, 300, 1300, 0.75f, 0.75f, 0.75f, 3000, 0, Flag.NONE,
+            List.of(seat(Role.PILOT, true), seat(Role.BOMBARDIER, true)),
+            List.of()),
+    F_22("f22_raptor", Side.US, Chassis.PLANE, 440, 520, 0.75f, 0.75f, 0.75f, 1200, 0, Flag.NONE,
+            List.of(seat(Role.PILOT, true, 1, 0)),
+            List.of(gun("m61a2", Kind.AUTOCANNON, 0, 1, 1500, MilAmmo.HE_I, MilAmmo.AP_I), gun("aim120d", Kind.AAM, 3, 15, 6, MilAmmo.AAM_RADAR),
+                    gun("aim9x", Kind.AAM, 5, 15, 2, MilAmmo.AAM_IR)));
 
     public enum Side { SOVIET, US }
 
@@ -151,7 +229,15 @@ public enum MilType {
     /** Rôle d'une place. */
     public enum Role { DRIVER, PILOT, GUNNER, COMMANDER, PASSENGER, DOOR_GUNNER, GRENADIER, OPERATOR, BOMBARDIER }
 
-    public enum Kind { MG, AUTOCANNON, CANNON, GRENADE, ROCKETS, ATGM, SAM }
+    /** AAM : missile air-air (verrouillage d'un aéronef) ; AGM : air-sol (véhicule verrouillé ou point visé) ;
+     *  ARM : anti-radar (radar ennemi le plus proche devant l'avion) ; CRUISE : missile de croisière (point visé, GPS). */
+    public enum Kind { MG, AUTOCANNON, CANNON, GRENADE, ROCKETS, ATGM, SAM, AAM, AGM, ARM, CRUISE;
+
+        /** Missile tiré par un avion (station d'armes). */
+        public boolean airMissile() {
+            return this == AAM || this == AGM || this == ARM || this == CRUISE;
+        }
+    }
 
     /** Options (masque de bits). */
     public static final class Flag {
@@ -222,6 +308,109 @@ public enum MilType {
         return chassis == Chassis.PLANE;
     }
 
+    // ------------------------------------------------------------------ aviation
+    /** Avion à réaction (postcombustion, bang supersonique, leurres, siège éjectable) ; les autres ont des hélices. */
+    public boolean jet() {
+        return plane() && geo() != null && geo().props().length == 0;
+    }
+
+    /** Gros porteur (bombardiers, transport) : virages lents, pas de voltige. */
+    public boolean heavy() {
+        return this == B29_SUPERFORTRESS || this == TU_95 || this == C_130 || this == B_2;
+    }
+
+    /** Taux de virage maximal (degrés / tick) à pleine vitesse. */
+    public float turnRate() {
+        return switch (this) {
+            case B29_SUPERFORTRESS, TU_95, C_130 -> 1.6f;
+            case B_2 -> 1.9f;
+            case IL_2, SU_25, A_10, F_117, MIG_25 -> 3.2f;
+            case SU_34, F_4E, F_15E -> 3.6f;
+            case MIG_29, SU_57, F_22, F_16C -> 4.8f;
+            default -> 4.2f;
+        };
+    }
+
+    /**
+     * Surface équivalente radar (cahier des charges §5.A) : 1,5 gros porteurs, 1 chasseurs, 0,2 furtifs de 5e génération
+     * (Su-57, F-22), 0 F-117 et B-2 (soute fermée). Tout ce qui n'est pas un avion : 1.
+     */
+    public float rcs() {
+        return switch (this) {
+            case B29_SUPERFORTRESS, TU_95, C_130 -> 1.5f;
+            case SU_57, F_22 -> 0.2f;
+            case F_117, B_2 -> 0f;
+            default -> 1f;
+        };
+    }
+
+    /** Portée maximale de détection radar des furtifs de 5e génération (blocs) : Su-57 -75 %, F-22 -85 %. */
+    public float stealthRange() {
+        return this == SU_57 ? 150 : this == F_22 ? 90 : 600;
+    }
+
+    /** Soute à bombes : nombre maximal de bombes conventionnelles (0 = pas de soute). */
+    public int bayCapacity() {
+        return switch (this) {
+            case B29_SUPERFORTRESS, TU_95, B_2 -> 16;
+            case SU_34, F_4E, F_15E -> 8;
+            case IL_2, SU_25, F_117, F_16C -> 4;
+            case P_51 -> 2;
+            default -> 0;
+        };
+    }
+
+    /** Bombes nucléaires acceptées (seules dans la soute). */
+    public int bayNukes() {
+        return switch (this) {
+            case B29_SUPERFORTRESS, TU_95, F_117 -> 1;
+            case B_2 -> 2;
+            default -> 0;
+        };
+    }
+
+    /** Bombes chargées au réarmement (caisse de munitions d'aviation) : guidées pour les avions modernes. */
+    public fr.modeminecraft.nuclear.BombItem.Kind defaultBomb() {
+        return switch (this) {
+            case SU_34, F_15E, F_16C, F_117, B_2 -> fr.modeminecraft.nuclear.BombItem.Kind.GUIDED;
+            default -> fr.modeminecraft.nuclear.BombItem.Kind.HE;
+        };
+    }
+
+    /** Cône de verrouillage des missiles air-air (degrés) : le viseur de casque du MiG-29 permet de verrouiller de côté. */
+    public float lockCone() {
+        return this == MIG_29 ? 35 : this == SU_57 || this == F_22 ? 14 : 8;
+    }
+
+    /** Arme de bord du clic droit (canon / mitrailleuses fixes) : -1 si l'avion n'en a pas. */
+    public int planeGun() {
+        for (int i = 0; i < weapons.size(); i++) {
+            Weapon w = weapons.get(i);
+            if (!w.free() && (w.kind() == Kind.MG || w.kind() == Kind.AUTOCANNON)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /** Stations d'armes du pilote (clic gauche, R pour changer) : armes fixes hors canon principal, puis -1 = bombes. */
+    public List<Integer> stations() {
+        List<Integer> l = new java.util.ArrayList<>();
+        int g = planeGun();
+        for (int i = 0; i < weapons.size(); i++) {
+            if (i != g && !weapons.get(i).free()) {
+                l.add(i);
+            }
+        }
+        if (bayCapacity() > 0) {
+            l.add(-1);
+        }
+        if (l.isEmpty() && g >= 0) {
+            l.add(g);
+        }
+        return l;
+    }
+
     /** Pas de blindage digne de ce nom (camions, 4x4 non blindés) : le moteur avant est fragile, les roues aussi. */
     public boolean soft() {
         return armorFront >= 0.8f;
@@ -256,6 +445,11 @@ public enum MilType {
     /** Arme à visée libre (tourelleau, sabord) : elle tire là où regarde son servant. */
     private static Weapon free(String key, Kind kind, int muzzle, int cooldown, float minPitch, float maxPitch, int capacity, MilAmmo... ammo) {
         return new Weapon(key, kind, muzzle, cooldown, minPitch, maxPitch, capacity, 0, true, List.of(ammo));
+    }
+
+    /** Arme fixe d'avion, dans l'axe du fuselage (canon de bord, paniers de roquettes, rails de missiles). */
+    private static Weapon gun(String key, Kind kind, int muzzle, int cooldown, int capacity, MilAmmo... ammo) {
+        return new Weapon(key, kind, muzzle, cooldown, -90, 90, capacity, 0, false, List.of(ammo));
     }
 
     /** Arme fixe dans la caisse (lance-grenades de caisse du BMPT) : visée libre dans un cône vers l'avant. */

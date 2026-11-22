@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "side": "modeminecraft:block/aviation_ammo_crate_side",
+    "end": "modeminecraft:block/aviation_ammo_crate_top"
+  }
+}

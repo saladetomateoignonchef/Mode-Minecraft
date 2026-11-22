@@ -61,7 +61,14 @@ public class MilVehicleRenderer extends EntityRenderer<MilVehicleEntity> {
         float bodyYaw = Mth.rotLerp(partial, v.yRotO, v.getYRot());
         pose.pushPose();
         pose.mulPose(Axis.YP.rotationDegrees(-90 - bodyYaw));
-        if (t.heli()) {
+        if (t.plane()) {
+            // avion : tangage et roulis autour de l'axe du fuselage
+            float hy = MilVehicleEntity.dims(t)[2] * 0.45f;
+            pose.translate(0, hy, 0);
+            pose.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partial, v.tiltO, v.tilt)));
+            pose.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partial, v.rollO, v.roll)));
+            pose.translate(0, -hy, 0);
+        } else if (t.heli()) {
             pose.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partial, v.tiltO, v.tilt)));
             pose.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partial, v.rollO, v.roll)));
         } else if (Math.abs(v.speed()) > 0.02f && t.tracked()) {
@@ -114,7 +121,7 @@ public class MilVehicleRenderer extends EntityRenderer<MilVehicleEntity> {
         }
         // rotors, radar
         float rot = Mth.lerp(partial, v.rotorAngleO, v.rotorAngle);
-        if (geo.props().length > 0) {
+        if (t.plane()) {
             // avion : hélices (autour de l'axe X), trappes de soute, train d'atterrissage
             BakedModel prop = mc.getModelManager().getModel(part(t.id, "prop"));
             for (float[] q : geo.props()) {

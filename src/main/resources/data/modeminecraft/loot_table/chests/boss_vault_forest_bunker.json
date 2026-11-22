@@ -147,6 +147,21 @@
           "type": "minecraft:item",
           "name": "modeminecraft:nbc_suit_helmet",
           "weight": 4
+        },
+        {
+          "type": "minecraft:item",
+          "name": "modeminecraft:radar_absorbent_panel",
+          "weight": 4,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 4,
+                "max": 12
+              }
+            }
+          ]
         }
       ]
     }

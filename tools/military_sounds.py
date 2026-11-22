@@ -230,6 +230,73 @@ def prop_loop(seed):
     return gs.normalize(x * beat * 0.3 + air * 0.8, 0.75)
 
 
+def jet_loop(seed):
+    """Turboréacteur : sifflement de turbine aigu, grondement de la tuyère (boucle parfaite)."""
+    rng = np.random.default_rng(seed)
+    dur = 2.0
+    t = gs.t_axis(dur)
+    n = len(t)
+    spec = np.fft.rfft(rng.normal(size=n))
+    fr = np.fft.rfftfreq(n, 1 / SR)
+    roar = np.fft.irfft(spec * ((fr > 30) & (fr < 700)) * (1 / (1 + fr / 200)), n)
+    hiss = np.fft.irfft(spec * ((fr > 2500) & (fr < 7000)), n) * 0.25
+    whine = sum(np.sin(2 * np.pi * (round(f * dur) / dur) * t) / k for k, f in enumerate((3150, 4720, 6300), 1)) * 0.06
+    return gs.normalize(roar * 1.4 + hiss + whine, 0.8)
+
+
+def afterburner(seed):
+    """Allumage de la postcombustion : détonation sourde puis rugissement grave."""
+    rng = np.random.default_rng(seed)
+    t = gs.t_axis(1.6)
+    n = len(t)
+    thump = np.sin(2 * np.pi * 45 * t) * gs.env(t, 0.005, 0.25)
+    roar = gs.band(gs.noise(n, rng), lo=25, hi=900) * gs.env(t, 0.05, 1.2) * 1.4
+    return gs.normalize(thump * 1.3 + roar, 0.9)
+
+
+def sonic_boom(seed):
+    """Bang supersonique : double claquement (onde en N) et roulement."""
+    rng = np.random.default_rng(seed)
+    t = gs.t_axis(2.5)
+    n = len(t)
+    crack1 = gs.band(gs.noise(n, rng), lo=30, hi=4000) * gs.env(t, 0.001, 0.08) * 1.6
+    t2 = np.clip(t - 0.11, 0, None)
+    crack2 = gs.band(gs.noise(n, rng), lo=30, hi=3000) * gs.env(t2, 0.001, 0.09) * (t > 0.11) * 1.3
+    roll = gs.band(gs.noise(n, rng), lo=20, hi=300) * gs.env(t, 0.05, 1.4)
+    return gs.normalize(crack1 + crack2 + roll, 0.98)
+
+
+def flare(seed):
+    """Éjection de leurres : claquements pyrotechniques en salve et chuintement."""
+    rng = np.random.default_rng(seed)
+    t = gs.t_axis(1.2)
+    n = len(t)
+    x = np.zeros(n)
+    for k in range(4):
+        tk = np.clip(t - k * 0.12, 0, None)
+        x += gs.band(gs.noise(n, rng), lo=600, hi=7000) * gs.env(tk, 0.001, 0.04) * (t > k * 0.12)
+    fizz = gs.band(gs.noise(n, rng), lo=2000, hi=8000) * gs.env(t, 0.05, 0.9) * 0.3
+    return gs.normalize(x + fizz, 0.8)
+
+
+def missile_warning(seed):
+    """Alerte missile du cockpit : tonalité alternée aiguë très rapide."""
+    t = gs.t_axis(1.0)
+    f = np.where((t * 10) % 1 < 0.5, 1800, 1200)
+    x = np.sin(2 * np.pi * np.cumsum(f) / SR) * ((t * 10) % 0.5 < 0.42)
+    return gs.normalize(x, 0.65)
+
+
+def ejection(seed):
+    """Siège éjectable : charge pyrotechnique de la verrière, fusée du siège."""
+    rng = np.random.default_rng(seed)
+    t = gs.t_axis(2.2)
+    n = len(t)
+    bang = gs.band(gs.noise(n, rng), lo=60, hi=6000) * gs.env(t, 0.001, 0.07) * 1.5
+    rocket = gs.band(gs.noise(n, rng), lo=200, hi=3000) * gs.env(np.clip(t - 0.08, 0, None), 0.02, 0.6) * (t > 0.08)
+    return gs.normalize(bang + rocket, 0.9)
+
+
 SOUNDS = {
     "mil.radio_dispatch_call": (lambda s: radio_call(s), 2, "radio_call"),
     "mil.radio_call_cut": (lambda s: radio_cut(s), 1, "radio_cut"),
@@ -255,6 +322,12 @@ SOUNDS = {
     "mil.nuclear_detonation_rumble": (lambda s: rumble(s), 1, "nuclear_rumble"),
     "mil.geiger_clicks": (lambda s: geiger(s), 3, "geiger"),
     "mil.prop_engine_loop": (lambda s: prop_loop(s), 1, "prop_engine"),
+    "mil.jet_engine_loop": (lambda s: jet_loop(s), 1, "jet_engine"),
+    "mil.afterburner": (lambda s: afterburner(s), 1, "afterburner"),
+    "mil.sonic_boom": (lambda s: sonic_boom(s), 2, "sonic_boom"),
+    "mil.flare_launch": (lambda s: flare(s), 1, "flare_launch"),
+    "mil.missile_warning": (lambda s: missile_warning(s), 1, "missile_warning"),
+    "mil.ejection_seat": (lambda s: ejection(s), 1, "ejection_seat"),
 }
 
 

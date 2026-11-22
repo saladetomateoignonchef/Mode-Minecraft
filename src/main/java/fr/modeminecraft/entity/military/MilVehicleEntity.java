@@ -89,6 +89,8 @@ public class MilVehicleEntity extends Entity {
     public static final int CRASHING = 64, TAIL_HIT = 128, WRECK = 256;
     /** B-29 : train rentré, trappes de soute ouvertes, bombe nucléaire armée. */
     public static final int GEAR_UP = 512, BAY_OPEN = 1024, NUKE_ARMED = 2048;
+    /** Aviation : missile en approche (alarme), postcombustion, signature radar trahie (soute ouverte il y a < 3 s). */
+    public static final int MISSILE_WARN = 4096, AFTERBURNER = 8192, STEALTH_BREAK = 16384;
     /** Soute à bombes (avions). */
     public final fr.modeminecraft.nuclear.BombBay bombBay = new fr.modeminecraft.nuclear.BombBay();
     /** Assiette de l'avion (degrés, positif = nez en l'air) et viseur de bombardement actif (client du pilote). */
@@ -100,6 +102,23 @@ public class MilVehicleEntity extends Entity {
     public static boolean bombSightActive;
     private int bombCooldown;
     private double lastVy;
+    /** Station d'armes du pilote (indice dans MilType.stations()) ; leurres ; fin de la dernière salve de leurres. */
+    private int station;
+    private int flares = 60;
+    private long flareUntil, warnUntil, stealthBreakUntil;
+    /** Réarmement au sol (ticks passés près d'une citerne de kérosène et d'une caisse de munitions d'aviation). */
+    private int rearmTicks;
+    /** Assiette déduite du mouvement (serveur) : direction des armes fixes de l'avion. */
+    private float flightPitch;
+    /** Pilote automatique de l'IA aérienne : cap, assiette (convention du joueur : négatif = cabrer) et gaz. */
+    public float aiYaw, aiPitch, aiThrottle;
+    /** Éjection / saut en parachute en cours : la descente du passager est autorisée. */
+    private boolean letGo;
+    /** C-130 : véhicule léger embarqué (NBT) et caisses de ravitaillement parachutables. */
+    private CompoundTag cargo;
+    private int supplyCrates = 4;
+    /** Véhicule largué sous parachute (C-130) : chute freinée jusqu'au sol. */
+    public boolean parachute;
 
     /** Entrées d'un pilote d'hélicoptère côté client (monter / descendre) : fournies par le code client. */
     public static java.util.function.IntSupplier heliLift = () -> 0;
@@ -155,6 +174,7 @@ public class MilVehicleEntity extends Entity {
         heat = new int[nw];
         alternate = new boolean[nw];
         trunk = new SimpleContainer(Math.max(9, t.trunk));
+        bombBay.configure(t.bayCapacity(), t.bayNukes());
     }
 
     public static MilVehicleEntity create(Level level, MilType t, double x, double y, double z, float yaw) {
@@ -233,6 +253,26 @@ public class MilVehicleEntity extends Entity {
             case UH_60_BLACK_HAWK -> new float[]{14.5f, 2.4f, 3.1f};
             case AH_64E_APACHE -> new float[]{13.5f, 2.2f, 2.8f};
             case B29_SUPERFORTRESS -> new float[]{20.5f, 3.2f, 4.4f};
+            case IL_2 -> new float[]{11.4f, 2.0f, 3.2f};
+            case LA_7 -> new float[]{8.6f, 1.8f, 2.8f};
+            case MIG_15 -> new float[]{10.0f, 1.8f, 3.0f};
+            case TU_95 -> new float[]{30.5f, 3.4f, 5.5f};
+            case MIG_21 -> new float[]{13.4f, 1.8f, 3.2f};
+            case MIG_25 -> new float[]{19.4f, 3.8f, 4.4f};
+            case SU_25 -> new float[]{14.6f, 2.6f, 3.8f};
+            case MIG_29 -> new float[]{16.6f, 3.2f, 3.6f};
+            case SU_34 -> new float[]{20.6f, 3.8f, 4.4f};
+            case SU_57 -> new float[]{19.0f, 4.0f, 3.8f};
+            case P_51 -> new float[]{9.4f, 1.6f, 2.8f};
+            case F_86 -> new float[]{10.8f, 1.8f, 3.2f};
+            case F_4E -> new float[]{17.6f, 3.2f, 4.0f};
+            case C_130 -> new float[]{28.5f, 4.2f, 6.2f};
+            case A_10 -> new float[]{16.0f, 3.2f, 4.2f};
+            case F_117 -> new float[]{14.6f, 4.0f, 2.8f};
+            case F_15E -> new float[]{18.6f, 3.6f, 4.2f};
+            case F_16C -> new float[]{14.6f, 2.0f, 3.8f};
+            case B_2 -> new float[]{15.0f, 7.5f, 3.6f};
+            case F_22 -> new float[]{17.8f, 4.0f, 3.8f};
             case S_400, ISKANDER -> new float[]{12.6f, 2.8f, 3.0f};
             case S_500 -> new float[]{13.6f, 2.9f, 3.1f};
         };
@@ -506,9 +546,23 @@ public class MilVehicleEntity extends Entity {
             return new float[]{p.zza, p.xxa};
         }
         if (c instanceof HumanBotEntity bot && !level().isClientSide) {
-            return MilAI.drive(this, bot);
+            return type().plane() ? new float[]{aiThrottle, 0} : MilAI.drive(this, bot);
         }
         return new float[]{0, 0};
+    }
+
+    /** Afterburner demandé par le pilote local (Ctrl), fourni par le code client. */
+    public static java.util.function.BooleanSupplier afterburnerKey = () -> false;
+
+    /** Cap et assiette visés par le pilote (regard du joueur : vol arcade guidé à la souris), ou consigne de l'IA. */
+    private float[] pilotLook(Entity c) {
+        if (c instanceof Player p) {
+            return new float[]{p.getYRot(), p.getXRot()};
+        }
+        if (c instanceof HumanBotEntity) {
+            return new float[]{aiYaw, aiPitch};
+        }
+        return null;
     }
 
     private boolean canRun() {
@@ -516,6 +570,16 @@ public class MilVehicleEntity extends Entity {
     }
 
     private void drive() {
+        if (parachute) {
+            // véhicule largué par un C-130 : descente sous parachute
+            Vec3 dm = getDeltaMovement();
+            setDeltaMovement(dm.x * 0.97, Math.max(-0.3, dm.y - 0.04), dm.z * 0.97);
+            move(MoverType.SELF, getDeltaMovement());
+            if (onGround() || isInWater()) {
+                parachute = false;
+            }
+            return;
+        }
         MilType t = type();
         float[] in = canRun() ? input() : new float[]{0, 0};
         float forward = in[0], side = in[1];
@@ -645,9 +709,10 @@ public class MilVehicleEntity extends Entity {
         if (!planeInit) {
             // entité (re)créée en plein vol : on repart de l'état synchronisé (moteurs, vitesse)
             planeInit = true;
-            spool = Math.max(rotor(), onGround() ? 0 : 0.9f);
+            boolean parked = onGround() || !level().noCollision(this, getBoundingBox().expandTowards(0, -2, 0));
+            spool = Math.max(rotor(), parked ? 0 : 0.9f);
             speed = Math.max(speed, Math.abs(speed()));
-            if (!onGround()) {
+            if (!parked) {
                 speed = Math.max(speed, type().maxSpeed() * 0.7f);              // en vol : on garde la vitesse de croisière
             }
         }
@@ -657,34 +722,64 @@ public class MilVehicleEntity extends Entity {
         if (!level().isClientSide) {
             entityData.set(ROTOR, r);
         }
-        float[] in = run ? input() : new float[]{0, 0};
         Entity c = getControllingPassenger();
+        if (c instanceof HumanBotEntity bot && !level().isClientSide) {
+            AirAI.fly(this, bot);
+        }
+        float[] in = run ? input() : new float[]{0, 0};
         boolean ground = onGround();
-        float max = t.maxSpeed(), stall = max * 0.45f;
+        boolean ab = t.jet() && run && is(AFTERBURNER) && fuel() > 0;
+        float cruise = t.maxSpeed(), max = cruise * (ab ? 1.25f : 1f), stall = cruise * 0.45f;
+        float accel = cruise / (t.jet() ? (ab ? 80f : 140f) : 170f);
         if (in[0] > 0) {
-            speed = Math.min(max * r, speed + max / 170f);
+            speed = Math.min(max * r, speed + accel);
         } else if (in[0] < 0) {
-            speed = Math.max(0, speed - max / (ground ? 45f : 260f));
+            speed = Math.max(0, speed - cruise / (ground ? 45f : 260f));
         } else if (!run) {
-            speed = Math.max(0, speed - max / (ground ? 60f : 400f));
+            speed = Math.max(0, speed - cruise / (ground ? 60f : 400f));
         } else if (ground) {
-            speed = Math.max(0, speed - max / 600f);
+            speed = Math.max(0, speed - cruise / 600f);
+        }
+        if (speed > max && !ground) {
+            speed = Math.max(max, speed - cruise / 300f);                         // postcombustion coupée : on revient à la croisière
         }
         boolean flying = speed >= stall;
-        float want = 0;
-        if (c instanceof Player p && !(level().isClientSide && bombSightActive)) {
-            want = Mth.clamp(-p.getXRot() * 0.8f, -28, 22);
-        }
+        float[] look = pilotLook(c);
+        boolean sight = level().isClientSide && bombSightActive;
+        float rate = t.turnRate() * Mth.clamp(speed / Math.max(0.01f, stall * 1.6f), 0.35f, 1f) * (ab ? 0.85f : 1f);
+        float pitchMax = t.heavy() ? 22 : 60, pitchRate = t.heavy() ? 1.2f : 2.6f;
+        float want = 0, dyaw;
         if (ground) {
-            want = flying ? Math.max(0, want) : 0;                                  // au sol : seule la rotation est possible
+            // roulage : Q / D seulement ; rotation (cabrer) au-dessus de la vitesse de décollage
+            dyaw = -in[1] * (speed < 0.05f ? 0 : 1.4f);
+            if (look != null && flying && !sight) {
+                want = Math.max(0, Mth.clamp(-look[1] * 0.8f, -pitchMax, pitchMax));
+            }
+        } else if (look == null || sight || in[1] != 0) {
+            // Q / D (ou viseur de bombardement) : virage manuel ; la vue du pilote tourne avec l'avion
+            dyaw = -in[1] * rate;
+            if (look != null && !sight) {
+                want = Mth.clamp(-look[1] * 0.8f, -pitchMax, pitchMax);
+            }
+            if (c instanceof Player p && dyaw != 0) {
+                p.setYRot(p.getYRot() + dyaw);
+                p.yRotO += dyaw;
+            }
+        } else {
+            // vol arcade : l'avion vire vers l'endroit où regarde le pilote
+            dyaw = Mth.clamp(Mth.wrapDegrees(look[0] - getYRot()), -rate, rate);
+            want = Mth.clamp(-look[1], -pitchMax, pitchMax);
         }
         if (!flying && !ground) {
             want = -25;                                                            // décrochage : le nez tombe
         }
-        planePitch = Mth.approach(planePitch, want, 1.2f);
-        float turn = ground ? (speed < 0.05f ? 0 : 1.4f) : 1.8f * Math.min(1, speed / stall);
-        setYRot(getYRot() - in[1] * turn);
-        roll = Mth.lerp(0.08f, roll, ground ? 0 : in[1] * 28f);
+        planePitch = Mth.approach(planePitch, want, pitchRate);
+        if (flying && !ground) {
+            // énergie : la montée coûte de la vitesse, le piqué en donne
+            speed = Mth.clamp(speed - (float) Math.sin(Math.toRadians(planePitch)) * cruise * 0.006f, 0, cruise * 1.45f);
+        }
+        setYRot(getYRot() + dyaw);
+        roll = Mth.lerp(0.12f, roll, ground ? 0 : -dyaw / Math.max(0.1f, rate) * (t.heavy() ? 28f : 65f));
         tilt = planePitch;
         double rad = Math.toRadians(getYRot()), pr = Math.toRadians(planePitch);
         double horiz = speed * Math.cos(pr);
@@ -696,6 +791,11 @@ public class MilVehicleEntity extends Entity {
             }
         } else {
             vy = ground ? 0 : Math.max(-1.4, getDeltaMovement().y - 0.06);
+        }
+        if (level().isClientSide && horiz > 1.2 && !level().isLoaded(BlockPos.containing(position().add(-Math.sin(rad) * horiz * 12, 0, Math.cos(rad) * horiz * 12)))) {
+            // terrain devant pas encore reçu du serveur : on ralentit le temps qu'il arrive
+            speed = Math.max(Math.max(1.2f, stall * 1.15f), speed - 0.15f);
+            horiz = speed * Math.cos(pr);
         }
         if (getY() > level().getMaxBuildHeight() - 30) {
             vy = Math.min(vy, -0.05);                                              // plafond pratique : l'air est trop rare
@@ -720,8 +820,29 @@ public class MilVehicleEntity extends Entity {
 
     /** Places qui commandent la soute : bombardier, ou pilote s'il est seul à bord. */
     public boolean canBomb(Entity e) {
+        MilType t = type();
+        if (!t.plane() || t.bayCapacity() <= 0 && t != MilType.C_130) {
+            return false;
+        }
         int s = seatOf(e);
-        return type().plane() && (s == 1 || s == 0 && getPassengers().size() == 1);
+        if (s >= 0 && s < t.seats.size() && t.seats.get(s).role() == MilType.Role.BOMBARDIER) {
+            return true;
+        }
+        if (s != 0) {
+            return false;
+        }
+        // pilote : seul à bord (mode solo), ou sans bombardier dans l'équipage
+        for (int i = 1; i < t.seats.size(); i++) {
+            if (t.seats.get(i).role() == MilType.Role.BOMBARDIER && occupant(i) != null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /** Soute interne (B-29, Tu-95) : les trappes doivent être ouvertes à la main (touche O) avant le largage. */
+    private boolean manualBay() {
+        return type() == MilType.B29_SUPERFORTRESS || type() == MilType.TU_95;
     }
 
     /** Touche G : sortir / rentrer le train (pilote). */
@@ -743,6 +864,14 @@ public class MilVehicleEntity extends Entity {
     /** Touche O : trappes de soute (une bombe nucléaire doit d'abord être armée). */
     public void toggleBay(Entity by) {
         if (!canBomb(by) && seatOf(by) != 0) {
+            return;
+        }
+        if (type() == MilType.C_130) {
+            setState(BAY_OPEN, !is(BAY_OPEN));
+            level().playSound(null, getX(), getY(), getZ(), ModSounds.HIMARS_HYDRAULICS.get(), SoundSource.NEUTRAL, 2f, 0.8f);
+            if (is(BAY_OPEN) && cargo != null && !level().noCollision(this, getBoundingBox().move(0, -0.25, 0))) {
+                unloadCargo(false);
+            }
             return;
         }
         if (!is(BAY_OPEN) && bombBay.hasNuke() && !is(NUKE_ARMED)) {
@@ -775,7 +904,11 @@ public class MilVehicleEntity extends Entity {
         if (level().isClientSide || !canBomb(by) || bombCooldown > 0) {
             return;
         }
-        if (!is(BAY_OPEN)) {
+        if (type() == MilType.C_130) {
+            c130Drop(by);
+            return;
+        }
+        if (!is(BAY_OPEN) && manualBay()) {
             if (by instanceof Player p) {
                 p.displayClientMessage(Component.translatable("message.modeminecraft.b29.open_bay").withStyle(ChatFormatting.YELLOW), true);
             }
@@ -804,9 +937,273 @@ public class MilVehicleEntity extends Entity {
             motion = new Vec3(-Math.sin(rad) * speed(), 0, Math.cos(rad) * speed());
         }
         LivingEntity owner = by instanceof LivingEntity le ? le : null;
-        level().addFreshEntity(new fr.modeminecraft.nuclear.BombEntity(level(), kind, owner, this, bay, motion.add(0, -0.1, 0)));
+        var bomb = new fr.modeminecraft.nuclear.BombEntity(level(), kind, owner, this, bay, motion.add(0, -0.1, 0));
+        if (kind == fr.modeminecraft.nuclear.BombItem.Kind.GUIDED) {
+            Vec3 mark = fr.modeminecraft.item.military.LaserDesignatorItem.mark(by);
+            Vec3 ap = aimPoint(by);
+            bomb.guideTo(mark != null ? mark : ap != null && ap.y < getY() - 5 ? ap : null);
+        }
+        level().addFreshEntity(bomb);
+        breakStealth();
         level().playSound(null, bay.x, bay.y, bay.z, ModSounds.BOMB_BAY_RELEASE.get(), SoundSource.NEUTRAL, 3f, 1f);
         infoDirty = true;
+    }
+
+    // ------------------------------------------------------------------ aviation : furtivité, leurres, éjection
+    /** Surface équivalente radar actuelle (F-117 / B-2 : 0 soute fermée, 0,35 pendant 3 s après l'ouverture). */
+    public float rcs() {
+        MilType t = type();
+        if (t.rcs() <= 0) {
+            return is(BAY_OPEN) || is(STEALTH_BREAK) ? 0.35f : 0f;
+        }
+        return t.rcs();
+    }
+
+    private void breakStealth() {
+        if (type().rcs() <= 0.25f) {
+            stealthBreakUntil = level().getGameTime() + 60;
+            setState(STEALTH_BREAK, true);
+        }
+    }
+
+    /**
+     * Un radar (S-400, S-500, Shilka, Avenger, défense de base, missile à guidage radar) voit-il cette cible aérienne ?
+     * Les furtifs ne sont détectés qu'à courte portée (Su-57 150 blocs, F-22 90), le F-117 et le B-2 jamais soute fermée.
+     */
+    public static boolean radarSees(Entity radar, Entity e) {
+        if (!isAircraft(e)) {
+            return false;
+        }
+        MilVehicleEntity v = e instanceof MilVehicleEntity mv ? mv : null;
+        if (v == null || !v.type().plane()) {
+            return true;
+        }
+        float r = v.rcs();
+        if (r <= 0) {
+            return false;
+        }
+        if (r < 1) {
+            double range = r >= 0.3f ? 260 : v.type().stealthRange();
+            return radar.distanceToSqr(e) < range * range;
+        }
+        return true;
+    }
+
+    /** Leurres thermiques / paillettes (touche X) : 80 % des missiles guidés qui visent l'avion décrochent. */
+    public void flares() {
+        if (level().isClientSide || flares <= 0 || !type().plane() || level().getGameTime() < flareUntil - 20) {
+            return;
+        }
+        flares--;
+        flareUntil = level().getGameTime() + 30;
+        infoDirty = true;
+        ServerLevel sl = (ServerLevel) level();
+        Vec3 back = toWorld(-dims(type())[0] / 2, dims(type())[2] * 0.4, 0);
+        Vec3 m = position().subtract(xo, yo, zo);
+        for (int i = 0; i < 6; i++) {
+            double side = (i % 2 == 0 ? 1 : -1) * (1 + i * 0.4);
+            Vec3 p = back.add(toWorld(0, 0, side).subtract(position()).scale(0.6));
+            sl.sendParticles(ParticleTypes.FLAME, p.x, p.y, p.z, 4, 0.2, 0.2, 0.2, 0.05);
+            sl.sendParticles(ParticleTypes.FIREWORK, p.x, p.y - 0.5, p.z, 6, 0.4, 0.3, 0.4, 0.08);
+            sl.sendParticles(ParticleTypes.SMOKE, p.x - m.x, p.y - 1, p.z - m.z, 4, 0.5, 0.5, 0.5, 0.02);
+        }
+        level().playSound(null, getX(), getY(), getZ(), ModSounds.FLARE_LAUNCH.get(), SoundSource.NEUTRAL, 3f, 1f);
+    }
+
+    /** Une salve de leurres est en l'air (les missiles qui visent l'avion peuvent être déviés). */
+    public boolean flaring() {
+        return level().getGameTime() < flareUntil;
+    }
+
+    public long flareStamp() {
+        return flareUntil;
+    }
+
+    /** Un missile guidé verrouille cet avion : alarme dans le cockpit. */
+    public void missileWarning() {
+        warnUntil = level().getGameTime() + 12;
+        if (!is(MISSILE_WARN)) {
+            setState(MISSILE_WARN, true);
+        }
+    }
+
+    /** Siège éjectable (C maintenue ou double appui) : verrière éjectée, propulsion verticale, parachute. */
+    public void eject(Entity e) {
+        if (level().isClientSide || !type().plane() || !hasPassenger(e) || onGround()) {
+            return;
+        }
+        Vec3 m = position().subtract(xo, yo, zo);
+        Vec3 at = toWorld(0, dims(type())[2] + 1.5, 0);
+        letGo = true;
+        e.stopRiding();
+        letGo = false;
+        e.teleportTo(at.x, at.y, at.z);
+        e.setDeltaMovement(m.scale(0.4).add(0, 1.6, 0));
+        e.hurtMarked = true;
+        if (e instanceof LivingEntity le) {
+            le.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOW_FALLING, 900, 0, false, false, true));
+            le.getPersistentData().putLong("ModeMcParachute", level().getGameTime());
+        }
+        ServerLevel sl = (ServerLevel) level();
+        sl.sendParticles(ParticleTypes.EXPLOSION, at.x, at.y - 1, at.z, 2, 0.3, 0.3, 0.3, 0);
+        sl.sendParticles(ParticleTypes.LARGE_SMOKE, at.x, at.y - 1, at.z, 20, 0.5, 0.5, 0.5, 0.05);
+        level().playSound(null, at.x, at.y, at.z, ModSounds.EJECTION_SEAT.get(), SoundSource.NEUTRAL, 3f, 1f);
+        if (e instanceof Player p) {
+            p.displayClientMessage(Component.translatable("message.modeminecraft.air.ejected").withStyle(ChatFormatting.GOLD), true);
+        }
+        if (getControllingPassenger() == null) {
+            startCrash(false);                                                     // l'avion vide part en vrille
+        }
+    }
+
+    /** Descente autorisée : au sol, éjection, saut en parachute par la rampe du C-130, épave. */
+    public boolean mayDismount(Entity e) {
+        if (level().isClientSide || letGo || isRemoved() || !type().plane() || is(WRECK) || !e.isAlive() || !airborne()) {
+            return true;
+        }
+        if (type() == MilType.C_130 && is(BAY_OPEN) && seatOf(e) >= 2) {
+            // parachutistes : saut par la rampe arrière
+            if (e instanceof LivingEntity le) {
+                le.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.SLOW_FALLING, 900, 0, false, false, true));
+                le.getPersistentData().putLong("ModeMcParachute", level().getGameTime());
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /** Station d'armes actuelle du pilote : indice d'arme, ou -1 = bombes. */
+    public int currentStation() {
+        List<Integer> st = type().stations();
+        return st.isEmpty() ? -2 : st.get(Math.floorMod(station, st.size()));
+    }
+
+    /** Touche R (pilote) : station suivante (et munition suivante d'une station qui en a plusieurs). */
+    private void cycleStation(Entity e) {
+        List<Integer> st = type().stations();
+        if (st.isEmpty()) {
+            return;
+        }
+        int cur = currentStation();
+        if (cur >= 0 && type().weapons.get(cur).ammo().size() > 1 && selected[cur] < type().weapons.get(cur).ammo().size() - 1) {
+            selected[cur]++;
+        } else {
+            if (cur >= 0) {
+                selected[cur] = 0;
+            }
+            station = Math.floorMod(station + 1, st.size());
+        }
+        lockTicks = 0;
+        lockTarget = -1;
+        infoDirty = true;
+        if (e instanceof Player p) {
+            p.displayClientMessage(Component.translatable("message.modeminecraft.air.station", stationName(currentStation())), true);
+        }
+    }
+
+    public Component stationName(int st) {
+        if (st == -1) {
+            return Component.translatable("hud.modeminecraft.air.bombs");
+        }
+        if (st < 0) {
+            return Component.literal("-");
+        }
+        MilType.Weapon w = type().weapons.get(st);
+        Component n = Component.translatable("weapon.modeminecraft.mil." + w.key());
+        if (w.ammo().size() > 1) {
+            n = n.copy().append(" (").append(Component.translatable("ammo_short.modeminecraft." + selectedAmmo(st).name().toLowerCase())).append(")");
+        }
+        return n;
+    }
+
+    // ------------------------------------------------------------------ C-130 : rampe, parachutages, fret
+    private void c130Drop(Entity by) {
+        if (!is(BAY_OPEN)) {
+            if (by instanceof Player p) {
+                p.displayClientMessage(Component.translatable("message.modeminecraft.air.ramp_closed").withStyle(ChatFormatting.YELLOW), true);
+            }
+            bombCooldown = 10;
+            return;
+        }
+        bombCooldown = 30;
+        boolean grounded = !level().noCollision(this, getBoundingBox().move(0, -0.25, 0));
+        if (cargo != null) {
+            unloadCargo(!grounded);
+            return;
+        }
+        if (grounded) {
+            return;
+        }
+        if (supplyCrates <= 0) {
+            if (by instanceof Player p) {
+                p.displayClientMessage(Component.translatable("message.modeminecraft.air.no_crates").withStyle(ChatFormatting.GRAY), true);
+            }
+            return;
+        }
+        supplyCrates--;
+        infoDirty = true;
+        Vec3 at = toWorld(-dims(type())[0] / 2 - 2, 1, 0);
+        level().addFreshEntity(new fr.modeminecraft.entity.AirdropEntity(level(), at.x, at.y, at.z));
+        level().playSound(null, at.x, at.y, at.z, ModSounds.BOMB_BAY_RELEASE.get(), SoundSource.NEUTRAL, 2f, 0.8f);
+    }
+
+    /** Véhicule léger embarquable par la rampe du C-130 (4x4, blindés à roues légers). */
+    private static boolean lightVehicle(MilVehicleEntity o) {
+        MilType t = o.type();
+        return t.chassis == MilType.Chassis.WHEELS && !t.has(MilType.Flag.STRATEGIC) && dims(t)[0] <= 6.5f;
+    }
+
+    private void loadCargo(ServerLevel sl) {
+        Vec3 ramp = toWorld(-dims(type())[0] / 2 - 1.5, 0, 0);
+        for (MilVehicleEntity o : sl.getEntitiesOfClass(MilVehicleEntity.class, new net.minecraft.world.phys.AABB(ramp, ramp).inflate(3.5, 2, 3.5))) {
+            if (o == this || !lightVehicle(o) || Math.abs(o.speed()) > 0.25f || o.is(WRECK)) {
+                continue;
+            }
+            List<Entity> crew = List.copyOf(o.getPassengers());
+            for (Entity p : crew) {
+                p.stopRiding();
+            }
+            CompoundTag tag = new CompoundTag();
+            o.saveWithoutId(tag);
+            cargo = tag;
+            o.discard();
+            for (Entity p : crew) {
+                if (getPassengers().size() < type().seats.size()) {
+                    p.startRiding(this, true);
+                }
+            }
+            infoDirty = true;
+            level().playSound(null, getX(), getY(), getZ(), SoundEvents.CHAIN_PLACE, SoundSource.NEUTRAL, 2f, 0.6f);
+            if (getControllingPassenger() instanceof Player pl) {
+                pl.displayClientMessage(Component.translatable("message.modeminecraft.air.cargo_loaded",
+                        Component.translatable("entity.modeminecraft." + o.type().id)), true);
+            }
+            return;
+        }
+    }
+
+    /** Débarque le véhicule embarqué par la rampe (au sol), ou le largue sous parachute (en vol). */
+    private void unloadCargo(boolean airdrop) {
+        MilType t = MilType.byId(cargo.getString("MilType"));
+        if (t == null) {
+            cargo = null;
+            return;
+        }
+        Vec3 at = toWorld(-dims(type())[0] / 2 - (airdrop ? 6 : 4), airdrop ? -2 : 0.2, 0);
+        MilVehicleEntity o = create(level(), t, at.x, at.y, at.z, getYRot());
+        o.load(cargo);
+        o.setPos(at.x, at.y, at.z);
+        o.setDeltaMovement(airdrop ? position().subtract(xo, yo, zo).scale(0.5) : Vec3.ZERO);
+        o.setUUID(java.util.UUID.randomUUID());
+        o.parachute = airdrop;
+        level().addFreshEntity(o);
+        cargo = null;
+        infoDirty = true;
+        level().playSound(null, at.x, at.y, at.z, SoundEvents.CHAIN_BREAK, SoundSource.NEUTRAL, 2f, 0.6f);
+    }
+
+    public boolean hasCargo() {
+        return cargo != null;
     }
 
     // ------------------------------------------------------------------ crash des aéronefs
@@ -815,7 +1212,8 @@ public class MilVehicleEntity extends Entity {
     /** En vol (plus de 3 blocs au-dessus du sol) ? */
     private boolean airborne() {
         return !onGround() && !isInWater()
-                && getY() - level().getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, getBlockX(), getBlockZ()) > 3;
+                && getY() - level().getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, getBlockX(), getBlockZ()) > 3
+                && level().noCollision(this, getBoundingBox().expandTowards(0, -3, 0));     // rien juste dessous (hangar, piste surélevée)
     }
 
     /**
@@ -1094,7 +1492,7 @@ public class MilVehicleEntity extends Entity {
         }
         Entity best = null;
         double bestD = 350 * 350;
-        for (Entity e : level().getEntities(this, getBoundingBox().inflate(350), MilVehicleEntity::isAircraft)) {
+        for (Entity e : level().getEntities(this, getBoundingBox().inflate(350), e2 -> radarSees(this, e2))) {
             double d = e.distanceToSqr(this);
             if (d < bestD && !hasPassenger(e)) {
                 bestD = d;
@@ -1142,6 +1540,13 @@ public class MilVehicleEntity extends Entity {
             float py = shooter.getYRot(), pp = shooter.getXRot();
             pp = Mth.clamp(pp, -w.maxPitch(), -w.minPitch());
             dir = Vec3.directionFromRotation(pp, py);
+        } else if (type().plane()) {
+            // arme fixe d'avion : dans l'axe du fuselage (assiette de l'avion)
+            float fp = level().isClientSide && isControlledByLocalInstance() ? planePitch : flightPitch;
+            dir = Vec3.directionFromRotation(-fp, getYRot());
+            double cp = Math.cos(Math.toRadians(fp)), sp = Math.sin(Math.toRadians(fp));
+            double hy = dims(type())[2] * 0.45;
+            pos = toWorld(x * cp - (y - hy) * sp, hy + x * sp + (y - hy) * cp, z);
         } else if (mount == 0) {
             float pp = shooter instanceof LivingEntity ? Mth.clamp(shooter.getXRot(), -w.maxPitch(), -w.minPitch()) : 0;
             dir = Vec3.directionFromRotation(pp, getYRot());
@@ -1157,7 +1562,7 @@ public class MilVehicleEntity extends Entity {
         ServerLevel sl = (ServerLevel) level();
         long now = sl.getGameTime();
         // patrouille sans joueur à proximité : disparaît avec son équipage
-        if (patrol && tickCount % 200 == 0 && sl.getNearestPlayer(this, 192) == null) {
+        if (patrol && tickCount % 200 == 0 && sl.getNearestPlayer(this, t.plane() ? 640 : 192) == null) {
             for (Entity p : List.copyOf(getPassengers())) {
                 p.discard();
             }
@@ -1166,8 +1571,8 @@ public class MilVehicleEntity extends Entity {
         }
         // carburant (moteur qui tourne)
         if (canRun()) {
-            float load = 0.15f + Math.abs(speed()) / Math.max(0.01f, t.maxSpeed());
-            float minutes = t.heli() ? 14 : 22;
+            float load = (0.15f + Math.abs(speed()) / Math.max(0.01f, t.maxSpeed())) * (is(AFTERBURNER) ? 3 : 1);
+            float minutes = t.plane() ? 20 : t.heli() ? 14 : 22;
             setFuel(fuel() - load / (minutes * 1200f));
             if (fuel() <= 0 && getControllingPassenger() instanceof Player p) {
                 p.displayClientMessage(Component.translatable("message.modeminecraft.mil.no_fuel").withStyle(ChatFormatting.RED), true);
@@ -1253,16 +1658,28 @@ public class MilVehicleEntity extends Entity {
         if (t.plane() && tickCount % 10 == 0) {
             infoDirty = true;                                                       // contenu de la soute (rempli à la main)
         }
+        if (t.plane()) {
+            airTick(sl, now);
+        }
         if (t.heli() && !onGround()) {
-            // aéronef rapide : chunks chargés devant lui (sinon il dépasse la génération du terrain et « saute »)
+            // aéronef rapide : couloir de chunks chargés devant lui (sinon il entre dans du terrain pas encore généré,
+            // le serveur cesse de le suivre et il « saute » ou disparaît sous son pilote)
             Vec3 motion = position().subtract(xo, yo, zo);
-            if (motion.lengthSqr() > 0.25) {
-                ChunkPos ahead = new ChunkPos(BlockPos.containing(position().add(motion.scale(50))));
-                if (!ahead.equals(flightTicket) || tickCount % 40 == 0) {
-                    sl.getChunkSource().addRegionTicket(FLIGHT_TICKET, ahead, 3, ahead);
-                    ChunkPos mid = new ChunkPos(BlockPos.containing(position().add(motion.scale(25))));
-                    sl.getChunkSource().addRegionTicket(FLIGHT_TICKET, mid, 3, mid);
-                    flightTicket = ahead;
+            ChunkPos here = chunkPosition();
+            if (!here.equals(flightTicket) || tickCount % 40 == 0) {
+                sl.getChunkSource().addRegionTicket(FLIGHT_TICKET, here, 3, here);
+                flightTicket = here;
+            }
+            if (motion.lengthSqr() > 0.04 && tickCount % 8 == 0) {
+                Vec3 dir = new Vec3(motion.x, 0, motion.z).normalize();
+                int reach = (int) Math.min(10, Math.ceil(motion.length() * 40 / 16));        // ~2 s de vol
+                ChunkPos last = here;
+                for (int k = 1; k <= reach; k++) {
+                    ChunkPos cp = new ChunkPos(BlockPos.containing(position().add(dir.scale(k * 16))));
+                    if (!cp.equals(last)) {
+                        sl.getChunkSource().addRegionTicket(FLIGHT_TICKET, cp, 1, cp);
+                        last = cp;
+                    }
                 }
             }
         }
@@ -1285,8 +1702,9 @@ public class MilVehicleEntity extends Entity {
         }
         // armes
         for (Entity p : getPassengers()) {
-            if (t.plane() && p instanceof Player pl && canBomb(pl) && TriggerHandler.isTriggerDown(pl)) {
-                dropBomb(pl);                                                       // tapis de bombes en maintenant le clic
+            if (t.plane() && (seatOf(p) == 0 || canBomb(p))) {
+                planeWeapons(p, now);
+                continue;
             }
             MilType.Seat s = weaponSeat(p);
             if (s == null) {
@@ -1346,6 +1764,181 @@ public class MilVehicleEntity extends Entity {
         if (infoDirty && tickCount % 2 == 0) {
             syncInfo();
         }
+    }
+
+    /** Pilote (et bombardier) d'un avion : clic droit = canon de bord, clic gauche = station d'armes (R pour changer). */
+    private void planeWeapons(Entity p, long now) {
+        MilType t = type();
+        boolean left, right;
+        if (p instanceof Player pl) {
+            left = TriggerHandler.isTriggerDown(pl);
+            right = TriggerHandler.isRightHeld(pl);
+        } else if (p instanceof HumanBotEntity) {
+            left = AirAI.wantsMissile(this);
+            right = AirAI.wantsGun(this);
+        } else {
+            return;
+        }
+        if (seatOf(p) != 0) {
+            if (left && canBomb(p)) {
+                dropBomb(p);                                                       // bombardier : largage
+            }
+            return;
+        }
+        int g = t.planeGun();
+        int st = currentStation();
+        if (right && g >= 0) {
+            fire(g, p, now);
+        }
+        if (st >= 0) {
+            MilType.Weapon w = t.weapons.get(st);
+            if (p instanceof HumanBotEntity) {
+                // verrouillage géré par AirAI
+            } else if (w.kind() == MilType.Kind.AAM || w.kind() == MilType.Kind.AGM) {
+                updateLock(p, w);
+            } else if (is(LOCKED) || is(LOCKING)) {
+                setState(LOCKED, false);
+                setState(LOCKING, false);
+                entityData.set(LOCK_ID, -1);
+            }
+            if (left) {
+                fire(st, p, now);
+            }
+        } else if (st == -1 && left && canBomb(p)) {
+            dropBomb(p);                                                           // tapis de bombes en maintenant le clic
+        }
+    }
+
+    /** Aviation, côté serveur : assiette, alarmes, furtivité, réarmement au sol, fret du C-130. */
+    private void airTick(ServerLevel sl, long now) {
+        double dy = getY() - yo, hs = Math.hypot(getX() - xo, getZ() - zo);
+        if (hs > 0.05) {
+            flightPitch = (float) Math.toDegrees(Math.atan2(dy, hs));
+        } else if (onGround()) {
+            flightPitch = 0;
+        }
+        if (is(MISSILE_WARN) && now > warnUntil) {
+            setState(MISSILE_WARN, false);
+        }
+        if (is(STEALTH_BREAK) && now > stealthBreakUntil) {
+            setState(STEALTH_BREAK, false);
+        }
+        if (is(AFTERBURNER) && (fuel() <= 0 || !(getControllingPassenger() instanceof Player) && !(getControllingPassenger() instanceof HumanBotEntity))) {
+            setState(AFTERBURNER, false);
+        }
+        boolean grounded = onGround() || !level().noCollision(this, getBoundingBox().move(0, -0.25, 0));
+        if (type() == MilType.C_130 && grounded && is(BAY_OPEN) && cargo == null && tickCount % 10 == 0) {
+            loadCargo(sl);
+        }
+        // réarmement : citerne de kérosène + caisse de munitions d'aviation à moins de 10 blocs, avion immobile au sol
+        if (tickCount % 20 == 0) {
+            boolean still = grounded && hs < 0.05;
+            boolean fuelOk = false, ammoOk = false;
+            if (still) {
+                BlockPos c = blockPosition();
+                for (BlockPos q : BlockPos.betweenClosed(c.offset(-14, -2, -14), c.offset(14, 4, 14))) {
+                    var st = sl.getBlockState(q);
+                    fuelOk |= st.is(fr.modeminecraft.registry.ModBlocks.KEROSENE_TANK.get());
+                    ammoOk |= st.is(fr.modeminecraft.registry.ModBlocks.AVIATION_AMMO_CRATE.get());
+                    if (fuelOk && ammoOk) {
+                        break;
+                    }
+                }
+            }
+            if (fuelOk && ammoOk) {
+                rearmTicks += 20;
+                infoDirty = true;
+                if (rearmTicks >= 200) {
+                    rearmTicks = 0;
+                    fillAmmo(1f);
+                    flares = 60;
+                    supplyCrates = 4;
+                    setFuel(1f);
+                    bombBay.refill(type().defaultBomb());
+                    entityData.set(HEALTH, Math.min(type().health, health() + type().health * 0.25f));
+                    level().playSound(null, getX(), getY(), getZ(), SoundEvents.ARMOR_EQUIP_NETHERITE.value(), SoundSource.NEUTRAL, 2f, 0.7f);
+                    if (getControllingPassenger() instanceof Player pl) {
+                        pl.displayClientMessage(Component.translatable("message.modeminecraft.air.rearmed").withStyle(ChatFormatting.GREEN), true);
+                    }
+                } else if (getControllingPassenger() instanceof Player pl) {
+                    pl.displayClientMessage(Component.translatable("message.modeminecraft.air.rearming", rearmTicks / 20, 10), true);
+                }
+            } else if (rearmTicks > 0) {
+                rearmTicks = 0;
+                infoDirty = true;
+            }
+        }
+    }
+
+    /** IA aérienne : verrouillage d'une cible par l'autodirecteur de l'arme `wi` (1,5 s dans le cône du nez). */
+    void aiLock(Entity t, int wi) {
+        if (t == null) {
+            lockTicks = 0;
+            lockCandidate = -1;
+            lockTarget = -1;
+            setState(LOCKED, false);
+            return;
+        }
+        List<Integer> st = type().stations();
+        int k = st.indexOf(wi);
+        if (k >= 0) {
+            station = k;
+        }
+        if (t.getId() != lockCandidate) {
+            lockCandidate = t.getId();
+            lockTicks = 0;
+        }
+        lockTicks++;
+        lockTarget = lockTicks >= 30 ? lockCandidate : -1;
+        setState(LOCKED, lockTarget >= 0);
+    }
+
+    boolean aiLockReady() {
+        return lockTarget >= 0;
+    }
+
+    /**
+     * Véhicule qui porte un joueur : toujours simulé et suivi, comme le joueur lui-même. Sinon, un avion qui entre dans
+     * une section de chunk dont les entités ne sont pas encore chargées cesse d'être suivi : il disparaît un instant sous
+     * son pilote côté client (ou pour de bon si le serveur rame).
+     */
+    @Override
+    public boolean isAlwaysTicking() {
+        for (Entity p : getPassengers()) {
+            if (p instanceof Player) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Au sol (le serveur ne simule pas le mouvement d'un avion piloté par un joueur : on teste le contact). */
+    public boolean groundedNow() {
+        return onGround() || !level().noCollision(this, getBoundingBox().move(0, -0.25, 0));
+    }
+
+    /** Garde la zone de l'avion chargée (apparition d'un avion de l'IA hors de la zone simulée). */
+    public void holdChunks() {
+        if (level() instanceof ServerLevel sl) {
+            ChunkPos cp = chunkPosition();
+            sl.getChunkSource().addRegionTicket(FLIGHT_TICKET, cp, 3, cp);
+        }
+    }
+
+    /** Train rentré (avions de l'IA mis en vol directement). */
+    public void setGearUp() {
+        setState(GEAR_UP, true);
+    }
+
+    /** Postcombustion (Ctrl), demandée par le pilote. */
+    public void setAfterburner(Entity by, boolean on) {
+        if (seatOf(by) == 0 && type().jet() && is(AFTERBURNER) != on) {
+            setState(AFTERBURNER, on && fuel() > 0);
+        }
+    }
+
+    public int flaresLeft() {
+        return flares;
     }
 
     private boolean crusher() {
@@ -1482,6 +2075,10 @@ public class MilVehicleEntity extends Entity {
 
     /** Touche R : munition suivante de l'arme principale (ou secondaire si la principale n'en a qu'une). */
     public void cycleAmmo(Entity e) {
+        if (type().plane() && seatOf(e) == 0) {
+            cycleStation(e);
+            return;
+        }
         MilType.Seat s = weaponSeat(e);
         if (s == null) {
             return;
@@ -1560,24 +2157,49 @@ public class MilVehicleEntity extends Entity {
         }
         float spread = w.kind() == MilType.Kind.MG ? 0.012f : w.kind() == MilType.Kind.ROCKETS && w.cooldown() <= 10 ? 0.03f : 0.004f;
         dir = dir.add(random.nextGaussian() * spread, random.nextGaussian() * spread, random.nextGaussian() * spread).normalize();
+        Vec3 carrier = type().plane() ? position().subtract(xo, yo, zo) : Vec3.ZERO;
         if (sh.bullet()) {
             var b = new fr.modeminecraft.entity.BulletEntity(sl, owner != null ? owner : getControllingPassenger(), sh.damage,
                     sh == MilAmmo.Shell.MG_145 ? 2 : 1, sh != MilAmmo.Shell.MG_762, fr.modeminecraft.item.gun.AmmoType.STANDARD);
             b.setPos(pos.x, pos.y, pos.z);
-            b.setDeltaMovement(dir.scale(sh.speed));
+            b.setDeltaMovement(dir.scale(sh.speed).add(carrier));
             sl.addFreshEntity(b);
         } else {
             ShellEntity s = new ShellEntity(sl, owner, sh, this);
             // missiles et roquettes : départ devant les tubes, hors de la boîte de collision du lanceur
             Vec3 out = sh.rocket() || sh.guided ? pos.add(dir.scale(1.2)) : pos;
             s.setPos(out.x, out.y, out.z);
-            s.setDeltaMovement(dir.scale(sh.speed * (sh.guided && sh != MilAmmo.Shell.SAM ? 0.7 : 1)));
+            s.setDeltaMovement(dir.scale(sh.speed * (sh.guided && sh != MilAmmo.Shell.SAM ? 0.7 : 1)).add(carrier));
             if (sh == MilAmmo.Shell.ATGM || sh == MilAmmo.Shell.REFLEKS) {
                 s.beamRider(shooter);                                       // suit le réticule du tireur (SACLOS)
             } else if (sh == MilAmmo.Shell.SAM) {
                 s.home(lockTarget >= 0 ? sl.getEntity(lockTarget) : null);      // sans verrouillage : tir libre, vol droit
             } else if (sh == MilAmmo.Shell.ROCKET_227 || sh == MilAmmo.Shell.ATACMS) {
                 s.gps(designated(shooter));
+            } else if (sh == MilAmmo.Shell.AAM_IR || sh == MilAmmo.Shell.AAM_RADAR) {
+                s.home(lockTarget >= 0 ? sl.getEntity(lockTarget) : null);      // sans verrouillage : vol droit
+            } else if (sh == MilAmmo.Shell.AGM) {
+                Entity locked = lockTarget >= 0 ? sl.getEntity(lockTarget) : null;
+                if (locked != null) {
+                    s.home(locked);
+                } else {
+                    Vec3 mark = fr.modeminecraft.item.military.LaserDesignatorItem.mark(shooter);
+                    s.gps(mark != null ? mark : ap != null ? ap : designated(shooter));
+                }
+            } else if (sh == MilAmmo.Shell.ARM) {
+                Entity radar = AirAI.nearestRadar(this, dir, 520);
+                if (radar != null) {
+                    s.home(radar);
+                } else {
+                    s.gps(ap != null ? ap : designated(shooter));
+                }
+            } else if (sh == MilAmmo.Shell.CRUISE) {
+                Vec3 mark = fr.modeminecraft.item.military.LaserDesignatorItem.mark(shooter);
+                s.gps(mark != null ? mark : ap != null ? ap : designated(shooter));
+                ShellEntity.preloadPath(sl, pos, mark != null ? mark : ap != null ? ap : designated(shooter));
+            }
+            if (sh.guided && type().plane()) {
+                breakStealth();                                                 // soute interne ouverte pour le tir
             }
             sl.addFreshEntity(s);
         }
@@ -1589,7 +2211,7 @@ public class MilVehicleEntity extends Entity {
             case CANNON -> ModSounds.TANK_CANNON.get();
             case AUTOCANNON -> ModSounds.AUTOCANNON.get();
             case ROCKETS -> ModSounds.ROCKET_LAUNCH.get();
-            case ATGM, SAM -> ModSounds.MISSILE_LAUNCH.get();
+            case ATGM, SAM, AAM, AGM, ARM, CRUISE -> ModSounds.MISSILE_LAUNCH.get();
             case GRENADE -> ModSounds.AUTOCANNON.get();
             case MG -> sh == MilAmmo.Shell.MG_762 ? ModSounds.VEHICLE_MG_LIGHT.get() : ModSounds.VEHICLE_MG_HEAVY.get();
         };
@@ -1630,8 +2252,16 @@ public class MilVehicleEntity extends Entity {
     private void updateLock(Entity shooter, MilType.Weapon w) {
         Vec3 eye = shooter.getEyePosition(), look = shooter.getLookAngle();
         Entity best = null;
-        double bestDot = Math.cos(Math.toRadians(6));
-        for (Entity e : level().getEntities(this, getBoundingBox().inflate(350), MilVehicleEntity::isAircraft)) {
+        boolean air = type().plane();
+        double bestDot = Math.cos(Math.toRadians(air ? type().lockCone() : 6));
+        double reach = air ? (selectedAmmo(type().weapons.indexOf(w)) == MilAmmo.AAM_RADAR ? 450 : 260) : 350;
+        java.util.function.Predicate<Entity> filter = w.kind() == MilType.Kind.AGM
+                ? e2 -> (e2 instanceof MilVehicleEntity mv && !mv.type().heli() && !mv.is(WRECK) || e2 instanceof fr.modeminecraft.entity.VehicleEntity)
+                : e2 -> radarSees(this, e2) && !(e2 instanceof ShellEntity && air);
+        for (Entity e : level().getEntities(this, getBoundingBox().inflate(reach), filter)) {
+            if (e.distanceToSqr(this) > reach * reach) {
+                continue;
+            }
             Vec3 to = e.position().add(0, e.getBbHeight() / 2, 0).subtract(eye);
             double dot = to.normalize().dot(look);
             if (dot > bestDot && !hasPassenger(e)) {
@@ -1662,6 +2292,10 @@ public class MilVehicleEntity extends Entity {
 
     /** Touche X : écran de fumée devant le véhicule (brise le verrouillage des missiles ennemis). */
     public void smoke() {
+        if (type().plane()) {
+            flares();
+            return;
+        }
         if (!type().has(MilType.Flag.SMOKE) || smoke <= 0 || level().isClientSide) {
             return;
         }
@@ -1754,6 +2388,13 @@ public class MilVehicleEntity extends Entity {
         if (type().plane()) {
             t.putInt("bombs", bombBay.bombs());
             t.putBoolean("nuke", bombBay.hasNuke());
+            t.putInt("station", currentStation());
+            t.putInt("flares", flares);
+            t.putInt("rearm", rearmTicks);
+            t.putInt("crates", supplyCrates);
+            if (cargo != null) {
+                t.putString("cargo", cargo.getString("MilType"));
+            }
         }
         if (hasSavedTarget) {
             t.putInt("LastTargetX", lastTargetX);                         // console Iskander : champs pré-remplis
@@ -2152,6 +2793,13 @@ public class MilVehicleEntity extends Entity {
         if (tag.contains("Dest")) {
             destination = BlockPos.of(tag.getLong("Dest"));
         }
+        if (tag.contains("Flares")) {
+            flares = tag.getInt("Flares");
+            station = tag.getInt("Station");
+            supplyCrates = tag.getInt("Crates");
+        }
+        cargo = tag.contains("Cargo") ? tag.getCompound("Cargo") : null;
+        parachute = tag.getBoolean("Parachute");
         infoDirty = true;
         refreshDimensions();
     }
@@ -2187,6 +2835,17 @@ public class MilVehicleEntity extends Entity {
         }
         if (destination != null) {
             tag.putLong("Dest", destination.asLong());
+        }
+        if (type().plane()) {
+            tag.putInt("Flares", flares);
+            tag.putInt("Station", station);
+            tag.putInt("Crates", supplyCrates);
+            if (cargo != null) {
+                tag.put("Cargo", cargo);
+            }
+        }
+        if (parachute) {
+            tag.putBoolean("Parachute", true);
         }
     }
 

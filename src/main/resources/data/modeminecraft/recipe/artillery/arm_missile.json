@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "artillery",
+  "ingredients": [
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 3
+    },
+    {
+      "item": "minecraft:tnt",
+      "count": 3
+    },
+    {
+      "item": "minecraft:quartz",
+      "count": 6
+    },
+    {
+      "item": "minecraft:comparator",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:arm_missile",
+    "count": 2
+  }
+}

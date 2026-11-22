@@ -52,7 +52,11 @@ public class MilVehicleItem extends Item {
         tooltip.add(Component.translatable("tooltip.modeminecraft.mil.stats", type.kmh, (int) type.health, type.seats.size())
                 .withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.translatable("tooltip.modeminecraft.mil." + type.id).withStyle(ChatFormatting.DARK_GREEN));
-        tooltip.add(Component.translatable(type.plane() ? "tooltip.modeminecraft.mil.controls_plane" : type.heli() ? "tooltip.modeminecraft.mil.controls_heli" : "tooltip.modeminecraft.mil.controls")
+        if (type.plane() && type.rcs() < 1) {
+            tooltip.add(Component.translatable("tooltip.modeminecraft.mil.stealth").withStyle(ChatFormatting.DARK_PURPLE));
+        }
+        tooltip.add(Component.translatable(type.plane() && type != fr.modeminecraft.entity.military.MilType.B29_SUPERFORTRESS ? "tooltip.modeminecraft.mil.controls_jet"
+                : type.plane() ? "tooltip.modeminecraft.mil.controls_plane" : type.heli() ? "tooltip.modeminecraft.mil.controls_heli" : "tooltip.modeminecraft.mil.controls")
                 .withStyle(ChatFormatting.DARK_GRAY));
     }
 }

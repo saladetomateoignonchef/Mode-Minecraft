@@ -1,0 +1,30 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "vehicles",
+  "ingredients": [
+    {
+      "item": "modeminecraft:aircraft_engine",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 10
+    },
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 8
+    },
+    {
+      "item": "minecraft:glass",
+      "count": 4
+    },
+    {
+      "item": "modeminecraft:wheel_set",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:la7",
+    "count": 1
+  }
+}

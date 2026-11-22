@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "SAS",
+    "ATA",
+    "SAS"
+  ],
+  "key": {
+    "S": {
+      "item": "modeminecraft:steel_plate"
+    },
+    "A": {
+      "item": "modeminecraft:ammo_box_50"
+    },
+    "T": {
+      "item": "minecraft:tnt"
+    }
+  },
+  "result": {
+    "id": "modeminecraft:aviation_ammo_crate",
+    "count": 1
+  }
+}

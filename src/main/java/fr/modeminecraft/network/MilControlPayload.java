@@ -11,7 +11,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 /** Commandes dans un véhicule militaire : fumigènes, changer de place, type de munition, déploiement. */
 public record MilControlPayload(int action) implements CustomPacketPayload {
-    public static final int SMOKE = 0, SEAT = 1, AMMO = 2, DEPLOY = 3, BAY = 4, GEAR = 5, DROP = 7;
+    public static final int SMOKE = 0, SEAT = 1, AMMO = 2, DEPLOY = 3, BAY = 4, GEAR = 5, DROP = 7, AB_ON = 8, AB_OFF = 9, EJECT = 10;
     public static final Type<MilControlPayload> TYPE = new Type<>(ModeMinecraft.id("mil_control"));
     public static final StreamCodec<RegistryFriendlyByteBuf, MilControlPayload> STREAM_CODEC =
             ByteBufCodecs.VAR_INT.map(MilControlPayload::new, MilControlPayload::action).cast();
@@ -32,6 +32,9 @@ public record MilControlPayload(int action) implements CustomPacketPayload {
                     case BAY -> v.toggleBay(p);
                     case GEAR -> v.toggleGear(p);
                     case DROP -> v.dropBomb(p);
+                    case AB_ON -> v.setAfterburner(p, true);
+                    case AB_OFF -> v.setAfterburner(p, false);
+                    case EJECT -> v.eject(p);
                     default -> {}
                 }
             }

@@ -776,6 +776,56 @@ Des **villes générées** apparaissent selon le biome (un centre de ville par r
   uranium** (alimentée par la redstone) transforme 16 lingots d'uranium en 1 cœur enrichi en 60 s. On trouve aussi des
   cœurs dans les chambres fortes du bunker et du QG soviétique.
 
+### Aviation militaire : 20 avions, furtivité radar et arsenal aérien lourd (mise à jour 0.7)
+#### La flotte (modèles voxel détaillés, établi d'assemblage)
+- **URSS / Russie** : Il-2 Sturmovik, La-7, MiG-15bis, Tu-95 Bear, MiG-21bis, MiG-25 Foxbat (le plus rapide du mod),
+  Su-25 Frogfoot, MiG-29 Fulcrum (viseur de casque : verrouillage à 35°), Su-34 Fullback, Su-57 Felon.
+- **États-Unis** : P-51D Mustang, B-29 Superfortress, F-86 Sabre, F-4E Phantom II, C-130 Hercules, A-10 Thunderbolt II
+  (GAU-8 de 3 000 obus), **F-117 Nighthawk**, F-15E Strike Eagle, F-16C Fighting Falcon, B-2 Spirit, F-22 Raptor.
+- **Munitions conséquentes** : canons et mitrailleuses de 1 200 à 3 000 coups, 38 à 80 roquettes, 6 à 12 missiles,
+  4 à 16 bombes selon l'appareil. Nouvelles munitions (établi d'artillerie) : missiles air-air **infrarouges** et **à
+  guidage radar**, missiles **air-sol** (verrouillent un véhicule ou volent vers le point visé), **anti-radar AGM-88
+  HARM** (fondent sur le S-400 / S-500 / Shilka le plus proche), **missile de croisière Kh-55**, **bombe guidée**
+  laser / GPS (souffle de 16 blocs).
+- Fabrication : turboréacteur, suite avionique, panneaux absorbants radar (furtifs), cockpit pressurisé, titane…
+  On trouve aussi des chasseurs garés dans les **méga-hangars** des bases (OTAN) et des cités soviétiques.
+
+#### Pilotage arcade guidé à la souris
+- **L'avion suit le regard** : on vise avec la souris, il vire (en s'inclinant) et cabre / pique vers ce point.
+  Z / S gaz, Q / D virage manuel, **Ctrl : postcombustion** (+25 % de vitesse, carburant x3, flamme aux tuyères).
+- **Clic droit** : canon de bord ; **clic gauche** : station d'armes choisie avec **R** (roquettes, missiles, bombes).
+  Missiles air-air : garder la cible dans le collimateur 1,5 s (carré jaune puis rouge), puis tirer.
+- **Mode solo** sur les multiplaces (F-4E, Su-34, Tu-95, C-130, B-2) : seul à bord, le pilote vole, tire, verrouille et
+  largue les bombes sans changer de siège.
+- **X : leurres** (60 par avion) : chaque salve a 80 % de chances de faire décrocher les missiles guidés qui arrivent
+  (S-400, Avenger, Stinger, missiles air-air). Alarme **« MISSILE ! »** dans le cockpit.
+- **Siège éjectable** : **C maintenue** (ou double appui) : verrière soufflée, propulsion verticale, **parachute** ;
+  l'avion vide part en vrille et explose à l'impact. On ne peut plus descendre en plein vol avec Maj.
+- **HUD tête haute** (vue cockpit) : échelle d'assiette qui suit le roulis, bande de cap, vitesse et **Mach**,
+  altitude et hauteur sol (alarme « REDRESSEZ ! »), postcombustion, train, station, leurres.
+- **Bang supersonique** au passage de Mach 1 (cône de vapeur + double détonation) ; le F-22, le Su-57 et le MiG-25
+  passent en super-croisière sans postcombustion. **Traînées de condensation** au-dessus de 150 blocs, vapeur de bout
+  d'aile en virage serré, fumée noire sous 50 % de structure.
+
+#### Furtivité radar
+- Surface équivalente radar : gros porteurs 1,5 ; chasseurs 1 ; **Su-57 et F-22 0,2** (détectés seulement à moins de
+  150 / 90 blocs) ; **F-117 et B-2 : 0** tant que la soute est fermée.
+- Les radars du S-400 et du S-500, la défense automatique des bases, la Shilka, l'Avenger, les missiles à guidage radar
+  et les intercepteurs de l'IA **ne voient pas** un furtif. Ouvrir la soute, larguer une bombe ou tirer un missile
+  trahit la signature (0,35) pendant 3 secondes. Les pilotes ennemis ne repèrent un F-117 qu'à l'œil nu, de jour, sous
+  35 blocs.
+
+#### Réarmement, C-130, IA aérienne
+- Avion immobile au sol à moins de 14 blocs d'une **citerne de kérosène** ET d'une **caisse de munitions
+  d'aviation** : plein de munitions, de leurres, de bombes et de kérosène en **10 secondes** (aires de réarmement le
+  long des pistes et dans les méga-hangars).
+- **C-130 Hercules** : 16 soldats ou un véhicule léger. **O** abaisse la rampe : au sol, un 4x4 / blindé léger qui
+  recule dessus est embarqué ; en vol, **Espace** le largue **sous parachute** (sinon : 4 caisses de ravitaillement
+  parachutées). Rampe ouverte, les passagers peuvent sauter en parachute (Maj).
+- **Patrouilles de chasse** au-dessus des bases militaires et des cités soviétiques, et **interceptions** : entrer en
+  aéronef dans leur espace aérien fait décoller deux intercepteurs (MiG-29, Su-57, MiG-25 / F-22, F-15E, F-16C) qui
+  attaquent au canon et aux missiles, lancent des leurres et évitent le sol. Les furtifs passent inaperçus.
+
 ### Gameplay et progression
 - **Niveaux des armes (1 à 5)** : chaque arme garde ses statistiques (éliminations, tirs à la tête, tirs, ratio)
   et gagne de l'expérience : +10 par élimination, +5 si tir à la tête, +10 pour un gros monstre (50 PV ou plus).

@@ -28,5 +28,17 @@ public final class MilEvents {
         }
     }
 
+    /** Pas de descente en plein vol (Maj) : il faut s'éjecter (C maintenue) ou sauter par la rampe du C-130. */
+    @SubscribeEvent
+    public static void onMount(net.neoforged.neoforge.event.entity.EntityMountEvent event) {
+        if (event.isDismounting() && event.getEntityBeingMounted() instanceof MilVehicleEntity v && !v.mayDismount(event.getEntityMounting())) {
+            event.setCanceled(true);
+            if (event.getEntityMounting() instanceof net.minecraft.world.entity.player.Player p && !p.level().isClientSide) {
+                p.displayClientMessage(net.minecraft.network.chat.Component.translatable("message.modeminecraft.air.no_dismount")
+                        .withStyle(net.minecraft.ChatFormatting.YELLOW), true);
+            }
+        }
+    }
+
     private MilEvents() {}
 }

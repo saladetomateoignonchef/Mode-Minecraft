@@ -23,7 +23,20 @@ public final class Bombs {
             case HE -> he(level, at, owner);
             case NAPALM -> napalm(level, at, owner);
             case NUKE -> NuclearExplosion.start(level, BlockPos.containing(at), owner);
+            case GUIDED -> guided(level, at, owner);
         }
+    }
+
+    /** GBU-27 / KAB-500 / JDAM : charge pénétrante, souffle de 16 blocs, cratère profond, bunkers et blindés détruits. */
+    static void guided(ServerLevel level, Vec3 at, Entity owner) {
+        crater(level, BlockPos.containing(at).below(2), 9, 1.2);
+        level.explode(owner, null, null, at.x, at.y, at.z, 8f, false, Level.ExplosionInteraction.TNT);
+        hurtAround(level, at, 16, 80, owner);
+        MilHelpers.damageVehicles(level, at, 16, 900);
+        level.sendParticles(ParticleTypes.EXPLOSION_EMITTER, at.x, at.y + 1, at.z, 5, 3, 2, 3, 0);
+        level.sendParticles(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, at.x, at.y + 2, at.z, 70, 4, 4, 4, 0.06);
+        level.playSound(null, at.x, at.y, at.z, ModSounds.HUGE_EXPLOSION.get(), SoundSource.NEUTRAL, 16f, 0.85f);
+        fr.modeminecraft.entity.bot.CivilianLife.panic(level, at, 90, 400);
     }
 
     /** AN-M65 : explosion de 14 blocs de rayon, cratère profond, véhicules blindés pulvérisés, pas de radiation. */

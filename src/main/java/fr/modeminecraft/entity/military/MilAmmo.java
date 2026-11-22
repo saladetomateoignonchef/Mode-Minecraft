@@ -37,7 +37,13 @@ public enum MilAmmo {
     S500_40N6(() -> ModItems.MISSILE_40N6M.get(), 1, Shell.SAM_EXTREME),
     ISK_HE(() -> ModItems.ISKANDER_HE.get(), 1, Shell.BALLISTIC),
     ISK_CLUSTER(() -> ModItems.ISKANDER_CLUSTER.get(), 1, Shell.BALLISTIC),
-    ISK_EMP(() -> ModItems.ISKANDER_EMP.get(), 1, Shell.BALLISTIC);
+    ISK_EMP(() -> ModItems.ISKANDER_EMP.get(), 1, Shell.BALLISTIC),
+    // aviation
+    AAM_IR(() -> ModItems.AAM_IR_MISSILE.get(), 1, Shell.AAM_IR),
+    AAM_RADAR(() -> ModItems.AAM_RADAR_MISSILE.get(), 1, Shell.AAM_RADAR),
+    AGM(() -> ModItems.AGM_MISSILE.get(), 1, Shell.AGM),
+    ARM(() -> ModItems.ARM_MISSILE.get(), 1, Shell.ARM),
+    CRUISE(() -> ModItems.CRUISE_MISSILE.get(), 1, Shell.CRUISE);
 
     private final Supplier<Item> item;
     public final int perItem;
@@ -81,7 +87,13 @@ public enum MilAmmo {
         /** Missile balistique (vol simulé par Strikes, l'entité n'est que visuelle). */
         BALLISTIC(4.0f, 0.0f, 0, 0, 0, true),
         /** Sous-munition de l'ogive à dispersion de l'Iskander. */
-        SUBMUNITION(1.2f, 0.06f, 20, 3.5f, 0.4f, false);
+        SUBMUNITION(1.2f, 0.06f, 20, 3.5f, 0.4f, false),
+        /** Missiles d'avion : air-air infrarouge / radar, air-sol, anti-radar, croisière. */
+        AAM_IR(5.5f, 0.0f, 70, 3.5f, 0.5f, true),
+        AAM_RADAR(6.0f, 0.0f, 80, 4.0f, 0.5f, true),
+        AGM(4.2f, 0.0f, 120, 4.5f, 0.95f, true),
+        ARM(5.0f, 0.0f, 110, 4.5f, 0.8f, true),
+        CRUISE(3.6f, 0.0f, 160, 9.0f, 0.7f, true);
 
         public final float speed, gravity, damage, blast, pierce;
         public final boolean guided;

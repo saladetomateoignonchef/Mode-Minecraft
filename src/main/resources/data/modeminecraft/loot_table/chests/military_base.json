@@ -142,6 +142,56 @@
           "type": "minecraft:item",
           "name": "modeminecraft:hazmat_kit",
           "weight": 2
+        },
+        {
+          "type": "minecraft:item",
+          "name": "modeminecraft:aam_ir_missile",
+          "weight": 3,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "modeminecraft:agm_missile",
+          "weight": 2,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "modeminecraft:avionics_suite",
+          "weight": 3,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1,
+                "max": 2
+              }
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "modeminecraft:jet_engine",
+          "weight": 1
         }
       ]
     },

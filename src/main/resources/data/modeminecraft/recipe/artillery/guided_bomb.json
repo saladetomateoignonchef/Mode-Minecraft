@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "artillery",
+  "ingredients": [
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 4
+    },
+    {
+      "item": "minecraft:tnt",
+      "count": 10
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 4
+    },
+    {
+      "item": "minecraft:comparator",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:guided_bomb",
+    "count": 1
+  }
+}

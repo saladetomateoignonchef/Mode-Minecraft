@@ -1,0 +1,30 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "vehicles",
+  "ingredients": [
+    {
+      "item": "modeminecraft:aircraft_engine",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:titanium_plate",
+      "count": 8
+    },
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 10
+    },
+    {
+      "item": "minecraft:glass",
+      "count": 4
+    },
+    {
+      "item": "modeminecraft:wheel_set",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:il2_sturmovik",
+    "count": 1
+  }
+}

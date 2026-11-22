@@ -5,14 +5,25 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 /**
- * Soute ventrale du B-29 : jusqu'à 12 bombes explosives ou 16 incendiaires (16 bombes conventionnelles au total), OU
- * une seule bombe nucléaire qui occupe toute la soute centrale. Ce qui ne rentre pas est rendu au joueur.
+ * Soute à bombes d'un avion : sa contenance dépend de l'appareil (16 pour le B-29, 4 pour le F-117…), une bombe
+ * nucléaire (2 pour le B-2) occupe toute la soute. Ce qui ne rentre pas est rendu au joueur.
  */
 public class BombBay extends SimpleContainer {
     private Player user;
+    /** Contenance conventionnelle et nombre de bombes nucléaires admises (selon l'avion). */
+    private int capacity = 16, nukes = 1;
 
     public BombBay() {
         super(18);
+    }
+
+    public void configure(int capacity, int nukes) {
+        this.capacity = capacity;
+        this.nukes = nukes;
+    }
+
+    public int capacity() {
+        return capacity;
     }
 
     public void user(Player p) {
@@ -45,13 +56,13 @@ public class BombBay extends SimpleContainer {
         }
         int nukes = count(BombItem.Kind.NUKE, slot), total = count(null, slot);
         if (b.kind == BombItem.Kind.NUKE) {
-            return total == 0 ? 1 : 0;
+            return total - nukes == 0 ? Math.max(0, this.nukes - nukes) : 0;
         }
         if (nukes > 0) {
             return 0;
         }
         int sameKind = count(b.kind, slot);
-        return Math.max(0, Math.min(b.kind.bayMax - sameKind, 16 - total));
+        return Math.max(0, Math.min(b.kind.bayMax - sameKind, capacity - total));
     }
 
     @Override
@@ -84,9 +95,35 @@ public class BombBay extends SimpleContainer {
         }
     }
 
+    /** Réarmement au sol : soute pleine de bombes `kind` (sauf si elle contient une bombe nucléaire). */
+    public void refill(BombItem.Kind kind) {
+        if (hasNuke() || capacity <= 0) {
+            return;
+        }
+        int missing = capacity - bombs();
+        var item = switch (kind) {
+            case GUIDED -> fr.modeminecraft.registry.ModItems.BOMB_GUIDED.get();
+            case NAPALM -> fr.modeminecraft.registry.ModItems.BOMB_NAPALM.get();
+            default -> fr.modeminecraft.registry.ModItems.BOMB_HE.get();
+        };
+        for (int i = 0; i < getContainerSize() && missing > 0; i++) {
+            ItemStack st = getItem(i);
+            if (st.isEmpty()) {
+                int n = Math.min(missing, 4);
+                super.setItem(i, new ItemStack(item, n));
+                missing -= n;
+            } else if (st.is(item) && st.getCount() < 4) {
+                int n = Math.min(missing, 4 - st.getCount());
+                st.grow(n);
+                missing -= n;
+            }
+        }
+        setChanged();
+    }
+
     /** Retire la prochaine bombe à larguer (la nucléaire d'abord). */
     public BombItem.Kind take() {
-        for (BombItem.Kind k : new BombItem.Kind[]{BombItem.Kind.NUKE, BombItem.Kind.HE, BombItem.Kind.NAPALM}) {
+        for (BombItem.Kind k : new BombItem.Kind[]{BombItem.Kind.NUKE, BombItem.Kind.GUIDED, BombItem.Kind.HE, BombItem.Kind.NAPALM}) {
             for (int i = 0; i < getContainerSize(); i++) {
                 ItemStack s = getItem(i);
                 if (s.getItem() instanceof BombItem b && b.kind == k) {

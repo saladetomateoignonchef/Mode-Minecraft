@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "artillery",
+  "ingredients": [
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 3
+    },
+    {
+      "item": "minecraft:tnt",
+      "count": 3
+    },
+    {
+      "item": "minecraft:quartz",
+      "count": 4
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 4
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:aam_radar_missile",
+    "count": 2
+  }
+}

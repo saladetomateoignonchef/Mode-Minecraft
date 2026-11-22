@@ -145,7 +145,7 @@ public final class MilClient {
             }
         }
         MilType.Seat s = seat();
-        if (s != null && (s.primary() >= 0 || s.secondary() >= 0) && mc.level != null) {
+        if ((s != null && (s.primary() >= 0 || s.secondary() >= 0) || v.canBomb(mc.player)) && mc.level != null) {
             Vec3 aim = crosshairPoint(v);
             v.setAim(mc.player, aim);                                   // tourelle locale orientée sans attendre le serveur
             if (mc.player.tickCount % 2 == 0) {
@@ -155,8 +155,8 @@ public final class MilClient {
         while (ModKeyMappings.PRONE.consumeClick()) {
             send(MilControlPayload.SMOKE);
         }
-        while (ModKeyMappings.MELEE.consumeClick()) {
-            send(MilControlPayload.SEAT);
+        while (!v.type().plane() && ModKeyMappings.MELEE.consumeClick()) {
+            send(MilControlPayload.SEAT);                                // avion : C géré par AirClient (siège éjectable)
             zoom = 1;
         }
         while (ModKeyMappings.RELOAD.consumeClick()) {
@@ -362,7 +362,7 @@ public final class MilClient {
         private final boolean tracks;
 
         Loop(MilVehicleEntity v) {
-            this(v, v.type().plane() ? ModSounds.PROP_ENGINE_LOOP.get() : v.type().heli() ? ModSounds.ROTOR_LOOP.get()
+            this(v, v.type().jet() ? ModSounds.JET_ENGINE_LOOP.get() : v.type().plane() ? ModSounds.PROP_ENGINE_LOOP.get() : v.type().heli() ? ModSounds.ROTOR_LOOP.get()
                     : v.type() == MilType.T_80BVM || v.type() == MilType.M1A2_ABRAMS ? ModSounds.TURBINE_LOOP.get() : ModSounds.DIESEL_LOOP.get(), false);
         }
 
@@ -390,7 +390,10 @@ public final class MilClient {
             y = v.getY();
             z = v.getZ();
             float sp = Math.min(1, Math.abs(v.speed()) / Math.max(0.01f, v.type().maxSpeed()));
-            if (v.type().heli()) {
+            if (v.type().jet()) {
+                volume = 0.5f + v.rotor() * 1.8f + (v.is(MilVehicleEntity.AFTERBURNER) ? 0.8f : 0);
+                pitch = 0.6f + v.rotor() * 0.25f + sp * 0.35f;
+            } else if (v.type().heli()) {
                 volume = 0.4f + v.rotor() * 1.6f;
                 pitch = 0.6f + v.rotor() * 0.45f;
             } else if (tracks) {
@@ -547,8 +550,12 @@ public final class MilClient {
             var binfo = v.info();
             int py = 6 + hudLines * 11 + 6;
             boolean nuke = binfo.getBoolean("nuke");
-            g.drawString(font, Component.translatable("hud.modeminecraft.b29.bombs", binfo.getInt("bombs"),
-                    Component.translatable(nuke ? "hud.modeminecraft.b29.nuke" : "hud.modeminecraft.b29.conventional")), 6, py, nuke ? 0xFFFF6060 : 0xFFE0D090);
+            if (t.bayCapacity() <= 0) {
+                py -= 11;                                                          // pas de soute à bombes
+            } else {
+                g.drawString(font, Component.translatable("hud.modeminecraft.b29.bombs", binfo.getInt("bombs"),
+                        Component.translatable(nuke ? "hud.modeminecraft.b29.nuke" : "hud.modeminecraft.b29.conventional")), 6, py, nuke ? 0xFFFF6060 : 0xFFE0D090);
+            }
             g.drawString(font, Component.translatable("hud.modeminecraft.b29.status",
                     Component.translatable(v.is(MilVehicleEntity.GEAR_UP) ? "hud.modeminecraft.b29.gear_up" : "hud.modeminecraft.b29.gear_down"),
                     Component.translatable(v.is(MilVehicleEntity.BAY_OPEN) ? "hud.modeminecraft.b29.bay_open" : "hud.modeminecraft.b29.bay_closed")),
@@ -557,9 +564,10 @@ public final class MilClient {
                 g.drawString(font, Component.translatable(v.is(MilVehicleEntity.NUKE_ARMED) ? "hud.modeminecraft.b29.armed" : "hud.modeminecraft.b29.safe"),
                         6, py + 22, v.is(MilVehicleEntity.NUKE_ARMED) && (v.tickCount / 6) % 2 == 0 ? 0xFFFF2020 : 0xFF90A090);
             }
-            if (v.canBomb(mc.player)) {
+            if (v.canBomb(mc.player) && t == MilType.B29_SUPERFORTRESS) {
                 g.drawString(font, Component.translatable("hud.modeminecraft.b29.keys"), 6, py + 33, 0xFF909090);
             }
+            AirClient.hud(g, v, delta, py + (t == MilType.B29_SUPERFORTRESS ? 44 : nuke ? 33 : 22));
             float stallKmh = t.maxSpeed() * 0.45f / 0.0095f;
             if (kmh < stallKmh && !v.onGround()) {
                 g.drawCenteredString(font, Component.translatable("hud.modeminecraft.b29.stall"), g.guiWidth() / 2, g.guiHeight() / 2 - 40, 0xFFFF3030);

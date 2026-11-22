@@ -134,7 +134,7 @@ public final class GunModels {
             if (g.rotor() != null) event.register(fr.modeminecraft.client.MilVehicleRenderer.part(mt.id, "rotor"));
             if (g.tail() != null) event.register(fr.modeminecraft.client.MilVehicleRenderer.part(mt.id, "tail_rotor"));
             if (g.radar() != null) event.register(fr.modeminecraft.client.MilVehicleRenderer.part(mt.id, "radar"));
-            if (g.props().length > 0) {
+            if (mt.plane()) {
                 for (String p : new String[]{"prop", "bay", "bay_open", "gear"}) {
                     event.register(fr.modeminecraft.client.MilVehicleRenderer.part(mt.id, p));
                 }

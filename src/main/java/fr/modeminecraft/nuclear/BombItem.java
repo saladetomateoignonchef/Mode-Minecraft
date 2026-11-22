@@ -8,10 +8,12 @@ import net.minecraft.world.item.TooltipFlag;
 
 import java.util.List;
 
-/** Bombes d'aviation du B-29 : explosive AN-M65, incendiaire AN-M76 (napalm), bombe nucléaire stratégique. */
+/** Bombes d'aviation : explosive AN-M65 / FAB, incendiaire AN-M76 (napalm), guidée (GBU / KAB / JDAM), nucléaire. */
 public class BombItem extends Item {
     public enum Kind {
-        HE(12), NAPALM(16), NUKE(1);
+        HE(12), NAPALM(16), NUKE(1),
+        /** Bombe guidée laser / GPS (GBU-27, GBU-12, KAB-500, JDAM) : vole vers le point visé, souffle de 16 blocs. */
+        GUIDED(16);
 
         /** Nombre maximal dans la soute du B-29. */
         public final int bayMax;

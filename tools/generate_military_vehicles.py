@@ -64,6 +64,7 @@ class V:
         self.wheel_w = 0.35
         self.seats = []             # (x, y, z) m : position des fesses du passager
         self.props = []             # (x, y, z) m : moyeux des hélices (avions), tournant autour de l'axe X
+        self.zmax = 0.0             # demi-envergure (m)
         self.muzzles = []           # (x, y, z, mount) mount : 0 caisse, 1 tourelle, 2 canon (tourelle + élévation)
         # origine du modèle (pixels) : recentrée sur la longueur réelle (canon compris), voir main()
         self.ox = OX.get(name, 8.0)
@@ -72,6 +73,7 @@ class V:
     def px(self, x, y, z):
         k = 16 / self.S
         self.xmin, self.xmax = min(self.xmin, x), max(self.xmax, x)
+        self.zmax = max(self.zmax, abs(z))
         return [round(self.ox + x * k, 3), round(y * k, 3), round(8 + z * k, 3)]
 
     def box(self, part, x0, x1, y0, y1, z0, z1, key, rot=None):
@@ -1052,6 +1054,9 @@ def prop_model(v, r):
     return e
 
 
+PROP_R = {"il2_sturmovik": 1.6, "la7": 1.5, "p51_mustang": 1.65, "tu95_bear": 2.8, "c130_hercules": 2.0}
+
+
 def b29():
     """Boeing B-29 Superfortress : 28 m d'envergure, 20 m de long, quadrimoteur, soute ventrale, 4 tourelles."""
     v = V("b29_superfortress", 10.0)
@@ -1234,6 +1239,15 @@ def iskander():
 VEHICLES = [uaz, tigr, kamaz, brdm, btr80, bmp2, grad, shilka, mi24, t90m, t80, t14, bmpt, sprut,
             humvee, matv, m939, stryker, m113, bradley, abrams, himars, lambda: humvee(True), blackhawk, apache,
             s400, s500, iskander, b29]
+import aircraft_models as am  # noqa: E402
+COLORS.update(am.PLANE_COLORS)
+PAINTS.update({k for k, val in am.PLANE_COLORS.items() if not k.endswith("glass")})
+MATERIAL.update({"gold_glass": "glass"})
+_planes = am.make(V)
+VEHICLES += _planes
+PLANES = {"b29_superfortress", "il2_sturmovik", "la7", "mig15", "tu95_bear", "mig21", "mig25", "su25", "mig29", "su34", "su57",
+          "p51_mustang", "f86_sabre", "f4_phantom", "c130_hercules", "a10_thunderbolt", "f117_nighthawk", "f15e_strike_eagle",
+          "f16_falcon", "b2_spirit", "f22_raptor"}
 
 
 OX = {}
@@ -1268,7 +1282,10 @@ def main():
         groups = dict(v.parts)
         groups["wheel"] = wheel_model(v, v.wheel_r, v.wheel_w)
         if v.props:
-            groups["prop"] = prop_model(v, 1.85)
+            groups["prop"] = prop_model(v, PROP_R.get(v.name, 1.85))
+        if v.name in PLANES:
+            for part in ("prop", "bay", "bay_open", "gear"):
+                groups.setdefault(part, [])                                          # pièce vide (avion à réaction, sans soute)
         d = 2 if v.S >= 4 else 3
         baked = vb.bake(groups, d=d, skip_chamfer=("glass", "light", "ir", "track", "rotor", "radar", "canvas", "canvas_us", "dark"))
         vb.paint(baked, painter).save(os.path.join(ASSETS, f"textures/item/vehicle/{v.name}.png"))
@@ -1302,7 +1319,7 @@ def main():
         props = ", ".join(f"{{{q[0]}f, {q[1]}f, {q[2]}f}}" for q in v.props)
         lines.append(f'        put("{v.name}", new Geo({v.S}f, {v.ox}f, {java_vec(v.turret)}, {java_vec(v.gunp)}, {java_vec(v.rotor)}, '
                      f'{java_vec(v.tail)}, {java_vec(v.radar)},\n                new float[][]{{{wheels}}},\n'
-                     f'                new float[][]{{{seats}}},\n                new float[][]{{{muz}}},\n                new float[][]{{{props}}}));')
+                     f'                new float[][]{{{seats}}},\n                new float[][]{{{muz}}},\n                new float[][]{{{props}}}, {round(v.zmax, 2)}f));')
     os.makedirs(os.path.dirname(JAVA), exist_ok=True)
     with open(JAVA, "w", encoding="utf-8") as f:
         f.write("""package fr.modeminecraft.entity.military;
@@ -1324,7 +1341,7 @@ public final class MilGeometry {
      * wheels : {x, y, z, rayon}. seats : {x, y, z}. muzzles : {x, y, z, mount}. props : moyeux d'hélices {x, y, z}.
      */
     public record Geo(float scale, float ox, Vec3 turret, Vec3 gun, Vec3 rotor, Vec3 tail, Vec3 radar, float[][] wheels, float[][] seats, float[][] muzzles,
-                      float[][] props) {}
+                      float[][] props, float halfSpan) {}
 
     private static final Map<String, Geo> ALL = new HashMap<>();
 

@@ -1,0 +1,26 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "artillery",
+  "ingredients": [
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 3
+    },
+    {
+      "item": "minecraft:tnt",
+      "count": 4
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 4
+    },
+    {
+      "item": "minecraft:glowstone_dust",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:agm_missile",
+    "count": 2
+  }
+}

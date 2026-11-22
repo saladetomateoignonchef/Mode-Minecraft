@@ -70,6 +70,9 @@ public final class ModBlocks {
     /** Citerne de kérosène des hangars à avions : ravitaille seule les aéronefs posés à moins de 8 blocs. */
     public static final DeferredBlock<Block> KEROSENE_TANK = BLOCKS.register("kerosene_tank",
             () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK)));
+    /** Caisse de munitions d'aviation : avec une citerne de kérosène, réarme en 10 s l'avion posé à moins de 10 blocs. */
+    public static final DeferredBlock<Block> AVIATION_AMMO_CRATE = BLOCKS.register("aviation_ammo_crate",
+            () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).strength(3f, 6f)));
 
     public static final DeferredBlock<Block> VAULT_WALL = BLOCKS.register("vault_wall",
             () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.REINFORCED_DEEPSLATE).strength(-1f, 3600000f).noLootTable()

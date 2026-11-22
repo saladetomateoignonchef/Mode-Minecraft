@@ -46,6 +46,8 @@ public class ShellEntity extends Projectile {
     private Vec3 gpsTarget;
     private boolean jammed;
     private int life;
+    /** Dernière salve de leurres déjà « jugée » (une chance de décrocher par salve). */
+    private long flareSeen;
 
     public ShellEntity(EntityType<? extends ShellEntity> type, Level level) {
         super(type, level);
@@ -192,7 +194,7 @@ public class ShellEntity extends Projectile {
     public void tick() {
         super.tick();
         MilAmmo.Shell s = shell();
-        if (++life > (s == MilAmmo.Shell.SAM_EXTREME || s == MilAmmo.Shell.SAM_LONG ? 900 : 600) || getY() < level().getMinBuildHeight() - 20) {
+        if (++life > (s == MilAmmo.Shell.SAM_EXTREME || s == MilAmmo.Shell.SAM_LONG || s == MilAmmo.Shell.CRUISE ? 900 : 600) || getY() < level().getMinBuildHeight() - 20) {
             discard();
             return;
         }
@@ -346,11 +348,28 @@ public class ShellEntity extends Projectile {
                     jammed = true;
                     return;
                 }
+                if (t instanceof MilVehicleEntity v && v.type().plane()) {
+                    v.missileWarning();                                         // alarme « MISSILE » dans le cockpit
+                    // leurres thermiques / paillettes : 80 % de chances de décrocher par salve
+                    if (v.flaring() && v.flareStamp() != flareSeen) {
+                        flareSeen = v.flareStamp();
+                        if (random.nextFloat() < 0.8f) {
+                            jammed = true;
+                            setDeltaMovement(getDeltaMovement().add(0, -0.4, 0));
+                            return;
+                        }
+                    }
+                    // furtif soute refermée : le missile à guidage radar perd sa cible
+                    if (s != MilAmmo.Shell.AAM_IR && s != MilAmmo.Shell.SAM && life % 10 == 0 && !MilVehicleEntity.radarSees(this, v)) {
+                        jammed = true;
+                        return;
+                    }
+                }
             }
         } else if (mode == 3 && gpsTarget != null) {
             Vec3 flat = new Vec3(gpsTarget.x - getX(), 0, gpsTarget.z - getZ());
             // trajectoire en cloche : montée tant qu'on est loin, puis piqué sur les coordonnées
-            if (life < 25) {
+            if (life < 25 && getY() - gpsTarget.y < 30) {
                 aim = position().add(flat.normalize().scale(10)).add(0, 12, 0);
             } else {
                 aim = gpsTarget;

@@ -17,6 +17,7 @@
   "mixins": [
     "PlayerExhaustionMixin",
     "EntityStepMixin",
-    "InventoryMenuMixin"
+    "InventoryMenuMixin",
+    "TrackedEntityMixin"
   ]
 }

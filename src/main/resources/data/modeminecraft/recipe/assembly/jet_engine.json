@@ -1,0 +1,30 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "vehicle_parts",
+  "ingredients": [
+    {
+      "item": "modeminecraft:titanium_ingot",
+      "count": 6
+    },
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 4
+    },
+    {
+      "item": "minecraft:blaze_rod",
+      "count": 4
+    },
+    {
+      "item": "minecraft:fire_charge",
+      "count": 2
+    },
+    {
+      "item": "minecraft:piston",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:jet_engine",
+    "count": 1
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "vehicles",
+  "ingredients": [
+    {
+      "item": "modeminecraft:jet_engine",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:titanium_plate",
+      "count": 14
+    },
+    {
+      "item": "modeminecraft:avionics_suite",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:fire_control_module",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:pressurized_cockpit",
+      "count": 1
+    },
+    {
+      "item": "modeminecraft:wheel_set",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:f16_falcon",
+    "count": 1
+  }
+}

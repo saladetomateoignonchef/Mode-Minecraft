@@ -65,6 +65,15 @@ final class Airfields {
         Deco.antenna(b, tx + 2, 15, tz + 2, 4);
         Deco.searchlight(b, tx + 4, 15, tz + 4);
         b.chest(tx + 1, 11, tz + 1, Direction.SOUTH, "military_crate", false);
+        // aire de réarmement au bord de la piste : citerne de kérosène + caisse de munitions d'aviation
+        for (int k = 0; k < 3; k++) {
+            int rx = len / 2 + 8 + k * 24;
+            if (rx + 2 < len) {
+                b.set(rx, 0, 3, ModBlocks.KEROSENE_TANK.get());
+                b.set(rx, 1, 3, ModBlocks.KEROSENE_TANK.get());
+                b.set(rx + 2, 0, 3, ModBlocks.AVIATION_AMMO_CRATE.get());
+            }
+        }
         b.bot(tx + 2, 11, tz + 2, f, BotRole.SOLDIER, 6);
         b.pair(len - 10, 0, 28, f, 30);
     }
@@ -117,13 +126,28 @@ final class Airfields {
             b.chest(x1 - 2, 0, z1 - 3 - i * 2, Direction.WEST, i == 0 ? "military_base" : "military_crate", i % 2 == 1);
         }
         b.set(x1 - 2, 0, z1 - 12, ModBlocks.ASSEMBLY_TABLE.get());
-        // B-29 garé face à la porte (fuselage le long de X, ailes le long de Z), selon la rareté de la base
+        for (int z = z0 + 15; z <= z0 + 17; z++) {
+            b.set(x1 - 3, 0, z, ModBlocks.AVIATION_AMMO_CRATE.get());               // réarmement en 10 s
+        }
+        // B-29 garé face à la porte (fuselage le long de X, ailes le long de Z), ou deux chasseurs du camp de la base
         if (b.chance(b29Chance)) {
             b.milVehicle((x0 + x1) / 2 + 2, 0, (z0 + z1) / 2, MilType.B29_SUPERFORTRESS, 90);
+        } else {
+            MilType[] pool = f == Faction.SOVIET ? SOVIET_JETS : NATO_JETS;
+            for (int k = -1; k <= 1; k += 2) {
+                if (b.chance(0.8f)) {
+                    b.milVehicle((x0 + x1) / 2 + 2, 0, (z0 + z1) / 2 + k * 8, pool[b.nextInt(pool.length)], 90);
+                }
+            }
         }
         b.pair(x0 + 3, 0, z0 + 3, f, 20);
         b.bot(x1 - 4, 0, (z0 + z1) / 2, f, BotRole.SOLDIER, 10);
     }
+
+    private static final MilType[] SOVIET_JETS = {MilType.IL_2, MilType.LA_7, MilType.MIG_15, MilType.MIG_21, MilType.MIG_25, MilType.SU_25,
+            MilType.MIG_29, MilType.SU_34, MilType.SU_57};
+    private static final MilType[] NATO_JETS = {MilType.P_51, MilType.F_86, MilType.F_4E, MilType.A_10, MilType.F_117, MilType.F_15E,
+            MilType.F_16C, MilType.F_22};
 
     private static boolean y0Roof(int x, int z) {
         return x % 7 == 3 && z % 9 >= 3 && z % 9 <= 5;

@@ -702,5 +702,42 @@
     "sounds": [
       "modeminecraft:mil/prop_engine_loop_0"
     ]
+  },
+  "mil.jet_engine_loop": {
+    "subtitle": "subtitles.modeminecraft.jet_engine",
+    "sounds": [
+      "modeminecraft:mil/jet_engine_loop_0"
+    ]
+  },
+  "mil.afterburner": {
+    "subtitle": "subtitles.modeminecraft.afterburner",
+    "sounds": [
+      "modeminecraft:mil/afterburner_0"
+    ]
+  },
+  "mil.sonic_boom": {
+    "subtitle": "subtitles.modeminecraft.sonic_boom",
+    "sounds": [
+      "modeminecraft:mil/sonic_boom_0",
+      "modeminecraft:mil/sonic_boom_1"
+    ]
+  },
+  "mil.flare_launch": {
+    "subtitle": "subtitles.modeminecraft.flare_launch",
+    "sounds": [
+      "modeminecraft:mil/flare_launch_0"
+    ]
+  },
+  "mil.missile_warning": {
+    "subtitle": "subtitles.modeminecraft.missile_warning",
+    "sounds": [
+      "modeminecraft:mil/missile_warning_0"
+    ]
+  },
+  "mil.ejection_seat": {
+    "subtitle": "subtitles.modeminecraft.ejection_seat",
+    "sounds": [
+      "modeminecraft:mil/ejection_seat_0"
+    ]
   }
 }

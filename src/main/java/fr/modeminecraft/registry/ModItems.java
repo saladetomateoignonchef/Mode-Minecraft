@@ -1179,6 +1179,19 @@ public final class ModItems {
     public static final DeferredItem<Item> NBC_FILTER = ITEMS.registerSimpleItem("nbc_filter", new Item.Properties().stacksTo(16));
     public static final DeferredItem<Item> AIRCRAFT_ENGINE = ITEMS.registerSimpleItem("aircraft_engine", new Item.Properties().stacksTo(4));
     public static final DeferredItem<Item> PRESSURIZED_COCKPIT = ITEMS.registerSimpleItem("pressurized_cockpit", new Item.Properties().stacksTo(1));
+
+    // ------------------------------------------------------------------ aviation militaire (phase 26)
+    public static final DeferredItem<Item> AAM_IR_MISSILE = ammoItem("aam_ir_missile", 4);
+    public static final DeferredItem<Item> AAM_RADAR_MISSILE = ammoItem("aam_radar_missile", 4);
+    public static final DeferredItem<Item> AGM_MISSILE = ammoItem("agm_missile", 4);
+    public static final DeferredItem<Item> ARM_MISSILE = ammoItem("arm_missile", 4);
+    public static final DeferredItem<Item> CRUISE_MISSILE = ammoItem("cruise_missile", 1);
+    public static final DeferredItem<Item> BOMB_GUIDED = ITEMS.register("guided_bomb",
+            () -> new fr.modeminecraft.nuclear.BombItem(fr.modeminecraft.nuclear.BombItem.Kind.GUIDED, new Item.Properties().stacksTo(4)));
+    public static final DeferredItem<Item> JET_ENGINE = ITEMS.registerSimpleItem("jet_engine", new Item.Properties().stacksTo(4));
+    public static final DeferredItem<Item> AVIONICS = ITEMS.registerSimpleItem("avionics_suite", new Item.Properties().stacksTo(4));
+    public static final DeferredItem<Item> RADAR_ABSORBENT_PANEL = ITEMS.registerSimpleItem("radar_absorbent_panel", new Item.Properties().stacksTo(16));
+    public static final DeferredItem<BlockItem> AVIATION_AMMO_CRATE = ITEMS.registerSimpleBlockItem(ModBlocks.AVIATION_AMMO_CRATE);
     public static final DeferredItem<Item> GEIGER_COUNTER = ITEMS.register("geiger_counter",
             () -> new fr.modeminecraft.nuclear.GeigerCounterItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> HAZMAT_KIT = ITEMS.register("hazmat_kit",

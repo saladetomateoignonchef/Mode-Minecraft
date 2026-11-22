@@ -24,6 +24,8 @@ public class BombEntity extends Projectile {
     private static final EntityDataAccessor<Integer> KIND = SynchedEntityData.defineId(BombEntity.class, EntityDataSerializers.INT);
     private int life;
     private int launcher = -1;
+    /** Bombe guidée : point visé au largage (laser / GPS). */
+    private Vec3 target;
     private static final net.minecraft.server.level.TicketType<net.minecraft.world.level.ChunkPos> BOMB_TICKET = net.minecraft.server.level.TicketType.create(
             "modeminecraft_bomb", java.util.Comparator.comparingLong(net.minecraft.world.level.ChunkPos::toLong), 60);
 
@@ -39,6 +41,11 @@ public class BombEntity extends Projectile {
         setPos(pos.x, pos.y, pos.z);
         setDeltaMovement(velocity);
         updateRotation();
+    }
+
+    public BombEntity guideTo(Vec3 t) {
+        target = t;
+        return this;
     }
 
     @Override
@@ -62,6 +69,12 @@ public class BombEntity extends Projectile {
         Vec3 v = getDeltaMovement();
         // gravité et traînée (la bombe garde l'élan horizontal de l'avion puis s'incline)
         v = new Vec3(v.x * 0.992, Math.max(-3.2, v.y - 0.045) * 0.998, v.z * 0.992);
+        if (target != null && life > 8 && !level().isClientSide) {
+            // ailettes de guidage : la vitesse horizontale est corrigée pour tomber sur le point visé
+            double fall = Math.max(1, (getY() - target.y) / Math.max(0.3, -v.y));
+            Vec3 want = new Vec3((target.x - getX()) / fall, v.y, (target.z - getZ()) / fall);
+            v = v.add(want.subtract(v).multiply(0.12, 0, 0.12));
+        }
         setDeltaMovement(v);
         if (level() instanceof ServerLevel sl && life % 10 == 1) {
             var cp = chunkPosition();                                              // la bombe garde sa zone de chute chargée
