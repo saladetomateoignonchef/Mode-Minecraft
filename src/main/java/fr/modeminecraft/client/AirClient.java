@@ -214,7 +214,7 @@ public final class AirClient {
 
     // ------------------------------------------------------------------ HUD tête haute
     /** Collimateur du pilote : échelle d'assiette, cap, vitesse / Mach, altitude, station d'armes, leurres, alarmes. */
-    public static void hud(GuiGraphics g, MilVehicleEntity v, DeltaTracker delta, int panelBottom) {
+    public static void hud(GuiGraphics g, MilVehicleEntity v, DeltaTracker delta, int panelBottom, float hs) {
         Minecraft mc = Minecraft.getInstance();
         var font = mc.font;
         MilType t = v.type();
@@ -226,8 +226,10 @@ public final class AirClient {
         int kmh = Math.round(sp / 0.0095f);
         int ground = mc.level.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING, v.getBlockX(), v.getBlockZ());
         int agl = (int) (v.getY() - ground);
-        // panneau d'aviation (sous le panneau du véhicule)
+        // panneau d'aviation (sous le panneau du véhicule, même échelle réduite)
         int y = panelBottom;
+        g.pose().pushPose();
+        g.pose().scale(hs, hs, 1);
         if (pilot) {
             g.drawString(font, Component.translatable("hud.modeminecraft.air.station", stationName(v)), 6, y, 0xFFFFE080);
             y += 11;
@@ -254,17 +256,24 @@ public final class AirClient {
         if (pilot) {
             g.drawString(font, Component.translatable(t.jet() ? "hud.modeminecraft.air.keys_jet" : "hud.modeminecraft.air.keys"), 6, y, 0xFF909090);
         }
+        g.pose().popPose();
         if (!pilot || !mc.options.getCameraType().isFirstPerson() && !v.is(MilVehicleEntity.MISSILE_WARN)) {
             warnings(g, font, v, cx, cy);
             return;
         }
+        // collimateur un peu réduit autour du centre de l'écran
+        g.pose().pushPose();
+        float cs = Math.max(0.6f, hs + 0.1f);
+        g.pose().translate(cx, cy, 0);
+        g.pose().scale(cs, cs, 1);
+        g.pose().translate(-cx, -cy, 0);
         // échelle d'assiette (barres tous les 10°)
         float pitch = v.tilt, roll = v.roll;
         float ppd = 3.0f;
         var pose = g.pose();
         pose.pushPose();
         pose.translate(cx, cy, 0);
-        pose.mulPose(com.mojang.math.Axis.ZP.rotationDegrees(roll));
+        pose.mulPose(com.mojang.math.Axis.ZP.rotationDegrees(-roll));          // l'horizon tourne à l'opposé de l'inclinaison
         for (int deg = -60; deg <= 60; deg += 10) {
             int yy = Math.round((pitch - deg) * ppd);
             if (Math.abs(yy) > 110) {
@@ -310,10 +319,11 @@ public final class AirClient {
         if (!v.is(MilVehicleEntity.GEAR_UP)) {
             g.drawString(font, "GEAR", cx + 100, cy + 20, 0xFFFFE040, false);
         }
-        if (agl < 25 && !v.onGround() && v.getDeltaMovement().y < -0.3 && v.tickCount / 5 % 2 == 0) {
+        if (agl < 25 && v.airborneClient() && v.getDeltaMovement().y < -0.3 && v.tickCount / 5 % 2 == 0) {
             g.drawCenteredString(font, Component.translatable("hud.modeminecraft.air.pull_up"), cx, cy + 40, 0xFFFF3030);
         }
         warnings(g, font, v, cx, cy);
+        g.pose().popPose();
     }
 
     /** Nom de la station d'armes du pilote (d'après les infos synchronisées du véhicule). */

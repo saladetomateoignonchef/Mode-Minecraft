@@ -63,11 +63,14 @@ public class MilVehicleRenderer extends EntityRenderer<MilVehicleEntity> {
         pose.mulPose(Axis.YP.rotationDegrees(-90 - bodyYaw));
         if (t.plane()) {
             // avion : tangage et roulis autour de l'axe du fuselage
-            float hy = MilVehicleEntity.dims(t)[2] * 0.45f;
-            pose.translate(0, hy, 0);
+            // en vol : autour de l'axe du fuselage ; au sol : autour du train principal (la queue ne rentre pas dans la piste)
+            boolean low = !v.airborneClient();
+            float hy = low ? 0 : MilVehicleEntity.dims(t)[2] * 0.45f;
+            float hx = low ? -MilVehicleEntity.dims(t)[0] * 0.1f : 0;
+            pose.translate(hx, hy, 0);
             pose.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partial, v.tiltO, v.tilt)));
             pose.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partial, v.rollO, v.roll)));
-            pose.translate(0, -hy, 0);
+            pose.translate(-hx, -hy, 0);
         } else if (t.heli()) {
             pose.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partial, v.tiltO, v.tilt)));
             pose.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partial, v.rollO, v.roll)));

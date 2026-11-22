@@ -133,11 +133,12 @@ final class Airfields {
         if (b.chance(b29Chance)) {
             b.milVehicle((x0 + x1) / 2 + 2, 0, (z0 + z1) / 2, MilType.B29_SUPERFORTRESS, 90);
         } else {
+            // deux chasseurs l'un derrière l'autre, dans l'axe de la piste (z = 31 : ligne médiane de la piste voisine),
+            // utilisables par le joueur et par les pilotes de la base (décollage d'alerte)
             MilType[] pool = f == Faction.SOVIET ? SOVIET_JETS : NATO_JETS;
-            for (int k = -1; k <= 1; k += 2) {
-                if (b.chance(0.8f)) {
-                    b.milVehicle((x0 + x1) / 2 + 2, 0, (z0 + z1) / 2 + k * 8, pool[b.nextInt(pool.length)], 90);
-                }
+            b.milVehicle(13, 0, 31, pool[b.nextInt(pool.length)], 90);
+            if (b.chance(0.85f)) {
+                b.milVehicle(30, 0, 31, pool[b.nextInt(pool.length)], 90);
             }
         }
         b.pair(x0 + 3, 0, z0 + 3, f, 20);

@@ -137,11 +137,13 @@ public final class CityLayout {
                 if (dz == rad) {
                     return Plot.of("station", 10, dx, dz);
                 }
-                if (in(dx, dz, 2, 8, 8, 9)) {
-                    return multi("airstrip", 16, 2, 8, 7, 2);                      // aérodrome militaire (112 m)
+                // aérodrome militaire en bordure nord de la ville : piste de 112 m, méga-hangar dans son axe (sa porte
+                // donne sur le seuil de piste : les avions sortent du hangar et décollent tout droit)
+                if (in(dx, dz, -10, -11, -4, -10)) {
+                    return multi("airstrip", 16, -10, -11, 7, 2);
                 }
-                if (in(dx, dz, 9, 7, 11, 9)) {
-                    return multi("aircraft_hangar", 18, 9, 7, 3, 3);
+                if (in(dx, dz, -3, -12, -1, -10)) {
+                    return multi("aircraft_hangar", 18, -3, -12, 3, 3);
                 }
                 if (in(dx, dz, 4, -5, 5, -4)) {
                     return multi("factory", 28, 4, -5, 2, 2);

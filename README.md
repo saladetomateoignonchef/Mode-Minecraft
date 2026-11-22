@@ -822,6 +822,12 @@ Des **villes générées** apparaissent selon le biome (un centre de ville par r
 - **C-130 Hercules** : 16 soldats ou un véhicule léger. **O** abaisse la rampe : au sol, un 4x4 / blindé léger qui
   recule dessus est embarqué ; en vol, **Espace** le largue **sous parachute** (sinon : 4 caisses de ravitaillement
   parachutées). Rampe ouverte, les passagers peuvent sauter en parachute (Maj).
+- **Aérodromes** : dans les cités soviétiques, la piste et le méga-hangar sont en **bordure nord** de la ville ; dans
+  les bases, à côté du bunker. La porte du hangar donne sur le seuil de piste : les deux chasseurs garés à l'intérieur
+  (utilisables par le joueur) sortent du hangar et décollent tout droit. Les chars restent dans leurs propres hangars.
+- **Décollage d'alerte des PNJ** : quand une patrouille ou une interception est déclenchée, des pilotes prennent
+  d'abord les chasseurs garés dans les hangars (roulage, rotation, train rentré, montée), puis seulement des avions
+  venus d'ailleurs s'il n'y en a pas assez.
 - **Patrouilles de chasse** au-dessus des bases militaires et des cités soviétiques, et **interceptions** : entrer en
   aéronef dans leur espace aérien fait décoller deux intercepteurs (MiG-29, Su-57, MiG-25 / F-22, F-15E, F-16C) qui
   attaquent au canon et aux missiles, lancent des leurres et évitent le sol. Les furtifs passent inaperçus.

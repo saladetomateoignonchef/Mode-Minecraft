@@ -199,6 +199,18 @@ public final class AirAI {
         }
         v.aiYaw = yaw;
         v.aiPitch = Mth.clamp(pitch, -45, 45);
+        // décollage d'un avion sorti du hangar : plein gaz sur la piste, train rentré une fois en l'air
+        float sp = Math.abs(v.speed());
+        if (v.groundedNow()) {
+            // roulage : plein gaz, on ne cabre qu'à 50 % de la vitesse max (sinon décrochage juste après la rotation)
+            v.aiThrottle = 1;
+            v.aiPitch = sp >= v.type().maxSpeed() * 0.5f ? -12 : 0;
+        } else if (alt < 35 && sp < v.type().maxSpeed() * 0.75f) {
+            v.aiThrottle = 1;
+            v.aiPitch = -8;                                                       // montée douce tant que la vitesse est faible
+        } else if (alt > 15 && !v.is(MilVehicleEntity.GEAR_UP)) {
+            v.setGearUp();
+        }
         // leurres quand un missile arrive
         if (v.is(MilVehicleEntity.MISSILE_WARN) && v.getRandom().nextInt(6) == 0) {
             v.flares();
@@ -240,7 +252,8 @@ public final class AirAI {
                     && now - SCRAMBLED.getOrDefault(p.getUUID(), -100000L) > 2400) {
                 SCRAMBLED.put(p.getUUID(), now);
                 MilType[] pool = f == Faction.SOVIET ? INTERCEPTORS_SOV : INTERCEPTORS_NATO;
-                for (int i = 0; i < 2; i++) {
+                int fromHangar = launchFromHangars(level, center, city.rad() * 16 + 64, f, 2, mine);
+                for (int i = fromHangar; i < 2; i++) {
                     MilVehicleEntity v = spawnPlane(level, pool[level.random.nextInt(pool.length)], center.add(i * 25, 0, 0), f, center, mine.position());
                     if (v != null) {
                         assign(v, center, mine);
@@ -251,6 +264,9 @@ public final class AirAI {
                 continue;
             }
             if (now % 600 == 0 && airborneAi == 0 && level.random.nextFloat() < PATROL_CHANCE) {
+                if (launchFromHangars(level, center, city.rad() * 16 + 64, f, 2, null) > 0) {
+                    continue;                                                     // patrouille partie des hangars
+                }
                 MilType[] pool = f == Faction.SOVIET ? SOVIET : NATO;
                 double a = level.random.nextDouble() * Math.PI * 2;
                 Vec3 start = center.add(Math.cos(a) * 260, 0, Math.sin(a) * 260);
@@ -263,6 +279,39 @@ public final class AirAI {
                 }
             }
         }
+    }
+
+    /**
+     * Décollage d'alerte depuis les méga-hangars : les chasseurs garés du bon camp (sans équipage) reçoivent un pilote,
+     * le plein et les munitions, puis sortent du hangar et décollent sur la piste. Renvoie le nombre d'avions lancés.
+     */
+    public static int launchFromHangars(ServerLevel level, Vec3 center, double radius, Faction f, int max, Entity target) {
+        MilType.Side side = f == Faction.SOVIET ? MilType.Side.SOVIET : MilType.Side.US;
+        int n = 0;
+        for (MilVehicleEntity v : level.getEntitiesOfClass(MilVehicleEntity.class, new net.minecraft.world.phys.AABB(center, center).inflate(radius, 80, radius),
+                v -> v.type().plane() && !v.type().heavy() && v.type().side == side && v.getPassengers().isEmpty() && !v.patrol
+                        && !v.is(MilVehicleEntity.WRECK) && v.groundedNow())) {
+            if (n >= max) {
+                break;
+            }
+            v.fillAmmo(1f);
+            v.setFuel(1f);
+            v.patrol = true;
+            v.setAirspeed(0);                                                     // moteurs lancés : décollage d'alerte
+            v.holdChunks();
+            HumanBotEntity b = ModEntities.HUMAN_BOT.get().create(level);
+            b.moveTo(v.getX(), v.getY() + 1, v.getZ(), v.getYRot(), 0);
+            b.setup(f, BotRole.OFFICER, level.getRandom());
+            b.convoy = true;
+            b.finalizeSpawn(level, level.getCurrentDifficultyAt(v.blockPosition()), MobSpawnType.EVENT, null);
+            level.addFreshEntity(b);
+            b.startRiding(v, true);
+            v.aiYaw = v.getYRot();
+            assign(v, center, target);
+            ModeMinecraft.LOGGER.info("Décollage d'alerte ({}, {}) depuis le hangar en {}", f.id, v.type().id, v.blockPosition());
+            n++;
+        }
+        return n;
     }
 
     /** Un avion de l'IA en vol, plein de munitions, avec son pilote bot. `from` : piste (décollage d'alerte) ou null. */

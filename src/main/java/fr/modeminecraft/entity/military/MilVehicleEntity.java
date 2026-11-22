@@ -727,7 +727,7 @@ public class MilVehicleEntity extends Entity {
             AirAI.fly(this, bot);
         }
         float[] in = run ? input() : new float[]{0, 0};
-        boolean ground = onGround();
+        boolean ground = groundedNow();                                            // posé (l'entité tout juste chargée n'a pas encore onGround)
         boolean ab = t.jet() && run && is(AFTERBURNER) && fuel() > 0;
         float cruise = t.maxSpeed(), max = cruise * (ab ? 1.25f : 1f), stall = cruise * 0.45f;
         float accel = cruise / (t.jet() ? (ab ? 80f : 140f) : 170f);
@@ -774,12 +774,15 @@ public class MilVehicleEntity extends Entity {
             want = -25;                                                            // décrochage : le nez tombe
         }
         planePitch = Mth.approach(planePitch, want, pitchRate);
+        if (ground) {
+            planePitch = Mth.clamp(planePitch, 0, 8);                              // au sol : ni nez dans la piste, ni queue qui racle
+        }
         if (flying && !ground) {
             // énergie : la montée coûte de la vitesse, le piqué en donne
             speed = Mth.clamp(speed - (float) Math.sin(Math.toRadians(planePitch)) * cruise * 0.006f, 0, cruise * 1.45f);
         }
         setYRot(getYRot() + dyaw);
-        roll = Mth.lerp(0.12f, roll, ground ? 0 : -dyaw / Math.max(0.1f, rate) * (t.heavy() ? 28f : 65f));
+        roll = Mth.lerp(0.12f, roll, ground ? 0 : dyaw / Math.max(0.1f, rate) * (t.heavy() ? 28f : 65f));   // virage à droite = aile droite basse
         tilt = planePitch;
         double rad = Math.toRadians(getYRot()), pr = Math.toRadians(planePitch);
         double horiz = speed * Math.cos(pr);
@@ -816,6 +819,7 @@ public class MilVehicleEntity extends Entity {
     public void setAirspeed(float v) {
         speed = v;
         spool = 1;
+        planeInit = true;
     }
 
     /** Places qui commandent la soute : bombardier, ou pilote s'il est seul à bord. */
@@ -1677,7 +1681,8 @@ public class MilVehicleEntity extends Entity {
                 for (int k = 1; k <= reach; k++) {
                     ChunkPos cp = new ChunkPos(BlockPos.containing(position().add(dir.scale(k * 16))));
                     if (!cp.equals(last)) {
-                        sl.getChunkSource().addRegionTicket(FLIGHT_TICKET, cp, 1, cp);
+                        // les 3 premiers chunks simulés (l'avion continue d'y voler), les suivants seulement générés
+                        sl.getChunkSource().addRegionTicket(FLIGHT_TICKET, cp, k <= 3 ? 2 : 1, cp);
                         last = cp;
                     }
                 }
@@ -1904,12 +1909,20 @@ public class MilVehicleEntity extends Entity {
      */
     @Override
     public boolean isAlwaysTicking() {
+        if (type().plane()) {
+            return true;                                // avions : toujours dans la liste des entités simulées (pas de bascule)
+        }
         for (Entity p : getPassengers()) {
             if (p instanceof Player) {
                 return true;
             }
         }
         return false;
+    }
+
+    /** En l'air pour de bon (alarmes du cockpit) : rien sous l'avion sur 1,5 bloc. */
+    public boolean airborneClient() {
+        return !groundedNow() && level().noCollision(this, getBoundingBox().expandTowards(0, -1.5, 0));
     }
 
     /** Au sol (le serveur ne simule pas le mouvement d'un avion piloté par un joueur : on teste le contact). */
@@ -2727,6 +2740,9 @@ public class MilVehicleEntity extends Entity {
             // assiette vue par les autres joueurs : déduite de la trajectoire
             double dy = getY() - yo, hz = Math.hypot(getX() - xo, getZ() - zo);
             tilt = Mth.lerp(0.2f, tilt, hz > 0.05 ? (float) Math.toDegrees(Math.atan2(dy, hz)) : 0);
+            if (groundedNow()) {
+                tilt = Mth.clamp(tilt, 0, 8);
+            }
             roll = Mth.lerp(0.1f, roll, 0);
         }
         if (is(CRASHING)) {

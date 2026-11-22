@@ -426,6 +426,9 @@ public final class MilClient {
         List<Component> lines = new java.util.ArrayList<>();
         int hp = Math.round(v.health() / t.health * 100);
         int lineCount = 6 + (s != null && s.primary() >= 0 ? 1 : 0) + (s != null && s.secondary() >= 0 ? 1 : 0);
+        float hs = panelScale();
+        g.pose().pushPose();
+        g.pose().scale(hs, hs, 1);                                                  // panneau réduit (lisible sans masquer la vue)
         g.fill(x - 3, y - 3, x + w, y + lineCount * 11 + 2, 0x90000000);
         hudLines = lineCount;
         g.drawString(font, Component.translatable("entity.modeminecraft." + t.id).withStyle(net.minecraft.ChatFormatting.BOLD), x, y, 0xFFE8D890);
@@ -520,6 +523,7 @@ public final class MilClient {
         if (!warn.isEmpty() && (v.tickCount / 8) % 2 == 0) {
             g.drawString(font, String.join("  ", warn), x, y + 3, 0xFFFF4040);
         }
+        g.pose().popPose();
         // réticule du tireur, télémètre, verrouillage
         if (s != null && s.primary() >= 0 && mc.options.getCameraType().isFirstPerson()) {
             int cx = g.guiWidth() / 2, cy = g.guiHeight() / 2;
@@ -540,6 +544,8 @@ public final class MilClient {
                 g.drawCenteredString(font, Component.translatable("hud.modeminecraft.mil.locking"), cx, cy - 26, 0xFFFFC030);
             }
         }
+        g.pose().pushPose();
+        g.pose().scale(hs, hs, 1);
         if (v.raisable() && s != null && s.primary() >= 0) {
             boolean up = v.raised();
             // sous le panneau du véhicule (la barre d'action en bas d'écran sert aux messages)
@@ -567,9 +573,10 @@ public final class MilClient {
             if (v.canBomb(mc.player) && t == MilType.B29_SUPERFORTRESS) {
                 g.drawString(font, Component.translatable("hud.modeminecraft.b29.keys"), 6, py + 33, 0xFF909090);
             }
-            AirClient.hud(g, v, delta, py + (t == MilType.B29_SUPERFORTRESS ? 44 : nuke ? 33 : 22));
+            g.pose().popPose();
+            AirClient.hud(g, v, delta, py + (t == MilType.B29_SUPERFORTRESS ? 44 : nuke ? 33 : 22), hs);
             float stallKmh = t.maxSpeed() * 0.45f / 0.0095f;
-            if (kmh < stallKmh && !v.onGround()) {
+            if (kmh < stallKmh && v.airborneClient() && v.rotor() > 0.05f) {
                 g.drawCenteredString(font, Component.translatable("hud.modeminecraft.b29.stall"), g.guiWidth() / 2, g.guiHeight() / 2 - 40, 0xFFFF3030);
             }
             if (MilVehicleEntity.bombSightActive) {
@@ -588,9 +595,18 @@ public final class MilClient {
                         (int) Math.hypot(imp.x - v.getX(), imp.z - v.getZ())), cx, cy + 48, 0xFFFF6060);
             }
         }
+        if (!t.plane()) {
+            g.pose().popPose();
+        }
         if (thermal) {
             g.fill(0, 0, g.guiWidth(), g.guiHeight(), 0x18FFFFFF);
         }
+    }
+
+    /** Échelle du panneau du véhicule : plus petit quand l'interface de Minecraft est grande. */
+    public static float panelScale() {
+        double gui = Minecraft.getInstance().getWindow().getGuiScale();
+        return (float) Mth.clamp(2.0 / gui, 0.5, 0.8);
     }
 
     private static void bar(GuiGraphics g, net.minecraft.client.gui.Font font, int x, int y, String key, float f, int col, String label) {
