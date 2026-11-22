@@ -990,6 +990,15 @@ Les 6 grades vont de Soldat (0) à Général (3000). Chaque grade donne :
   **aucun armement**, pilote + passager. Décollage en 15 à 20 blocs, 120 minutes d'autonomie, ignoré des défenses antiaériennes
   (sauf s'il survole une base ou une cité soviétique à moins de 60 blocs du sol). Recette à l'établi d'assemblage.
 
+**Correctifs critiques du scénario (choix du camp, alliés, agro)**
+- Choix du camp : le paquetage est donné et le message « Affectation validée — Transfert vers votre base... » s'affiche tout
+  de suite ; la base est cherchée en arrière-plan (4 régions, puis 12) et le dortoir est chargé en asynchrone avant la
+  téléportation : plus de gel du serveur. Toute la surface d'une carte (drapeau, texte, marges) réagit au clic.
+- Zéro tir allié : l'armée de son propre camp (soldats, gardes, pilotes, tourelles) ne cible jamais le joueur et absorbe ses
+  coups sans alerte ni riposte, même après une erreur ou un pillage.
+- Mort, réapparition ou changement de dimension : tout bot qui visait le joueur efface cible, rancune et appel radio, les
+  factions lui pardonnent ; un fantassin ne poursuit pas au-delà de 50 blocs (snipers : portée de vue + 5).
+
 ### Gameplay et progression
 - **Niveaux des armes (1 à 5)** : chaque arme garde ses statistiques (éliminations, tirs à la tête, tirs, ratio)
   et gagne de l'expérience : +10 par élimination, +5 si tir à la tête, +10 pour un gros monstre (50 PV ou plus).

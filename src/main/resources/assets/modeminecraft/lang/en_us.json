@@ -2352,5 +2352,6 @@
   "message.modeminecraft.train.validated": "Inspector: ticket validated, enjoy your trip.",
   "message.modeminecraft.train.fraud": "Inspector: \"No ticket!\" (stunned by the electric baton)",
   "message.modeminecraft.train.expelled": "You were thrown off the train onto the platform.",
-  "structure.modeminecraft.mesa_train_station": "Mesa Railway Station"
+  "structure.modeminecraft.mesa_train_station": "Mesa Railway Station",
+  "message.modeminecraft.scenario.assigned": "Assignment confirmed — Transferring to your base..."
 }

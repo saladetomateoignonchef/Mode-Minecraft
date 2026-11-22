@@ -302,12 +302,54 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
 
     /** Ce bot a vu ce joueur commettre un crime (hostilité personnelle, même sans alerte générale). */
     public void setGrudge(Player p, long until) {
+        if (FactionRelations.isAlly(p.getUUID(), faction())) {
+            return;                                                          // camp du joueur : jamais de rancune
+        }
         grudge = p.getUUID();
         grudgeUntil = until;
     }
 
     public boolean hasGrudge(Player p) {
-        return grudge != null && grudge.equals(p.getUUID()) && level().getGameTime() < grudgeUntil;
+        return grudge != null && !FactionRelations.isAlly(p.getUUID(), faction()) && grudge.equals(p.getUUID()) && level().getGameTime() < grudgeUntil;
+    }
+
+    /** Le joueur est mort ou a changé de lieu : ce bot l'oublie complètement (cible, rancune, appel radio, sommation). */
+    public void forgetPlayer(java.util.UUID id) {
+        if (id.equals(grudge)) {
+            grudge = null;
+        }
+        if (id.equals(radioTarget)) {
+            startRadio(null, 0);
+        }
+        if (id.equals(ignored)) {
+            ignored = null;
+        }
+        LivingEntity t = getTarget();
+        if (t != null && t.getUUID().equals(id) || getLastHurtByMob() != null && getLastHurtByMob().getUUID().equals(id)) {
+            setTarget(null);
+            setLastHurtByMob(null);
+            getNavigation().stop();
+        }
+    }
+
+    /**
+     * Portée maximale de poursuite d'un joueur : la portée de vue de la faction (45, 90 pour un sniper) plus 5 blocs, et
+     * jamais au-delà de 50 blocs pour un fantassin ; pas de poursuite d'une dimension à l'autre. Au-delà : cible oubliée.
+     */
+    private void checkAggro() {
+        LivingEntity t = getTarget();
+        if (!(t instanceof Player p)) {
+            return;
+        }
+        double max = role() == BotRole.SNIPER ? faction().sightRange(role()) + 5 : Math.min(50, faction().sightRange(role()) + 5);
+        if (isPassenger()) {
+            return;                                                          // équipages de véhicules et de tourelles : portée de l'arme
+        }
+        if (p.level() != level() || !p.isAlive() || distanceToSqr(p) > max * max || FactionRelations.isAlly(p.getUUID(), faction())) {
+            setTarget(null);
+            setLastHurtByMob(null);
+            getNavigation().stop();
+        }
     }
 
     public void forgetGrudge() {
@@ -380,8 +422,8 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
             return other.faction() == Faction.FALCON || f.enemyOf(other.faction()) && (battle && other.battle || Skirmishes.allow(this, other));
         }
         if (t instanceof Player p) {
-            if (p.isCreative() || p.isSpectator()) {
-                return false;
+            if (p.isCreative() || p.isSpectator() || FactionRelations.isAlly(p.getUUID(), f)) {
+                return false;                                              // l'armée de son propre camp ne tire jamais sur lui
             }
             long now = level().getGameTime();
             if (hasGrudge(p)) {
@@ -535,6 +577,9 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
         if (!level().isClientSide && (tickCount + getId()) % 20 == 0 && fr.modeminecraft.item.ShieldCombat.blocked(this)) {
             // un bot au bouclier (SWAT) ne garde qu'une arme de poing ou une arme blanche légère
             setItemSlot(net.minecraft.world.entity.EquipmentSlot.MAINHAND, new net.minecraft.world.item.ItemStack(item("glock17")));
+        }
+        if (!level().isClientSide && (tickCount + getId()) % 10 == 0) {
+            checkAggro();
         }
         if (!level().isClientSide) {
             if ((tickCount + getId()) % 20 == 0) {

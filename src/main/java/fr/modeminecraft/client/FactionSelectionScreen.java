@@ -41,6 +41,30 @@ public class FactionSelectionScreen extends Screen {
                 .bounds(rx + 10, top + h - 28, w - 20, 20).build());
     }
 
+    /** Toute la surface d'une carte (drapeau, titre, texte, marges) choisit le camp, pas seulement le bouton. */
+    @Override
+    public boolean mouseClicked(double mx, double my, int button) {
+        if (super.mouseClicked(mx, my, button)) {
+            return true;
+        }
+        if (button != 0) {
+            return false;
+        }
+        int w = panelW(), gap = 12, top = 34, h = height - top - 12;
+        int lx = width / 2 - gap / 2 - w, rx = width / 2 + gap / 2;
+        if (my >= top - 2 && my < top + h + 2) {
+            if (mx >= lx - 2 && mx < lx + w + 2) {
+                choose(Side.US);
+                return true;
+            }
+            if (mx >= rx - 2 && mx < rx + w + 2) {
+                choose(Side.SOVIET);
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void choose(Side s) {
         if (!sent) {
             sent = true;

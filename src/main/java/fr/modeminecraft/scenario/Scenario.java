@@ -113,32 +113,57 @@ public final class Scenario {
         ScenarioData data = ScenarioData.get(sp.serverLevel());
         ScenarioData.Record r = data.of(sp.getUUID());
         r.side = side;
-        loadout(sp, side);
-        CityPlanner.City base = findBase(sp.serverLevel(), side, sp.blockPosition());
-        if (base != null) {
-            ScenarioSites.Dorm dorm = ScenarioSites.dorm(base, side);
-            ServerLevel level = sp.serverLevel();
-            for (int dx = -1; dx <= 2; dx++) {
-                for (int dz = -1; dz <= 1; dz++) {
-                    level.getChunk((dorm.spawn().getX() >> 4) + dx, (dorm.spawn().getZ() >> 4) + dz);      // dortoir généré
-                }
-            }
-            sp.teleportTo(level, dorm.spawn().getX() + 0.5, dorm.spawn().getY(), dorm.spawn().getZ() + 0.5, dorm.yaw(), 0);
-            sp.setRespawnPosition(level.dimension(), dorm.bed(), dorm.yaw(), false, false);   // couchette : point de réveil à côté
-            fr.modeminecraft.scenario.BarracksLockerBlock.assign(level, dorm.locker(), sp);
-            r.base = new BlockPos(base.middleX(), base.baseY(), base.middleZ());
-            Reputation.nameplate(sp);
-            r.bed = dorm.bed();
-            r.locker = dorm.locker();
-            sp.displayClientMessage(Component.translatable("message.modeminecraft.scenario.arrived." + side.id).withStyle(ChatFormatting.GOLD), false);
-        } else {
-            sp.displayClientMessage(Component.translatable("message.modeminecraft.scenario.no_base").withStyle(ChatFormatting.RED), false);
-        }
+        loadout(sp, side);                                   // paquetage donné tout de suite, avant toute recherche
+        sp.displayClientMessage(Component.translatable("message.modeminecraft.scenario.assigned"), true);
         sp.displayClientMessage(Component.translatable("message.modeminecraft.scenario.allegiance." + side.id).withStyle(ChatFormatting.YELLOW), false);
         data.setDirty();
         sync(sp);
-        Cinematics.play(sp, "intro", 0, 0, 0, 0);
-        ModeMinecraft.LOGGER.info("Scénario : {} rejoint le camp {} (base {})", sp.getName().getString(), side.id, r.base);
+        transfer(sp, side, r, data);
+        ModeMinecraft.LOGGER.info("Scénario : {} rejoint le camp {}", sp.getName().getString(), side.id);
+    }
+
+    /**
+     * Transfert vers la base, sans jamais bloquer le serveur : la recherche de la base (calcul des villes) se fait en
+     * arrière-plan, d'abord sur un rayon court (4 régions), puis sur 12 si rien n'est trouvé ; le chunk du dortoir est
+     * chargé en asynchrone (ticket temporaire) et le joueur y est téléporté dès qu'il est prêt.
+     */
+    private static void transfer(ServerPlayer sp, Side side, ScenarioData.Record r, ScenarioData data) {
+        ServerLevel level = sp.serverLevel();
+        var server = level.getServer();
+        BlockPos from = sp.blockPosition();
+        net.minecraft.Util.backgroundExecutor().execute(() -> {
+            CityPlanner.City base = findCity(level, c -> c.variant().equals(side.baseVariant), from, 4);
+            if (base == null) {
+                base = findCity(level, c -> c.variant().equals(side.baseVariant), from, 12);
+            }
+            CityPlanner.City found = base;
+            server.execute(() -> {
+                if (found == null) {
+                    sp.displayClientMessage(Component.translatable("message.modeminecraft.scenario.no_base").withStyle(ChatFormatting.RED), false);
+                    Cinematics.play(sp, "intro", 0, 0, 0, 0);
+                    return;
+                }
+                ScenarioSites.Dorm dorm = ScenarioSites.dorm(found, side);
+                var chunk = new net.minecraft.world.level.ChunkPos(dorm.spawn());
+                level.getChunkSource().getChunkFuture(chunk.x, chunk.z, net.minecraft.world.level.chunk.status.ChunkStatus.FULL, true)
+                        .thenAcceptAsync(res -> {
+                            if (!sp.isAlive() || sp.hasDisconnected()) {
+                                return;
+                            }
+                            sp.teleportTo(level, dorm.spawn().getX() + 0.5, dorm.spawn().getY(), dorm.spawn().getZ() + 0.5, dorm.yaw(), 0);
+                            sp.setRespawnPosition(level.dimension(), dorm.bed(), dorm.yaw(), false, false);
+                            fr.modeminecraft.scenario.BarracksLockerBlock.assign(level, dorm.locker(), sp);
+                            r.base = new BlockPos(found.middleX(), found.baseY(), found.middleZ());
+                            r.bed = dorm.bed();
+                            r.locker = dorm.locker();
+                            Reputation.nameplate(sp);
+                            data.setDirty();
+                            sp.displayClientMessage(Component.translatable("message.modeminecraft.scenario.arrived." + side.id).withStyle(ChatFormatting.GOLD), false);
+                            sync(sp);
+                            Cinematics.play(sp, "intro", 0, 0, 0, 0);
+                        }, server);
+            });
+        });
     }
 
     /** Paquetage réglementaire : fusil d'assaut chargé, 150 cartouches, tenue de recrue, 4 rations, 2 bandages. */
@@ -220,6 +245,7 @@ public final class Scenario {
     /** Envoie au client son camp (HUD, écrans). */
     public static void sync(ServerPlayer sp) {
         ScenarioData.Record r = record(sp);
+        fr.modeminecraft.entity.bot.FactionRelations.setAlly(sp.getUUID(), r.side == null ? null : r.side.ally);
         PacketDistributor.sendToPlayer(sp, new ScenarioPayloads.Sync(r.side == null ? "" : r.side.id, r.reputation));
     }
 }

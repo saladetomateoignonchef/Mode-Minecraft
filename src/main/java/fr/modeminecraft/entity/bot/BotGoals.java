@@ -187,7 +187,7 @@ public final class BotGoals {
             LivingEntity a = bot.getLastHurtByMob();
             return bot.faction().combatant() && a != null && bot.getLastHurtByMobTimestamp() != stamp && a.isAlive()
                     && !(a instanceof HumanBotEntity o && o.faction().group.equals(bot.faction().group))
-                    && !(a instanceof Player p && (p.isCreative() || p.isSpectator()));
+                    && !(a instanceof Player p && (p.isCreative() || p.isSpectator() || FactionRelations.isAlly(p.getUUID(), bot.faction())));
         }
 
         @Override
