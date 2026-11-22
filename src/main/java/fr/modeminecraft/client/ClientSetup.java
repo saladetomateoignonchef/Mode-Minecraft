@@ -91,6 +91,7 @@ public final class ClientSetup {
         for (var h : ModEntities.MIL_VEHICLE_TYPES.values()) {
             event.registerEntityRenderer(h.get(), MilVehicleRenderer::new);
         }
+        event.registerEntityRenderer(ModEntities.MESA_TRAIN_CAR.get(), MesaTrainRenderer::new);
         event.registerEntityRenderer(ModEntities.SHELL.get(), ShellRenderer::new);
         event.registerEntityRenderer(ModEntities.DRONE.get(), DroneRenderer::new);
         event.registerEntityRenderer(ModEntities.THROWN_GRENADE.get(), ExplosiveRenderers.Grenade::new);

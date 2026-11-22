@@ -777,5 +777,17 @@
     "sounds": [
       "modeminecraft:mil/engine_dry_crank_0"
     ]
+  },
+  "train.whistle": {
+    "subtitle": "subtitles.modeminecraft.train_whistle",
+    "sounds": [
+      "modeminecraft:train/train_whistle"
+    ]
+  },
+  "train.electric_zap": {
+    "subtitle": "subtitles.modeminecraft.electric_zap",
+    "sounds": [
+      "modeminecraft:train/electric_zap"
+    ]
   }
 }

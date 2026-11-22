@@ -375,18 +375,40 @@ final class CityGenRegions2 {
             case "sheriff" -> westernBuilding(b, dz, h, "sheriff");
             case "store", "hotel", "house_west" -> westernBuilding(b, dz, h, type);
             case "railway", "station_west" -> {
+                // voie du train des villes du Mesa (rails est-ouest à z = 7), ballast et gare ferroviaire (mesa_train_station)
                 b.fill(0, -1, 6, 15, -1, 9, Blocks.GRAVEL);
                 b.fill(0, 0, 7, 15, 0, 7, Blocks.RAIL);
+                boolean platform = Math.abs(dx) <= 2;
+                if (platform) {
+                    // quai sud de 80 blocs, au niveau du plancher des wagons (portes des deux côtés), lampadaires et bancs
+                    b.fill(0, -1, 9, 15, -1, 12, Blocks.SPRUCE_PLANKS);
+                    b.fill(0, 0, 12, 15, 0, 12, B.slab(Blocks.SPRUCE_SLAB, false));
+                    for (int x : new int[]{2, 13}) {
+                        b.fill(x, 0, 12, x, 2, 12, Blocks.SPRUCE_FENCE);
+                        b.set(x, 3, 12, Blocks.LANTERN);
+                    }
+                    Deco.bench(b, 7, 0, 11, Direction.NORTH);
+                    b.fill(0, -1, 5, 15, -1, 5, Blocks.SPRUCE_PLANKS);                  // petit quai nord
+                }
                 if (type.equals("station_west")) {
                     b.fill(1, 0, 1, 14, 0, 5, Blocks.SPRUCE_PLANKS);
                     b.fill(3, 1, 1, 12, 4, 3, Blocks.SPRUCE_PLANKS);
                     b.fill(4, 1, 1, 11, 3, 2, Blocks.AIR.defaultBlockState());
                     b.fill(1, 5, 1, 14, 5, 5, B.slab(Blocks.SPRUCE_SLAB, false));
                     b.set(7, 4, 2, Blocks.LANTERN.defaultBlockState().setValue(BlockStateProperties.HANGING, true));
-                    b.bot(7, 1, 4, Faction.CIVILIAN, BotRole.CIVILIAN, 8);
-                } else if (h < 0.5) {
-                    b.fill(2, 1, 7, 12, 3, 7, Blocks.STRIPPED_SPRUCE_LOG);           // wagon de marchandises
-                    b.chest(7, 1, 8, Direction.NORTH, "city_shop", false);
+                    b.set(10, 4, 4, Blocks.LANTERN.defaultBlockState().setValue(BlockStateProperties.HANGING, true));
+                    for (int x : new int[]{1, 14}) {                                         // poteaux de l'auvent
+                        b.fill(x, 1, 5, x, 4, 5, Blocks.SPRUCE_FENCE);
+                    }
+                    b.fill(5, 1, 5, 9, 1, 5, B.slab(Blocks.SPRUCE_SLAB, false));            // guichet
+                    b.set(6, 2, 5, Blocks.BARREL.defaultBlockState().setValue(BlockStateProperties.FACING, Direction.UP));
+                    b.bot(7, 1, 4, Faction.RAILWAY, BotRole.TICKET_CLERK, 3);                // guichetier : 2 émeraudes ou 1 lingot d'or
+                    b.chest(12, 1, 4, Direction.WEST, "city_shop", false);
+                } else if (!platform && h < 0.5) {
+                    // wagon de marchandises garé sur une voie de garage (la voie principale reste libre pour le train)
+                    b.fill(0, 0, 11, 15, 0, 11, Blocks.RAIL);
+                    b.fill(2, 1, 11, 12, 3, 11, Blocks.STRIPPED_SPRUCE_LOG);
+                    b.chest(7, 1, 12, Direction.NORTH, "city_shop", false);
                 }
             }
             case "water_tower" -> {

@@ -220,6 +220,15 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
         if (role == BotRole.DRONE_OPERATOR) {
             setItemSlot(EquipmentSlot.OFFHAND, new ItemStack(ModItems.DRONE_CONTROLLER.get()));
         }
+        if (role == BotRole.TRAIN_INSPECTOR) {
+            setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ModItems.STUN_BATON.get()));      // matraque électrique (paralysie)
+        }
+        if (role.rail()) {
+            setPersistenceRequired();
+            getAttribute(Attributes.MAX_HEALTH).setBaseValue(40);
+            setHealth(40);
+            return;
+        }
         boolean geared = role == BotRole.OFFICER || r.nextFloat() < 0.75f;
         if (geared) {
             pick(EquipmentSlot.HEAD, l.helmets(), r);
@@ -830,6 +839,13 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
         if (level().isClientSide && (role().staff() || role() == BotRole.SCIENTIST)) {
             return net.minecraft.world.InteractionResult.SUCCESS;
         }
+        if (role() == BotRole.TICKET_CLERK && isAlive()) {
+            if (!level().isClientSide) {
+                getLookControl().setLookAt(player);
+                fr.modeminecraft.entity.train.TrainStaff.sellTicket(this, player);
+            }
+            return net.minecraft.world.InteractionResult.sidedSuccess(level().isClientSide);
+        }
         if (role() == BotRole.CONTRACTOR && isAlive()) {
             if (!level().isClientSide) {
                 getLookControl().setLookAt(player);
@@ -921,6 +937,9 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
         if (role().staff() || role() == BotRole.SCIENTIST) {
             return net.minecraft.network.chat.Component.translatable("entity.modeminecraft.bot." + role().name().toLowerCase()
                     + (role() == BotRole.SCIENTIST ? "" : "." + faction().id));
+        }
+        if (role().rail()) {
+            return net.minecraft.network.chat.Component.translatable("entity.modeminecraft.bot." + role().name().toLowerCase());
         }
         if (role() == BotRole.BOSS) {
             return net.minecraft.network.chat.Component.translatable("entity.modeminecraft.bot.boss_" + faction().id);

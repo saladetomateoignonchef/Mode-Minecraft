@@ -233,6 +233,11 @@ public final class RoadNetwork {
         double az = alongX ? a.middleZ() + 0.5 : (dz > 0 ? a.maxZ() + 1 : a.minZ() - 1);
         double bx = alongX ? (dx > 0 ? b.minX() - 1 : b.maxX() + 1) : b.middleX() + 0.5;
         double bz = alongX ? b.middleZ() + 0.5 : (dz > 0 ? b.minZ() - 1 : b.maxZ() + 1);
+        return build(e, a, b, ax, az, bx, bz, sx, sz);
+    }
+
+    /** Tracé entre deux points de sortie (a -> b), la direction de départ et d'arrivée étant (sx, sz). */
+    public static Path build(CityPlanner.Env e, CityPlanner.City a, CityPlanner.City b, double ax, double az, double bx, double bz, double sx, double sz) {
         double[][] ctrl = new double[5][];
         ctrl[0] = new double[]{ax, az};
         ctrl[1] = new double[]{ax + sx * 48, az + sz * 48};

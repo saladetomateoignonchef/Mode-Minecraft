@@ -103,6 +103,10 @@ public final class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> TRANSFORMER_HUM = register("city.transformer_hum");
     public static final DeferredHolder<SoundEvent, SoundEvent> SPRAY_PAINT = register("city.spray_paint");
 
+    // ----- train des villes du Mesa
+    public static final DeferredHolder<SoundEvent, SoundEvent> TRAIN_WHISTLE = register("train.whistle");
+    public static final DeferredHolder<SoundEvent, SoundEvent> ELECTRIC_ZAP = register("train.electric_zap");
+
     // ----- mise à jour 0.4 : véhicules militaires et missiles
     public static final DeferredHolder<SoundEvent, SoundEvent> TANK_CANNON = register("mil.tank_cannon");
     public static final DeferredHolder<SoundEvent, SoundEvent> AUTOCANNON = register("mil.autocannon");

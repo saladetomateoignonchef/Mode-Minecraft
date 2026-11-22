@@ -56,6 +56,9 @@ public final class ModCreativeTabs {
         if (item instanceof fr.modeminecraft.item.military.MilVehicleItem mv) {
             return mv.type.naval() ? Tab.SEA : mv.type.heli() ? Tab.AIR : Tab.GROUND;
         }
+        if (path.equals("mesa_train_ticket")) {
+            return Tab.BLOCKS;                                         // billets et clés
+        }
         if (path.equals("light_civil_plane")) {
             return Tab.AIR;
         }

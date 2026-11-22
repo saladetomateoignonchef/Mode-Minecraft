@@ -1254,6 +1254,11 @@ COLORS.update(sm.SHIP_COLORS)
 PAINTS.update({k for k in sm.SHIP_COLORS if k not in ("window",)})
 _ships = sm.make(V)
 VEHICLES += _ships
+import train_models as tm  # noqa: E402
+COLORS.update(tm.TRAIN_COLORS)
+PAINTS.update({k for k in tm.TRAIN_COLORS if k not in ("lamp_yellow",)})
+MATERIAL.update({"lamp_yellow": "flat"})
+VEHICLES += tm.make(V)
 SHIPS = {"kirov_cruiser", "admiral_gorshkov", "slava_cruiser", "udaloy_destroyer", "buyan_corvette", "arleigh_burke",
          "ticonderoga_cruiser", "zumwalt_destroyer", "ohio_submarine", "virginia_submarine", "mercenary_rhib",
          "mercenary_interceptor_boat", "mercenary_explosive_usv"}

@@ -39,7 +39,9 @@ public enum Faction {
     /** Mercenaires Offshore de la plateforme pétrolière : agressifs à vue envers le joueur et toutes les nations. */
     OFFSHORE("offshore", Attitude.HOSTILE, 5, "offshore", 0xC05A14,
             new Loadout(List.of("scar_h", "hk416", "mp5", "spas12", "rpg7"), List.of("barrett_m82"), List.of("ops_core_fast", "mich_2000"),
-                    List.of("jpc_plate_carrier", "avs_plate_carrier"), List.of(), List.of("salomon_forces_boots"), "frag_grenade"));
+                    List.of("jpc_plate_carrier", "avs_plate_carrier"), List.of(), List.of("salomon_forces_boots"), "frag_grenade")),
+    /** Personnel du train des villes du Mesa : uniforme bleu marine à casquette, jamais armé. */
+    RAILWAY("railway", Attitude.PASSIVE, 3, "railway", 0x2A3A6A, Loadout.NONE);
 
     /** Comportement envers un joueur. */
     public enum Attitude {
