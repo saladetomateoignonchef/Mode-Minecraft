@@ -115,6 +115,11 @@ public final class AirAI {
         }
         Entity c = o.getControllingPassenger();
         if (c instanceof Player p) {
+            fr.modeminecraft.scenario.Side side = fr.modeminecraft.scenario.Scenario.side(p);
+            if (side != null && pilot.faction() == side.ally
+                    && !fr.modeminecraft.entity.bot.FactionRelations.isHostile(p.getUUID(), side.ally, v.level().getGameTime())) {
+                return false;                                                   // pilote allié du joueur
+            }
             return !p.isCreative() && !p.isSpectator();
         }
         return c instanceof HumanBotEntity hb && pilot.faction().enemyOf(hb.faction());
@@ -262,6 +267,10 @@ public final class AirAI {
                 continue;
             }
             Faction f = city.kind().equals("base") ? Faction.GARRISON : Faction.SOVIET;
+            fr.modeminecraft.scenario.Side allied = fr.modeminecraft.scenario.Scenario.side(p);
+            if (allied != null && allied.ally == f && !fr.modeminecraft.entity.bot.FactionRelations.isHostile(p.getUUID(), f, now)) {
+                continue;                                                         // sa propre base : pas d'interception
+            }
             Vec3 center = new Vec3(city.middleX(), city.baseY(), city.middleZ());
             long airborneAi = level.getEntitiesOfClass(MilVehicleEntity.class, p.getBoundingBox().inflate(600, 300, 600),
                     v -> v.type().plane() && v.patrol).size();
@@ -319,7 +328,9 @@ public final class AirAI {
             return;
         }
         Faction f = jet.type().side == MilType.Side.SOVIET ? Faction.SOVIET : Faction.GARRISON;
-        boolean enemy = mine.type().side != jet.type().side || f == Faction.SOVIET || fr.modeminecraft.entity.bot.FactionRelations.isHostile(p.getUUID(), f, now);
+        fr.modeminecraft.scenario.Side allied = fr.modeminecraft.scenario.Scenario.side(p);
+        boolean enemy = (allied != null ? allied.ally != f : mine.type().side != jet.type().side || f == Faction.SOVIET)
+                || fr.modeminecraft.entity.bot.FactionRelations.isHostile(p.getUUID(), f, now);
         if (!enemy) {
             return;
         }

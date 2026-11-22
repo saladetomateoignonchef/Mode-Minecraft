@@ -96,6 +96,7 @@ public final class StrategicSystems {
         if (v.autoDefense && v.tickCount % 60 == 0) {
             for (Entity e : sl.getEntities(v, v.getBoundingBox().inflate(300, 200, 300), e -> MilVehicleEntity.radarSees(v, e))) {
                 boolean hostile = e instanceof MilVehicleEntity mv && mv.getControllingPassenger() instanceof Player p && !p.isCreative()
+                        && !allied(p, v)
                         || e instanceof fr.modeminecraft.entity.drone.DroneEntity d && d.owner != null;
                 if (hostile) {
                     MilAmmo a = pick(v, false);
@@ -109,6 +110,13 @@ public final class StrategicSystems {
                 v.fillAmmo(1f);                                                        // ravitaillement de la base
             }
         }
+    }
+
+    /** Joueur allié du camp de la batterie (scénario), et pas en guerre avec lui. */
+    private static boolean allied(Player p, MilVehicleEntity battery) {
+        fr.modeminecraft.scenario.Side s = fr.modeminecraft.scenario.Scenario.side(p);
+        return s != null && s.vehicles == battery.type().side
+                && !fr.modeminecraft.entity.bot.FactionRelations.isHostile(p.getUUID(), s.ally, p.level().getGameTime());
     }
 
     /** Missile choisi : antimissile (agile / cinétique) pour un missile, longue portée sinon. */

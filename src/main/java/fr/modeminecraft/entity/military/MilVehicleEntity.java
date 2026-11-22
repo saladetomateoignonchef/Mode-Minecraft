@@ -3373,6 +3373,10 @@ public class MilVehicleEntity extends Entity {
         if (!(level() instanceof ServerLevel sl) || player.isCreative() || type().side != MilType.Side.US) {
             return;
         }
+        fr.modeminecraft.scenario.Side allied = fr.modeminecraft.scenario.Scenario.side(player);
+        if (allied != null && allied.vehicles == type().side) {
+            return;                                                           // véhicule de son propre camp
+        }
         var city = fr.modeminecraft.world.city.CityPlanner.cityAtCached(fr.modeminecraft.world.city.CityPlanner.Env.of(sl), getBlockX(), getBlockZ(), 16);
         boolean usBase = city != null && city.variant().equals("base");
         if (usBase || patrol) {

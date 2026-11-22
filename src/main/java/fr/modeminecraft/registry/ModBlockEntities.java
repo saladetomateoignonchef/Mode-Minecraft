@@ -21,6 +21,9 @@ public final class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<fr.modeminecraft.block.police.PoliceLockerBlockEntity>> POLICE_LOCKER =
             BLOCK_ENTITIES.register("police_locker", () -> BlockEntityType.Builder.of(fr.modeminecraft.block.police.PoliceLockerBlockEntity::new,
                     ModBlocks.POLICE_LOCKER.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<fr.modeminecraft.scenario.BarracksLockerBlockEntity>> BARRACKS_LOCKER =
+            BLOCK_ENTITIES.register("barracks_locker", () -> BlockEntityType.Builder.of(fr.modeminecraft.scenario.BarracksLockerBlockEntity::new,
+                    ModBlocks.BARRACKS_LOCKER.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<fr.modeminecraft.block.police.JailDoorBlockEntity>> JAIL_DOOR =
             BLOCK_ENTITIES.register("jail_door", () -> BlockEntityType.Builder.of(fr.modeminecraft.block.police.JailDoorBlockEntity::new,
                     ModBlocks.SLIDING_JAIL_DOOR.get()).build(null));

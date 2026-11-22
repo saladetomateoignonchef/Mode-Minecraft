@@ -17,10 +17,14 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /** Contenu d'un casier de police (18 emplacements, rempli par une table de butin à la première ouverture). */
 public class PoliceLockerBlockEntity extends RandomizableContainerBlockEntity {
-    private NonNullList<ItemStack> items = NonNullList.withSize(18, ItemStack.EMPTY);
+    private NonNullList<ItemStack> items = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
 
     public PoliceLockerBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.POLICE_LOCKER.get(), pos, state);
+    }
+
+    protected PoliceLockerBlockEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
     }
 
     @Override

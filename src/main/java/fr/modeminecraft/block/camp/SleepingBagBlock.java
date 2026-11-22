@@ -69,6 +69,25 @@ public class SleepingBagBlock extends HorizontalDirectionalBlock {
         return true;
     }
 
+    /**
+     * Point de réapparition : debout sur le sac de couchage (bloc bas) ou à côté du lit (couchettes), sur un emplacement
+     * sûr ; sans ce point, le jeu renverrait le joueur au point d'apparition du monde.
+     */
+    @Override
+    public java.util.Optional<net.minecraft.server.level.ServerPlayer.RespawnPosAngle> getRespawnPosition(BlockState state,
+            net.minecraft.world.entity.EntityType<?> type, net.minecraft.world.level.LevelReader level, BlockPos pos, float orientation) {
+        BlockPos[] spots = {pos, pos.east(), pos.west(), pos.south(), pos.north(), pos.east().south(), pos.west().south(),
+                pos.east().north(), pos.west().north(), pos.above()};
+        for (BlockPos p : spots) {
+            net.minecraft.world.phys.Vec3 v = net.minecraft.world.entity.vehicle.DismountHelper.findSafeDismountLocation(type,
+                    (net.minecraft.world.level.CollisionGetter) level, p, true);
+            if (v != null) {
+                return java.util.Optional.of(new net.minecraft.server.level.ServerPlayer.RespawnPosAngle(v, orientation));
+            }
+        }
+        return java.util.Optional.empty();
+    }
+
     /** Pas d'état « occupé » comme les lits : rien à mémoriser. */
     @Override
     public void setBedOccupied(BlockState state, Level level, BlockPos pos, LivingEntity sleeper, boolean occupied) {
@@ -105,6 +124,7 @@ public class SleepingBagBlock extends HorizontalDirectionalBlock {
     public static void onSetSpawn(PlayerSetSpawnEvent event) {
         BlockPos pos = event.getNewSpawn();
         if (pos != null && event.getEntity().level().getBlockState(pos).getBlock() instanceof SleepingBagBlock
+                && !(event.getEntity().level().getBlockState(pos).getBlock() instanceof fr.modeminecraft.scenario.MilitaryBunkBedBlock)
                 && !KEEP_SPAWN.contains(event.getEntity().getUUID()) && !event.isForced()) {
             event.setCanceled(true);
         }

@@ -376,6 +376,16 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
             if (Disguise.immune(this, p)) {
                 return false;                                              // déguisé en membre de la faction
             }
+            // scénario « Course à l'arme nucléaire » : l'armée de son pays est alliée (sauf trahison), l'adverse tire à vue
+            fr.modeminecraft.scenario.Side side = fr.modeminecraft.scenario.Scenario.side(p);
+            if (side != null) {
+                if (f == side.ally) {
+                    return FactionRelations.isHostile(p.getUUID(), f, now);
+                }
+                if (f == side.enemy) {
+                    return true;
+                }
+            }
             return switch (f.attitude) {
                 case PASSIVE -> false;
                 case PROVOKED, WARN -> FactionRelations.isHostile(p.getUUID(), f, now);

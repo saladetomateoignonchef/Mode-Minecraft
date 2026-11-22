@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/military_bunk_bed_soviet"
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/military_bunk_bed_soviet",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/military_bunk_bed_soviet",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/military_bunk_bed_soviet",
+      "y": 270
+    }
+  }
+}

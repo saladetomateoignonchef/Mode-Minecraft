@@ -458,7 +458,11 @@ final class CityGenRegions {
     private static void militaryBase(B b, String type, int dx, int dz, int rad, double h) {
         boolean wide = type.equals("hangar");
         int w = wide ? 31 : 15;
-        b.ground(0, 0, w, w, Blocks.GRAVEL.defaultBlockState(), Blocks.STONE.defaultBlockState(), 26);
+        if (type.equals("dormitory")) {
+            b.ground(0, 0, b.w - 1, b.d - 1, Blocks.GRAVEL.defaultBlockState(), Blocks.STONE.defaultBlockState(), 26);
+        } else {
+            b.ground(0, 0, w, w, Blocks.GRAVEL.defaultBlockState(), Blocks.STONE.defaultBlockState(), 26);
+        }
         // double grillage barbelé sur le bord extérieur de la base
         if (dx == -rad) {
             Deco.fence(b, 0, 0, 0, 15, 4);
@@ -493,6 +497,7 @@ final class CityGenRegions {
             if (dz == rad && dx != 0) b.mine(k, 0, 13 + (k % 2), false);
         }
         switch (type) {
+            case "dormitory" -> ScenarioBuildings.dormitory(b, fr.modeminecraft.scenario.Side.US);
             case "airstrip" -> Airfields.airstrip(b, 96, Faction.GARRISON);
             case "aircraft_hangar" -> Airfields.megaHangar(b, Faction.GARRISON, 0.45f);
             case "mirador" -> {
@@ -742,6 +747,10 @@ final class CityGenRegions {
     // =====================================================================================================
     private static void soviet(B b, CityLayout layout, String type, int dx, int dz, int rad, double h) {
         switch (type) {
+            case "dormitory" -> {
+                b.ground(0, 0, b.w - 1, b.d - 1, Blocks.GRAY_CONCRETE.defaultBlockState(), Blocks.STONE.defaultBlockState(), 12);
+                ScenarioBuildings.dormitory(b, fr.modeminecraft.scenario.Side.SOVIET);
+            }
             case "road" -> {
                 b.ground(0, 0, 15, 15, Blocks.GRAY_CONCRETE.defaultBlockState(), Blocks.STONE.defaultBlockState(), 10);
                 if ((Math.abs(dx) == rad || Math.abs(dz) == rad) && h > 0.6) {

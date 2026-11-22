@@ -38,6 +38,12 @@ public final class ModNetwork {
                 .playToServer(MeleePayload.TYPE, MeleePayload.STREAM_CODEC, MeleePayload::handle)
                 .playToServer(LockPayload.TYPE, LockPayload.STREAM_CODEC, LockPayload::handle)
                 .playToClient(LeanSyncPayload.TYPE, LeanSyncPayload.STREAM_CODEC, LeanSyncPayload::handle)
+                .playToClient(fr.modeminecraft.scenario.ScenarioPayloads.OpenChoice.TYPE, fr.modeminecraft.scenario.ScenarioPayloads.OpenChoice.STREAM_CODEC,
+                        fr.modeminecraft.scenario.ScenarioPayloads.OpenChoice::handle)
+                .playToServer(fr.modeminecraft.scenario.ScenarioPayloads.Choose.TYPE, fr.modeminecraft.scenario.ScenarioPayloads.Choose.STREAM_CODEC,
+                        fr.modeminecraft.scenario.ScenarioPayloads.Choose::handle)
+                .playToClient(fr.modeminecraft.scenario.ScenarioPayloads.Sync.TYPE, fr.modeminecraft.scenario.ScenarioPayloads.Sync.STREAM_CODEC,
+                        fr.modeminecraft.scenario.ScenarioPayloads.Sync::handle)
                 .playToClient(ShotFxPayload.TYPE, ShotFxPayload.STREAM_CODEC, ShotFxPayload::handle)
                 .playToClient(CityAmbiencePayload.TYPE, CityAmbiencePayload.STREAM_CODEC, CityAmbiencePayload::handle)
                 .playToClient(HitMarkerPayload.TYPE, HitMarkerPayload.STREAM_CODEC, HitMarkerPayload::handle)

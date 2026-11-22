@@ -68,6 +68,9 @@ public final class ModItems {
             () -> new net.minecraft.world.item.DoubleHighBlockItem(ModBlocks.LOCKED_METAL_DOOR.get(), new Item.Properties()));
     public static final DeferredItem<BlockItem> SLIDING_JAIL_DOOR = ITEMS.registerSimpleBlockItem(ModBlocks.SLIDING_JAIL_DOOR);
     public static final DeferredItem<BlockItem> PRISON_BUNK_BED = ITEMS.registerSimpleBlockItem(ModBlocks.PRISON_BUNK_BED);
+    public static final DeferredItem<BlockItem> MILITARY_BUNK_BED_US = ITEMS.registerSimpleBlockItem(ModBlocks.MILITARY_BUNK_BED_US);
+    public static final DeferredItem<BlockItem> MILITARY_BUNK_BED_SOVIET = ITEMS.registerSimpleBlockItem(ModBlocks.MILITARY_BUNK_BED_SOVIET);
+    public static final DeferredItem<BlockItem> BARRACKS_LOCKER = ITEMS.registerSimpleBlockItem(ModBlocks.BARRACKS_LOCKER);
     public static final DeferredItem<BlockItem> PRISON_TOILET_SINK = ITEMS.registerSimpleBlockItem(ModBlocks.PRISON_TOILET_SINK);
     public static final DeferredItem<BlockItem> PRISON_BENCH = ITEMS.registerSimpleBlockItem(ModBlocks.PRISON_BENCH);
     public static final DeferredItem<BlockItem> CELL_CONTROL_PANEL = ITEMS.registerSimpleBlockItem(ModBlocks.CELL_CONTROL_PANEL);

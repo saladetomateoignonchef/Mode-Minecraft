@@ -144,6 +144,13 @@ public final class ModBlocks {
             () -> new fr.modeminecraft.block.police.SlidingJailDoorBlock(BlockBehaviour.Properties.of()
                     .mapColor(net.minecraft.world.level.material.MapColor.METAL).strength(-1f, 1200f)
                     .sound(net.minecraft.world.level.block.SoundType.METAL).noOcclusion()));
+    /** Scénario : lits superposés des dortoirs (US / URSS) et casier personnel. */
+    public static final DeferredBlock<Block> MILITARY_BUNK_BED_US = BLOCKS.register("military_bunk_bed_us",
+            () -> new fr.modeminecraft.scenario.MilitaryBunkBedBlock(steel()));
+    public static final DeferredBlock<Block> MILITARY_BUNK_BED_SOVIET = BLOCKS.register("military_bunk_bed_soviet",
+            () -> new fr.modeminecraft.scenario.MilitaryBunkBedBlock(steel()));
+    public static final DeferredBlock<Block> BARRACKS_LOCKER = BLOCKS.register("barracks_locker",
+            () -> new fr.modeminecraft.scenario.BarracksLockerBlock(steel()));
     public static final DeferredBlock<Block> PRISON_BUNK_BED = BLOCKS.register("prison_bunk_bed",
             () -> new fr.modeminecraft.block.police.PrisonBunkBlock(steel()));
     public static final DeferredBlock<Block> PRISON_TOILET_SINK = BLOCKS.register("prison_toilet_sink",
