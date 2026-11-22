@@ -1048,13 +1048,17 @@ def prop_model(v, r):
     b(7.2, 7.4, 7.4, 8.9, 8.6, 8.6, "metal")                                        # moyeu (cône)
     b(8.9, 7.7, 7.7, 9.4, 8.3, 8.3, "metal")
     w = max(0.5, 0.35 * k)
+    if v.name == "light_civil_plane":                                                # hélice bipale (une pale de chaque côté)
+        b(7.8, 8 - w / 2, 8 - R, 8.3, 8 + w / 2, 8 - 0.4, "rotor")
+        b(7.8, 8 - w / 2, 8 + 0.4, 8.3, 8 + w / 2, 8 + R, "rotor")
+        return e
     for ang in (-45, 0, 45):                                                         # 3 pales (pas de 22,5° imposé)
         b(7.8, 8 - w / 2, 8 - R, 8.3, 8 + w / 2, 8 - 0.4, "rotor", ang)
     b(7.8, 8 - 0.4, 8 + 0.4, 8.3, 8 + 0.4, 8 + R * 0.9, "rotor", 22.5)
     return e
 
 
-PROP_R = {"il2_sturmovik": 1.6, "la7": 1.5, "p51_mustang": 1.65, "tu95_bear": 2.8, "c130_hercules": 2.0}
+PROP_R = {"light_civil_plane": 1.05, "il2_sturmovik": 1.6, "la7": 1.5, "p51_mustang": 1.65, "tu95_bear": 2.8, "c130_hercules": 2.0}
 
 
 def b29():
@@ -1250,10 +1254,15 @@ COLORS.update(sm.SHIP_COLORS)
 PAINTS.update({k for k in sm.SHIP_COLORS if k not in ("window",)})
 _ships = sm.make(V)
 VEHICLES += _ships
+import train_models as tm  # noqa: E402
+COLORS.update(tm.TRAIN_COLORS)
+PAINTS.update({k for k in tm.TRAIN_COLORS if k not in ("lamp_yellow",)})
+MATERIAL.update({"lamp_yellow": "flat"})
+VEHICLES += tm.make(V)
 SHIPS = {"kirov_cruiser", "admiral_gorshkov", "slava_cruiser", "udaloy_destroyer", "buyan_corvette", "arleigh_burke",
          "ticonderoga_cruiser", "zumwalt_destroyer", "ohio_submarine", "virginia_submarine", "mercenary_rhib",
          "mercenary_interceptor_boat", "mercenary_explosive_usv"}
-PLANES = {"b29_superfortress", "il2_sturmovik", "la7", "mig15", "tu95_bear", "mig21", "mig25", "su25", "mig29", "su34", "su57",
+PLANES = {"light_civil_plane", "b29_superfortress", "il2_sturmovik", "la7", "mig15", "tu95_bear", "mig21", "mig25", "su25", "mig29", "su34", "su57",
           "p51_mustang", "f86_sabre", "f4_phantom", "c130_hercules", "a10_thunderbolt", "f117_nighthawk", "f15e_strike_eagle",
           "f16_falcon", "b2_spirit", "f22_raptor"}
 

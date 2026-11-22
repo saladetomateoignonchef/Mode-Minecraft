@@ -265,9 +265,13 @@ public enum MilType {
             List.of(free("m621", Kind.AUTOCANNON, 0, 3, -15, 40, 500, MilAmmo.HE_I, MilAmmo.AP_I),
                     free("mrl8", Kind.ROCKETS, 1, 6, -5, 40, 8, MilAmmo.S8))),
     EXPLOSIVE_USV("mercenary_explosive_usv", Side.MERC, Chassis.SHIP, 90, 60, 0.9f, 0.9f, 0.9f, 200, 0, Flag.NONE,
-            List.of(seat(Role.DRIVER, false)), List.of());
+            List.of(seat(Role.DRIVER, false)), List.of()),
+    // ------------------------------------------------------------ civil (à la fin : l'ordre des constantes est enregistré dans les mondes)
+    /** Avion de tourisme biplace, sans aucun armement : décollage court, vol souple, très peu de carburant consommé. */
+    LIGHT_CIVIL_PLANE("light_civil_plane", Side.CIVIL, Chassis.PLANE, 115, 160, 0.15f, 0.15f, 0.15f, 220, 0, Flag.NONE,
+            List.of(seat(Role.PILOT, true), seat(Role.PASSENGER, true)), List.of());
 
-    public enum Side { SOVIET, US, MERC }
+    public enum Side { SOVIET, US, MERC, CIVIL }
 
     /** HELI : hélicoptère ; PLANE : avion à voilure fixe (vitesse de sustentation, piste, train d'atterrissage). */
     public enum Chassis { WHEELS, TRACKS, HELI, PLANE, SHIP, SUB }
@@ -350,6 +354,11 @@ public enum MilType {
     /** Aéronef (hélicoptère ou avion) : vol, crash en vol, cible des radars. */
     public boolean heli() {
         return chassis == Chassis.HELI || chassis == Chassis.PLANE;
+    }
+
+    /** Aéronef civil : aucun armement, ignoré des défenses antiaériennes (sauf zone militaire interdite). */
+    public boolean civil() {
+        return side == Side.CIVIL;
     }
 
     /** Avion à voilure fixe (B-29). */

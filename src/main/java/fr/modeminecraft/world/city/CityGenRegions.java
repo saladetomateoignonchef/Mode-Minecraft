@@ -19,6 +19,11 @@ final class CityGenRegions {
                 switch (plot.type()) {
                     case "avenue" -> desertAvenue(b, dx, dz);
                     case "riad" -> riad(b, layout, dx, dz, h);
+                    case "riad_tall" -> DesertDistricts.riadTall(b, h);
+                    case "oasis" -> DesertDistricts.oasis(b, h);
+                    case "market_hall" -> DesertDistricts.marketHall(b, h);
+                    case "worksite" -> DesertDistricts.worksite(b, h);
+                    case "square" -> DesertDistricts.square(b, h);
                     case "palace" -> palace(b);
                     case "souk" -> souk(b);
                     default -> {

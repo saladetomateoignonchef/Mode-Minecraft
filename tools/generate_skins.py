@@ -451,6 +451,13 @@ def outfits(faction, rng, seed):
         return {"top": with_details(cloth(white, seed=s), combine(emblem, belt("#4a3a2a", "#c0c0c0"))), "sleeve": cloth("#c8c6c0", seed=s),
                 "pants": cloth(rng.choice(["#4a4a44", "#5a5a50"]), seed=s), "boots": "#2a2420", "gloves": "#3a3430",
                 "head_over": hood("#ecebe6", s) if rng.random() < 0.5 else None}
+    if faction == "railway":
+        # uniforme ferroviaire bleu marine, boutons dorés, ceinturon, casquette à visière et galon doré
+        navy = rng.choice(["#1c2a4a", "#18243f", "#22305a"])
+        buttons = lambda f, x, y: (220, 190, 60) if f == "front" and x in (3, 4) and y in (2, 4, 6, 8) else None
+        return {"top": with_details(cloth(navy, seed=s), combine(buttons, belt("#1a1a1a", "#d0b040"))), "sleeve": cloth(navy, seed=s),
+                "pants": cloth("#161e34", seed=s), "boots": "#141414", "gloves": "#1a1a1a",
+                "head_over": cap(navy, "#d0b040", badge="#d0b040")}
     raise ValueError(faction)
 
 
@@ -611,7 +618,7 @@ def falcon_cape():
 
 
 FACTIONS = {"police": 6, "swat": 4, "militia": 6, "rebel": 5, "garrison": 5, "soviet": 5, "arctic": 4, "mine_security": 4,
-            "cartel": 6, "gang": 5, "sheriff": 5, "refinery": 4, "civilian": 8, "trader": 4, "falcon": 6, "offshore": 5}
+            "cartel": 6, "gang": 5, "sheriff": 5, "refinery": 4, "civilian": 8, "trader": 4, "falcon": 6, "offshore": 5, "railway": 3}
 TONES = {"militia": SKIN_TONES[1:5], "cartel": SKIN_TONES[1:5], "soviet": SKIN_TONES[:2], "arctic": SKIN_TONES[:3]}
 
 

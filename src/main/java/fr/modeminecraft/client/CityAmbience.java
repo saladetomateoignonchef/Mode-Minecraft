@@ -78,7 +78,6 @@ public final class CityAmbience {
         float high = city && variant.equals("metropolis") ? Mth.clamp((float) (p.getY() - baseY - 12) / 30f, 0.08f, 0.6f) : 0;
         bed("wind", ModSounds.WIND_LOOP, high);
         bed("market", ModSounds.MARKET_LOOP, city && variant.equals("desert") && !night ? 0.32f : 0);
-        bed("crickets", ModSounds.CRICKETS_LOOP, night && rain < 0.2f && (city || p.getY() > 55) ? 0.22f : 0);
         bed("rain_tin", ModSounds.RAIN_TIN_LOOP, rain > 0.2f && roofOverhead(level, p.blockPosition()) ? 0.45f * rain : 0);
         // journaux emportés par le vent dans les rues (le jour, sans pluie)
         if (city && !night && rain < 0.2f && p.tickCount % 7 == 0 && RANDOM.nextFloat() < 0.35f) {

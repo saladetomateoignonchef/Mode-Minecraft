@@ -51,6 +51,9 @@ public class GunAttackGoal extends Goal {
     public boolean canUse() {
         LivingEntity target = mob.getTarget();
         GunItem g = gun();
+        if (fr.modeminecraft.entity.TurretPost.operating(mob)) {
+            return false;
+        }
         return g != null && g.stats().projectile() == GunStats.ProjectileKind.BULLET && target != null && target.isAlive()
                 && mob.distanceTo(target) < range() * 1.5;
     }

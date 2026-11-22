@@ -99,10 +99,13 @@ public final class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> DOG_BARK = register("city.dog_bark");
     public static final DeferredHolder<SoundEvent, SoundEvent> PIGEON_COO = register("city.pigeon_coo");
     public static final DeferredHolder<SoundEvent, SoundEvent> PIGEON_FLAP = register("city.pigeon_flap");
-    public static final DeferredHolder<SoundEvent, SoundEvent> CRICKETS_LOOP = register("city.crickets_loop");
     public static final DeferredHolder<SoundEvent, SoundEvent> RAIN_TIN_LOOP = register("city.rain_tin_loop");
     public static final DeferredHolder<SoundEvent, SoundEvent> TRANSFORMER_HUM = register("city.transformer_hum");
     public static final DeferredHolder<SoundEvent, SoundEvent> SPRAY_PAINT = register("city.spray_paint");
+
+    // ----- train des villes du Mesa
+    public static final DeferredHolder<SoundEvent, SoundEvent> TRAIN_WHISTLE = register("train.whistle");
+    public static final DeferredHolder<SoundEvent, SoundEvent> ELECTRIC_ZAP = register("train.electric_zap");
 
     // ----- mise à jour 0.4 : véhicules militaires et missiles
     public static final DeferredHolder<SoundEvent, SoundEvent> TANK_CANNON = register("mil.tank_cannon");

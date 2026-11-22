@@ -110,7 +110,7 @@ public final class AirAI {
 
     /** Cible légitime : aéronef piloté (joueur, ou bot d'une faction ennemie). */
     private static boolean hostile(MilVehicleEntity v, HumanBotEntity pilot, Entity e) {
-        if (!(e instanceof MilVehicleEntity o) || o == v || !o.type().heli() || o.is(MilVehicleEntity.WRECK) || o.onGround()) {
+        if (!(e instanceof MilVehicleEntity o) || o == v || !o.type().heli() || o.is(MilVehicleEntity.WRECK) || o.onGround() || !o.aaTarget()) {
             return false;
         }
         Entity c = o.getControllingPassenger();
@@ -275,7 +275,7 @@ public final class AirAI {
             long airborneAi = level.getEntitiesOfClass(MilVehicleEntity.class, p.getBoundingBox().inflate(600, 300, 600),
                     v -> v.type().plane() && v.patrol).size();
             // interception : le joueur survole l'espace aérien en aéronef, visible au radar
-            if (p.getVehicle() instanceof MilVehicleEntity mine && mine.type().heli() && !mine.onGround()
+            if (p.getVehicle() instanceof MilVehicleEntity mine && mine.type().heli() && !mine.onGround() && mine.aaTarget()
                     && MilVehicleEntity.radarSees(p, mine) && airborneAi < 4
                     && now - SCRAMBLED.getOrDefault(p.getUUID(), -100000L) > 2400) {
                 SCRAMBLED.put(p.getUUID(), now);

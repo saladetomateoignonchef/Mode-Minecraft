@@ -218,19 +218,6 @@ def city_sound(name, seed):
             n = int(0.04 * SR)
             add_wrap(x, band(rng.uniform(-1, 1, n), 300, 4000) * np.exp(-np.arange(n) / (0.01 * SR)) * (1 - i / 12), int(i * 0.075 * SR))
         return norm(x, 0.7)
-    if name == "crickets_loop":
-        t = t_axis(4.0)
-        x = np.zeros(len(t))
-        for c in range(4):
-            f = rng.uniform(4200, 5200)
-            rate = rng.uniform(1.6, 2.6)
-            for k in range(int(4.0 * rate)):
-                at = int(((k / rate) + c * 0.13) * SR)
-                d = 0.12
-                tt = t_axis(d)
-                chirp = np.sin(2 * np.pi * f * tt) * (np.sin(2 * np.pi * 45 * tt) > 0) * np.sin(np.pi * tt / d)
-                add_wrap(x, chirp * rng.uniform(0.3, 0.8), at)
-        return norm(x, 0.45)
     if name == "rain_tin_loop":
         t = t_axis(4.0)
         x = band(rng.uniform(-1, 1, len(t)), 1500, 9000) * 0.12
@@ -258,4 +245,4 @@ def city_sound(name, seed):
 
 CITY_SOUNDS = ["crowbar_pry", "jail_door_slide", "jail_buzzer", "cash_register_bell", "civilian_scream", "car_horn", "bus_brakes",
                "traffic_loop", "wind_loop", "market_loop", "cafe_music", "saloon_piano", "street_guitar", "radio_crackle", "loudspeaker",
-               "dog_bark", "pigeon_coo", "pigeon_flap", "crickets_loop", "rain_tin_loop", "transformer_hum", "spray_paint"]
+               "dog_bark", "pigeon_coo", "pigeon_flap", "rain_tin_loop", "transformer_hum", "spray_paint"]

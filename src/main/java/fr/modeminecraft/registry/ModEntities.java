@@ -52,6 +52,11 @@ public final class ModEntities {
         }
     }
 
+    /** Locomotive et wagons du train des villes du Mesa. */
+    public static final DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.entity.train.MesaTrainCarEntity>> MESA_TRAIN_CAR = ENTITY_TYPES.register("mesa_train_car",
+            () -> EntityType.Builder.<fr.modeminecraft.entity.train.MesaTrainCarEntity>of(fr.modeminecraft.entity.train.MesaTrainCarEntity::new, MobCategory.MISC)
+                    .sized(2.8f, 3.6f).clientTrackingRange(16).updateInterval(1).fireImmune().build("mesa_train_car"));
+
     /** Obus, roquettes et missiles des véhicules. */
     public static final DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.entity.military.ShellEntity>> SHELL = ENTITY_TYPES.register("heavy_shell",
             () -> EntityType.Builder.<fr.modeminecraft.entity.military.ShellEntity>of(fr.modeminecraft.entity.military.ShellEntity::new, MobCategory.MISC)

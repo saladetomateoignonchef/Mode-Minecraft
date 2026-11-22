@@ -274,6 +274,7 @@ public class MilVehicleEntity extends Entity {
             case SU_34 -> new float[]{20.6f, 3.8f, 4.4f};
             case SU_57 -> new float[]{19.0f, 4.0f, 3.8f};
             case P_51 -> new float[]{9.4f, 1.6f, 2.8f};
+            case LIGHT_CIVIL_PLANE -> new float[]{6.5f, 1.8f, 2.5f};
             case F_86 -> new float[]{10.8f, 1.8f, 3.2f};
             case F_4E -> new float[]{17.6f, 3.2f, 4.0f};
             case C_130 -> new float[]{28.5f, 4.2f, 6.2f};
@@ -1085,8 +1086,30 @@ public class MilVehicleEntity extends Entity {
         if (o == this || o.getPassengers().isEmpty() && !o.patrol) {
             return false;
         }
+        if (type().civil() || !o.aaTarget()) {
+            return false;                                                        // civils : ni cibles ni tireurs
+        }
         MilType.Side a = type().side, b = o.type().side;
         return a != b || a == MilType.Side.MERC;
+    }
+
+    /**
+     * Cible légitime des défenses antiaériennes et des intercepteurs ? Un avion civil ne l'est jamais, sauf s'il survole
+     * à basse altitude (moins de 60 blocs du sol) une zone militaire interdite : base ou cité soviétique.
+     */
+    public boolean aaTarget() {
+        if (!type().civil()) {
+            return true;
+        }
+        if (!(level() instanceof ServerLevel sl) || !airborne()) {
+            return false;
+        }
+        int ground = sl.getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, getBlockX(), getBlockZ());
+        if (getY() - ground > 60) {
+            return false;
+        }
+        var city = fr.modeminecraft.world.city.CityPlanner.cityAtCached(fr.modeminecraft.world.city.CityPlanner.Env.of(sl), getBlockX(), getBlockZ(), 64);
+        return city != null && (city.variant().equals("base") || city.variant().equals("soviet"));
     }
 
     /** Missile ou roquette en approche, tiré par un ennemi. */
@@ -1411,7 +1434,7 @@ public class MilVehicleEntity extends Entity {
 
     /** Touche G : sortir / rentrer le train (pilote). */
     public void toggleGear(Entity by) {
-        if (!type().plane() || seatOf(by) != 0) {
+        if (!type().plane() || type().civil() || seatOf(by) != 0) {                // avion civil : train fixe
             return;
         }
         if (!is(GEAR_UP) && onGround()) {
@@ -2072,7 +2095,7 @@ public class MilVehicleEntity extends Entity {
 
     /** Cible aérienne (radars, missiles sol-air) : hélicoptères, drones, missiles et roquettes en vol. */
     public static boolean isAircraft(Entity e) {
-        return e instanceof MilVehicleEntity v && v.type().heli() && !v.onGround()
+        return e instanceof MilVehicleEntity v && v.type().heli() && !v.onGround() && v.aaTarget()
                 || e instanceof fr.modeminecraft.entity.drone.DroneEntity
                 || e instanceof ShellEntity s && s.shell().rocket() && s.interceptable()       // hypersoniques : hors d'atteinte
                 || e instanceof fr.modeminecraft.entity.AirdropEntity;
@@ -2167,7 +2190,7 @@ public class MilVehicleEntity extends Entity {
         // carburant (moteur qui tourne)
         if (canRun() && !t.submarine()) {                                          // sous-marins : propulsion nucléaire
             float load = (0.15f + Math.abs(speed()) / Math.max(0.01f, t.maxSpeed())) * (is(AFTERBURNER) ? 3 : 1);
-            float minutes = t.plane() ? 20 : t.heli() ? 14 : t.naval() ? (t.health >= 1000 ? 120 : 45) : 22;
+            float minutes = t.civil() ? 120 : t.plane() ? 20 : t.heli() ? 14 : t.naval() ? (t.health >= 1000 ? 120 : 45) : 22;
             setFuel(fuel() - load / (minutes * 1200f));
             if (fuel() <= 0 && getControllingPassenger() instanceof Player p) {
                 p.displayClientMessage(Component.translatable("message.modeminecraft.mil.no_fuel").withStyle(ChatFormatting.RED), true);

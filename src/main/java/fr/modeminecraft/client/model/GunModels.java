@@ -140,6 +140,12 @@ public final class GunModels {
                 }
             }
         }
+        for (String part : new String[]{"hull"}) {                                       // train des villes du Mesa
+            event.register(fr.modeminecraft.client.MesaTrainRenderer.part("mesa_locomotive", part));
+            event.register(fr.modeminecraft.client.MesaTrainRenderer.part("mesa_wagon", part));
+        }
+        event.register(fr.modeminecraft.client.MesaTrainRenderer.part("mesa_wagon", "doors"));
+        event.register(fr.modeminecraft.client.MesaTrainRenderer.part("mesa_wagon", "doors_f"));
         event.register(ModelResourceLocation.standalone(ModeMinecraft.id("item/parts/p90_round")));
         event.register(fr.modeminecraft.client.BulletRenderer.BULLET);
         event.register(fr.modeminecraft.client.BulletRenderer.PELLET);

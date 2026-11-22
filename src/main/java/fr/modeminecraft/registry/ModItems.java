@@ -1097,6 +1097,9 @@ public final class ModItems {
     public static final DeferredItem<Item> VAULT_DOOR_BLACK = ITEMS.register("vault_door_black",
             () -> new net.minecraft.world.item.DoubleHighBlockItem(ModBlocks.VAULT_DOOR_BLACK.get(), new Item.Properties()));
     // Soins tactiques
+    /** Ticket du train des villes du Mesa : composté (consommé) par le contrôleur à chaque trajet. */
+    public static final DeferredItem<Item> MESA_TRAIN_TICKET = ITEMS.register("mesa_train_ticket",
+            () -> new Item(new Item.Properties().stacksTo(16)));
     public static final DeferredItem<Item> BANDAGE = ITEMS.register("bandage",
             () -> new fr.modeminecraft.item.MedicalItem(fr.modeminecraft.item.MedicalItem.Kind.BANDAGE, new Item.Properties().stacksTo(16)));
     public static final DeferredItem<Item> FIRST_AID_KIT = ITEMS.register("first_aid_kit",

@@ -230,6 +230,11 @@ public final class MilGeometry {
                 new float[][]{{0.3f, 1.5999999999999999f, 0.0f}},
                 new float[][]{{2.0f, 1.4f, 2.2f, 0f}, {1.2f, 1.0499999999999998f, -3.0f, 0f}, {1.2f, 1.0499999999999998f, 3.0f, 0f}, {2.0f, 1.4f, -0.3f, 0f}, {2.0f, 1.4f, 0.3f, 0f}, {2.0f, 1.4f, -0.3f, 0f}, {2.0f, 1.4f, 0.3f, 0f}},
                 new float[][]{{4.9f, 1.7f, 0.0f}}, 5.6f));
+        put("light_civil_plane", new Geo(3.0f, 9.0f, null, null, null, null, null,
+                new float[][]{},
+                new float[][]{{0.3f, 1.15f, -0.3f}, {0.3f, 1.15f, 0.3f}},
+                new float[][]{},
+                new float[][]{{3.15f, 1.21f, 0.0f}}, 4.0f));
         put("f86_sabre", new Geo(4.0f, 8.0f, null, null, null, null, null,
                 new float[][]{},
                 new float[][]{{2.7f, 1.55f, 0.0f}},
@@ -340,6 +345,16 @@ public final class MilGeometry {
                 new float[][]{{-0.4f, 0.9f, 0f}},
                 new float[][]{},
                 new float[][]{}, 0.9f));
+        put("mesa_locomotive", new Geo(3.5f, 7.5f, null, null, null, null, null,
+                new float[][]{},
+                new float[][]{{-2.6f, 1.05f, -0.9f}},
+                new float[][]{},
+                new float[][]{}, 1.6f));
+        put("mesa_wagon", new Geo(4.0f, 8.0f, null, null, null, null, null,
+                new float[][]{},
+                new float[][]{{-3.9f, 1.05f, -0.9f}, {-3.9f, 1.05f, 0.9f}, {-2.5f, 1.05f, -0.9f}, {-2.5f, 1.05f, 0.9f}, {-1.7f, 1.05f, -0.9f}, {-1.7f, 1.05f, 0.9f}, {1.7f, 1.05f, -0.9f}, {1.7f, 1.05f, 0.9f}, {2.5f, 1.05f, -0.9f}, {2.5f, 1.05f, 0.9f}, {3.9f, 1.05f, -0.9f}, {3.9f, 1.05f, 0.9f}},
+                new float[][]{},
+                new float[][]{}, 1.6f));
     }
 
     private MilGeometry() {}
