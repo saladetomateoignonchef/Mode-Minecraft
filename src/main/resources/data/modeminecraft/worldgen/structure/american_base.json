@@ -1,0 +1,8 @@
+{
+  "type": "modeminecraft:city",
+  "kind": "base",
+  "biomes": "#modeminecraft:has_city/forest",
+  "step": "top_layer_modification",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none"
+}

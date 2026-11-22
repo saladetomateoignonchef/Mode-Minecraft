@@ -822,7 +822,11 @@ Des **villes générées** apparaissent selon le biome (un centre de ville par r
 - **C-130 Hercules** : 16 soldats ou un véhicule léger. **O** abaisse la rampe : au sol, un 4x4 / blindé léger qui
   recule dessus est embarqué ; en vol, **Espace** le largue **sous parachute** (sinon : 4 caisses de ravitaillement
   parachutées). Rampe ouverte, les passagers peuvent sauter en parachute (Maj).
-- **Aérodromes** : dans les cités soviétiques, la piste et le méga-hangar sont en **bordure nord** de la ville ; dans
+- **Noms des bases** : la cité soviétique (neige) s'appelle désormais **Base soviétique** et la base militaire
+  secrète (forêt) **Base américaine** : titre à l'entrée, et structures `modeminecraft:soviet_base` /
+  `modeminecraft:american_base` pour `/locate structure` (`city_snow` et `city_forest` ne désignent plus que la cité
+  polaire, la mine et le bastion rebelle).
+- **Aérodromes** : dans les bases soviétiques, la piste et le méga-hangar sont en **bordure nord-ouest** de la ville (la piste va jusqu'au bord : on décolle vers l'extérieur) ; dans
   les bases, à côté du bunker. La porte du hangar donne sur le seuil de piste : les deux chasseurs garés à l'intérieur
   (utilisables par le joueur) sortent du hangar et décollent tout droit. Les chars restent dans leurs propres hangars.
 - **Décollage d'alerte des PNJ** : quand une patrouille ou une interception est déclenchée, des pilotes prennent

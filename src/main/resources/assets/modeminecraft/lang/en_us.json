@@ -1838,5 +1838,7 @@
   "subtitles.modeminecraft.sonic_boom": "Sonic boom",
   "subtitles.modeminecraft.flare_launch": "Flares released",
   "subtitles.modeminecraft.missile_warning": "Missile warning",
-  "subtitles.modeminecraft.ejection_seat": "Ejection seat fires"
+  "subtitles.modeminecraft.ejection_seat": "Ejection seat fires",
+  "city.modeminecraft.soviet_base": "Soviet base",
+  "city.modeminecraft.american_base": "American base"
 }

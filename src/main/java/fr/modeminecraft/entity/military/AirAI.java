@@ -204,10 +204,12 @@ public final class AirAI {
         if (v.groundedNow()) {
             // roulage : plein gaz, on ne cabre qu'à 50 % de la vitesse max (sinon décrochage juste après la rotation)
             v.aiThrottle = 1;
+            v.aiYaw = v.getYRot();
             v.aiPitch = sp >= v.type().maxSpeed() * 0.5f ? -12 : 0;
         } else if (alt < 35 && sp < v.type().maxSpeed() * 0.75f) {
             v.aiThrottle = 1;
-            v.aiPitch = -8;                                                       // montée douce tant que la vitesse est faible
+            v.aiPitch = sp > v.type().maxSpeed() * 0.55f ? -15 : -8;              // montée franche dès que la vitesse le permet
+            v.aiYaw = v.getYRot();                                                // tout droit dans l'axe de piste (tour de contrôle, bâtiments)
         } else if (alt > 15 && !v.is(MilVehicleEntity.GEAR_UP)) {
             v.setGearUp();
         }

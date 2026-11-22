@@ -139,11 +139,11 @@ public final class CityLayout {
                 }
                 // aérodrome militaire en bordure nord de la ville : piste de 112 m, méga-hangar dans son axe (sa porte
                 // donne sur le seuil de piste : les avions sortent du hangar et décollent tout droit)
-                if (in(dx, dz, -10, -11, -4, -10)) {
-                    return multi("airstrip", 16, -10, -11, 7, 2);
+                if (in(dx, dz, -12, -11, -6, -10)) {
+                    return multi("airstrip", 16, -12, -11, 7, 2);                  // jusqu'au bord ouest : dégagé au bout
                 }
-                if (in(dx, dz, -3, -12, -1, -10)) {
-                    return multi("aircraft_hangar", 18, -3, -12, 3, 3);
+                if (in(dx, dz, -5, -12, -3, -10)) {
+                    return multi("aircraft_hangar", 18, -5, -12, 3, 3);
                 }
                 if (in(dx, dz, 4, -5, 5, -4)) {
                     return multi("factory", 28, 4, -5, 2, 2);

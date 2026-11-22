@@ -23,6 +23,14 @@
     {
       "structure": "modeminecraft:city_mesa",
       "weight": 1
+    },
+    {
+      "structure": "modeminecraft:soviet_base",
+      "weight": 1
+    },
+    {
+      "structure": "modeminecraft:american_base",
+      "weight": 1
     }
   ],
   "placement": {

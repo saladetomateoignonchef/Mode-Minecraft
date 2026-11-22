@@ -42,6 +42,13 @@ public final class CityAmbience {
     private static long nextDog, nextAnnounce;
 
     public static void setCity(String v, int y) {
+        // titre à l'entrée des deux bases militaires (les autres villes restent discrètes)
+        if (!v.equals(variant) && (v.equals("soviet") || v.equals("base"))) {
+            var gui = Minecraft.getInstance().gui;
+            gui.setTimes(10, 50, 20);
+            gui.setTitle(net.minecraft.network.chat.Component.translatable("city.modeminecraft." + (v.equals("soviet") ? "soviet_base" : "american_base"))
+                    .withStyle(v.equals("soviet") ? net.minecraft.ChatFormatting.RED : net.minecraft.ChatFormatting.DARK_GREEN));
+        }
         variant = v;
         baseY = y;
     }

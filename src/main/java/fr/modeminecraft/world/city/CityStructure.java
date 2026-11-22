@@ -45,6 +45,17 @@ public class CityStructure extends Structure {
         return ModStructures.CITY.get();
     }
 
+    /** Variantes qui ont leur propre structure (noms clairs dans /locate) : base soviétique, base américaine. */
+    private static final java.util.Set<String> DEDICATED = java.util.Set.of("soviet", "base");
+
+    /**
+     * Cette structure construit-elle cette ville ? « soviet_base » et « american_base » ne prennent que leur variante ;
+     * « city_snow » et « city_forest » prennent les autres variantes de leur biome (cité polaire, mine, bastion rebelle).
+     */
+    private boolean matches(CityPlanner.City city) {
+        return kind.equals(city.variant()) || kind.equals(city.kind()) && !DEDICATED.contains(city.variant());
+    }
+
     /** Variante tirée au hasard (proportions du cahier des charges). */
     static String variant(String kind, RandomSource r) {
         float x = r.nextFloat();
@@ -91,7 +102,7 @@ public class CityStructure extends Structure {
             return Optional.empty();
         }
         CityPlanner.City city = CityPlanner.city(env, d[0], d[1]);
-        if (city == null || !city.kind().equals(kind)) {
+        if (city == null || !matches(city)) {
             return Optional.empty();
         }
         // part du plan construite par ce district

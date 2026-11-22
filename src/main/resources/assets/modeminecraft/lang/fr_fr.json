@@ -1838,5 +1838,7 @@
   "subtitles.modeminecraft.sonic_boom": "Bang supersonique",
   "subtitles.modeminecraft.flare_launch": "Leurres éjectés",
   "subtitles.modeminecraft.missile_warning": "Alerte missile",
-  "subtitles.modeminecraft.ejection_seat": "Siège éjectable"
+  "subtitles.modeminecraft.ejection_seat": "Siège éjectable",
+  "city.modeminecraft.soviet_base": "Base soviétique",
+  "city.modeminecraft.american_base": "Base américaine"
 }
