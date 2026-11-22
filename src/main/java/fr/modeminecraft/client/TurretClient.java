@@ -92,6 +92,44 @@ public final class TurretClient {
         }
     }
 
+    // ------------------------------------------------------------------ arme personnelle masquée au poste de tourelle
+    private static final java.util.Map<Integer, ItemStack[]> HIDDEN = new java.util.HashMap<>();
+
+    /** Le temps du rendu, les mains du tireur sont vides (les items sont remis juste après). */
+    @SubscribeEvent
+    public static void onRenderLivingPre(net.neoforged.neoforge.client.event.RenderLivingEvent.Pre<?, ?> event) {
+        var e = event.getEntity();
+        if (e.getVehicle() == null || !fr.modeminecraft.entity.TurretPost.operating(e)) {
+            return;
+        }
+        var main = e.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.MAINHAND);
+        var off = e.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.OFFHAND);
+        if (main.isEmpty() && off.isEmpty()) {
+            return;
+        }
+        HIDDEN.put(e.getId(), new ItemStack[]{main, off});
+        e.setItemSlot(net.minecraft.world.entity.EquipmentSlot.MAINHAND, ItemStack.EMPTY);
+        e.setItemSlot(net.minecraft.world.entity.EquipmentSlot.OFFHAND, ItemStack.EMPTY);
+    }
+
+    @SubscribeEvent
+    public static void onRenderLivingPost(net.neoforged.neoforge.client.event.RenderLivingEvent.Post<?, ?> event) {
+        ItemStack[] saved = HIDDEN.remove(event.getEntity().getId());
+        if (saved != null) {
+            event.getEntity().setItemSlot(net.minecraft.world.entity.EquipmentSlot.MAINHAND, saved[0]);
+            event.getEntity().setItemSlot(net.minecraft.world.entity.EquipmentSlot.OFFHAND, saved[1]);
+        }
+    }
+
+    /** Première personne : pas d'arme dans les mains tant qu'on est au poste de tourelle. */
+    @SubscribeEvent
+    public static void onRenderHand(net.neoforged.neoforge.client.event.RenderHandEvent event) {
+        Player p = Minecraft.getInstance().player;
+        if (p != null && fr.modeminecraft.entity.TurretPost.operating(p)) {
+            event.setCanceled(true);
+        }
+    }
+
     // ------------------------------------------------------------------ bras du modèle cachés (3e personne)
     @SubscribeEvent
     public static void onRenderPlayerPre(RenderPlayerEvent.Pre event) {

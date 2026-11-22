@@ -520,12 +520,6 @@
       "modeminecraft:city/pigeon_flap"
     ]
   },
-  "city.crickets_loop": {
-    "subtitle": "subtitles.modeminecraft.crickets_loop",
-    "sounds": [
-      "modeminecraft:city/crickets_loop"
-    ]
-  },
   "city.rain_tin_loop": {
     "subtitle": "subtitles.modeminecraft.rain_tin_loop",
     "sounds": [

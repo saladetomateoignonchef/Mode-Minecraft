@@ -118,6 +118,9 @@ public final class TriggerHandler {
         if (!(stack.getItem() instanceof GunItem gun) || player.isSpectator()) {
             return;
         }
+        if (fr.modeminecraft.entity.TurretPost.operating(player)) {
+            return;                                                    // au poste de tourelle : l'arme personnelle ne tire pas
+        }
         if (fr.modeminecraft.item.ShieldCombat.blocked(player)) {
             fr.modeminecraft.item.ShieldCombat.warn(player);          // fusil + bouclier : ni tir ni visée
             return;

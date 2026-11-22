@@ -77,7 +77,7 @@ public class HumanBotRenderer extends HumanoidMobRenderer<HumanBotEntity, HumanB
         m.crouching = bot.isCrouching();
         m.rightArmPose = HumanoidModel.ArmPose.ITEM;
         m.leftArmPose = HumanoidModel.ArmPose.EMPTY;
-        if (main.isEmpty()) {
+        if (main.isEmpty() || fr.modeminecraft.entity.TurretPost.operating(bot)) {
             m.rightArmPose = HumanoidModel.ArmPose.EMPTY;
         } else if (main.getItem() instanceof GunItem) {
             m.rightArmPose = bot.isAggressive() ? HumanoidModel.ArmPose.BOW_AND_ARROW : HumanoidModel.ArmPose.CROSSBOW_HOLD;
@@ -118,7 +118,16 @@ public class HumanBotRenderer extends HumanoidMobRenderer<HumanBotEntity, HumanB
 
         @Override
         public void setupAnim(HumanBotEntity bot, float limbSwing, float limbAmount, float age, float headYaw, float headPitch) {
+            boolean armed = bot.getMainHandItem().getItem() instanceof GunItem;
+            if (armed) {
+                // la tête ne se retourne jamais de plus de 80° par rapport au corps : sinon le bras qui porte l'arme
+                // suit le regard (yRot de la pose de visée = yRot de la tête) et le fusil finit retourné vers l'arrière
+                headYaw = Mth.clamp(headYaw, -80f, 80f);
+            }
             super.setupAnim(bot, limbSwing, limbAmount, age, headYaw, headPitch);
+            if (armed && bot.getPose() != Pose.SWIMMING) {
+                stabilizeGunArms(bot);
+            }
             float partial = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
             float now = bot.level().getGameTime() + partial;
             boolean gun = bot.getMainHandItem().getItem() instanceof GunItem;
@@ -176,6 +185,21 @@ public class HumanBotRenderer extends HumanoidMobRenderer<HumanBotEntity, HumanB
             rightPants.copyFrom(rightLeg);
             leftPants.copyFrom(leftLeg);
             hat.copyFrom(head);
+        }
+
+        /**
+         * Orientation déterministe de l'arme : le bras droit (qui porte l'arme) ne roule jamais sur lui-même (zRot = 0)
+         * et reste dans un cône avant fixe, en visée comme en veille, quelles que soient les animations de marche,
+         * de tir ou de balancement qui viennent de s'appliquer.
+         */
+        private void stabilizeGunArms(HumanBotEntity bot) {
+            boolean aiming = bot.isAggressive();
+            float xMin = aiming ? -2.0f : -1.6f, xMax = aiming ? -0.9f : 0.3f;
+            rightArm.xRot = Mth.clamp(rightArm.xRot, xMin, xMax);
+            rightArm.yRot = Mth.clamp(rightArm.yRot, -0.9f, 0.5f);
+            rightArm.zRot = 0;
+            leftArm.yRot = Mth.clamp(leftArm.yRot, -0.5f, 1.0f);
+            leftArm.zRot = Mth.clamp(leftArm.zRot, -0.3f, 0.3f);
         }
 
         /** Dégainer (14 ticks), tenir à deux mains, rengainer (16 ticks). */

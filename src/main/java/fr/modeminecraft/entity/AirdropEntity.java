@@ -67,6 +67,7 @@ public class AirdropEntity extends Entity {
         level.setBlock(p, Blocks.CHEST.defaultBlockState(), 3);
         RandomizableContainer.setBlockEntityLootTable(level, random, p,
                 ResourceKey.create(Registries.LOOT_TABLE, fr.modeminecraft.ModeMinecraft.id("chests/airdrop")));
+        addMatchingAmmo(level, p);
         // fumée de signalisation (feu de camp sur une botte de foin : colonne de fumée très haute)
         BlockPos s = p.east(2);
         if (level.getBlockState(s).canBeReplaced() && !level.getBlockState(s.below()).canBeReplaced()) {
@@ -76,6 +77,51 @@ public class AirdropEntity extends Entity {
         level.playSound(null, p, SoundEvents.ANVIL_LAND, SoundSource.BLOCKS, 1.5f, 0.6f);
         battle(level, p);
         discard();
+    }
+
+    /**
+     * Cohérence du butin : le coffre est tiré tout de suite, et chaque arme à feu tirée au sort reçoit dans le même
+     * coffre les munitions exactes qui lui correspondent (même type de balle, quelques chargeurs).
+     */
+    private static void addMatchingAmmo(ServerLevel level, BlockPos pos) {
+        if (!(level.getBlockEntity(pos) instanceof net.minecraft.world.level.block.entity.ChestBlockEntity chest)) {
+            return;
+        }
+        chest.unpackLootTable(null);
+        var wanted = new java.util.LinkedHashMap<net.minecraft.world.item.Item, Integer>();
+        for (int i = 0; i < chest.getContainerSize(); i++) {
+            if (chest.getItem(i).getItem() instanceof fr.modeminecraft.item.gun.GunItem gun) {
+                var stats = gun.stats();
+                int perMag = Math.max(1, stats.magazineSize());
+                int count = stats.disposable() ? 0 : Math.min(64, Math.max(perMag * 2, 3));
+                if (count > 0) {
+                    wanted.merge(stats.ammo().get(), count, Math::max);
+                }
+            }
+        }
+        for (var entry : wanted.entrySet()) {
+            int have = 0;
+            for (int i = 0; i < chest.getContainerSize(); i++) {
+                if (chest.getItem(i).is(entry.getKey())) {
+                    have += chest.getItem(i).getCount();
+                }
+            }
+            int missing = entry.getValue() - have;
+            for (int i = 0; i < chest.getContainerSize() && missing > 0; i++) {
+                var s = chest.getItem(i);
+                if (s.isEmpty()) {
+                    int n = Math.min(missing, entry.getKey().getDefaultMaxStackSize());
+                    chest.setItem(i, new net.minecraft.world.item.ItemStack(entry.getKey(), n));
+                    missing -= n;
+                } else if (s.is(entry.getKey()) && s.getCount() < s.getMaxStackSize()
+                        && fr.modeminecraft.item.AmmoItem.getType(s) == fr.modeminecraft.item.gun.AmmoType.STANDARD) {
+                    int n = Math.min(missing, s.getMaxStackSize() - s.getCount());
+                    s.grow(n);
+                    missing -= n;
+                }
+            }
+        }
+        chest.setChanged();
     }
 
     /** Les Faucons Blancs et la faction locale se disputent la caisse. */

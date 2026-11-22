@@ -55,7 +55,177 @@ public final class CityLayout {
         return new Plot(type, above, 2, ax, az, w, h);
     }
 
+    // ------------------------------------------------------------------ contour organique et variété des quartiers
+    /** Les villes de grande taille n'ont pas un contour carré et varient leurs quartiers. */
+    private boolean organic() {
+        return rad >= 10 && (variant.equals("desert") || variant.equals("metropolis") || variant.equals("soviet"));
+    }
+
+    /** Parcelles de remplissage dont le contour irrégulier peut retirer le bâtiment (les sites uniques restent). */
+    private boolean shapeable(Plot p) {
+        if (p.type().equals("park") && variant.equals("metropolis")) {
+            return true;                                           // parcs de quartier (2 x 2) : retirés en bloc selon leur ancre
+        }
+        if (p.w() != 1 || p.h() != 1) {
+            return false;
+        }
+        return switch (variant) {
+            case "desert" -> p.type().equals("riad") || p.type().equals("avenue");
+            case "metropolis" -> switch (p.type()) {
+                case "road", "house", "apartment", "gas_station", "shop", "cafe", "supermarket", "office", "plaza", "warehouse", "factory_m", "park" -> true;
+                default -> false;
+            };
+            case "soviet" -> p.type().equals("khrushchyovka") || p.type().equals("road");
+            default -> false;
+        };
+    }
+
+    /**
+     * Contour irrégulier : le noyau de la ville (moins de la moitié du rayon) est toujours là ; au-delà, la limite
+     * ondule selon l'angle (lobes de 2, 3 et 5 harmoniques propres à chaque ville) et des quartiers s'étirent le long
+     * des deux avenues centrales (les routes entre villes y arrivent toujours). Plus de grand bloc carré.
+     */
+    private boolean outside(int dx, int dz) {
+        double d = Math.hypot(dx, dz) / rad;
+        double core = variant.equals("soviet") ? 0.6 : 0.5;
+        if (d <= core) {
+            return false;
+        }
+        int along = Math.min(Math.abs(dx), Math.abs(dz));
+        if (along <= 1) {
+            return false;                                          // avenues centrales : jamais coupées
+        }
+        double th = Math.atan2(dz, dx);
+        double n = 0.5 + 0.5 * (0.5 * Math.sin(2 * th + hash(0, 0, 41) * 6.28) + 0.3 * Math.sin(3 * th + hash(0, 0, 42) * 6.28)
+                + 0.2 * Math.sin(5 * th + hash(0, 0, 43) * 6.28));
+        double bound = 0.52 + 0.46 * n + (hash(dx, dz, 44) - 0.5) * 0.1;
+        if (along <= 3) {
+            bound += 0.32;                                         // quartier qui s'étire le long de la route
+        }
+        return d > bound;
+    }
+
+    private record Weighted(String type, int above, double weight) {}
+
+    private static final Weighted[] DESERT_POOL = {
+            new Weighted("riad", 14, 0.30), new Weighted("riad_tall", 24, 0.16), new Weighted("oasis", 10, 0.14),
+            new Weighted("market_hall", 10, 0.14), new Weighted("worksite", 14, 0.12), new Weighted("square", 10, 0.14)};
+    private static final Weighted[] COMMERCE_POOL = {
+            new Weighted("office", 28, 0.24), new Weighted("supermarket", 10, 0.12), new Weighted("cafe", 10, 0.14),
+            new Weighted("shop", 10, 0.18), new Weighted("plaza", 10, 0.10), new Weighted("apartment", 22, 0.22)};
+    private static final Weighted[] RESIDENTIAL_POOL = {
+            new Weighted("house", 12, 0.36), new Weighted("apartment", 22, 0.24), new Weighted("gas_station", 10, 0.08),
+            new Weighted("plaza", 10, 0.10), new Weighted("shop", 12, 0.12), new Weighted("cafe", 12, 0.10)};
+    private static final Weighted[] INDUSTRIAL_POOL = {
+            new Weighted("warehouse", 18, 0.5), new Weighted("factory_m", 18, 0.3), new Weighted("gas_station", 10, 0.2)};
+
+    private String[] kinds;                                        // type final de chaque parcelle de remplissage (voir diversify)
+
+    /** Parcelles de remplissage concernées par la diversification. */
+    private boolean filler(Plot p) {
+        if (p == null || p.w() != 1 || p.h() != 1) {
+            return false;
+        }
+        return switch (variant) {
+            case "desert" -> p.type().equals("riad");
+            case "metropolis" -> switch (p.type()) {
+                case "house", "apartment", "gas_station", "shop", "cafe", "supermarket", "office", "plaza", "warehouse", "factory_m" -> true;
+                default -> false;
+            };
+            default -> false;
+        };
+    }
+
+    private Weighted[] pool(int dx, int dz) {
+        if (variant.equals("desert")) {
+            return DESERT_POOL;
+        }
+        if (dx >= 7 && dz <= -7) {
+            return INDUSTRIAL_POOL;
+        }
+        return Math.max(Math.abs(dx), Math.abs(dz)) <= 10 ? COMMERCE_POOL : RESIDENTIAL_POOL;
+    }
+
+    /**
+     * Deux parcelles voisines n'ont jamais le même type : on parcourt la ville ligne par ligne et chaque parcelle
+     * tire son type (selon des poids) en écartant ceux de ses voisines déjà décidées (ouest et nord).
+     */
+    private synchronized String[] kinds() {
+        if (kinds == null) {
+            int n = 2 * rad + 1;
+            String[] k = new String[n * n];
+            for (int z = -rad; z <= rad; z++) {
+                for (int x = -rad; x <= rad; x++) {
+                    Plot raw = rawPlot(x, z);
+                    if (!filler(raw) || outside(x, z)) {
+                        continue;
+                    }
+                    String west = x > -rad ? k[(z + rad) * n + (x - 1 + rad)] : null;
+                    String north = z > -rad ? k[(z - 1 + rad) * n + (x + rad)] : null;
+                    Weighted[] pool = pool(x, z);
+                    String pick = null;
+                    for (int attempt = 0; attempt < 8 && pick == null; attempt++) {
+                        double r = hash(x, z, 60 + attempt), acc = 0;
+                        for (Weighted w : pool) {
+                            acc += w.weight();
+                            if (r * total(pool) < acc) {
+                                pick = w.type();
+                                break;
+                            }
+                        }
+                        if (pick != null && (pick.equals(west) || pick.equals(north))) {
+                            pick = null;
+                        }
+                    }
+                    if (pick == null) {
+                        for (Weighted w : pool) {
+                            if (!w.type().equals(west) && !w.type().equals(north)) {
+                                pick = w.type();
+                                break;
+                            }
+                        }
+                    }
+                    k[(z + rad) * n + (x + rad)] = pick;
+                }
+            }
+            kinds = k;
+        }
+        return kinds;
+    }
+
+    private static double total(Weighted[] pool) {
+        double t = 0;
+        for (Weighted w : pool) {
+            t += w.weight();
+        }
+        return t;
+    }
+
+    /** Parcelle d'une ville : plan de base, contour irrégulier et quartiers variés. */
     public Plot plot(int dx, int dz) {
+        Plot p = rawPlot(dx, dz);
+        if (p == null || !organic()) {
+            return p;
+        }
+        if (shapeable(p) && outside(p.ax(), p.az())) {
+            return null;
+        }
+        if (filler(p)) {
+            String type = kinds()[(dz + rad) * (2 * rad + 1) + (dx + rad)];
+            if (type != null && !type.equals(p.type())) {
+                for (Weighted[] pool : new Weighted[][]{DESERT_POOL, COMMERCE_POOL, RESIDENTIAL_POOL, INDUSTRIAL_POOL}) {
+                    for (Weighted w : pool) {
+                        if (w.type().equals(type)) {
+                            return Plot.of(type, w.above(), dx, dz);
+                        }
+                    }
+                }
+            }
+        }
+        return p;
+    }
+
+    private Plot rawPlot(int dx, int dz) {
         boolean edge = Math.abs(dx) == rad || Math.abs(dz) == rad;
         switch (variant) {
             case "metropolis" -> {

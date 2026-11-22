@@ -23,15 +23,15 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import java.util.Set;
 
 /**
- * Les 8 onglets du mode créatif du mod (cahier des charges) : chaque objet est rangé automatiquement selon sa nature.
- * 1 armes à feu, 2 armes blanches et boucliers, 3 munitions / grenades / explosifs, 4 accessoires d'armes,
- * 5 équipements et armures 3D, 6 drones et véhicules, 7 soins / outils / objets spéciaux, 8 blocs / décors / générateurs.
+ * Les 7 onglets du mode créatif du mod : chaque objet est rangé automatiquement selon sa nature.
+ * 1 armes et accessoires, 2 munitions et explosifs, 3 tenues et équipements, 4 véhicules terrestres,
+ * 5 aviation et drones, 6 marine et sous-marins, 7 blocs, décoration et clés.
  */
 public final class ModCreativeTabs {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ModeMinecraft.MODID);
 
-    public enum Tab { FIREARMS, MELEE, AMMO, ATTACHMENTS, EQUIPMENT, DRONES, TOOLS, BLOCKS }
+    public enum Tab { WEAPONS, AMMO, GEAR, GROUND, AIR, SEA, BLOCKS }
 
     /** Munitions et charges sans classe dédiée. */
     private static final Set<String> AMMO_IDS = Set.of("pzf3_warhead", "stinger_missile", "javelin_missile", "plasma_ball", "grenade_40mm",
@@ -40,53 +40,57 @@ public final class ModCreativeTabs {
             "missile_77n6n", "missile_40n6m", "iskander_he", "iskander_cluster", "iskander_emp",
             "aam_ir_missile", "aam_radar_missile", "agm_missile", "arm_missile", "cruise_missile",
             "naval_shell", "ciws_belt", "ashm_missile", "hypersonic_missile", "naval_sam_missile", "torpedo", "asw_rocket");
-    /** Drones, véhicules et ce qui va avec (brouilleur EMP, clé à molette, bidons). */
-    private static final Set<String> DRONE_IDS = Set.of("emp_jammer_rifle", "wrench", "jerrycan", "vehicle_engine", "gas_turbine", "track_set",
-            "wheel_set", "cannon_barrel", "autocannon_mount", "fire_control_module", "rotor_assembly", "launcher_module", "type63_launcher", "iron_pipe", "aircraft_engine", "pressurized_cockpit",
-            "jet_engine", "avionics_suite", "radar_absorbent_panel", "ship_hull_section", "sonar_array", "naval_reactor");
-    /** Objets présents dans deux onglets (le pied-de-biche est une arme ET un outil d'effraction). */
-    private static final Set<String> ALSO_TOOLS = Set.of("crowbar");
+    /** Pièces et matériaux de véhicules terrestres, brouilleur EMP, clé à molette, bidons. */
+    private static final Set<String> GROUND_IDS = Set.of("emp_jammer_rifle", "wrench", "jerrycan", "vehicle_engine", "gas_turbine", "track_set",
+            "wheel_set", "cannon_barrel", "autocannon_mount", "fire_control_module", "launcher_module", "type63_launcher", "iron_pipe");
+    private static final Set<String> AIR_IDS = Set.of("rotor_assembly", "aircraft_engine", "pressurized_cockpit", "jet_engine", "avionics_suite",
+            "radar_absorbent_panel");
+    private static final Set<String> SEA_IDS = Set.of("ship_hull_section", "sonar_array", "naval_reactor", "torpedo", "asw_rocket", "ashm_missile", "naval_sam_missile",
+            "naval_shell", "ciws_belt");
 
     public static Tab tabOf(Item item) {
         ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
         String path = id.getPath();
         String cls = item.getClass().getSimpleName();
-        if (item instanceof BlockItem || item instanceof SpawnEggItem || item instanceof fr.modeminecraft.item.MountedGunItem
-                || item instanceof fr.modeminecraft.item.BotSpawnEggItem) {
+        // ---- véhicules : par milieu d'évolution
+        if (item instanceof fr.modeminecraft.item.military.MilVehicleItem mv) {
+            return mv.type.naval() ? Tab.SEA : mv.type.heli() ? Tab.AIR : Tab.GROUND;
+        }
+        if (path.equals("light_civil_plane")) {
+            return Tab.AIR;
+        }
+        if (SEA_IDS.contains(path)) {
+            return Tab.SEA;
+        }
+        if (AIR_IDS.contains(path) || item instanceof fr.modeminecraft.entity.drone.DroneItem
+                || item instanceof fr.modeminecraft.entity.drone.DroneControllerItem || item instanceof fr.modeminecraft.entity.drone.DroneModuleItem) {
+            return Tab.AIR;
+        }
+        if (GROUND_IDS.contains(path) || item instanceof fr.modeminecraft.item.VehicleItem
+                || item instanceof fr.modeminecraft.item.military.RocketLauncherItem || item instanceof fr.modeminecraft.item.MountedGunItem) {
+            return Tab.GROUND;
+        }
+        if (item instanceof fr.modeminecraft.item.AccessCardItem || item instanceof fr.modeminecraft.item.BossCardItem) {
             return Tab.BLOCKS;
         }
-        if (DRONE_IDS.contains(path) || item instanceof fr.modeminecraft.entity.drone.DroneItem
-                || item instanceof fr.modeminecraft.entity.drone.DroneControllerItem || item instanceof fr.modeminecraft.entity.drone.DroneModuleItem
-                || item instanceof fr.modeminecraft.item.VehicleItem || item instanceof fr.modeminecraft.item.military.MilVehicleItem
-                || item instanceof fr.modeminecraft.item.military.LaserDesignatorItem) {
-            return Tab.DRONES;
+        if (item instanceof BlockItem || item instanceof SpawnEggItem || item instanceof fr.modeminecraft.item.BotSpawnEggItem) {
+            return Tab.BLOCKS;
         }
-        if (item instanceof GunItem) {
-            return Tab.FIREARMS;
+        // ---- armes et accessoires
+        if (item instanceof GunItem || item instanceof AttachmentItem || path.equals("spare_barrel")
+                || item instanceof SwordItem || item instanceof ShieldItem || item instanceof BowItem || item instanceof fr.modeminecraft.item.melee.MeleeWeaponItem
+                || cls.endsWith("SwordItem") || cls.endsWith("HammerItem") || cls.endsWith("BladeItem") || cls.endsWith("StaffItem")
+                || item instanceof fr.modeminecraft.item.DragonslayerItem) {
+            return Tab.WEAPONS;
         }
-        if (item instanceof AttachmentItem || path.equals("spare_barrel")) {
-            return Tab.ATTACHMENTS;
-        }
+        // ---- munitions et explosifs
         if (AMMO_IDS.contains(path) || item instanceof fr.modeminecraft.item.AmmoItem || item instanceof fr.modeminecraft.item.TurretAmmoItem
                 || item instanceof fr.modeminecraft.item.explosive.GrenadeItem || item instanceof fr.modeminecraft.item.explosive.PlaceableExplosiveItem
                 || item instanceof fr.modeminecraft.item.explosive.DetonatorItem || item instanceof fr.modeminecraft.nuclear.BombItem) {
             return Tab.AMMO;
         }
-        if (item instanceof fr.modeminecraft.item.HelmetItem || item instanceof fr.modeminecraft.item.VestItem
-                || item instanceof fr.modeminecraft.item.GearItem || item instanceof ArmorItem || item instanceof fr.modeminecraft.item.BallisticPlateItem
-                || item instanceof fr.modeminecraft.item.tactical.BackpackItem || item instanceof fr.modeminecraft.item.explosive.GasMaskItem
-                || item instanceof fr.modeminecraft.nuclear.HazmatKitItem) {
-            return Tab.EQUIPMENT;
-        }
-        if (item instanceof SwordItem || item instanceof ShieldItem || item instanceof BowItem || item instanceof fr.modeminecraft.item.melee.MeleeWeaponItem
-                || cls.endsWith("SwordItem") || cls.endsWith("HammerItem") || cls.endsWith("BladeItem") || cls.endsWith("StaffItem")
-                || item instanceof fr.modeminecraft.item.DragonslayerItem) {
-            return Tab.MELEE;
-        }
-        if (item instanceof TieredItem) {
-            return Tab.TOOLS;                                         // outils en rubis
-        }
-        return Tab.TOOLS;                                             // soins, cartes, matériaux, manuel...
+        // ---- tenues, équipements, gadgets, soins, outils (tout le reste)
+        return Tab.GEAR;
     }
 
     private static DeferredHolder<CreativeModeTab, CreativeModeTab> tab(Tab tab, String name, String icon, String before) {
@@ -96,7 +100,7 @@ public final class ModCreativeTabs {
                     .icon(() -> stack(icon))
                     .displayItems((params, output) -> ModItems.ITEMS.getEntries().forEach(h -> {
                         Item item = h.get();
-                        if (tabOf(item) == tab || tab == Tab.TOOLS && ALSO_TOOLS.contains(h.getId().getPath())) {
+                        if (tabOf(item) == tab) {
                             output.accept(item);
                         }
                     }));
@@ -112,14 +116,13 @@ public final class ModCreativeTabs {
         return new ItemStack(item);
     }
 
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> FIREARMS = tab(Tab.FIREARMS, "firearms", "m4", null);
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MELEE = tab(Tab.MELEE, "melee", "katana", "firearms");
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> AMMO = tab(Tab.AMMO, "ammo_explosives", "frag_grenade", "melee");
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> ATTACHMENTS = tab(Tab.ATTACHMENTS, "attachments", "acog_scope", "ammo_explosives");
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> EQUIPMENT = tab(Tab.EQUIPMENT, "equipment", "ops_core_fast", "attachments");
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> DRONES = tab(Tab.DRONES, "drones_vehicles", "drone_controller", "equipment");
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TOOLS = tab(Tab.TOOLS, "medical_tools", "first_aid_kit", "drones_vehicles");
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> BLOCKS = tab(Tab.BLOCKS, "blocks", "traffic_light", "medical_tools");
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> WEAPONS = tab(Tab.WEAPONS, "weapons", "m4", null);
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> AMMO = tab(Tab.AMMO, "ammo_explosives", "frag_grenade", "weapons");
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> GEAR = tab(Tab.GEAR, "gear_outfits", "ops_core_fast", "ammo_explosives");
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> GROUND = tab(Tab.GROUND, "ground_vehicles", "jeep", "gear_outfits");
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> AIR = tab(Tab.AIR, "aviation_drones", "drone_controller", "ground_vehicles");
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> SEA = tab(Tab.SEA, "marine_submarines", "torpedo", "aviation_drones");
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> BLOCKS = tab(Tab.BLOCKS, "blocks_keys", "traffic_light", "marine_submarines");
 
     private ModCreativeTabs() {}
 }

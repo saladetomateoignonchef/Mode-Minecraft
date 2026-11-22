@@ -70,6 +70,7 @@ public class CityPiece extends StructurePiece {
         B b = new B(level, chunkBox, ox, baseY, oz, r, generator.getSeaLevel());
         b.part(dx - plot.ax(), dz - plot.az(), plot.w() * 16, plot.h() * 16);
         CityGen.build(b, layout, plot, variant, dx, dz, rad);
+        InteriorLights.apply(b, box.minY(), box.maxY());                    // aucun intérieur sombre : pas de monstres vanilla
         // tour de brouillage sur le toit du palais du dictateur, de la base secrète (radar) et de la station polaire
         if (dx == plot.ax() && dz == plot.az() && (plot.type().equals("palace") || plot.type().equals("radar") || plot.type().equals("dome"))) {
             jammer(new B(level, chunkBox, box.minX(), baseY, box.minZ(), r, generator.getSeaLevel()));
