@@ -101,6 +101,10 @@ public final class ArmoryOffers {
             l.add(new Entry("stinger_missile", 1, oil(), 1, EMERALD, 2, null));
             l.add(new Entry("rpg_rocket", 2, oil(), 1, EMERALD, 1, su));
             l.add(new Entry("ammo_box_50", 2, EMERALD, 3, null, 0, null));
+            // gadgets
+            l.add(new Entry("portable_jammer", 1, EMERALD, 8, null, 0, null));
+            l.add(new Entry("tactical_battery", 4, EMERALD, 2, null, 0, null));
+            l.add(new Entry("zip_ties", 4, EMERALD, 2, null, 0, null));
             // accessoires
             l.add(new Entry("thermal_scope", 1, DIAMOND, 8, null, 0, null));
             // carte tactique de toutes les bases (prix volontairement modique)

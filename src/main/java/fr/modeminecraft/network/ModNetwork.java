@@ -54,6 +54,16 @@ public final class ModNetwork {
                         fr.modeminecraft.scenario.Armory.Open::handle)
                 .playToServer(fr.modeminecraft.scenario.Armory.Act.TYPE, fr.modeminecraft.scenario.Armory.Act.STREAM_CODEC,
                         fr.modeminecraft.scenario.Armory.Act::handle)
+                .playToServer(fr.modeminecraft.scenario.Gadgets.Use.TYPE, fr.modeminecraft.scenario.Gadgets.Use.STREAM_CODEC,
+                        fr.modeminecraft.scenario.Gadgets.Use::handle)
+                .playToClient(fr.modeminecraft.scenario.Gadgets.Open.TYPE, fr.modeminecraft.scenario.Gadgets.Open.STREAM_CODEC,
+                        fr.modeminecraft.scenario.Gadgets.Open::handle)
+                .playToClient(fr.modeminecraft.scenario.Cinematics.Play.TYPE, fr.modeminecraft.scenario.Cinematics.Play.STREAM_CODEC,
+                        fr.modeminecraft.scenario.Cinematics.Play::handle)
+                .playToClient(fr.modeminecraft.scenario.Prisoners.Open.TYPE, fr.modeminecraft.scenario.Prisoners.Open.STREAM_CODEC,
+                        fr.modeminecraft.scenario.Prisoners.Open::handle)
+                .playToServer(fr.modeminecraft.scenario.Prisoners.Act.TYPE, fr.modeminecraft.scenario.Prisoners.Act.STREAM_CODEC,
+                        fr.modeminecraft.scenario.Prisoners.Act::handle)
                 .playToClient(fr.modeminecraft.scenario.StrategicMapItem.MapData.TYPE, fr.modeminecraft.scenario.StrategicMapItem.MapData.STREAM_CODEC,
                         fr.modeminecraft.scenario.StrategicMapItem.MapData::handle)
                 .playToClient(ShotFxPayload.TYPE, ShotFxPayload.STREAM_CODEC, ShotFxPayload::handle)

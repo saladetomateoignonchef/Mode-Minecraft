@@ -28,6 +28,16 @@ public final class ScenarioNpc {
         if (role == BotRole.SCIENTIST) {
             return Missions.freeScientist(p, bot);
         }
+        if (Prisoners.prisoner(bot)) {
+            return side != null && Prisoners.interact(p, bot);
+        }
+        if (bot.getPersistentData().getBoolean(BlackMarketVan.TAG)) {
+            BlackMarketVan.open(bot, p);
+            return true;
+        }
+        if (side != null && role == BotRole.RECRUITER && bot.faction() == side.enemy) {
+            return Defection.request(p, bot);
+        }
         if (side == null || bot.faction() != side.ally) {
             if (role.staff()) {
                 p.displayClientMessage(Component.translatable("message.modeminecraft.staff.enemy").withStyle(ChatFormatting.RED), true);

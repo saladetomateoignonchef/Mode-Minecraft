@@ -211,6 +211,34 @@ def items():
     for x in range(5, 11):
         i.px(x, 7, hexc("#6a5a30"))
     i.save("strategic_bases_map")
+    i = Icon("portable_jammer")
+    i.rect(4, 5, 11, 14, hexc("#3a4038"), noise=0.05)                                 # boîtier
+    i.rect(5, 7, 10, 9, hexc("#202420"), bevel=False)
+    i.px(6, 8, hexc("#40e0ff")), i.px(8, 8, hexc("#40e0ff"))                         # diodes
+    for x in (5, 7, 9):
+        i.rect(x, 1, x, 4, hexc("#1a1a1a"), bevel=False)                              # antennes
+    i.px(5, 12, hexc("#e0c040"))
+    i.save("portable_jammer")
+    i = Icon("command_radio")
+    i.rect(5, 4, 10, 14, hexc("#2e3428"), noise=0.05)
+    i.rect(9, 0, 9, 4, hexc("#151515"), bevel=False)                                  # antenne souple
+    i.rect(6, 6, 9, 8, hexc("#90b060"), bevel=False)                                  # écran
+    for y in (10, 12):
+        i.rect(6, y, 9, y, hexc("#1c1c1c"), bevel=False)                              # haut-parleur
+    i.px(6, 4, hexc("#d03030"))
+    i.save("command_radio")
+    i = Icon("strategic_briefcase")
+    i.rect(1, 5, 14, 13, hexc("#202020"), noise=0.03)                                 # mallette (« football » nucléaire)
+    i.rect(6, 3, 9, 4, hexc("#303030"), bevel=False)                                  # poignée
+    i.rect(1, 8, 14, 8, hexc("#5a5a5a"), bevel=False)
+    i.px(4, 10, hexc("#c0a040")), i.px(11, 10, hexc("#c0a040"))                       # serrures
+    i.save("strategic_briefcase")
+    i = Icon("zip_ties")
+    for k in range(3):
+        y = 4 + k * 3
+        i.rect(2, y, 13, y, hexc("#e8e8e0") if k % 2 == 0 else hexc("#202020"), bevel=False)
+        i.px(13, y + 1, hexc("#a0a098"))
+    i.save("zip_ties")
 
 
 if __name__ == "__main__" and True:

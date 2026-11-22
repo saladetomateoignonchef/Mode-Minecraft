@@ -240,6 +240,11 @@ public final class B {
 
     /** Bot de faction (posé seulement par le chunk qui contient sa position). */
     HumanBotEntity bot(int x, int y, int z, Faction f, BotRole role, int homeRadius) {
+        return bot(x, y, z, f, role, homeRadius, null);
+    }
+
+    /** Bot préparé par `init` avant son ajout (en génération, l'entité est enregistrée telle quelle dans le chunk). */
+    HumanBotEntity bot(int x, int y, int z, Faction f, BotRole role, int homeRadius, java.util.function.Consumer<HumanBotEntity> init) {
         if (!inside(x, y, z)) {
             return null;
         }
@@ -254,6 +259,9 @@ public final class B {
         bot.homeRadius = homeRadius;
         bot.setPersistenceRequired();
         bot.finalizeSpawn(level, level.getCurrentDifficultyAt(p), MobSpawnType.STRUCTURE, null);
+        if (init != null) {
+            init.accept(bot);
+        }
         level.addFreshEntityWithPassengers(bot);
         return bot;
     }

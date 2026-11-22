@@ -137,6 +137,7 @@ public final class Scenario {
         sp.displayClientMessage(Component.translatable("message.modeminecraft.scenario.allegiance." + side.id).withStyle(ChatFormatting.YELLOW), false);
         data.setDirty();
         sync(sp);
+        Cinematics.play(sp, "intro", 0, 0, 0, 0);
         ModeMinecraft.LOGGER.info("Scénario : {} rejoint le camp {} (base {})", sp.getName().getString(), side.id, r.base);
     }
 

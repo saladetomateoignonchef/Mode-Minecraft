@@ -167,6 +167,9 @@ public final class Missions {
         p.sendSystemMessage(Component.translatable("mission.modeminecraft." + m.id() + ".brief").withStyle(ChatFormatting.GRAY));
         p.level().playSound(null, p.blockPosition(), SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 1f, 1f);
         Briefings.radio(p, "mission." + m.id());
+        if (m == Mission.FINAL_STRIKE) {
+            Cinematics.play(p, "final", 0, 0, 0, 0);
+        }
         dirty(p);
     }
 
@@ -492,6 +495,17 @@ public final class Missions {
             x.put("Cooldown", cd);
         }
         rewards(p, m);
+        int setback = switch (m) {                                       // le programme nucléaire ennemi recule
+            case ESPIONAGE -> 15;
+            case CONVOY -> 8;
+            case SUBMARINE -> 10;
+            case SCIENTIST -> 12;
+            case SEAD -> 6;
+            default -> 0;
+        };
+        if (setback > 0) {
+            EnemyNuke.setback(p, setback);
+        }
         p.sendSystemMessage(Component.translatable("message.modeminecraft.mission.completed", Component.translatable("mission.modeminecraft." + m.id()))
                 .withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD));
         p.level().playSound(null, p.blockPosition(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.PLAYERS, 1f, 1f);
@@ -548,6 +562,7 @@ public final class Missions {
         if (!(v.level() instanceof ServerLevel level)) {
             return;
         }
+        EnemyNuke.onLost(v, by);
         ServerPlayer killer = by instanceof ServerPlayer sp ? sp : by != null && by.getVehicle() != null
                 && by.getVehicle().getControllingPassenger() instanceof ServerPlayer sp2 ? sp2 : null;
         for (ServerPlayer p : level.players()) {

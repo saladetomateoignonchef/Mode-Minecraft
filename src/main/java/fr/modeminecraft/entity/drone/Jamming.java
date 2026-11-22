@@ -59,7 +59,7 @@ public final class Jamming {
     }
 
     public static boolean lostControl(Level level, Vec3 pos) {
-        return towerDistance(level, pos) < TOWER_CONTROL;
+        return towerDistance(level, pos) < TOWER_CONTROL || fr.modeminecraft.scenario.Gadgets.jammed(level, pos);   // brouilleur portatif
     }
 
     /** Interférences (0 = aucune, 1 = perte de contrôle) pour l'écran du pilote. */

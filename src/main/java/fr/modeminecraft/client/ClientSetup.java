@@ -180,6 +180,7 @@ public final class ClientSetup {
         event.registerAboveAll(ModeMinecraft.id("drone_hud"), DroneClient::renderHud);
         event.registerAboveAll(ModeMinecraft.id("military_hud"), MilClient::renderHud);
         event.registerAboveAll(ModeMinecraft.id("scenario_hud"), ScenarioHud::render);
+        event.registerAboveAll(ModeMinecraft.id("cinematic"), CinematicOverlay::render);
         event.registerAboveAll(ModeMinecraft.id("strobe_dazzle"), FlashlightClient::renderDazzle);
         event.registerAbove(VanillaGuiLayers.HOTBAR, ModeMinecraft.id("mounted_gun"), GunHudLayer::renderMounted);
     }

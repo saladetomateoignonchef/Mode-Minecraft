@@ -108,7 +108,8 @@ public final class RadioCalls {
                 o.setTarget(p);
             }
         }
-        if (hasRadio(bot.faction()) && bot.radioEnd() <= now && !FactionRelations.isHostile(p.getUUID(), bot.faction(), now)) {
+        if (hasRadio(bot.faction()) && bot.radioEnd() <= now && !FactionRelations.isHostile(p.getUUID(), bot.faction(), now)
+                && !fr.modeminecraft.scenario.Gadgets.jammed(bot.level(), bot.position())) {
             bot.startRadio(p, now + DURATION);
             bot.level().playSound(null, bot.getX(), bot.getY() + 1.5, bot.getZ(), ModSounds.RADIO_DISPATCH_CALL.get(), SoundSource.HOSTILE, 1.4f, 1f);
         }
@@ -118,6 +119,7 @@ public final class RadioCalls {
     static void spotted(HumanBotEntity bot, Player p) {
         long now = bot.level().getGameTime();
         if (!p.isCreative() && hasRadio(bot.faction()) && bot.radioEnd() <= now && !FactionRelations.isHostile(p.getUUID(), bot.faction(), now)
+                && !fr.modeminecraft.scenario.Gadgets.jammed(bot.level(), bot.position())
                 && bot.level().getEntitiesOfClass(HumanBotEntity.class, bot.getBoundingBox().inflate(VOICE),
                 o -> o.radioEnd() > now && o.faction().group.equals(bot.faction().group)).isEmpty()) {
             bot.startRadio(p, now + DURATION);
@@ -140,6 +142,11 @@ public final class RadioCalls {
         }
         Player p = bot.radioTarget() == null ? null : level.getPlayerByUUID(bot.radioTarget());
         bot.startRadio(null, 0);
+        if (fr.modeminecraft.scenario.Gadgets.jammed(level, bot.position())) {
+            // brouilleur portatif : l'appel n'aboutit pas
+            level.playSound(null, bot.getX(), bot.getY() + 1.5, bot.getZ(), ModSounds.RADIO_CALL_CUT.get(), SoundSource.HOSTILE, 1.4f, 0.8f);
+            return;
+        }
         if (p == null || p.isCreative()) {
             return;
         }

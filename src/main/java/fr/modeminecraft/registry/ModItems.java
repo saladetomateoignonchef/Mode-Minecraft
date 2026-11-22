@@ -83,6 +83,15 @@ public final class ModItems {
     public static final DeferredItem<Item> SECRET_PLANS = ITEMS.registerSimpleItem("secret_plans", new Item.Properties().stacksTo(1).rarity(Rarity.RARE));
     /** Fût de pétrole brut / carburant naval (plateformes offshore, raffineries) : +60 % de réservoir. */
     public static final DeferredItem<Item> OIL_BARREL = ITEMS.registerSimpleItem("oil_barrel", new Item.Properties().stacksTo(4));
+    /** Gadgets du scénario (voir {@link fr.modeminecraft.scenario.Gadgets}). */
+    public static final DeferredItem<Item> PORTABLE_JAMMER = ITEMS.register("portable_jammer", () -> new fr.modeminecraft.scenario.GadgetItem(
+            fr.modeminecraft.scenario.GadgetItem.Kind.JAMMER, new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
+    public static final DeferredItem<Item> COMMAND_RADIO = ITEMS.register("command_radio", () -> new fr.modeminecraft.scenario.GadgetItem(
+            fr.modeminecraft.scenario.GadgetItem.Kind.RADIO, new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
+    public static final DeferredItem<Item> STRATEGIC_BRIEFCASE = ITEMS.register("strategic_briefcase", () -> new fr.modeminecraft.scenario.GadgetItem(
+            fr.modeminecraft.scenario.GadgetItem.Kind.BRIEFCASE, new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
+    public static final DeferredItem<Item> ZIP_TIES = ITEMS.register("zip_ties", () -> new fr.modeminecraft.scenario.GadgetItem(
+            fr.modeminecraft.scenario.GadgetItem.Kind.ZIP_TIES, new Item.Properties().stacksTo(16)));
     /** Carte tactique de toutes les bases (vendue par l'armurier). */
     public static final DeferredItem<Item> STRATEGIC_BASES_MAP = ITEMS.register("strategic_bases_map",
             () -> new fr.modeminecraft.scenario.StrategicMapItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));

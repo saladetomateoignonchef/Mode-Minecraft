@@ -32,6 +32,37 @@ public final class ScenarioHud {
         g.fill(x - hw - 4, y - 2, x + 2, y + 10, 0x90000000);
         g.drawString(mc.font, head, x - hw, y, side == Side.US ? 0xFF8EB4FF : 0xFFFF8E8E);
         y += 14;
+        // programme nucléaire ennemi, bombardier en vol, brouilleur portatif
+        CompoundTag en = ScenarioClientState.missions.getCompound("Enemy");
+        long since = mc.level == null ? 0 : Math.max(0, mc.level.getGameTime() - ScenarioClientState.syncedAt);
+        if (en.getBoolean("Bomber")) {
+            long left = Math.max(0, en.getLong("Left") - since) / 20;
+            double dx = en.getInt("BX") + 0.5 - mc.player.getX(), dz = en.getInt("BZ") + 0.5 - mc.player.getZ();
+            String[] dirs = {"S", "SO", "O", "NO", "N", "NE", "E", "SE"};
+            String dir = dirs[Math.floorMod(Math.round((float) (Math.toDegrees(Math.atan2(-dx, dz)) / 45)), 8)];
+            Component b = Component.translatable(en.getBoolean("Depart") ? "hud.modeminecraft.bomber.inbound" : "hud.modeminecraft.bomber.holding",
+                    (int) Math.hypot(dx, dz), dir, left / 60, String.format("%02d", left % 60));
+            int bw = mc.font.width(b);
+            boolean blink = mc.level != null && mc.level.getGameTime() / 10 % 2 == 0;
+            g.fill(x - bw - 4, y - 2, x + 2, y + 10, blink ? 0xC0600000 : 0x90000000);
+            g.drawString(mc.font, b, x - bw, y, 0xFFFF5050);
+            y += 14;
+        } else if (en.contains("Progress")) {
+            int pr = en.getInt("Progress");
+            Component b = Component.translatable("hud.modeminecraft.enemy_program", pr);
+            int bw = mc.font.width(b);
+            g.fill(x - bw - 4, y - 2, x + 2, y + 10, 0x90000000);
+            g.drawString(mc.font, b, x - bw, y, pr >= 75 ? 0xFFFF6040 : pr >= 50 ? 0xFFFFB040 : 0xFFC0C0C0);
+            y += 14;
+        }
+        long jam = ScenarioClientState.missions.getLong("Jam") - since;
+        if (jam > 0) {
+            Component b = Component.translatable("hud.modeminecraft.jammer", jam / 20);
+            int bw = mc.font.width(b);
+            g.fill(x - bw - 4, y - 2, x + 2, y + 10, 0x90000000);
+            g.drawString(mc.font, b, x - bw, y, 0xFF40E0FF);
+            y += 14;
+        }
         var list = ScenarioClientState.missions.getList("Active", Tag.TAG_COMPOUND);
         for (int i = 0; i < list.size(); i++) {
             CompoundTag e = list.getCompound(i);

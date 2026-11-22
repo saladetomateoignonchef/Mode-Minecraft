@@ -220,7 +220,8 @@ public final class BotGoals {
 
         @Override
         public boolean canUse() {
-            if (!warns() || bot.getTarget() != null || bot.level().getGameTime() < cooldownUntil || bot.tickCount % 5 != 0) {
+            if (!warns() || bot.getTarget() != null || bot.level().getGameTime() < cooldownUntil || bot.tickCount % 5 != 0
+                    || bot.getPersistentData().getBoolean("modeminecraft_prisoner")) {                 // détenu : pas de sommation
                 return false;
             }
             long now = bot.level().getGameTime();

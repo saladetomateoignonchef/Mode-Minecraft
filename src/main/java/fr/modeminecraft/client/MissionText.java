@@ -18,6 +18,9 @@ final class MissionText {
             var item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(e.getString("Item")));
             return Component.translatable("journal.modeminecraft.task.deliver", e.getInt("Goal"), item.getDescription());
         }
+        if (id.equals("intel")) {
+            return Component.translatable("journal.modeminecraft.intel", Component.translatable("gui.modeminecraft.map." + e.getString("Kind")));
+        }
         if (id.equals("contract")) {
             return Component.translatable("journal.modeminecraft.contract." + e.getString("Kind"),
                     Component.translatable("entity.modeminecraft.bot." + e.getString("Faction")));
@@ -29,6 +32,9 @@ final class MissionText {
         String id = e.getString("Id");
         if (id.equals("task")) {
             return Component.translatable("journal.modeminecraft.task.giver", e.getString("GiverName"), e.getInt("Progress"), e.getInt("Goal"));
+        }
+        if (id.equals("intel")) {
+            return Component.translatable("journal.modeminecraft.intel.objective", e.getInt("TX"), e.getInt("TZ"));
         }
         if (id.equals("contract")) {
             return e.getInt("Progress") >= e.getInt("Goal") ? Component.translatable("journal.modeminecraft.contract.claim")

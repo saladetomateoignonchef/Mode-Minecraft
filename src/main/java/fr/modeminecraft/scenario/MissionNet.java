@@ -26,6 +26,8 @@ public final class MissionNet {
             avail.putString(m.id(), Missions.availability(p, m));
         }
         t.put("Avail", avail);
+        t.put("Enemy", EnemyNuke.hud(p));
+        t.putLong("Jam", Math.max(0, Gadgets.jamEnd(p.getUUID()) - p.level().getGameTime()));
         PacketDistributor.sendToPlayer(p, new State(t, false));
     }
 
@@ -50,6 +52,8 @@ public final class MissionNet {
                     fr.modeminecraft.client.OperationsBoardScreen.open();
                 } else {
                     ScenarioClientState.missions = p.data();
+                    var mc = net.minecraft.client.Minecraft.getInstance();
+                    ScenarioClientState.syncedAt = mc.level == null ? 0 : mc.level.getGameTime();
                 }
             });
         }

@@ -38,8 +38,19 @@ public final class Reputation {
             p.level().playSound(null, p.blockPosition(), up ? SoundEvents.PLAYER_LEVELUP : SoundEvents.VILLAGER_NO, SoundSource.PLAYERS, 1f, up ? 0.8f : 1f);
             Quarters.reassign(p, after);
             nameplate(p);
+            // dotations de grade : talkie-walkie de commandement (Lieutenant), mallette de frappe (Général)
+            gift(p, r, up && after.atLeast(Grade.LIEUTENANT), "GiftRadio", fr.modeminecraft.registry.ModItems.COMMAND_RADIO.get());
+            gift(p, r, up && after == Grade.GENERAL, "GiftBriefcase", fr.modeminecraft.registry.ModItems.STRATEGIC_BRIEFCASE.get());
         }
         Scenario.sync(p);
+    }
+
+    private static void gift(ServerPlayer p, ScenarioData.Record r, boolean due, String key, net.minecraft.world.item.Item item) {
+        if (due && !r.extra.getBoolean(key)) {
+            r.extra.putBoolean(key, true);
+            Missions.give(p, new net.minecraft.world.item.ItemStack(item));
+            p.sendSystemMessage(Component.translatable("message.modeminecraft.rep.gift", item.getDescription()).withStyle(ChatFormatting.GOLD));
+        }
     }
 
     /** Insigne de grade devant le nom (équipe « mm_<camp>_<grade> » du tableau des scores). */

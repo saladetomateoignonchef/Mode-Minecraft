@@ -340,6 +340,11 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
         if (t == null || !t.isAlive() || t == this) {
             return false;
         }
+        // scénario : les prisonniers (capturés ou détenus) n'attaquent pas et ne sont pas pris pour cible
+        if (getPersistentData().getBoolean("modeminecraft_prisoner") || t instanceof HumanBotEntity o && o.getPersistentData().getBoolean("modeminecraft_prisoner")
+                || t.getTags().contains("modeminecraft_range_target")) {
+            return false;
+        }
         if (ignored != null && t.getUUID().equals(ignored) && level().getGameTime() < ignoreUntil && distanceToSqr(t) > 12 * 12) {
             return false;
         }

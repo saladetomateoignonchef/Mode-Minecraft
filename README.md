@@ -872,6 +872,89 @@ Mise à l'eau : clic droit vers une étendue d'eau. Commandes : **Z / S** chadbu
 - **Bases navales côtières** (américaines, soviétiques en eaux froides) : quai, trois jetées, portiques, dépôt de carburant et de torpilles, batteries côtières, **cale sèche couverte** (50 x 22 x 16) avec un sous-marin ou une corvette, navires à quai qui appareillent si une menace approche.
 - **Patrouilles en haute mer** : semi-rigides et intercepteurs mercenaires, destroyers soviétiques ou américains, sous-marins.
 
+### Scénario « Course à l'arme nucléaire » (mise à jour 0.9)
+Activé par défaut en survie (règle de jeu `modeminecraftScenario`, à mettre à `false` pour jouer en bac à sable).
+
+#### Début de partie
+- **Choix du camp** à la première connexion : US Army ou Armée soviétique (l'autre armée devient l'ennemie, les alliés ne tirent plus).
+- **Paquetage** : M4 ou AK-47 chargé, 150 cartouches, casque, tenue de recrue, rations, bandages.
+- **Arrivée** au dortoir de la base la plus proche : lit (point de réapparition) et casier personnel verrouillé.
+- **À la mort**, seul le contenu du casier est conservé. Il n'y a pas de pénalité de réputation.
+
+#### Missions
+- **Centre de recrutement** : Tableau des opérations.
+  - 4 missions principales : Or Noir, Yellowcake, Pièces maîtresses, Frappe finale.
+  - 5 missions stratégiques : espionnage, convoi blindé, sous-marin espion, extraction de scientifique, SEAD.
+- **Journal** (touche J) : 5 missions actives au maximum, dont 3 épinglées sur le HUD avec la distance et la direction.
+- **Petites tâches** : les soldats de la base proposent des livraisons et des patrouilles (+15 à +50 réputation).
+
+#### Réputation et grades
+Les 6 grades vont de Soldat (0) à Général (3000). Chaque grade donne :
+- une remise chez le personnel de la base, jusqu'à la gratuité pour un Général ;
+- son logement réservé ;
+- l'ouverture des portes de sécurité de son rang ;
+- l'accès aux véhicules correspondants.
+
+#### Armurerie
+- **Boutique** de l'arsenal de la faction : paiement en or, diamants, émeraudes ou barils de pétrole. Un Général se sert gratuitement par réquisition.
+- **Contrats d'élimination** : chef de faction ou troupe des Faucons Blancs.
+- **Carte tactique de toutes les bases** : 4 lingots d'or ou 8 émeraudes.
+
+#### Économie du scénario
+- **Aucune arme à feu dans les coffres.**
+- **Véhicules de base à sec** : réservoir à 0 %, le démarreur tourne à vide.
+- **Carburant** : uniquement sur les plateformes offshore, les dépôts navals et dans les raffineries du Mesa (fûts de pétrole et bidons).
+- **Uranium** : uniquement chez les milices du désert.
+- **Composants nucléaires** : un dans chaque chambre forte de boss (guidage, réflecteur, lentilles, krytron). La recette de la bombe les exige tous.
+
+#### Pression ennemie
+- Le **programme nucléaire adverse** progresse de 1 % toutes les 2 minutes.
+- Les missions stratégiques et les interrogatoires le font reculer.
+- À 100 %, un **bombardier nucléaire** (Tu-95 ou B-2) décolle :
+  - il tourne au-dessus de sa base, puis fonce sur la vôtre ;
+  - vous avez **1 jour de jeu** pour l'abattre (alerte HUD avec distance, direction et compte à rebours) ;
+  - **abattu** : le programme ennemi retombe à 40 % ;
+  - **sinon** : la base est rasée et le programme ennemi repart de zéro.
+
+#### Gadgets
+- **Brouilleur portatif** :
+  - 25 blocs pendant 45 s ;
+  - coupe les appels radio des gardes et perturbe les drones ;
+  - consomme une pile CR123A.
+- **Talkie-walkie de commandement** :
+  - remis au grade de Lieutenant ;
+  - appelle 3 soldats d'élite ou un largage par C-130 ;
+  - recharge de 15 minutes.
+- **Mallette de frappe stratégique** :
+  - remise au grade de Général ;
+  - 3 missiles balistiques sur les coordonnées X / Z choisies ;
+  - une frappe par jour de jeu.
+- **Fourgon du marché noir**, la nuit, à l'extérieur de la base : carburant, uranium, brouilleur, armes, le tout très cher.
+
+#### Prisonniers et prison
+- **Capture** : utiliser des **serre-flex** sur un ennemi blessé à moins de la moitié de sa vie, ou surpris par derrière. Il suit son ravisseur, y compris en véhicule.
+- **Incarcération** : dans l'enceinte de la prison de la base, il est enfermé dans une cellule (+40 réputation).
+- **Interrogatoire** : 3 séances par détenu, en salle d'interrogatoire.
+  - Trois approches : persuader, intimider ou marchander.
+  - En cas de réussite, le programme ennemi recule, vous gagnez de la réputation et vous obtenez souvent un renseignement épinglé au journal.
+- **La prison** de chaque base comprend :
+  - une double enceinte barbelée, deux miradors avec tireurs et projecteurs, un portail à sas, une guérite et une barrière levante ;
+  - un bloc cellulaire de 9 cellules équipées et une cellule d'isolement ;
+  - un poste de garde avec pupitre des cellules et mur d'écrans ;
+  - une salle d'interrogatoire avec miroir sans tain et salle d'observation ;
+  - le bureau du directeur (accès Lieutenant) et un hall avec portique détecteur ;
+  - un réfectoire, des douches et une buanderie ;
+  - une cour de promenade avec panier de basket, barres de traction et coin musculation.
+
+#### Vie de la base
+- **Routine jour / nuit** : le soir, les soldats qui ne sont pas de garde dorment dans les couchettes. À l'aube, ils se rassemblent au centre de la base.
+- **Stand de tir** : la cloche lance un défi de 60 s avec des cibles surgissantes. 15 cibles touchées rapportent +15 réputation (une fois par jour).
+
+#### Fin de partie et désertion
+- **Désertion** : en uniforme ennemi complet, deux clics sur le recruteur adverse. Vous repartez Soldat dans l'autre camp.
+- **Cinématiques et briefings radio** : arrivée, alerte au bombardier, interception, frappe sur la base, frappe finale.
+- **Victoire** : larguer la bombe sur la base stratégique ennemie. L'écran de victoire s'affiche, puis la partie continue librement.
+
 ### Gameplay et progression
 - **Niveaux des armes (1 à 5)** : chaque arme garde ses statistiques (éliminations, tirs à la tête, tirs, ratio)
   et gagne de l'expérience : +10 par élimination, +5 si tir à la tête, +10 pour un gros monstre (50 PV ou plus).
