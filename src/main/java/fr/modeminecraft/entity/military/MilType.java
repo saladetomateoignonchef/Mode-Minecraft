@@ -269,7 +269,17 @@ public enum MilType {
     // ------------------------------------------------------------ civil (à la fin : l'ordre des constantes est enregistré dans les mondes)
     /** Avion de tourisme biplace, sans aucun armement : décollage court, vol souple, très peu de carburant consommé. */
     LIGHT_CIVIL_PLANE("light_civil_plane", Side.CIVIL, Chassis.PLANE, 115, 160, 0.15f, 0.15f, 0.15f, 220, 0, Flag.NONE,
-            List.of(seat(Role.PILOT, true), seat(Role.PASSENGER, true)), List.of());
+            List.of(seat(Role.PILOT, true), seat(Role.PASSENGER, true)), List.of()),
+    /**
+     * Porte-avions pilotables (navires mobiles, chadburn Z / S, gouvernail Q / D) : le pont d'envol porte des avions qui
+     * suivent le navire (voir MilVehicleEntity#deckStep), catapultes EMALS (Ford) ou tremplin (Kouznetsov), appontage
+     * avec brins d'arrêt. Profondeur d'eau minimale : 6 blocs.
+     */
+    GERALD_FORD("uss_gerald_r_ford", Side.US, Chassis.SHIP, 56, 9000, 0.35f, 0.45f, 0.5f, 12000, 80, Flag.RADAR,
+            ship(Role.GUNNER, 3), List.of(auto("phalanx", Kind.CIWS, 1, 3000, MilAmmo.CIWS_ROUNDS), auto("essm", Kind.SAM, 7, 64, MilAmmo.NAVAL_SAM))),
+    KUZNETSOV("admiral_kuznetsov", Side.SOVIET, Chassis.SHIP, 52, 7500, 0.35f, 0.45f, 0.5f, 10000, 72, Flag.RADAR,
+            ship(Role.GUNNER, 3), List.of(auto("kashtan", Kind.CIWS, 1, 3000, MilAmmo.CIWS_ROUNDS), gun("granit", Kind.NAVAL_MISSILE, 2, 40, 12, MilAmmo.ASHM),
+                    auto("kinzhal", Kind.SAM, 7, 48, MilAmmo.NAVAL_SAM)));
 
     public enum Side { SOVIET, US, MERC, CIVIL }
 
@@ -484,6 +494,30 @@ public enum MilType {
         return chassis == Chassis.SHIP || chassis == Chassis.SUB;
     }
 
+    /** Porte-avions : le pont d'envol porte des avions (verrouillage au pont, catapulte, appontage). */
+    public boolean carrier() {
+        return this == GERALD_FORD || this == KUZNETSOV;
+    }
+
+    /** Hauteur du pont d'envol au-dessus de la quille (blocs). */
+    public float deckHeight() {
+        return this == GERALD_FORD ? 18.5f : 17.5f;
+    }
+
+    /** Demi-longueur et demi-largeur du pont d'envol (centré sur le navire). */
+    public float deckHalfLength() {
+        return this == GERALD_FORD ? 65f : 60f;
+    }
+
+    public float deckHalfWidth() {
+        return this == GERALD_FORD ? 17f : 15f;
+    }
+
+    /** Eau minimale sous la quille pour naviguer (blocs de profondeur). */
+    public int minDepth() {
+        return carrier() ? 6 : 0;
+    }
+
     public boolean submarine() {
         return chassis == Chassis.SUB;
     }
@@ -491,6 +525,7 @@ public enum MilType {
     /** Tirant d'eau (blocs sous la ligne de flottaison, en surface). */
     public float draft() {
         return switch (this) {
+            case GERALD_FORD, KUZNETSOV -> 6.5f;
             case KIROV, ZUMWALT -> 3.0f;
             case SLAVA, TICONDEROGA -> 2.7f;
             case UDALOY, ARLEIGH_BURKE -> 2.5f;
@@ -508,6 +543,7 @@ public enum MilType {
         return switch (this) {
             case RHIB, INTERCEPTOR_BOAT, EXPLOSIVE_USV -> 3.5f;
             case BUYAN -> 1.4f;
+            case GERALD_FORD, KUZNETSOV -> 0.3f;
             case KIROV, OHIO -> 0.5f;
             default -> 0.8f;
         };

@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Véhicule militaire (cahier des charges 0.4) : 4x4 et camions, blindés à roues ou à chenilles, chars, hélicoptères
@@ -284,6 +285,8 @@ public class MilVehicleEntity extends Entity {
             case SU_57 -> new float[]{19.0f, 4.0f, 3.8f};
             case P_51 -> new float[]{9.4f, 1.6f, 2.8f};
             case LIGHT_CIVIL_PLANE -> new float[]{6.5f, 1.8f, 2.5f};
+            case GERALD_FORD -> new float[]{130f, 34f, 19f};
+            case KUZNETSOV -> new float[]{120f, 30f, 18f};
             case F_86 -> new float[]{10.8f, 1.8f, 3.2f};
             case F_4E -> new float[]{17.6f, 3.2f, 4.0f};
             case C_130 -> new float[]{28.5f, 4.2f, 6.2f};
@@ -440,6 +443,24 @@ public class MilVehicleEntity extends Entity {
     public void nextSeat(Entity e) {
         int cur = seatOf(e);
         int n = type().seats.size();
+        if (type().carrier() && e instanceof Player pl && !level().isClientSide) {
+            // porte-avions : après la dernière place, la touche fait monter dans l'avion suivant garé sur le pont
+            boolean wraps = true;
+            for (int s = cur + 1; s < n; s++) {
+                wraps &= occupant(s) != null;
+            }
+            if (wraps) {
+                List<MilVehicleEntity> planes = deckPlanes();
+                if (!planes.isEmpty()) {
+                    MilVehicleEntity plane = planes.get(0);
+                    pl.stopRiding();
+                    pl.startRiding(plane, true);
+                    pl.displayClientMessage(Component.translatable("message.modeminecraft.mil.board_deck",
+                            Component.translatable("item.modeminecraft." + plane.type().id)).withStyle(ChatFormatting.GOLD), true);
+                    return;
+                }
+            }
+        }
         for (int k = 1; k < n; k++) {
             int s = (cur + k) % n;
             if (occupant(s) == null) {
@@ -476,6 +497,18 @@ public class MilVehicleEntity extends Entity {
         super.removePassenger(passenger);
         if (!level().isClientSide) {
             assignSeat(passenger, -1);
+            if (type().plane() && passenger instanceof Player p && !is(WRECK)) {
+                // descendu d'un avion posé sur le pont : le joueur regagne la passerelle du porte-avions
+                MilVehicleEntity c = nearestCarrier();
+                if (c != null) {
+                    double[] f = shipFrame(c, getX(), getZ());
+                    double h = getY() - (c.getY() + c.type().deckHeight());
+                    if (Math.abs(f[0]) <= c.type().deckHalfLength() && Math.abs(f[1]) <= c.type().deckHalfWidth() && h > -1 && h < 3 && speed() < 0.3f) {
+                        returnPlayer = p.getUUID();
+                        returnTo = c;
+                    }
+                }
+            }
         }
     }
 
@@ -529,12 +562,18 @@ public class MilVehicleEntity extends Entity {
         pitchO = gunPitch(1);
         if (isControlledByLocalInstance()) {
             lerpSteps = 0;
+            if (type().plane() && !planeInit) {
+                deckStep();                                                  // apparu sur un pont : posé, pas en vol
+            }
             if (type().naval()) {
                 sail();
             } else if (type().heli()) {
                 fly();
             } else {
                 drive();
+            }
+            if (type().plane()) {
+                deckStep();                                                  // pont d'un porte-avions : sol virtuel, suit le navire
             }
         } else if (!level().isClientSide) {
             double rad = Math.toRadians(getYRot());
@@ -772,6 +811,15 @@ public class MilVehicleEntity extends Entity {
             throttle = Mth.lerp(0.1f, throttle, in[0]);
         }
         float target = afloat && run ? throttle * max : 0;
+        if (afloat && t.minDepth() > 0 && speed > 0.01f && shoalAhead(surf, d[0], d[1], t.minDepth())) {
+            // porte-avions : jamais en dessous de 6 blocs d'eau (haut-fond, côte) : machines stoppées
+            target = 0;
+            throttle = 0;
+            speed *= 0.97f;
+            if (c instanceof Player p && tickCount % 40 == 0) {
+                p.displayClientMessage(Component.translatable("message.modeminecraft.mil.shoal").withStyle(ChatFormatting.RED), true);
+            }
+        }
         float inertia = t.health >= 1500 ? 0.003f : t.health >= 1000 ? 0.005f : t.health >= 500 ? 0.01f : 0.04f;
         float acc = t.maxSpeed() * inertia;
         speed += Mth.clamp(target - speed, -acc * 1.5f, acc);
@@ -815,6 +863,20 @@ public class MilVehicleEntity extends Entity {
         }
         entityData.set(SPEED, speed);
         entityData.set(STEER, steer);
+    }
+
+    /** Fond trop haut ou terre devant (étrave et deux flancs, jusqu'à 25 blocs) : moins de `min` blocs d'eau. */
+    private boolean shoalAhead(double surf, float length, float width, int min) {
+        for (double dist : new double[]{length / 2 + 6, length / 2 + 25}) {
+            for (double side : new double[]{-width * 0.4, 0, width * 0.4}) {
+                Vec3 q = toWorld(dist, 0, side);
+                int floor = level().getHeight(net.minecraft.world.level.levelgen.Heightmap.Types.OCEAN_FLOOR, (int) Math.floor(q.x), (int) Math.floor(q.z));
+                if (surf - floor < min) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /** Assiette visuelle : gîte dans les virages, étrave levée des vedettes rapides, gîte et piqué du naufrage. */
@@ -1301,7 +1363,7 @@ public class MilVehicleEntity extends Entity {
         if (!planeInit) {
             // entité (re)créée en plein vol : on repart de l'état synchronisé (moteurs, vitesse)
             planeInit = true;
-            boolean parked = onGround() || !level().noCollision(this, getBoundingBox().expandTowards(0, -2, 0));
+            boolean parked = onGround() || onDeck() || !level().noCollision(this, getBoundingBox().expandTowards(0, -2, 0));
             spool = Math.max(rotor(), parked ? 0 : 0.9f);
             speed = Math.max(speed, Math.abs(speed()));
             if (!parked) {
@@ -1839,6 +1901,207 @@ public class MilVehicleEntity extends Entity {
         }
     }
 
+    // ------------------------------------------------------------------ porte-avions : pont, catapulte, appontage
+    private MilVehicleEntity carrierRef;
+    private int deckScan, deckThrottle;
+    private long deckCooldown;
+    private boolean arresting;
+    private float arrestDecel;
+    private UUID returnPlayer;
+    private MilVehicleEntity returnTo;
+
+    private MilVehicleEntity nearestCarrier() {
+        MilVehicleEntity best = null;
+        double bd = Double.MAX_VALUE;
+        for (MilVehicleEntity c : level().getEntitiesOfClass(MilVehicleEntity.class, getBoundingBox().inflate(100, 60, 100),
+                c -> c != this && c.type().carrier() && !c.is(SINKING) && !c.is(WRECK))) {
+            double d = c.distanceToSqr(this);
+            if (d < bd) {
+                bd = d;
+                best = c;
+            }
+        }
+        return best;
+    }
+
+    /** Coordonnées de ce point dans le repère du navire : {avant, droite}. */
+    private static double[] shipFrame(MilVehicleEntity c, double x, double z) {
+        double rad = Math.toRadians(c.getYRot()), fx = -Math.sin(rad), fz = Math.cos(rad), dx = x - c.getX(), dz = z - c.getZ();
+        return new double[]{dx * fx + dz * fz, -dx * fz + dz * fx};
+    }
+
+    /**
+     * Pont d'envol (côté qui simule l'avion : serveur pour l'IA et les avions vides, client du pilote sinon) :
+     * - appontage : crosse (train sorti) au-dessus du pont à moins de 2,5 blocs de haut, les brins d'arrêt freinent l'avion
+     *   en moins de 30 blocs et le rattachent au navire (attachToCarrier) ;
+     * - rattaché, l'avion est un enfant du navire : il en suit les déplacements et la rotation, sans glisser ni tomber à l'eau,
+     *   le pont fait office de sol ;
+     * - décollage : plein gaz et cap du navire, catapulte EMALS (Ford) ou course sur le pont et tremplin (Kouznetsov) ;
+     *   la vitesse du navire s'ajoute à celle de l'avion (detachFromCarrier).
+     */
+    private void deckStep() {
+        MilType t = type();
+        long now = level().getGameTime();
+        if (is(WRECK) || is(CRASHING) || is(DROWNED)) {
+            deck = null;
+            return;
+        }
+        if (carrierRef == null || carrierRef.isRemoved() || ++deckScan >= 10) {
+            deckScan = 0;
+            carrierRef = nearestCarrier();
+        }
+        MilVehicleEntity c = carrierRef;
+        if (c == null) {
+            deck = null;
+            return;
+        }
+        MilType ct = c.type();
+        float stall = t.maxSpeed() * 0.45f;
+        if (deck == c && deckUntil >= now) {
+            // suivre le navire : déplacement et rotation du navire depuis le tick précédent
+            Vec3 dp = c.position().subtract(c.xo, c.yo, c.zo);
+            double dyaw = Mth.wrapDegrees(c.getYRot() - c.yRotO), a = Math.toRadians(dyaw);
+            double rx = getX() - (c.getX() - dp.x), rz = getZ() - (c.getZ() - dp.z);
+            double nx = rx * Math.cos(a) - rz * Math.sin(a), nz = rx * Math.sin(a) + rz * Math.cos(a);
+            setPos(c.getX() + nx, getY() + dp.y, c.getZ() + nz);
+            setYRot(getYRot() + (float) dyaw);
+            yRotO += (float) dyaw;
+            double[] f = shipFrame(c, getX(), getZ());
+            double deckY = c.getY() + ct.deckHeight();
+            boolean inside = Math.abs(f[0]) <= ct.deckHalfLength() && Math.abs(f[1]) <= ct.deckHalfWidth();
+            boolean rolling = speed >= stall && getY() - deckY > 0.6;
+            if (!inside || getY() - deckY > 4 || rolling) {
+                detachFromCarrier(c, dp);
+                return;
+            }
+            deckUntil = now + 4;
+            if (getY() < deckY + 0.05 || speed < stall) {
+                setPos(getX(), deckY, getZ());                              // le pont est le sol
+            }
+            setOnGround(true);
+            setDeltaMovement(getDeltaMovement().multiply(1, 0, 1));
+            // brins d'arrêt
+            float[] in = canRun() ? input() : new float[]{0, 0};
+            if (arresting) {
+                if (in[0] > 0 && spool > 0.8f) {
+                    arresting = false;                                       // remise des gaz (bolter) : pas de brin
+                } else if (speed > 0.03f) {
+                    speed = Math.max(0, speed - arrestDecel);
+                } else {
+                    speed = 0;
+                    arresting = false;
+                    announce("message.modeminecraft.mil.arrested");
+                }
+            }
+            // décollage : plein gaz dans l'axe du pont
+            double rel = Math.abs(Mth.wrapDegrees(getYRot() - c.getYRot()));
+            if (in[0] > 0 && getControllingPassenger() != null && rel < 25) {
+                deckThrottle++;
+                if (ct == MilType.GERALD_FORD && deckThrottle >= 30 && speed < stall) {
+                    speed = stall * 1.4f;                                    // catapulte EMALS
+                    planePitch = Math.max(planePitch, 6);
+                    launchGrace = 40;
+                    deckCooldown = now + 60;
+                    if (level().isClientSide) {
+                        level().playLocalSound(getX(), getY(), getZ(), SoundEvents.PISTON_EXTEND, SoundSource.NEUTRAL, 3f, 0.5f, false);
+                        for (int k = 0; k < 12; k++) {
+                            level().addParticle(ParticleTypes.CLOUD, getX() + random.nextGaussian() * 2, getY() + 0.3, getZ() + random.nextGaussian() * 2, 0, 0.05, 0);
+                        }
+                    }
+                    detachFromCarrier(c, dp);
+                    return;
+                }
+                if (ct == MilType.KUZNETSOV && speed >= stall && f[0] > ct.deckHalfLength() - 26) {
+                    planePitch = Math.max(planePitch, 10);                   // tremplin : le nez se lève en bout de piste
+                }
+            } else {
+                deckThrottle = 0;
+            }
+            return;
+        }
+        // pas encore rattaché : appontage ?
+        double[] f = shipFrame(c, getX(), getZ());
+        double deckY = c.getY() + ct.deckHeight(), h = getY() - deckY;
+        boolean inside = Math.abs(f[0]) <= ct.deckHalfLength() && Math.abs(f[1]) <= ct.deckHalfWidth();
+        if (inside && h > -1.0 && h < 2.5 && !is(GEAR_UP) && now >= deckCooldown && getDeltaMovement().y <= 0.25) {
+            attachToCarrier(c);
+        }
+    }
+
+    /** Rattache l'avion au pont : il devient solidaire du navire ; si de la vitesse reste à dissiper, les brins d'arrêt l'arrêtent. */
+    public void attachToCarrier(MilVehicleEntity c) {
+        deck = c;
+        deckUntil = level().getGameTime() + 4;
+        Vec3 dp = c.position().subtract(c.xo, c.yo, c.zo);
+        double rad = Math.toRadians(getYRot());
+        double along = dp.x * -Math.sin(rad) + dp.z * Math.cos(rad);                // vitesse du navire dans l'axe de l'avion
+        double sink = getDeltaMovement().y;
+        speed = (float) Math.max(0, speed - along);                                   // vitesse par rapport au pont
+        arresting = speed > 0.1f;
+        arrestDecel = Math.max(0.02f, speed * speed / 60f);                           // arrêt en moins de 30 blocs
+        double deckY = c.getY() + c.type().deckHeight();
+        setPos(getX(), deckY, getZ());
+        setOnGround(true);
+        if (arresting) {
+            if (level().isClientSide) {
+                level().playLocalSound(getX(), getY(), getZ(), SoundEvents.ANVIL_LAND, SoundSource.NEUTRAL, 2f, 0.7f, false);
+                for (int k = 0; k < 10; k++) {
+                    level().addParticle(ParticleTypes.ELECTRIC_SPARK, getX() + random.nextGaussian(), getY() + 0.2, getZ() + random.nextGaussian(), 0, 0.1, 0);
+                }
+            }
+            announce("message.modeminecraft.mil.hook_caught");
+        }
+        if (sink < -0.35 && !level().isClientSide && level() instanceof ServerLevel sl) {
+            planeImpact(sl, -sink / KMH, true);                                       // appontage trop brutal
+        }
+    }
+
+    /** Détache l'avion du pont (catapulte, tremplin, quitter le pont) : il garde la vitesse du navire en plus de la sienne. */
+    public void detachFromCarrier(MilVehicleEntity c, Vec3 shipMove) {
+        double rad = Math.toRadians(getYRot());
+        double along = shipMove.x * -Math.sin(rad) + shipMove.z * Math.cos(rad);
+        speed = (float) Math.max(0, speed + along);
+        deck = null;
+        arresting = false;
+        deckThrottle = 0;
+        deckCooldown = level().getGameTime() + 40;
+    }
+
+    /** Avions posés sur le pont de ce porte-avions, sans pilote (serveur). */
+    private List<MilVehicleEntity> deckPlanes() {
+        List<MilVehicleEntity> out = new ArrayList<>();
+        for (MilVehicleEntity p : level().getEntitiesOfClass(MilVehicleEntity.class, getBoundingBox().inflate(80, 40, 80),
+                p -> p != this && p.type().plane() && p.deck == this && p.getPassengers().isEmpty() && !p.is(WRECK))) {
+            out.add(p);
+        }
+        out.sort((a, b) -> Double.compare(a.distanceToSqr(this), b.distanceToSqr(this)));
+        return out;
+    }
+
+    /** Met un avion de chasse sur le pont (apparition du porte-avions) : posé, gaz coupés, solidaire du navire. */
+    private void parkOnDeck(MilType plane, double fwd, double right) {
+        MilVehicleEntity p = MilVehicleEntity.create(level(), plane, 0, 0, 0, getYRot());
+        Vec3 w = toWorld(fwd, type().deckHeight(), right);
+        p.setPos(w.x, w.y, w.z);
+        p.fillAmmo(0.5f);
+        p.setFuel(0.9f);
+        p.deck = this;
+        p.deckUntil = level().getGameTime() + 100;
+        p.setOnGround(true);
+        level().addFreshEntity(p);
+    }
+
+    /** Avions embarqués à la mise à l'eau : 4 chasseurs sur le pont (F-16 / F-22 ou MiG-29 / Su-57). */
+    public void populateDeck() {
+        boolean us = type() == MilType.GERALD_FORD;
+        MilType a = us ? MilType.F_16C : MilType.MIG_29, b = us ? MilType.F_22 : MilType.SU_57;
+        float half = type().deckHalfLength();
+        parkOnDeck(a, -half + 22, -10);
+        parkOnDeck(b, -half + 42, -10);
+        parkOnDeck(a, -half + 62, -10);
+        parkOnDeck(b, -half + 82, -10);
+    }
+
     /** L'avion est-il posé sur le pont d'un porte-avions (le pont fait office de sol) ? */
     public boolean onDeck() {
         return deck != null && deckUntil >= level().getGameTime() && !deck.isRemoved();
@@ -2283,6 +2546,14 @@ public class MilVehicleEntity extends Entity {
     }
 
     private void serverTick() {
+        if (returnPlayer != null) {
+            if (level() instanceof ServerLevel rl && rl.getPlayerByUUID(returnPlayer) instanceof net.minecraft.server.level.ServerPlayer rp
+                    && returnTo != null && !returnTo.isRemoved() && rp.getVehicle() == null) {
+                rp.startRiding(returnTo, true);
+            }
+            returnPlayer = null;
+            returnTo = null;
+        }
         MilType t = type();
         ServerLevel sl = (ServerLevel) level();
         long now = sl.getGameTime();
@@ -2421,7 +2692,7 @@ public class MilVehicleEntity extends Entity {
             if (impactCooldown > 0) {
                 impactCooldown--;
             }
-            boolean ground = onGround();
+            boolean ground = onGround() && !onDeck();
             if (ground && !wasGround && lastVy < -0.3) {
                 planeImpact(sl, -lastVy / KMH, true);                              // posé trop brutalement
             }
@@ -2701,7 +2972,7 @@ public class MilVehicleEntity extends Entity {
 
     /** Au sol (le serveur ne simule pas le mouvement d'un avion piloté par un joueur : on teste le contact). */
     public boolean groundedNow() {
-        return onGround() || !level().noCollision(this, getBoundingBox().move(0, -0.25, 0));
+        return onGround() || onDeck() || !level().noCollision(this, getBoundingBox().move(0, -0.25, 0));
     }
 
     /** Garde la zone de l'avion chargée (apparition d'un avion de l'IA hors de la zone simulée). */
@@ -3653,7 +3924,9 @@ public class MilVehicleEntity extends Entity {
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
         MilType t = MilType.byId(tag.getString("MilType"));
-        entityData.set(TYPE, (t == null ? MilType.UAZ_469 : t).ordinal());
+        if (t != null) {
+            entityData.set(TYPE, t.ordinal());                                  // (/summon sans NBT : on garde le type de l'entité)
+        }
         entityData.set(HEALTH, tag.contains("Health") ? tag.getFloat("Health") : type().health);
         entityData.set(FUEL, tag.contains("Fuel") ? tag.getFloat("Fuel") : 0.6f);
         entityData.set(STATE, tag.getInt("State") & (ENGINE_DOWN | MOBILITY_DOWN | DEPLOYED | WRECK | GEAR_UP | NUKE_ARMED | DROWNED));

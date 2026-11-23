@@ -1259,7 +1259,7 @@ COLORS.update(tm.TRAIN_COLORS)
 PAINTS.update({k for k in tm.TRAIN_COLORS if k not in ("lamp_yellow",)})
 MATERIAL.update({"lamp_yellow": "flat"})
 VEHICLES += tm.make(V)
-SHIPS = {"kirov_cruiser", "admiral_gorshkov", "slava_cruiser", "udaloy_destroyer", "buyan_corvette", "arleigh_burke",
+SHIPS = {"uss_gerald_r_ford", "admiral_kuznetsov", "kirov_cruiser", "admiral_gorshkov", "slava_cruiser", "udaloy_destroyer", "buyan_corvette", "arleigh_burke",
          "ticonderoga_cruiser", "zumwalt_destroyer", "ohio_submarine", "virginia_submarine", "mercenary_rhib",
          "mercenary_interceptor_boat", "mercenary_explosive_usv"}
 PLANES = {"light_civil_plane", "b29_superfortress", "il2_sturmovik", "la7", "mig15", "tu95_bear", "mig21", "mig25", "su25", "mig29", "su34", "su57",

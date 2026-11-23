@@ -85,6 +85,9 @@ public class MilVehicleItem extends Item {
             }
             v.fillAmmo(0.5f);
             level.addFreshEntity(v);
+            if (type.carrier()) {
+                v.populateDeck();                                                  // 4 chasseurs sur le pont
+            }
             if (!player.getAbilities().instabuild) {
                 stack.shrink(1);
             }

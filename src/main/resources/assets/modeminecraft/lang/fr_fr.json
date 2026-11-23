@@ -2356,5 +2356,15 @@
   "message.modeminecraft.scenario.assigned": "Affectation validée — Transfert vers votre base...",
   "message.modeminecraft.mil.drowned": "[ALERTE] MOTEURS NOYÉS — APPAREIL HORS SERVICE",
   "message.modeminecraft.mil.drowned_repair": "Épave noyée : sortez-la de l'eau avant de la réparer.",
-  "message.modeminecraft.mil.engine_fire": "[ALERTE] Incendie moteur !"
+  "message.modeminecraft.mil.engine_fire": "[ALERTE] Incendie moteur !",
+  "item.modeminecraft.uss_gerald_r_ford": "Porte-avions USS Gerald R. Ford (CVN-78)",
+  "entity.modeminecraft.uss_gerald_r_ford": "Porte-avions USS Gerald R. Ford (CVN-78)",
+  "tooltip.modeminecraft.mil.uss_gerald_r_ford": "130 blocs, pilotable : 4 chasseurs sur le pont, catapultes EMALS, brins d'arrêt, Phalanx et ESSM. Eau de 6 blocs minimum",
+  "item.modeminecraft.admiral_kuznetsov": "Porte-avions Amiral Kouznetsov (projet 1143.5)",
+  "entity.modeminecraft.admiral_kuznetsov": "Porte-avions Amiral Kouznetsov (projet 1143.5)",
+  "tooltip.modeminecraft.mil.admiral_kuznetsov": "120 blocs, pilotable : 4 chasseurs sur le pont, tremplin, brins d'arrêt, Granit, Kinzhal et Kashtan. Eau de 6 blocs minimum",
+  "message.modeminecraft.mil.arrested": "Appontage réussi : avion arrêté, solidaire du pont.",
+  "message.modeminecraft.mil.hook_caught": "Crosse accrochée : brins d'arrêt !",
+  "message.modeminecraft.mil.board_deck": "Vous montez dans : %s",
+  "message.modeminecraft.mil.shoal": "Haut-fond ou côte devant : machines stoppées (6 blocs d'eau minimum)."
 }
