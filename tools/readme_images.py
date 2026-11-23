@@ -560,7 +560,7 @@ def hero_images(g, models):
     loco, wag = models["mesa_locomotive"], models["mesa_wagon"]
     boxes = iso_render(g, loco, offset=(0, 0, 0))
     for i in range(2):
-        boxes += iso_render(g, wag, offset=(-9.8 - 5.2 - 5.2 * 0 - i * 11.4 + 0.0, 0, 0))
+        boxes += iso_render(g, wag, offset=(-10.6 - i * 11.4, 0, 0))
     img = vehicle_image(g, loco, 1500, 520, extra_boxes=boxes[len(iso_render(g, loco)):], margin=0.94) if False else None
     ss = 3
     a = math.radians(30)

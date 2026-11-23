@@ -4,6 +4,22 @@
 
 > Les images de ce README sont des **rendus générés à partir des ressources du mod** (textures, modèles 3D, skins), pas des captures d'écran du jeu. Elles se régénèrent avec `python3 tools/readme_images.py`.
 
+## Vidéos de présentation
+
+> Animations rendues à partir des modèles 3D du mod (pas d'images du jeu en action). Chaque animation existe aussi en MP4 (dossier `docs/videos/`), régénérable avec `python3 tools/readme_videos.py`.
+
+**Tour d'horizon : avions, chars, porte-avions, navires, avion léger et train** ([version MP4](docs/videos/presentation.mp4))
+
+![Présentation](docs/videos/presentation.gif)
+
+**Le train des villes du Mesa** ([version MP4](docs/videos/train.mp4))
+
+![Le train du Mesa](docs/videos/train.gif)
+
+**Les armes à feu** ([version MP4](docs/videos/armes.mp4))
+
+![Les armes à feu](docs/videos/armes.gif)
+
 Mod **NeoForge** pour **Minecraft 1.21.1** : tout ce qu'on a toujours voulu dans Minecraft.
 
 ## Installation et mises à jour automatiques
