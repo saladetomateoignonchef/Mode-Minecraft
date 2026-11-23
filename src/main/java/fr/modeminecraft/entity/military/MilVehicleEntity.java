@@ -93,6 +93,8 @@ public class MilVehicleEntity extends Entity {
     public static final int MISSILE_WARN = 4096, AFTERBURNER = 8192, STEALTH_BREAK = 16384;
     /** Marine : navire qui sombre (gîte, fumée, s'enfonce), voie d'eau, sous-marin en plongée. */
     public static final int SINKING = 32768, FLOODING = 65536, SUBMERGED = 131072;
+    /** Aviation : moteurs noyés (avion tombé à l'eau), hors service tant qu'il n'est pas sorti de l'eau et réparé. */
+    public static final int DROWNED = 262144;
     /** Marine : chadburn (consigne de vitesse, -0,4 à 1), immersion visée du sous-marin, voies d'eau (0 à 1). */
     private float throttle;
     public float subDepth;
@@ -111,7 +113,14 @@ public class MilVehicleEntity extends Entity {
     private ChunkPos flightTicket;
     public static boolean bombSightActive;
     private int bombCooldown;
-    private double lastVy;
+    private double lastVy, lastHs;
+    private boolean wasGround;
+    private int impactCooldown, drownTicks;
+    /** 1 km/h en blocs par tick pour un avion (voir MilType#maxSpeed). */
+    private static final double KMH = 0.0095;
+    /** Pont d'un porte-avions qui porte cet avion (jusqu'à ce tick) : sol virtuel, l'avion suit le navire. */
+    public MilVehicleEntity deck;
+    public long deckUntil;
     /** Station d'armes du pilote (indice dans MilType.stations()) ; leurres ; fin de la dernière salve de leurres. */
     private int station;
     private int flares = 60;
@@ -596,7 +605,7 @@ public class MilVehicleEntity extends Entity {
     }
 
     private boolean canRun() {
-        return fuel() > 0 && !is(ENGINE_DOWN) && getControllingPassenger() != null;
+        return fuel() > 0 && !is(ENGINE_DOWN) && !is(DROWNED) && getControllingPassenger() != null;
     }
 
     private void drive() {
@@ -1387,6 +1396,11 @@ public class MilVehicleEntity extends Entity {
             vy = Math.min(vy, -0.05);                                              // plafond pratique : l'air est trop rare
             planePitch = Math.min(planePitch, 0);
         }
+        if (is(DROWNED)) {
+            speed = 0;
+            horiz = 0;
+            vy = onGround() ? 0 : Math.max(-0.12, getDeltaMovement().y - 0.02);       // l'épave coule doucement
+        }
         setDeltaMovement(-Math.sin(rad) * horiz, vy, Math.cos(rad) * horiz);
         move(MoverType.SELF, getDeltaMovement());
         if (onGround() && is(GEAR_UP) && speed > 0.2f) {
@@ -1825,6 +1839,94 @@ public class MilVehicleEntity extends Entity {
         }
     }
 
+    /** L'avion est-il posé sur le pont d'un porte-avions (le pont fait office de sol) ? */
+    public boolean onDeck() {
+        return deck != null && deckUntil >= level().getGameTime() && !deck.isRemoved();
+    }
+
+    /**
+     * Noyade : dès que le fuselage est immergé de plus de 0,4 bloc (un simple rasage des vagues ne compte pas), les moteurs
+     * se noient : poussée nulle, commandes coupées, l'avion coule en lâchant des bulles et de la fumée noire. Les occupants
+     * sont éjectés au bout de 2 s. Épave inutilisable : il faut la sortir de l'eau (eau < 0,4 bloc) et la réparer à la clé.
+     * Renvoie vrai tant que l'avion est hors service.
+     */
+    private boolean drowning(ServerLevel sl) {
+        boolean deep = !onDeck() && getFluidHeight(net.minecraft.tags.FluidTags.WATER) > 0.4;
+        if (deep && !is(DROWNED)) {
+            setState(DROWNED, true);
+            setState(ENGINE_DOWN, true);
+            entityData.set(SPEED, 0f);
+            entityData.set(ROTOR, 0f);
+            drownTicks = 0;
+            level().playSound(null, getX(), getY(), getZ(), SoundEvents.FIRE_EXTINGUISH, SoundSource.NEUTRAL, 2f, 0.6f);
+            level().playSound(null, getX(), getY(), getZ(), SoundEvents.GENERIC_EXTINGUISH_FIRE, SoundSource.NEUTRAL, 2f, 0.5f);
+            announce("message.modeminecraft.mil.drowned");
+        }
+        if (!is(DROWNED)) {
+            return false;
+        }
+        drownTicks++;
+        entityData.set(SPEED, 0f);
+        if (tickCount % 4 == 0 && getFluidHeight(net.minecraft.tags.FluidTags.WATER) > 0) {
+            sl.sendParticles(ParticleTypes.BUBBLE, getX(), getY() + 0.8, getZ(), 6, 1.2, 0.5, 1.2, 0.05);
+            sl.sendParticles(ParticleTypes.LARGE_SMOKE, getX(), getY() + 1.2, getZ(), 2, 0.8, 0.3, 0.8, 0.02);
+        }
+        if (drownTicks == 40) {
+            for (Entity p : List.copyOf(getPassengers())) {
+                p.stopRiding();                                                    // sortie d'urgence : remonter à la nage
+            }
+        }
+        if (drownTicks > 12000 && getFluidHeight(net.minecraft.tags.FluidTags.WATER) > 0.4) {
+            spawnAtLocation(new ItemStack(ModItems.STEEL_PLATE.get(), 2 + random.nextInt(4)));
+            discard();                                                             // épave abandonnée au fond
+        }
+        return true;
+    }
+
+    /**
+     * Collision d'un avion (hors atterrissage doux : train sorti, pente < 15°, descente < 0,3 bloc/tick) :
+     * 30 à 80 km/h : 15 à 35 % des PV, étincelles ; 80 à 180 km/h : 40 à 75 % des PV et début d'incendie moteur ;
+     * au-delà de 180 km/h : destruction instantanée avec explosion proportionnelle au carburant et aux munitions.
+     */
+    private void planeImpact(ServerLevel sl, double kmh, boolean vertical) {
+        if (impactCooldown > 0 || destroyed || isRemoved() || is(WRECK)) {
+            return;
+        }
+        if (kmh < 30) {
+            return;
+        }
+        if (vertical && !is(GEAR_UP) && Math.abs(planePitch) < 15 && kmh * KMH < 0.3) {
+            return;                                                                // atterrissage normal
+        }
+        impactCooldown = 20;
+        MilType t = type();
+        double f;
+        if (kmh <= 80) {
+            f = 0.15 + (kmh - 30) / 50 * 0.20;
+        } else if (kmh <= 180) {
+            f = 0.40 + (kmh - 80) / 100 * 0.35;
+        } else {
+            f = 1;
+        }
+        sl.sendParticles(ParticleTypes.CRIT, getX(), getY() + 0.5, getZ(), 20, 1.2, 0.4, 1.2, 0.4);
+        sl.sendParticles(ParticleTypes.ELECTRIC_SPARK, getX(), getY() + 0.5, getZ(), 12, 1.0, 0.3, 1.0, 0.3);
+        level().playSound(null, getX(), getY(), getZ(), SoundEvents.ANVIL_LAND, SoundSource.NEUTRAL, 2f, 0.5f);
+        if (f >= 1) {
+            entityData.set(HEALTH, 0f);
+            startCrash(false);
+            crashImpact();                                                         // piqué au sol, falaise, structure
+            return;
+        }
+        hurtInternal((float) (t.health * f), null, null, false, 1f);
+        if (kmh > 80 && !is(WRECK)) {
+            setState(BURNING, true);                                               // début d'incendie moteur
+            if (random.nextFloat() < 0.6f) {
+                setState(ENGINE_DOWN, true);                                       // perte de maniabilité
+            }
+            announce("message.modeminecraft.mil.engine_fire");
+        }
+    }
+
     /** Un passager « copilote » (place de tireur / pilote) reprend les commandes si le pilote saute ou meurt. */
     private boolean copilotTakesOver() {
         for (Entity p : getPassengers()) {
@@ -1880,7 +1982,12 @@ public class MilVehicleEntity extends Entity {
             p.stopRiding();
             p.hurt(damageSources().explosion(this, null), 1000);
         }
-        sl.explode(this, getX(), getY() + 1, getZ(), 7f, true, Level.ExplosionInteraction.TNT);
+        int rounds = 0;
+        for (int n : stock.values()) {
+            rounds += n;
+        }
+        float power = 3f + 4f * fuel() + Math.min(2f, rounds / 600f);               // carburant restant et munitions embarquées
+        sl.explode(this, getX(), getY() + 1, getZ(), power, true, Level.ExplosionInteraction.TNT);
         sl.sendParticles(ParticleTypes.EXPLOSION_EMITTER, getX(), getY() + 1, getZ(), 2, 1, 1, 1, 0);
         sl.sendParticles(ParticleTypes.LAVA, getX(), getY() + 1, getZ(), 40, 2, 0.5, 2, 0.1);
         level().playSound(null, getX(), getY(), getZ(), ModSounds.HUGE_EXPLOSION.get(), SoundSource.NEUTRAL, 6f, 1f);
@@ -2307,19 +2414,37 @@ public class MilVehicleEntity extends Entity {
         if (t.plane() && !is(WRECK) && !is(CRASHING)) {
             // contrôles faits par le serveur (le pilote joueur fait voler l'avion de son côté)
             double vy = getY() - yo, hs = Math.hypot(getX() - xo, getZ() - zo);
-            if (onGround() && lastVy < -0.5) {
-                hurtInternal((float) (-lastVy * 160), null, position().add(0, -1, 0), false);       // atterrissage brutal
+            if (drowning(sl)) {
+                lastVy = vy;
+                return;                                                            // moteurs noyés : plus rien ne fonctionne
             }
-            if (onGround() && is(GEAR_UP) && hs > 0.2) {
+            if (impactCooldown > 0) {
+                impactCooldown--;
+            }
+            boolean ground = onGround();
+            if (ground && !wasGround && lastVy < -0.3) {
+                planeImpact(sl, -lastVy / KMH, true);                              // posé trop brutalement
+            }
+            wasGround = ground;
+            if (ground && is(GEAR_UP) && hs > 0.2) {
                 hurtInternal(t.health * 0.02f, null, position().add(0, -1, 0), false);              // atterrissage sur le ventre
                 sl.sendParticles(ParticleTypes.LAVA, getX(), getY(), getZ(), 3, 2, 0.1, 2, 0);
             }
             if (launchGrace > 0) {
                 launchGrace--;
-            } else if (horizontalCollision && hs > 0.6 && !onGround()) {
-                startCrash(false);
-                crashImpact();                                                     // contre une falaise / un immeuble
-                return;
+            } else if (horizontalCollision && !ground) {
+                planeImpact(sl, lastHs / KMH, false);                              // aile, arbre, mur, falaise, immeuble
+                if (is(CRASHING) || is(WRECK) || isRemoved()) {
+                    return;
+                }
+            } else if (horizontalCollision && ground && lastHs / KMH > 30) {
+                planeImpact(sl, lastHs / KMH, false);                              // roulage contre un obstacle
+                if (is(WRECK) || isRemoved()) {
+                    return;
+                }
+            }
+            if (!horizontalCollision) {
+                lastHs = hs;
             }
             lastVy = vy;
         }
@@ -3459,6 +3584,10 @@ public class MilVehicleEntity extends Entity {
         if (health() >= t.health && !is(ENGINE_DOWN) && !is(MOBILITY_DOWN)) {
             return InteractionResult.PASS;
         }
+        if (is(DROWNED) && getFluidHeight(net.minecraft.tags.FluidTags.WATER) > 0.4) {
+            player.displayClientMessage(Component.translatable("message.modeminecraft.mil.drowned_repair").withStyle(ChatFormatting.RED), true);
+            return InteractionResult.SUCCESS;                                      // il faut d'abord la sortir de l'eau
+        }
         if (slot < 0 && !player.getAbilities().instabuild) {
             player.displayClientMessage(Component.translatable("message.modeminecraft.mil.need_plate",
                     Component.translatable(plate.getDescriptionId())).withStyle(ChatFormatting.RED), true);
@@ -3471,6 +3600,7 @@ public class MilVehicleEntity extends Entity {
         setState(ENGINE_DOWN, false);
         setState(MOBILITY_DOWN, false);
         setState(BURNING, false);
+        setState(DROWNED, false);
         level().playSound(null, getX(), getY(), getZ(), SoundEvents.ANVIL_USE, SoundSource.NEUTRAL, 0.8f, 1.1f);
         player.displayClientMessage(Component.translatable("message.modeminecraft.mil.repaired", Math.round(health() / t.health * 100)), true);
         return InteractionResult.SUCCESS;
@@ -3526,7 +3656,7 @@ public class MilVehicleEntity extends Entity {
         entityData.set(TYPE, (t == null ? MilType.UAZ_469 : t).ordinal());
         entityData.set(HEALTH, tag.contains("Health") ? tag.getFloat("Health") : type().health);
         entityData.set(FUEL, tag.contains("Fuel") ? tag.getFloat("Fuel") : 0.6f);
-        entityData.set(STATE, tag.getInt("State") & (ENGINE_DOWN | MOBILITY_DOWN | DEPLOYED | WRECK | GEAR_UP | NUKE_ARMED));
+        entityData.set(STATE, tag.getInt("State") & (ENGINE_DOWN | MOBILITY_DOWN | DEPLOYED | WRECK | GEAR_UP | NUKE_ARMED | DROWNED));
         entityData.set(TURRET, tag.getFloat("Turret"));
         throttle = tag.getFloat("Throttle");
         subDepth = tag.getFloat("SubDepth");

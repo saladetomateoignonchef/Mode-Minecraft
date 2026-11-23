@@ -2353,5 +2353,8 @@
   "message.modeminecraft.train.fraud": "Inspector: \"No ticket!\" (stunned by the electric baton)",
   "message.modeminecraft.train.expelled": "You were thrown off the train onto the platform.",
   "structure.modeminecraft.mesa_train_station": "Mesa Railway Station",
-  "message.modeminecraft.scenario.assigned": "Assignment confirmed — Transferring to your base..."
+  "message.modeminecraft.scenario.assigned": "Assignment confirmed — Transferring to your base...",
+  "message.modeminecraft.mil.drowned": "[ALERT] ENGINES FLOODED — AIRCRAFT OUT OF SERVICE",
+  "message.modeminecraft.mil.drowned_repair": "Flooded wreck: get it out of the water before repairing.",
+  "message.modeminecraft.mil.engine_fire": "[ALERT] Engine fire!"
 }

@@ -2353,5 +2353,8 @@
   "message.modeminecraft.train.fraud": "Contrôleur : « Pas de billet ! » (étourdi par la matraque électrique)",
   "message.modeminecraft.train.expelled": "Vous avez été expulsé du train sur le quai.",
   "structure.modeminecraft.mesa_train_station": "Gare ferroviaire du Mesa",
-  "message.modeminecraft.scenario.assigned": "Affectation validée — Transfert vers votre base..."
+  "message.modeminecraft.scenario.assigned": "Affectation validée — Transfert vers votre base...",
+  "message.modeminecraft.mil.drowned": "[ALERTE] MOTEURS NOYÉS — APPAREIL HORS SERVICE",
+  "message.modeminecraft.mil.drowned_repair": "Épave noyée : sortez-la de l'eau avant de la réparer.",
+  "message.modeminecraft.mil.engine_fire": "[ALERTE] Incendie moteur !"
 }
