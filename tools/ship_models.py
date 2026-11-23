@@ -136,6 +136,73 @@ def make(V0):
         ships.append(build)
         return fn
 
+    # ------------------------------------------------------------------ porte-avions
+    def carrier(name, L, W, soviet):
+        """Porte-avions : coque, pont d'envol débordant (pont droit + pont oblique), îlot à tribord, ascenseurs, catapultes
+        (EMALS) ou tremplin, défense rapprochée. Pont à 12 blocs au-dessus de la flottaison (draft 6,5)."""
+        v = V(name, 46)
+        p = "ru_navy" if soviet else "us_navy"
+        dk = "deck" if soviet else "deck_us"
+        draft, D = 6.5, 18.5 if not soviet else 17.5
+        hull(v, L, W / 2 - 5, D - 0.5, draft, p, deck=dk, bow=0.2)
+        x0, x1 = -L / 2, L / 2
+        # pont d'envol : dalle principale, étrave rétrécie par paliers, débord de l'arrière et du pont oblique
+        v.box("hull", x0, x1 - 30, D - 0.5, D, -W / 2, W / 2, dk)
+        for i in range(5):
+            w = W / 2 * (1 - 0.14 * (i + 1))
+            v.box("hull", x1 - 30 + i * 6, x1 - 24 + i * 6, D - 0.5, D, -w, w, dk)
+        v.box("hull", x0 - 3, x0 + 14, D - 0.5, D, -W / 2 + 2, W / 2 - 2, dk)                 # plage arrière
+        v.box("hull", x0 + 4, x0 + 56, D - 0.2, D + 0.05, -W / 2 + 1.5, -W / 2 + 7, "ru_navy_d" if soviet else "us_navy_d")   # pont oblique
+        # marquages : axe de piste, lignes de catapultes, ascenseurs
+        for k in range(-int(L / 2) + 12, int(L / 2) - 8, 8):
+            v.box("hull", k, k + 4, D, D + 0.08, -0.25, 0.25, "white")
+        if not soviet:
+            for z in (-5, 5):
+                v.box("hull", x1 - 62, x1 - 16, D, D + 0.08, z - 0.2, z + 0.2, "black")        # rails des catapultes EMALS
+        for xe, ze in ((-14, W / 2 - 4), (4, W / 2 - 4), (30, -W / 2 + 5)):
+            v.box("hull", xe - 5, xe + 5, D, D + 0.07, ze - 3.5, ze + 3.5, "ru_navy_d" if soviet else "us_navy_d")
+        if soviet:
+            # tremplin : rampe en marches sur les 24 derniers blocs
+            for i in range(12):
+                v.box("hull", x1 - 24 + i * 2, x1 - 22 + i * 2, D, D + 0.25 + i * 0.35, -W / 2 * (0.6 - 0.02 * i), W / 2 * (0.6 - 0.02 * i), dk)
+            for k in range(6):
+                v.box("hull", x1 - 62 + k * 7, x1 - 59 + k * 7, D, D + 0.4, W / 2 - 4, W / 2 - 2.6, "red")   # silos Granit (suggérés)
+        # îlot à tribord
+        zi = W / 2 - 2.8
+        island(v, -12, 10, D, 12, 3.0, p, 3)
+        v.box("hull", -12, 10, D, D + 12, zi - 2.6, zi + 2.6, p)
+        v.box("hull", -4, 6, D + 12, D + 14, zi - 2.2, zi + 2.2, p)
+        v.box("hull", 5.8, 6.1, D + 9, D + 11.5, zi - 2.0, zi + 2.0, "window")                # passerelle vitrée
+        mast(v, -2, D + 14, 8, 0.4, "ru_navy_d" if soviet else "us_navy_d")
+        radar_panels(v, 2, D + 10, 2.6, zi + 2.65, "ru_navy_d" if soviet else "us_navy_d")
+        # défense rapprochée sur les sponsons
+        c = None
+        for x, z in ((x1 - 20, -W / 2 + 1.2), (x0 + 10, -W / 2 + 1.2), (x0 + 12, W / 2 - 1.2), (x1 - 26, W / 2 - 1.2)):
+            c = ciws(v, x, D, z, p)
+        v.muzzle(x1 - 20, D + 1.2, -W / 2 + 1.2, 0)                                           # 0 : (inutilisé)
+        v.muzzle(*(x1 - 20, D + 1.2, -W / 2 + 1.2), 0)                                        # 1 : défense rapprochée
+        for z in (-3, 3):
+            v.muzzle(x1 - 40, D + 0.4, z, 0)                                                  # 2 / 3 : silos antinavires
+        v.muzzle(x1 - 30, D + 0.3, 0, 0)                                                      # 4
+        for z in (-3, 3):
+            v.muzzle(0, 2.0, z * 2, 0)                                                        # 5 / 6
+        v.muzzle(x0 + 12, D + 1.5, W / 2 - 1.2, 0)                                            # 7 : missiles surface-air
+        v.muzzle(x0 + 8, D + 0.4, 0, 0)                                                       # 8
+        v.seat(2, D + 11, zi)                                                                  # barre (passerelle)
+        v.seat(x1 - 20, D + 1.2, -W / 2 + 2)                                                   # tireur de défense rapprochée
+        v.seat(-1, D + 11, zi + 1.0)                                                           # officier d'armes
+        for k in range(3):
+            v.seat(-6 + k * 2, D + 5, zi)
+        return v
+
+    @reg
+    def gerald_ford():
+        return carrier("uss_gerald_r_ford", 130, 34, False)
+
+    @reg
+    def kuznetsov():
+        return carrier("admiral_kuznetsov", 120, 30, True)
+
     # ------------------------------------------------------------------ Russie
     @reg
     def kirov():

@@ -2353,5 +2353,18 @@
   "message.modeminecraft.train.fraud": "Inspector: \"No ticket!\" (stunned by the electric baton)",
   "message.modeminecraft.train.expelled": "You were thrown off the train onto the platform.",
   "structure.modeminecraft.mesa_train_station": "Mesa Railway Station",
-  "message.modeminecraft.scenario.assigned": "Assignment confirmed — Transferring to your base..."
+  "message.modeminecraft.scenario.assigned": "Assignment confirmed — Transferring to your base...",
+  "message.modeminecraft.mil.drowned": "[ALERT] ENGINES FLOODED — AIRCRAFT OUT OF SERVICE",
+  "message.modeminecraft.mil.drowned_repair": "Flooded wreck: get it out of the water before repairing.",
+  "message.modeminecraft.mil.engine_fire": "[ALERT] Engine fire!",
+  "item.modeminecraft.uss_gerald_r_ford": "USS Gerald R. Ford (CVN-78) aircraft carrier",
+  "entity.modeminecraft.uss_gerald_r_ford": "USS Gerald R. Ford (CVN-78) aircraft carrier",
+  "tooltip.modeminecraft.mil.uss_gerald_r_ford": "130 blocks, drivable: 4 fighters on deck, EMALS catapults, arrestor wires, Phalanx and ESSM. Needs 6 blocks of water",
+  "item.modeminecraft.admiral_kuznetsov": "Admiral Kuznetsov aircraft carrier (Project 1143.5)",
+  "entity.modeminecraft.admiral_kuznetsov": "Admiral Kuznetsov aircraft carrier (Project 1143.5)",
+  "tooltip.modeminecraft.mil.admiral_kuznetsov": "120 blocks, drivable: 4 fighters on deck, ski-jump, arrestor wires, Granit, Kinzhal and Kashtan. Needs 6 blocks of water",
+  "message.modeminecraft.mil.arrested": "Trap! Aircraft stopped and locked to the deck.",
+  "message.modeminecraft.mil.hook_caught": "Hook caught: arrestor wires!",
+  "message.modeminecraft.mil.board_deck": "You board: %s",
+  "message.modeminecraft.mil.shoal": "Shoal or coast ahead: engines stopped (6 blocks of water minimum)."
 }

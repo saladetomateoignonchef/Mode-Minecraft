@@ -1058,6 +1058,21 @@ Les 6 grades vont de Soldat (0) à Général (3000). Chaque grade donne :
 - Mort, réapparition ou changement de dimension : tout bot qui visait le joueur efface cible, rancune et appel radio, les
   factions lui pardonnent ; un fantassin ne poursuit pas au-delà de 50 blocs (snipers : portée de vue + 5).
 
+### Physique des avions et porte-avions pilotables (mise à jour 0.11)
+- **Eau** : dès que le fuselage est immergé de plus de 0,4 bloc, les moteurs se noient (poussée nulle, commandes coupées,
+  bulles et fumée, alerte rouge « MOTEURS NOYÉS — APPAREIL HORS SERVICE ») ; l'avion coule, les occupants sont éjectés au bout
+  de 2 s. L'épave est inutilisable : il faut la sortir de l'eau (moins de 0,4 bloc) et la réparer à la clé à molette.
+- **Collisions** : dégâts selon la vitesse d'impact, 30 à 80 km/h = 15 à 35 % des PV, 80 à 180 km/h = 40 à 75 % et début
+  d'incendie moteur, plus de 180 km/h = destruction avec explosion proportionnelle au carburant et aux munitions. Un atterrissage
+  doux (train sorti, pente < 15°, faible vitesse verticale) ne coûte rien. Les chocs contre d'autres véhicules ne sont pas traités.
+- **Porte-avions** `USS Gerald R. Ford` et `Amiral Kouznetsov` (objets à mettre à l'eau, établi d'assemblage) : navires mobiles
+  pilotables (Z / S machines, Q / D gouvernail, jamais sous 6 blocs d'eau), 4 chasseurs sur le pont (F-16 / F-22 ou MiG-29 / Su-57).
+  Les avions posés sur le pont suivent le navire (déplacement et rotation) sans glisser ; le pont est un sol virtuel.
+  Décollage : plein gaz dans l'axe du pont, catapulte EMALS (Ford) ou course et tremplin (Kouznetsov), la vitesse du navire
+  s'ajoute. Appontage : train sorti au-dessus du pont, brins d'arrêt en moins de 30 blocs, l'avion est ré-ancré au navire.
+  On passe de la passerelle à un avion du pont avec la touche de changement de place (C) et, en descendant de l'avion, on
+  regagne la passerelle : le joueur ne marche pas sur le pont d'un navire en mouvement.
+
 ### Gameplay et progression
 
 ![Soins, cartes, matériaux et composants](docs/images/objets.png)
