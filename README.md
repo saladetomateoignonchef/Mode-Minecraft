@@ -20,6 +20,54 @@
 
 ![Les armes à feu](docs/videos/armes.gif)
 
+## Vidéos en jeu
+
+> **Vraies captures du jeu**, enregistrées dans Minecraft (client NeoForge 1.21.1 sur un serveur de test) : touches, interface et physique sont celles du jeu. Chaque vidéo existe en GIF (ci-dessous) et en MP4 (dossier `docs/videos/`). Elles se refont avec `tools/demo_env.sh` puis `python3 tools/record_demos.py [scène]` (voir `tools/demo_lib.py`).
+
+**Armes à feu : M4, AK-47, Glock, fusil à pompe, Barrett M82 et RPG-7 (rechargement, visée, tir)** ([version MP4](docs/videos/jeu_armes.mp4))
+
+![Armes à feu](docs/videos/jeu_armes.gif)
+
+**Armes de mêlée : katana, claymore, couteau de combat et marteau de guerre (combos et parade)** ([version MP4](docs/videos/jeu_melee.mp4))
+
+![Armes de mêlée](docs/videos/jeu_melee.gif)
+
+**Tenues et armures : défilé de quatre équipements complets** ([version MP4](docs/videos/jeu_armures.mp4))
+
+![Tenues et armures](docs/videos/jeu_armures.gif)
+
+**Explosifs : grenades à fragmentation, charge C4 posée puis déclenchée au détonateur** ([version MP4](docs/videos/jeu_explosifs.mp4))
+
+![Explosifs](docs/videos/jeu_explosifs.gif)
+
+**Factions : la garnison américaine contre des soviétiques (bots armés, ils s'engagent d'eux-mêmes)** ([version MP4](docs/videos/jeu_bots.mp4))
+
+![Factions](docs/videos/jeu_bots.gif)
+
+**Véhicules terrestres : char M1A2 Abrams (conduite et tir au canon)** ([version MP4](docs/videos/jeu_vehicules.mp4))
+
+![Véhicules terrestres](docs/videos/jeu_vehicules.gif)
+
+**Hélicoptère UH-60 Black Hawk : décollage et vol** ([version MP4](docs/videos/jeu_helicoptere.mp4))
+
+![Hélicoptère UH-60 Black Hawk](docs/videos/jeu_helicoptere.gif)
+
+**Avion léger civil : roulage, décollage, virage** ([version MP4](docs/videos/jeu_avion_leger.mp4))
+
+![Avion léger civil](docs/videos/jeu_avion_leger.gif)
+
+**Destroyer Arleigh Burke : navigation et tir du canon naval** ([version MP4](docs/videos/jeu_navire.mp4))
+
+![Destroyer Arleigh Burke](docs/videos/jeu_navire.gif)
+
+**Porte-avions USS Gerald R. Ford : barre depuis l'îlot, passage à un avion du pont, catapulte et décollage** ([version MP4](docs/videos/jeu_porte_avions.mp4))
+
+![Porte-avions USS Gerald R. Ford](docs/videos/jeu_porte_avions.gif)
+
+**Largage aérien : caisse sous parachute** ([version MP4](docs/videos/jeu_largage.mp4))
+
+![Largage aérien](docs/videos/jeu_largage.gif)
+
 Mod **NeoForge** pour **Minecraft 1.21.1** : tout ce qu'on a toujours voulu dans Minecraft.
 
 ## Installation et mises à jour automatiques

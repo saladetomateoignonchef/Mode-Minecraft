@@ -1999,6 +1999,7 @@ public class MilVehicleEntity extends Entity {
                 deckThrottle++;
                 if (ct == MilType.GERALD_FORD && deckThrottle >= 30 && speed < stall) {
                     speed = stall * 1.4f;                                    // catapulte EMALS
+                    spool = 1f;                                              // moteurs à pleine puissance
                     planePitch = Math.max(planePitch, 6);
                     launchGrace = 40;
                     deckCooldown = now + 60;

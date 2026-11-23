@@ -1,0 +1,353 @@
+#!/usr/bin/env python3
+"""
+Enregistre de vraies vidéos du jeu (client Minecraft sous Xvfb) pour le README : docs/videos/jeu_*.mp4 et .gif.
+
+Prérequis : serveur dédié lancé avec RCON (port 25575, mot de passe « test », monde plat, mode créatif) et client lancé
+avec un joueur « Demo » connecté (voir CLAUDE.md / tools/demo_lib.py).
+Utilisation : python3 tools/record_demos.py [scène...]
+"""
+import os
+import subprocess
+import sys
+import time
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import demo_lib as L  # noqa: E402
+
+OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "docs/videos")
+RAW = "/tmp/rec"
+r = None
+pad = None
+
+
+def sh(c, wait=0.15):
+    out = r.cmd(c)
+    time.sleep(wait)
+    return out
+
+
+def reset(x=0, y=-59, z=0, yaw=0, pitch=0):
+    pad.release_all()
+    sh("gamemode creative Demo")
+    sh("clear Demo")
+    camera(0)
+    sh("kill @e[type=!player]")
+    sh("effect clear Demo")
+    sh(f"tp Demo {x} {y} {z} {yaw} {pitch}", 0.6)
+
+
+def finish(name, fps=20, width=640):
+    """Convertit l'enregistrement brut en MP4 léger et en GIF pour le README."""
+    raw = os.path.join(RAW, name + ".mp4")
+    mp4 = os.path.join(OUT, name + ".mp4")
+    gif = os.path.join(OUT, name + ".gif")
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", raw, "-vf", f"scale={width}:-2", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "26", mp4], check=True)
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", raw, "-vf",
+                    f"fps=10,scale={min(width, 480)}:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=80:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=4",
+                    "-loop", "0", gif], check=True)
+    print(name, round(os.path.getsize(mp4) / 1e6, 1), "Mo mp4,", round(os.path.getsize(gif) / 1e6, 1), "Mo gif")
+
+
+CAM = 0
+
+
+def camera(mode):
+    """Vue : 0 = première personne, 1 = derrière, 2 = de face (F5 fait défiler les trois)."""
+    global CAM
+    while CAM != mode:
+        pad.tap("F5")
+        time.sleep(0.25)
+        CAM = (CAM + 1) % 3
+
+
+class Take:
+    def __init__(self, name):
+        self.name = name
+        self.rec = L.Recorder(os.path.join(RAW, name + ".mp4"))
+
+    def __enter__(self):
+        self.rec.start()
+        return self
+
+    def __exit__(self, *a):
+        pad.release_all()
+        self.rec.stop()
+        finish(self.name)
+
+
+# ----------------------------------------------------------------------------- scènes
+def armes():
+    reset(0, -59, 0, 0, 0)
+    for stand in range(-9, 10, 3):
+        sh(f"summon minecraft:armor_stand {stand} -60 22 {{NoGravity:0b}}", 0.05)
+    sh("summon minecraft:zombie 0 -60 30 {NoAI:1b,Silent:1b}", 0.05)
+    kit = [("m4", "ammo_556"), ("ak47", "ammo_762"), ("glock17", "ammo_9mm"), ("remington_870", "shotgun_shell"), ("barrett_m82", "ammo_50bmg"), ("rpg7", "rpg_rocket")]
+    for i, (gun, ammo) in enumerate(kit):
+        sh(f"item replace entity Demo hotbar.{i} with modeminecraft:{gun}", 0.05)
+        sh(f"give Demo modeminecraft:{ammo} 64", 0.05)
+    time.sleep(5)                                   # laisse passer les notifications de recettes
+    with Take("jeu_armes"):
+        for slot in range(1, 7):
+            pad.tap(str(slot))
+            time.sleep(0.7)
+            pad.tap("r")
+            time.sleep(1.8)
+            pad.mouse_down(3)                       # viser
+            time.sleep(0.6)
+            pad.mouse_down(1)                       # tirer
+            time.sleep(1.4 if slot < 6 else 0.4)
+            pad.mouse_up(1)
+            pad.mouse_up(3)
+            pad.move(60 * (1 if slot % 2 else -1), 0, steps=6)
+            time.sleep(0.4)
+
+
+def melee():
+    reset(0, -59, 0, 0, 0)
+    for k, x in enumerate((-3, 0, 3)):
+        sh(f"summon minecraft:armor_stand {x} -60 3 {{ShowArms:1b}}", 0.05)
+    for i, w in enumerate(("katana", "claymore", "combat_knife", "war_hammer")):
+        sh(f"item replace entity Demo hotbar.{i} with modeminecraft:{w}", 0.05)
+    time.sleep(5)
+    with Take("jeu_melee"):
+        for slot in range(1, 5):
+            pad.tap(str(slot))
+            time.sleep(0.6)
+            for _ in range(3):                      # combo de trois coups
+                pad.click(1)
+                time.sleep(0.45)
+            pad.mouse_down(3)                       # parade
+            time.sleep(0.8)
+            pad.mouse_up(3)
+            pad.move(120 if slot % 2 else -120, 0, steps=8)
+            time.sleep(0.3)
+
+
+def armures():
+    reset(0, -59, 0, 0, 0)
+    sets = [("galea", "wwi_cuirass", None, None), ("mich_2000", "swat_vest", "swat_pants", "salomon_forces_boots"),
+            ("altyn", "vest_6b3", "ratnik_pants", "m65_combat_boots"), ("ops_core_fast", "jpc_plate_carrier", "crye_g3_pants", "lowa_zephyr_boots")]
+    time.sleep(2)
+    camera(2)                                       # vue de face
+    with Take("jeu_armures"):
+        for head, chest, legs, feet in sets:
+            for slot, item in (("head", head), ("chest", chest), ("legs", legs), ("feet", feet)):
+                if item:
+                    sh(f"item replace entity Demo armor.{slot} with modeminecraft:{item}", 0.05)
+            pad.move(260, 0, steps=26, dt=0.05)
+            time.sleep(0.5)
+    camera(0)
+
+
+def vehicules():
+    reset(0, -59, 0, 0, 0)
+    sh("summon modeminecraft:m1a2_abrams 0 -59.5 6 {}")
+    sh("ride Demo mount @e[type=modeminecraft:m1a2_abrams,limit=1]", 1.0)
+    camera(1)
+    time.sleep(2)
+    with Take("jeu_vehicules"):
+        pad.down("w")
+        time.sleep(4)
+        pad.down("a")
+        time.sleep(1.8)
+        pad.up("a")
+        time.sleep(1.5)
+        pad.down("d")
+        time.sleep(1.8)
+        pad.up("d")
+        time.sleep(1.5)
+        pad.up("w")
+        pad.mouse_down(1)                           # canon
+        time.sleep(0.6)
+        pad.mouse_up(1)
+        time.sleep(2)
+    camera(0)
+
+
+def avion_leger():
+    reset(0, -59, 0, 0, 0)
+    sh("summon modeminecraft:light_civil_plane 0 -59.5 0 {}")
+    sh("ride Demo mount @e[type=modeminecraft:light_civil_plane,limit=1]", 1.0)
+    camera(1)
+    time.sleep(2)
+    with Take("jeu_avion_leger"):
+        pad.down("w")
+        time.sleep(4.0)                             # roulage et décollage court
+        pad.move(0, -90, steps=12)                  # cabrer
+        time.sleep(3)
+        pad.move(0, 40, steps=8)
+        pad.down("a")
+        time.sleep(2.5)
+        pad.up("a")
+        time.sleep(3)
+        pad.up("w")
+    camera(0)
+
+
+
+def porte_avions():
+    """Porte-avions : barre en haut de l'îlot, avions sur le pont, passage de la passerelle à un avion, catapulte, décollage."""
+    sh("time set day")
+    sh("gamerule doDaylightCycle false")
+    camera(0)
+    pad.release_all()
+    sh("gamemode creative Demo")
+    sh("kill @e[type=!player]")
+    sh("tp Demo 2000 -50 1900 0 0", 4)
+    sh("summon modeminecraft:uss_gerald_r_ford 2000 -57.6 1950")
+    for t, f in (("f16_falcon", -43), ("f22_raptor", -23), ("f16_falcon", -3), ("f22_raptor", 17)):
+        sh(f"summon modeminecraft:{t} 2010 -39.1 {1950 + f}")
+    time.sleep(3)
+    sh("ride Demo mount @e[type=modeminecraft:uss_gerald_r_ford,limit=1]", 2)
+    with Take("jeu_porte_avions"):
+        time.sleep(2.5)
+        pad.move(-120, 15, steps=15)                # regard sur le pont
+        time.sleep(1.5)
+        pad.down("w")                               # en avant : le navire prend de la vitesse
+        time.sleep(3)
+        pad.up("w")
+        for _ in range(6):                          # touche C : places puis avion du pont
+            pad.tap("c")
+            time.sleep(0.6)
+        time.sleep(1.5)
+        pad.down("w")                               # plein gaz : catapulte
+        time.sleep(2.2)
+        pad.move(0, -90, steps=12)                  # cabrer
+        time.sleep(5)
+        pad.up("w")
+    camera(0)
+
+
+def bots():
+    """Deux factions ennemies (garnison américaine contre soviétiques) engagent la fusillade, posées avec leurs œufs d'apparition."""
+    reset(0, -59, 0, 180, 42)
+    sh("give Demo modeminecraft:bot_egg_garrison 16", 0.05)
+    sh("give Demo modeminecraft:bot_egg_soviet 16", 0.05)
+    sh("item replace entity Demo hotbar.0 with modeminecraft:bot_egg_garrison 16", 0.05)
+    sh("item replace entity Demo hotbar.1 with modeminecraft:bot_egg_soviet 16", 0.05)
+    time.sleep(5)
+    pad.tap("1")
+    for _ in range(4):                              # garnison au nord
+        pad.click(3, 0.3)
+        time.sleep(0.4)
+        pad.move(40, 0, steps=3)
+    sh("tp Demo 0 -59 4 0 42", 0.6)
+    pad.tap("2")
+    for _ in range(4):                              # soviétiques au sud
+        pad.click(3, 0.3)
+        time.sleep(0.4)
+        pad.move(-40, 0, steps=3)
+    sh("tp Demo -8 -59 2 -90 4", 0.6)
+    with Take("jeu_bots"):
+        time.sleep(4)
+        pad.move(50, 0, steps=10)
+        time.sleep(6)
+        pad.move(-100, 0, steps=15)
+        time.sleep(6)
+
+
+def explosifs():
+    """Grenades à fragmentation lancées, charge C4 posée et déclenchée au détonateur."""
+    reset(0, -59, 0, 0, -8)
+    for x in range(-8, 9, 4):
+        sh(f"summon minecraft:armor_stand {x} -60 22 {{}}", 0.05)
+    sh("give Demo modeminecraft:frag_grenade 16", 0.05)
+    sh("give Demo modeminecraft:c4 4", 0.05)
+    sh("give Demo modeminecraft:detonator 1", 0.05)
+    sh("item replace entity Demo hotbar.0 with modeminecraft:frag_grenade 16", 0.05)
+    sh("item replace entity Demo hotbar.1 with modeminecraft:c4 4", 0.05)
+    sh("item replace entity Demo hotbar.2 with modeminecraft:detonator", 0.05)
+    time.sleep(5)
+    with Take("jeu_explosifs"):
+        pad.tap("1")
+        time.sleep(0.5)
+        for k in range(3):
+            pad.click(3, 0.3)                          # lancer
+            time.sleep(1.8)
+            pad.move(30 * (1 if k % 2 else -1), 0, steps=3)
+        time.sleep(1.5)
+        sh("tp Demo 0 -59 6 0 35", 0.4)
+        pad.tap("2")
+        time.sleep(0.4)
+        pad.click(3, 0.3)                              # pose du C4 au sol
+        time.sleep(1.0)
+        sh("tp Demo 0 -59 -10 0 0", 0.5)
+        pad.tap("3")
+        time.sleep(0.6)
+        pad.click(3, 0.3)                              # détonateur
+        time.sleep(3)
+    sh("kill @e[type=!player]")
+
+
+def helicoptere():
+    reset(0, -59, 0, 0, 0)
+    sh("summon modeminecraft:uh_60_black_hawk 0 -59.5 6 {}")
+    sh("ride Demo mount @e[type=modeminecraft:uh_60_black_hawk,limit=1]", 1.0)
+    camera(1)
+    time.sleep(2)
+    with Take("jeu_helicoptere"):
+        pad.down("space")                           # monter
+        time.sleep(4)
+        pad.up("space")
+        pad.down("w")                               # avancer
+        time.sleep(3)
+        pad.down("a")
+        time.sleep(2)
+        pad.up("a")
+        time.sleep(2)
+        pad.up("w")
+        time.sleep(1.5)
+    camera(0)
+
+
+def navire():
+    sh("time set day")
+    camera(0)
+    pad.release_all()
+    sh("gamemode creative Demo")
+    sh("kill @e[type=!player]")
+    sh("tp Demo 2000 -50 1900 0 0", 4)
+    sh("summon modeminecraft:arleigh_burke 2000 -57.6 1930")
+    time.sleep(2)
+    sh("ride Demo mount @e[type=modeminecraft:arleigh_burke,limit=1]", 1.5)
+    camera(1)
+    time.sleep(1.5)
+    with Take("jeu_navire"):
+        pad.down("w")
+        time.sleep(4)
+        pad.down("d")
+        time.sleep(3)
+        pad.up("d")
+        time.sleep(1.5)
+        pad.mouse_down(1)                           # tir du canon naval
+        time.sleep(0.5)
+        pad.mouse_up(1)
+        time.sleep(2.5)
+        pad.up("w")
+    camera(0)
+
+
+def largage():
+    reset(0, -59, 0, 0, 0)
+    sh("summon modeminecraft:airdrop 0 -20 8 {}")
+    time.sleep(5)
+    with Take("jeu_largage"):
+        pad.move(0, -60, steps=8)
+        time.sleep(7)
+        pad.move(0, 60, steps=8)
+        time.sleep(5)
+
+
+SCENES = {"armes": armes, "melee": melee, "armures": armures, "vehicules": vehicules, "avion_leger": avion_leger, "porte_avions": porte_avions,
+          "bots": bots, "explosifs": explosifs, "helicoptere": helicoptere, "navire": navire, "largage": largage}
+
+if __name__ == "__main__":
+    r = L.Rcon()
+    pad = L.Pad()
+    from Xlib import X
+    from Xlib.ext import xtest
+    xtest.fake_input(pad.d, X.MotionNotify, False, x=640, y=360)
+    pad.d.sync()
+    os.makedirs(OUT, exist_ok=True)
+    for name in sys.argv[1:] or list(SCENES):
+        SCENES[name]()

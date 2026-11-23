@@ -20,6 +20,13 @@ neoForge {
         client {
             client()
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            // Option réservée à l'enregistrement des vidéos du README (tools/demo_env.sh) : ./gradlew runClient -PdemoJoin=1
+            if (project.hasProperty('demoJoin')) {
+                programArguments.addAll '--username', 'Demo', '--width', '960', '--height', '540',
+                        '--quickPlayMultiplayer', 'localhost:25565'
+                gameDirectory = file("/tmp/mmclient")
+                jvmArguments.addAll '-Xmx3G'
+            }
         }
         server {
             server()
