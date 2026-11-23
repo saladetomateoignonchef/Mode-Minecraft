@@ -1,5 +1,9 @@
 # Mode Minecraft
 
+![Mode Minecraft](docs/images/banniere.png)
+
+> Les images de ce README sont des **rendus générés à partir des ressources du mod** (textures, modèles 3D, skins), pas des captures d'écran du jeu. Elles se régénèrent avec `python3 tools/readme_images.py`.
+
 Mod **NeoForge** pour **Minecraft 1.21.1** : tout ce qu'on a toujours voulu dans Minecraft.
 
 ## Installation et mises à jour automatiques
@@ -17,6 +21,9 @@ Mod **NeoForge** pour **Minecraft 1.21.1** : tout ce qu'on a toujours voulu dans
 ## Contenu
 
 ### Minerai de rubis
+
+![Blocs et minerais](docs/images/blocs.png)
+
 - **Minerai de rubis** (pierre + abîmes) : généré dans l'Overworld entre Y=-64 et Y=56 (pic vers Y=-4), plus fréquent que l'or et moins que le fer.
 - Se mine avec une pioche en **fer** minimum, compatible Fortune et Toucher de soie.
 - **Bloc de rubis** (9 rubis), utilisable comme base de balise.
@@ -34,6 +41,9 @@ Matériau entre le diamant et la netherite (1800 de durabilité, enchantabilité
 | Marteau de guerre | 11.5 | 0.6 | Onde de choc : blesse et repousse les ennemis autour |
 
 ### Armes blanches du cahier des charges (20)
+
+![Armes blanches et magiques](docs/images/armes_blanches.png)
+
 Mécaniques communes :
 - **Combos de 3 coups** : enchaîner les clics gauches (moins de 1,5 s entre deux coups) donne 3 animations différentes
   (balayage droite → gauche, revers gauche → droite, coup vertical ou estoc) ; le **3e coup fait +25 %**.
@@ -81,6 +91,11 @@ Toutes se fabriquent à la table d'armement (onglet Armes).
 - **Bâton de feu** : clic droit pour lancer une boule de feu.
 
 ### Armes à feu (79 armes + 7 tourelles à poser)
+
+![Armes à feu](docs/images/armes_a_feu.png)
+
+![Accessoires d'armes](docs/images/accessoires.png)
+
 Toutes les armes à feu, munitions et accessoires se fabriquent à la **table d'armement**.
 
 | Catégorie | Armes (calibre) |
@@ -190,6 +205,9 @@ les cartouches diminuer, la M249 une bande de munitions qui avance à chaque tir
 - **Armes rangées visibles** : la 1re arme longue de la barre d'action dans le dos, le 1er pistolet à la hanche.
 
 ### Grenades et explosifs (12 grenades + C4, Claymore, mortier)
+
+![Munitions, grenades et explosifs](docs/images/munitions_explosifs.png)
+
 Clic droit maintenu : on dégoupille (le bras libre tire l'anneau, le minuteur tourne et s'affiche).
 On relâche pour lancer ; si on la garde trop longtemps, elle explose dans la main. Les grenades rebondissent sur les murs
 (réflexion V' = V - 2(V·N)N, puis perte d'énergie) et s'immobilisent au sol.
@@ -215,6 +233,9 @@ On relâche pour lancer ; si on la garde trop longtemps, elle explose dans la ma
 - Les explosifs posés explosent en chaîne s'ils sont pris dans une explosion. On les ramasse en les frappant.
 
 ### Tourelles et mitrailleuses lourdes montables (6)
+
+![Tourelles](docs/images/tourelles.png)
+
 On ne peut pas les tenir à la main : ce sont des entités fixes qu'on déploie.
 
 | Tourelle | Munitions | Caractéristiques | Viseur fixe WWII |
@@ -239,6 +260,9 @@ On ne peut pas les tenir à la main : ce sont des entités fixes qu'on déploie.
 - Fabrication : tourelles et caisses à la table d'armement (lingots et blocs de fer, redstone, pistons...) ; clé à molette aussi à l'établi.
 
 ### Casques militaires 3D (12, de l'Antiquité à aujourd'hui)
+
+![Casques, gilets, pantalons et rangers](docs/images/equipements.png)
+
 Chaque casque a un **vrai modèle 3D voxel** sur la tête (reliefs, jugulaires, rebords, accessoires), aux teintes militaires mates.
 On le met au **clic droit** : les deux bras le posent sur la tête (bruit de jugulaire). Fabrication : table d'armement, onglet **Casques**.
 
@@ -374,6 +398,9 @@ Les lampes se montent sur le **rail latéral** (flanc droit du garde-main, avec 
 - Une grenade IEM coupe aussi les lampes.
 
 ### Villes, factions et bots (monde vivant)
+
+![Factions et bots](docs/images/factions.png)
+
 Des **villes générées** apparaissent selon le biome (un centre de ville par région de 640 blocs, sur terrain assez plat) :
 
 | Biome | Ville (proportion) | Faction | Attitude |
@@ -420,6 +447,9 @@ Des **villes générées** apparaissent selon le biome (un centre de ville par r
 
 ### Faucons Blancs, nuit et Chefs de Faction
 
+![Chefs de faction](docs/images/chefs.png)
+
+
 - **Mode Berserk** du Chef des Troupes de Choc (sous 30 % de ses PV) : heaume fissuré aux yeux rouges lumineux,
   fumée et étincelles, cri de guerre (40 blocs), insensible au recul, +40 % de vitesse, coups 25 % plus rapprochés.
 - **La Pourfendeuse de Dragons entre vos mains** : rangée dans la barre d'action, elle se porte en diagonale dans le dos ;
@@ -452,6 +482,9 @@ Des **villes générées** apparaissent selon le biome (un centre de ville par r
   des véhicules (plus aigu en accélérant).
 
 ### Drones de combat et guerre électronique
+
+![Drones et guerre électronique](docs/images/drones.png)
+
 
 - **Télécommande tactique** (2 lingots d'acier, 2 redstone, 1 vitre, 1 pile CR123A) : Maj + clic droit sur un drone posé
   pour l'associer (Maj + clic droit dans le vide pour la dissocier), clic droit pour le piloter en **caméra FPV**
@@ -547,6 +580,11 @@ Des **villes générées** apparaissent selon le biome (un centre de ville par r
   villes calculés hors du fil principal et seulement quand c'est utile : de ~45 ms à ~6 ms par tick en métropole.
 
 ### Véhicules militaires, missiles et factions (mise à jour 0.4)
+
+![Véhicules terrestres](docs/images/vehicules_terrestres.png)
+
+![Hélicoptères](docs/images/helicopteres.png)
+
 - **Braquage des civils** (habitants, passants, commerçants, ouvriers) : il suffit d'une **arme blanche** (couteau de
   combat minimum) ou d'une arme à feu. À moins de **3,5 blocs**, visez le civil et **maintenez le clic droit 1,5 s**
   (barre « Braquage... ») : il lève les mains en tremblant et lâche billets, pépites d'or, émeraudes, parfois un
@@ -654,6 +692,9 @@ Des **villes générées** apparaissent selon le biome (un centre de ville par r
   hélicoptères et drones des joueurs, et intercepte leurs missiles) et parfois un Iskander armé : objectifs prioritaires.
 
 ### Furtivité, appel radio, tenues d'infiltration et chambres fortes des boss
+
+![Tenues](docs/images/tenues.png)
+
 #### Plus d'alerte télépathique : les témoins et la radio
 - Un crime (meurtre, agression, braquage, coffre forcé, pied-de-biche, coup de feu) n'alerte **personne** si aucun
   témoin vivant ne l'a **vu** : il faut être dans son **cône de vision** (110°), à portée (réduite la nuit) et avec une
@@ -777,6 +818,9 @@ Des **villes générées** apparaissent selon le biome (un centre de ville par r
   cœurs dans les chambres fortes du bunker et du QG soviétique.
 
 ### Aviation militaire : 20 avions, furtivité radar et arsenal aérien lourd (mise à jour 0.7)
+
+![Aviation militaire](docs/images/avions.png)
+
 #### La flotte (modèles voxel détaillés, établi d'assemblage)
 - **URSS / Russie** : Il-2 Sturmovik, La-7, MiG-15bis, Tu-95 Bear, MiG-21bis, MiG-25 Foxbat (le plus rapide du mod),
   Su-25 Frogfoot, MiG-29 Fulcrum (viseur de casque : verrouillage à 35°), Su-34 Fullback, Su-57 Felon.
@@ -837,6 +881,9 @@ Des **villes générées** apparaissent selon le biome (un centre de ville par r
   attaquent au canon et aux missiles, lancent des leurres et évitent le sol. Les furtifs passent inaperçus.
 
 ### Nation américaine, Mercenaires Offshore et guerre navale (mise à jour 0.8)
+
+![Marine et sous-marins](docs/images/navires.png)
+
 #### L'US Army et les Mercenaires Offshore
 - **US Army** (ex-garnison) : neutre par défaut. Elle devient hostile si vous attaquez un de ses soldats, volez un véhicule dans une base américaine ou une patrouille, ou forcez une salle blindée devant témoins (appel radio de 30 s). Elle est en guerre contre l'URSS, la Milice, les Cartels, les Mercenaires Offshore et les Faucons.
 - Patrouilles en **Humvee** à 3 (conducteur, passager au M4A1, tireur de M2 .50).
@@ -873,6 +920,11 @@ Mise à l'eau : clic droit vers une étendue d'eau. Commandes : **Z / S** chadbu
 - **Patrouilles en haute mer** : semi-rigides et intercepteurs mercenaires, destroyers soviétiques ou américains, sous-marins.
 
 ### Scénario « Course à l'arme nucléaire » (mise à jour 0.9)
+
+![Plan de la base américaine](docs/images/plan_base_us.png)
+
+![Plan de la base soviétique](docs/images/plan_base_urss.png)
+
 Activé par défaut en survie (règle de jeu `modeminecraftScenario`, à mettre à `false` pour jouer en bac à sable).
 
 #### Début de partie
@@ -956,6 +1008,13 @@ Les 6 grades vont de Soldat (0) à Général (3000). Chaque grade donne :
 - **Victoire** : larguer la bombe sur la base stratégique ennemie. L'écran de victoire s'affiche, puis la partie continue librement.
 
 ### Correctifs des tests en jeu, train des villes du Mesa et avion léger civil (mise à jour 0.10)
+
+![Train des villes du Mesa](docs/images/train_mesa.png)
+
+![Réseau ferroviaire](docs/images/reseau_ferroviaire.png)
+
+![Avion léger biplace civil](docs/images/avion_leger.png)
+
 **Correctifs**
 - **Armes de bots** : la tête d'un bot armé ne se retourne plus de plus de 80° par rapport au corps et le bras porte-arme
   reste dans un cône fixe (plus de fusil tenu à l'envers).
@@ -1000,6 +1059,9 @@ Les 6 grades vont de Soldat (0) à Général (3000). Chaque grade donne :
   factions lui pardonnent ; un fantassin ne poursuit pas au-delà de 50 blocs (snipers : portée de vue + 5).
 
 ### Gameplay et progression
+
+![Soins, cartes, matériaux et composants](docs/images/objets.png)
+
 - **Niveaux des armes (1 à 5)** : chaque arme garde ses statistiques (éliminations, tirs à la tête, tirs, ratio)
   et gagne de l'expérience : +10 par élimination, +5 si tir à la tête, +10 pour un gros monstre (50 PV ou plus).
   Paliers : 100 / 300 / 600 / 1000 XP. Chaque niveau donne -4 % de recul, -3 % de dispersion et -3 % de temps de rechargement.
