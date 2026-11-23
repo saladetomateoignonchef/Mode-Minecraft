@@ -188,11 +188,11 @@ def make(V0):
             v.muzzle(0, 2.0, z * 2, 0)                                                        # 5 / 6
         v.muzzle(x0 + 12, D + 1.5, W / 2 - 1.2, 0)                                            # 7 : missiles surface-air
         v.muzzle(x0 + 8, D + 0.4, 0, 0)                                                       # 8
-        v.seat(2, D + 11, zi)                                                                  # barre (passerelle)
+        v.seat(2, D + 14.6, zi)                                                                # barre (toit de la passerelle, vue dégagée)
         v.seat(x1 - 20, D + 1.2, -W / 2 + 2)                                                   # tireur de défense rapprochée
-        v.seat(-1, D + 11, zi + 1.0)                                                           # officier d'armes
+        v.seat(-1, D + 14.6, zi + 1.4)                                                         # officier d'armes
         for k in range(3):
-            v.seat(-6 + k * 2, D + 5, zi)
+            v.seat(-8 + k * 2.5, D + 14.6, zi - 1.2)
         return v
 
     @reg

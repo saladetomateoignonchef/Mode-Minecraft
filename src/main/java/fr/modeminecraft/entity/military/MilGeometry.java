@@ -282,12 +282,12 @@ public final class MilGeometry {
                 new float[][]{}, 6.8f));
         put("uss_gerald_r_ford", new Geo(46f, 8.5f, null, null, null, null, null,
                 new float[][]{},
-                new float[][]{{2f, 29.5f, 14.2f}, {45.0f, 19.7f, -15.0f}, {-1f, 29.5f, 15.2f}, {-6f, 23.5f, 14.2f}, {-4f, 23.5f, 14.2f}, {-2f, 23.5f, 14.2f}},
+                new float[][]{{2f, 33.1f, 14.2f}, {45.0f, 19.7f, -15.0f}, {-1f, 33.1f, 15.6f}, {-8.0f, 33.1f, 13.0f}, {-5.5f, 33.1f, 13.0f}, {-3.0f, 33.1f, 13.0f}},
                 new float[][]{{45.0f, 19.7f, -15.8f, 0f}, {45.0f, 19.7f, -15.8f, 0f}, {25.0f, 18.9f, -3f, 0f}, {25.0f, 18.9f, 3f, 0f}, {35.0f, 18.8f, 0f, 0f}, {0f, 2.0f, -6f, 0f}, {0f, 2.0f, 6f, 0f}, {-53.0f, 20.0f, 15.8f, 0f}, {-57.0f, 18.9f, 0f, 0f}},
                 new float[][]{}, 17.0f));
         put("admiral_kuznetsov", new Geo(46f, 8.5f, null, null, null, null, null,
                 new float[][]{},
-                new float[][]{{2f, 28.5f, 12.2f}, {40.0f, 18.7f, -13.0f}, {-1f, 28.5f, 13.2f}, {-6f, 22.5f, 12.2f}, {-4f, 22.5f, 12.2f}, {-2f, 22.5f, 12.2f}},
+                new float[][]{{2f, 32.1f, 12.2f}, {40.0f, 18.7f, -13.0f}, {-1f, 32.1f, 13.6f}, {-8.0f, 32.1f, 11.0f}, {-5.5f, 32.1f, 11.0f}, {-3.0f, 32.1f, 11.0f}},
                 new float[][]{{40.0f, 18.7f, -13.8f, 0f}, {40.0f, 18.7f, -13.8f, 0f}, {20.0f, 17.9f, -3f, 0f}, {20.0f, 17.9f, 3f, 0f}, {30.0f, 17.8f, 0f, 0f}, {0f, 2.0f, -6f, 0f}, {0f, 2.0f, 6f, 0f}, {-48.0f, 19.0f, 13.8f, 0f}, {-52.0f, 17.9f, 0f, 0f}},
                 new float[][]{}, 15.0f));
         put("kirov_cruiser", new Geo(33f, 8.0f, new Vec3(38, 7.06, 0.0), new Vec3(39.92, 7.9399999999999995, 0.0), null, null, null,

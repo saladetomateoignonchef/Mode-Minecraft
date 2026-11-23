@@ -2366,5 +2366,6 @@
   "message.modeminecraft.mil.arrested": "Trap! Aircraft stopped and locked to the deck.",
   "message.modeminecraft.mil.hook_caught": "Hook caught: arrestor wires!",
   "message.modeminecraft.mil.board_deck": "You board: %s",
-  "message.modeminecraft.mil.shoal": "Shoal or coast ahead: engines stopped (6 blocks of water minimum)."
+  "message.modeminecraft.mil.shoal": "Shoal or coast ahead: engines stopped (6 blocks of water minimum).",
+  "item.modeminecraft.bot_egg_railway": "Railway staff spawn egg"
 }

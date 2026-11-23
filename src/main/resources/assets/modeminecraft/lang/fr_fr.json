@@ -2366,5 +2366,6 @@
   "message.modeminecraft.mil.arrested": "Appontage réussi : avion arrêté, solidaire du pont.",
   "message.modeminecraft.mil.hook_caught": "Crosse accrochée : brins d'arrêt !",
   "message.modeminecraft.mil.board_deck": "Vous montez dans : %s",
-  "message.modeminecraft.mil.shoal": "Haut-fond ou côte devant : machines stoppées (6 blocs d'eau minimum)."
+  "message.modeminecraft.mil.shoal": "Haut-fond ou côte devant : machines stoppées (6 blocs d'eau minimum).",
+  "item.modeminecraft.bot_egg_railway": "Œuf d'apparition : personnel ferroviaire"
 }

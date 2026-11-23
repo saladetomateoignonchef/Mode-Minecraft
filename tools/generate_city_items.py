@@ -111,7 +111,7 @@ def main():
             json.dump({"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{name}"}}, f, indent=2)
     # œufs d'apparition
     factions = ["police", "swat", "militia", "rebel", "garrison", "soviet", "arctic", "mine_security", "cartel", "gang",
-                "sheriff", "refinery", "civilian", "trader", "falcon", "falcon_chief", "falcon_squad"]
+                "sheriff", "refinery", "civilian", "trader", "falcon", "falcon_chief", "falcon_squad", "railway"]
     for fct in factions:
         with open(os.path.join(ASSETS, f"models/item/bot_egg_{fct}.json"), "w", encoding="utf-8") as f:
             json.dump({"parent": "minecraft:item/template_spawn_egg"}, f, indent=2)
