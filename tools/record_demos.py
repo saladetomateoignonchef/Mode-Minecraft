@@ -327,6 +327,42 @@ def navire():
     camera(0)
 
 
+def drone():
+    """Drone Mavic : on le pose, on associe la télécommande (Maj + clic droit sur le drone), puis pilotage à la caméra du drone."""
+    reset(0, -59, 0, 0, 42)
+    sh("item replace entity Demo hotbar.0 with modeminecraft:mavic_tactique", 0.05)
+    sh("item replace entity Demo hotbar.1 with modeminecraft:drone_controller", 0.05)
+    time.sleep(5)
+    with Take("jeu_drone"):
+        pad.tap("1")
+        time.sleep(0.6)
+        pad.move(4, 0, steps=2)
+        pad.click(3, 0.3)                              # pose du drone
+        time.sleep(1.5)
+        sh("tp Demo 0.5 -59 0.5 0 36", 0.8)           # on vise le drone posé (il est à 2 blocs devant)
+        pad.tap("2")
+        time.sleep(0.6)
+        pad.down("Shift_L")
+        time.sleep(0.6)
+        pad.move(2, 2, steps=1)
+        pad.click(3, 0.3)                              # Maj + clic droit sur le drone : appairage
+        time.sleep(1.2)
+        pad.up("Shift_L")
+        time.sleep(0.6)
+        pad.click(3, 0.3)                              # clic droit : pilotage à la caméra du drone
+        time.sleep(1.5)
+        pad.down("space")                              # montée
+        time.sleep(3)
+        pad.up("space")
+        pad.down("w")                                  # en avant, puis virage
+        time.sleep(2.5)
+        pad.move(220, 0, steps=20)
+        time.sleep(3)
+        pad.up("w")
+        pad.tap("r")                                   # retour automatique au pilote
+        time.sleep(3)
+
+
 def largage():
     reset(0, -59, 0, 0, 0)
     sh("summon modeminecraft:airdrop 0 -20 8 {}")
@@ -339,7 +375,7 @@ def largage():
 
 
 SCENES = {"armes": armes, "melee": melee, "armures": armures, "vehicules": vehicules, "avion_leger": avion_leger, "porte_avions": porte_avions,
-          "bots": bots, "explosifs": explosifs, "helicoptere": helicoptere, "navire": navire, "largage": largage}
+          "bots": bots, "explosifs": explosifs, "helicoptere": helicoptere, "navire": navire, "drone": drone, "largage": largage}
 
 if __name__ == "__main__":
     r = L.Rcon()
