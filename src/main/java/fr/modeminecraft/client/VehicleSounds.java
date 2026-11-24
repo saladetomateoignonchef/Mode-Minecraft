@@ -69,6 +69,7 @@ public final class VehicleSounds {
                 case ARMORED_TRUCK -> 0.62f;
                 case SEDAN, TAXI -> 1.05f;
                 case BUS -> 0.7f;
+                case AMBULANCE -> 0.9f;
             };
             this.volume = 0.5f;
             this.pitch = base;

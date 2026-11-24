@@ -40,6 +40,7 @@ public class VehicleRenderer extends EntityRenderer<VehicleEntity> {
             case ARMORED_TRUCK -> new Wheels(new float[]{24.6f, 2.5f, -8.6f}, 0.4f, 15.6f, 4.0f);
             case SEDAN, TAXI -> new Wheels(new float[]{20, -4}, 1.0f, 15.0f, 2.8f);
             case BUS -> new Wheels(new float[]{25f, -8f}, 0.6f, 15.4f, 3.6f);
+            case AMBULANCE -> new Wheels(new float[]{22f, -6f}, 0.8f, 15.2f, 3.2f);
         };
     }
 

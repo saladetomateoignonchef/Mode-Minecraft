@@ -88,6 +88,8 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
     /** Vie civile : dernier cri, commerçant derrière son comptoir (déjà braqué ?), occupé par un événement jusqu'à. */
     public long lastScream, eventUntil;
     public boolean shopkeeper, robbed;
+    /** Pharmacienne de l'hôpital : vend les soins (bandages, garrots, attelles, plâtres, défibrillateurs). */
+    public boolean pharmacy;
     public long lastTargetSeen;
     public int turretFireTicks;   // servant de tourelle : gâchette pressée
     public String debugState = "";
@@ -820,6 +822,7 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
         tag.putBoolean("Convoy", convoy);
         tag.putBoolean("Ambush", ambush);
         tag.putBoolean("Shopkeeper", shopkeeper);
+        tag.putBoolean("Pharmacy", pharmacy);
         tag.putBoolean("Robbed", robbed);
         if (home != null) {
             tag.put("Home", NbtUtils.writeBlockPos(home));
@@ -851,6 +854,7 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
         convoy = tag.getBoolean("Convoy");
         ambush = tag.getBoolean("Ambush");
         shopkeeper = tag.getBoolean("Shopkeeper");
+        pharmacy = tag.getBoolean("Pharmacy");
         robbed = tag.getBoolean("Robbed");
         entityData.set(SWORD_STATE, tag.getByte("Sword") == SWORD_DRAWN ? SWORD_DRAWN : SWORD_BACK);
         if (tag.getBoolean("Berserk")) {
@@ -930,7 +934,7 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
     @Override
     public net.minecraft.world.item.trading.MerchantOffers getOffers() {
         if (offers == null) {
-            offers = shopkeeper ? CivilianLife.shopOffers(random) : BlackMarket.offers(random);
+            offers = pharmacy ? CivilianLife.pharmacyOffers() : shopkeeper ? CivilianLife.shopOffers(random) : BlackMarket.offers(random);
         }
         return offers;
     }

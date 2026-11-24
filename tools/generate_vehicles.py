@@ -116,6 +116,23 @@ def bus():
             zb(-15, 22, 10, 23, 2, 14, "silver")], 0.92)                 # climatisation sur le toit
 
 
+def ambulance():
+    """Ambulance : fourgon blanc, bande et croix rouges, gyrophares bleus et rouges sur la cabine."""
+    return squeeze_x([zb(-14, 3, 17, 17, -0.4, 16.4, "white"),             # caisson
+            zb(17, 3, 30, 11.5, -0.4, 16.4, "white"),                      # cabine
+            zb(17, 11.5, 29, 12.5, 0.3, 15.7, "white"),
+            zb(28.8, 6.5, 29.8, 11.3, 1, 15, "glass"),                     # pare-brise
+            zb(18, 7, 28, 10.8, -0.5, 16.5, "glass"),                      # vitres de cabine
+            zb(-14, 7, 30, 9, -0.6, 16.6, "red"),                          # bande rouge
+            zb(2, 9.5, 4.5, 15.5, -0.7, -0.5, "red"), zb(-0.5, 11.5, 7, 13.5, -0.7, -0.5, "red"),       # croix (côté gauche)
+            zb(2, 9.5, 4.5, 15.5, 16.5, 16.7, "red"), zb(-0.5, 11.5, 7, 13.5, 16.5, 16.7, "red"),       # croix (côté droit)
+            zb(20, 12.5, 24, 13.9, 2, 7.8, "red_l"), zb(20, 12.5, 24, 13.9, 8.2, 14, "blue_l"),          # gyrophares
+            zb(-14.3, 4, -13.6, 14, 1, 15, "black"),                       # portes arrière
+            zb(30, 4, 30.8, 6, 1, 4, "light"), zb(30, 4, 30.8, 6, 12, 15, "light"),
+            zb(-14.8, 4, -14, 6, 1, 4, "red_l"), zb(-14.8, 4, -14, 6, 12, 15, "red_l"),
+            zb(30.4, 2, 31.4, 3.5, 0.5, 15.5, "chrome"), zb(-15.4, 2, -14.4, 3.5, 0.5, 15.5, "chrome")], 0.96)
+
+
 def squeeze_x(els, k):
     """Resserre le modèle en longueur (les modèles de Minecraft sont limités à 48 pixels)."""
     for e in els:
@@ -125,7 +142,7 @@ def squeeze_x(els, k):
 
 
 VEHICLES = {"quad": (quad, 2.6, 2.2), "police_car": (police_car, 3.0, 2.4), "jeep": (jeep, 3.4, 2.6), "armored_truck": (armored_truck, 4.0, 3.2),
-            "sedan": (sedan, 2.8, 2.2), "taxi": (taxi, 2.8, 2.2), "bus": (bus, 3.6, 3.0)}
+            "sedan": (sedan, 2.8, 2.2), "taxi": (taxi, 2.8, 2.2), "bus": (bus, 3.6, 3.0), "ambulance": (ambulance, 3.2, 2.8)}
 
 
 def main():

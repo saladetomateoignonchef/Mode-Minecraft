@@ -333,6 +333,19 @@ public final class CivilianLife {
         return out;
     }
 
+    /** Pharmacie de l'hôpital : tous les soins, payés en liasses de billets. */
+    static MerchantOffers pharmacyOffers() {
+        MerchantOffers out = new MerchantOffers();
+        out.add(offer(2, new ItemStack(HumanBotEntity.item("bandage"), 3)));
+        out.add(offer(2, new ItemStack(HumanBotEntity.item("tourniquet"), 2)));
+        out.add(offer(3, new ItemStack(HumanBotEntity.item("splint"), 2)));
+        out.add(offer(4, new ItemStack(HumanBotEntity.item("plaster_cast"), 1)));
+        out.add(offer(4, new ItemStack(HumanBotEntity.item("first_aid_kit"))));
+        out.add(offer(6, new ItemStack(HumanBotEntity.item("adrenaline_syringe"))));
+        out.add(offer(14, new ItemStack(HumanBotEntity.item("defibrillator"))));
+        return out;
+    }
+
     private static MerchantOffer offer(int price, ItemStack result) {
         return new MerchantOffer(new ItemCost(fr.modeminecraft.registry.ModItems.CASH_BUNDLE.get(), price), result, 16, 1, 0.05f);
     }

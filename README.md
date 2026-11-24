@@ -44,6 +44,14 @@
 
 ![Factions](docs/videos/jeu_bots.gif)
 
+**Blessures et soins : fracture en tombant, attelle puis plâtre, saignement et garrot, défibrillateur** ([version MP4](docs/videos/jeu_blessures.mp4))
+
+![Blessures et soins](docs/videos/jeu_blessures.gif)
+
+**Hôpital de la métropole : façade, accueil avec pharmacienne, salle de soins et ambulance** ([version MP4](docs/videos/jeu_hopital.mp4))
+
+![Hôpital](docs/videos/jeu_hopital.gif)
+
 **Véhicules terrestres : char M1A2 Abrams (conduite et tir au canon)** ([version MP4](docs/videos/jeu_vehicules.mp4))
 
 ![Véhicules terrestres](docs/videos/jeu_vehicules.gif)

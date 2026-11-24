@@ -37,6 +37,7 @@ final class CityGen {
             case "gas_station" -> gasStation(b);
             case "park" -> park(b);
             case "police" -> policeStation(b);
+            case "hospital" -> Hospital.build(b);
             case "apartment" -> apartment(b, plot.above() - 4, layout.hash(dx, dz, 11));
             case "warehouse" -> warehouse(b, layout.hash(dx, dz, 12));
             case "factory_m" -> factory(b, layout.hash(dx, dz, 13));
@@ -609,10 +610,8 @@ final class CityGen {
 
     /** Commerçant derrière son comptoir (vend des rations, des soins, des piles ; se fait braquer). */
     static void shopkeeper(B b, int x, int y, int z) {
-        var k = b.bot(x, y, z, Faction.CIVILIAN, BotRole.CIVILIAN, 2);
-        if (k != null) {
-            k.shopkeeper = true;
-        }
+        // le drapeau doit être posé AVANT l'ajout du bot : en génération, l'entité est enregistrée telle quelle dans le chunk
+        b.bot(x, y, z, Faction.CIVILIAN, BotRole.CIVILIAN, 2, k -> k.shopkeeper = true);
     }
 
     /** Caisse enregistreuse posée sur un comptoir, écran tourné vers les clients. */

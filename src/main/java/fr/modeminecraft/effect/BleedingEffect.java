@@ -12,6 +12,10 @@ public class BleedingEffect extends MobEffect {
 
     @Override
     public boolean applyEffectTick(LivingEntity entity, int amplifier) {
+        // Garrot posé : le saignement s'arrête
+        if (entity.getPersistentData().getLong(fr.modeminecraft.item.MedicalItem.TOURNIQUET_TAG) > entity.level().getGameTime()) {
+            return false;
+        }
         // Porte-plaques AVS : garrot et trousse de soin à portée de main, le saignement est réduit de moitié
         boolean avs = fr.modeminecraft.item.tactical.TacticalSlots.vest(entity).is(fr.modeminecraft.registry.ModItems.AVS_PLATE_CARRIER.get());
         entity.hurt(entity.damageSources().generic(), avs ? 0.5f : 1.0f);
