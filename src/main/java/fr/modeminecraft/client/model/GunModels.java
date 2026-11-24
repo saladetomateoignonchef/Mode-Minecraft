@@ -146,9 +146,16 @@ public final class GunModels {
             event.register(fr.modeminecraft.client.MesaTrainRenderer.part("mesa_tank", part));
             event.register(fr.modeminecraft.client.MesaTrainRenderer.part("mesa_container", part));
             event.register(fr.modeminecraft.client.MesaTrainRenderer.part("mesa_armored", part));
+            event.register(fr.modeminecraft.client.MesaTrainRenderer.part("tgv_power_car", part));
+            event.register(fr.modeminecraft.client.MesaTrainRenderer.part("tgv_coach", part));
+            event.register(fr.modeminecraft.client.MesaTrainRenderer.part("tgv_bar_coach", part));
         }
         event.register(fr.modeminecraft.client.MesaTrainRenderer.part("mesa_wagon", "doors"));
         event.register(fr.modeminecraft.client.MesaTrainRenderer.part("mesa_wagon", "doors_f"));
+        for (String car : new String[]{"tgv_coach", "tgv_bar_coach"}) {
+            event.register(fr.modeminecraft.client.MesaTrainRenderer.part(car, "doors"));
+            event.register(fr.modeminecraft.client.MesaTrainRenderer.part(car, "doors_f"));
+        }
         event.register(ModelResourceLocation.standalone(ModeMinecraft.id("item/parts/p90_round")));
         event.register(fr.modeminecraft.client.BulletRenderer.BULLET);
         event.register(fr.modeminecraft.client.BulletRenderer.PELLET);

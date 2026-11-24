@@ -10,6 +10,9 @@ TRAIN_COLORS = {
     "loco_red": "#8a1f1a", "wagon_red": ["#8a3a24", "#823622", "#924028"], "wagon_cream": ["#d9cdaa", "#d2c6a2", "#e0d4b2"],
     "roof_gray": ["#6a6e72", "#64686c", "#707478"], "plank": ["#8a6a42", "#826240", "#92724a"], "bench": ["#5a3a24", "#52341f", "#62402a"],
     "door_wood": ["#6a3a20", "#62351d", "#724024"], "rail_steel": "#3a3c40", "lamp_yellow": "#ffe9a0",
+    # TGV
+    "tgv_white": ["#f0f2f4", "#e8eaee", "#f4f6f8"], "tgv_gray": ["#8a9098", "#848a92", "#90969e"], "tgv_blue": "#1c3f8a", "tgv_red": "#b02020",
+    "tgv_dark": ["#2a2e34", "#262a30", "#2e3238"],
     # wagons de marchandises
     "tank_gray": ["#4a4e52", "#44484c", "#505458"], "tank_rust": ["#6b3a22", "#64361f", "#74402a"], "hazard": "#e8b81e",
     "cont_blue": ["#1f4f8a", "#1b4880", "#245794"], "cont_red": ["#9a2a1f", "#92271c", "#a22f24"], "cont_green": ["#2f6a3a", "#2a6235", "#357442"],
@@ -208,6 +211,110 @@ def make(V0):
         v.box("hull", 3.2, 3.4, 3.42, 3.65, -0.12, 0.12, "loco_black")
         v.box("hull", -0.1, 0.1, 3.85, 4.9, -0.04, 0.04, "loco_black")                  # mât et drapeau rouge
         v.box("hull", 0.1, 0.9, 4.3, 4.9, -0.02, 0.02, "loco_red")
+        return v
+
+    def tgv_bogies(v, L2=5.0):
+        """Châssis caréné et deux bogies à roues pleines (jupes latérales)."""
+        v.box("hull", -L2, L2, 0.55, 1.0, -1.45, 1.45, "tgv_dark")
+        for bx in (-3.3, 3.3):
+            for ax in (-0.5, 0.5):
+                for z in (-1.15, 1.15):
+                    wheel(v, bx + ax, z, 0.4)
+            v.box("hull", bx - 1.1, bx + 1.1, 0.4, 0.6, -1.2, 1.2, "tgv_dark")
+
+    def tgv_body(v, x0, x1, bands=True):
+        """Caisse de 3,6 blocs de large : bas gris métallisé, haut blanc, liseré bleu, toit arrondi (3 marches)."""
+        v.box("hull", x0, x1, 1.0, 1.9, -1.8, 1.8, "tgv_gray")
+        v.box("hull", x0, x1, 1.9, 3.0, -1.8, 1.8, "tgv_white")
+        v.box("hull", x0, x1, 3.0, 3.4, -1.5, 1.5, "tgv_white")
+        v.box("hull", x0, x1, 3.4, 3.7, -1.0, 1.0, "tgv_white")
+        if bands:
+            for s in (-1, 1):
+                z0, z1 = (1.8, 1.86) if s > 0 else (-1.86, -1.8)
+                v.box("hull", x0, x1, 1.75, 1.95, z0, z1, "tgv_blue")
+
+    @reg
+    def tgv_power():
+        """Motrice de TGV : nez profilé (4 marches inclinées), pare-brise panoramique teinté, phares blancs, liseré rouge,
+        pantographes sur le toit. La motrice arrière est cette même pièce tournée de 180 degrés."""
+        v = V("tgv_power_car", 3.5)
+        tgv_bogies(v)
+        tgv_body(v, -5.0, 3.4)
+        steps = [(3.4, 4.1, 1.0, 3.0, 1.65), (4.1, 4.8, 1.0, 2.5, 1.45), (4.8, 5.4, 1.0, 2.0, 1.2), (5.4, 5.8, 1.0, 1.6, 0.95)]
+        for a, b, y0, y1, hw in steps:
+            v.box("hull", a, b, y0, y0 + 0.9, -hw, hw, "tgv_gray")
+            v.box("hull", a, b, y0 + 0.9, y1, -hw, hw, "tgv_white")
+        v.box("hull", 3.4, 5.8, 1.0, 1.3, -1.65, 1.65, "tgv_dark")                         # chasse-neige
+        v.box("hull", 3.4, 4.1, 2.4, 3.0, -1.3, 1.3, "glass")                              # pare-brise panoramique
+        v.box("hull", 4.1, 4.8, 2.1, 2.5, -1.1, 1.1, "glass")
+        v.box("hull", 2.2, 3.4, 3.0, 3.5, -1.2, 1.2, "glass")
+        for z in (-1.0, 1.0):
+            v.box("hull", 5.4, 5.85, 1.3, 1.55, z - 0.2, z + 0.2, "lamp_yellow")             # phares LED
+        v.box("hull", 3.4, 5.4, 1.45, 1.6, -1.45, 1.45, "tgv_red")                          # liseré rouge
+        for s in (-1, 1):                                                                  # portes de cabine et vitres latérales
+            v.box("hull", 1.4, 3.0, 2.2, 2.8, s * 1.8 + (0.03 if s > 0 else -0.09), s * 1.8 + (0.09 if s > 0 else -0.03), "glass")
+        for x in (-2.8, 0.2):                                                              # pantographes
+            v.box("hull", x - 0.6, x + 0.6, 3.7, 3.78, -0.7, 0.7, "loco_black")
+            v.box("hull", x - 0.05, x + 0.05, 3.7, 4.4, -0.5, -0.4, "loco_black")
+            v.box("hull", x - 0.05, x + 0.05, 3.7, 4.4, 0.4, 0.5, "loco_black")
+            v.box("hull", x - 0.5, x + 0.5, 4.4, 4.46, -0.6, 0.6, "tgv_dark")
+        v.box("hull", -5.0, -4.9, 1.0, 3.4, -1.8, 1.8, "tgv_gray")                          # face arrière
+        v.box("hull", -4.0, -1.0, 1.2, 1.7, -1.82, 1.82, "tgv_dark")                        # grilles de ventilation
+        v.seat(2.3, 1.1, -0.7)                                                             # conducteur
+        return v
+
+    @reg
+    def tgv_coach():
+        """Voiture voyageurs de TGV : baies vitrées continues, portes coulissantes au milieu, 2 + 2 sièges (16 places)."""
+        v = V("tgv_coach", 3.5)
+        L2 = 5.0
+        tgv_bogies(v)
+        tgv_body(v, -L2, L2)
+        for s in (-1, 1):
+            z0, z1 = (1.8, 1.86) if s > 0 else (-1.86, -1.8)
+            for a, b in ((-4.6, -1.5), (1.5, 4.6)):
+                v.box("hull", a, b, 2.1, 2.8, z0, z1, "glass")                              # baies vitrées
+            v.box("doors", -1.0, 0.0, 1.0, 2.95, z0 - 0.02 * s, z1 + 0.02 * s, "tgv_dark")
+            v.box("doors_f", 0.0, 1.0, 1.0, 2.95, z0 - 0.02 * s, z1 + 0.02 * s, "tgv_dark")
+        for x in (-3.6, -2.4, 2.4, 3.6):                                                    # sièges (dossier + assise)
+            for z in (-1.2, -0.6, 0.6, 1.2):
+                v.box("hull", x - 0.3, x + 0.3, 1.0, 1.35, z - 0.25, z + 0.25, "bench")
+                v.box("hull", x - 0.35, x - 0.25, 1.35, 1.95, z - 0.25, z + 0.25, "bench")
+        for x in (-3.0, 0.0, 3.0):
+            v.box("hull", x - 0.1, x + 0.1, 3.3, 3.4, -0.1, 0.1, "lamp_yellow")
+        for x in (-3.6, -2.4, 2.4, 3.6):
+            for z in (-0.9, 0.9):
+                v.seat(x, 1.0, z)
+        return v
+
+    @reg
+    def tgv_bar():
+        """Voiture-bar panoramique : verrière latérale haute, comptoir central, tables hautes et tabourets (8 places)."""
+        v = V("tgv_bar_coach", 3.5)
+        L2 = 5.0
+        tgv_bogies(v)
+        tgv_body(v, -L2, L2)
+        for s in (-1, 1):
+            z0, z1 = (1.8, 1.86) if s > 0 else (-1.86, -1.8)
+            v.box("hull", -4.7, 4.7, 2.0, 3.0, z0, z1, "glass")                             # grandes baies
+            v.box("hull", -0.9, 0.9, 1.0, 3.0, z0, z1, "tgv_dark")                          # porte
+            v.box("doors", -1.0, 0.0, 1.0, 2.95, z0 - 0.02 * s, z1 + 0.02 * s, "tgv_dark")
+            v.box("doors_f", 0.0, 1.0, 1.0, 2.95, z0 - 0.02 * s, z1 + 0.02 * s, "tgv_dark")
+        v.box("hull", -2.2, 2.2, 1.0, 1.9, -0.3, 0.3, "plank")                              # comptoir
+        v.box("hull", -2.2, 2.2, 1.9, 2.0, -0.4, 0.4, "tgv_white")
+        for x in (-3.8, 3.8):                                                               # tables hautes et tabourets
+            v.box("hull", x - 0.4, x + 0.4, 1.7, 1.8, -0.4, 0.4, "plank")
+            v.box("hull", x - 0.05, x + 0.05, 1.0, 1.7, -0.05, 0.05, "tgv_dark")
+            for z in (-1.1, 1.1):
+                v.box("hull", x - 0.2, x + 0.2, 1.0, 1.4, z - 0.2, z + 0.2, "bench")
+                v.seat(x, 1.0, z)
+        for x in (-3.8, -1.5, 1.5, 3.8):
+            for z in (-1.1, 1.1):
+                if abs(x) < 3:
+                    v.box("hull", x - 0.2, x + 0.2, 1.0, 1.4, z - 0.2, z + 0.2, "bench")
+                    v.seat(x, 1.0, z)
+        for x in (-3.0, 0.0, 3.0):
+            v.box("hull", x - 0.1, x + 0.1, 3.3, 3.4, -0.1, 0.1, "lamp_yellow")
         return v
 
     return trains

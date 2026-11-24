@@ -46,11 +46,11 @@ public class MesaTrainRenderer extends EntityRenderer<MesaTrainCarEntity> {
         float bodyYaw = Mth.rotLerp(partial, car.yRotO, car.getYRot());
         ItemStack stack = new ItemStack(ModItems.MESA_TRAIN_TICKET.get());          // le rendu d'objet exige un objet : n'importe lequel
         pose.pushPose();
-        pose.mulPose(Axis.YP.rotationDegrees(-90 - bodyYaw));
+        pose.mulPose(Axis.YP.rotationDegrees(-90 - bodyYaw + (car.kind() == fr.modeminecraft.entity.train.MesaTrainCarEntity.TGV_REAR ? 180f : 0f)));   // motrice arrière : tournée de 180 degrés
         pose.scale(s, s, s);
         pose.translate(-(geo.ox() - 8) / 16f, 0, 0);
         draw(mc, pose, buffers, light, stack, car.modelId(), "hull");
-        if (!car.isLoco() && !car.isFreight()) {
+        if (car.isPassengerCar()) {
             // portes coulissantes : chaque battant glisse d'un mètre, vers l'arrière et vers l'avant du wagon
             float open = Mth.clamp(car.doors(partial), 0, 1) / s;
             pose.pushPose();

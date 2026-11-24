@@ -1144,6 +1144,11 @@ Les 6 grades vont de Soldat (0) à Général (3000). Chaque grade donne :
   arpentent le couloir et vérifient les voyageurs à moins de 2 blocs : ticket composté (consommé) pour le trajet, sinon coup de
   **matraque électrique** : étourdissement de 5 s (immobile, sans arme, caméra qui tremble, 0,5 PV au plus), puis expulsion
   sur le quai à l'arrêt suivant. Impossible de descendre en marche.
+- **Trains de marchandises** (une gare sur trois) : locomotive + wagon-citerne, porte-conteneurs et wagon blindé en queue, sans voyageurs.
+- **TGV** (une gare sur deux parmi les autres) : rame articulée de cinq éléments (motrice avant, voiture voyageurs, voiture-bar,
+  voiture voyageurs, motrice arrière tournée de 180°), nez profilé, pare-brise panoramique, pantographes, **144 km/h** en ligne
+  (accélération et freinage plus puissants), **40 places assises** (16 + 8 + 16), portes coulissantes, conducteur PNJ et
+  contrôleurs ; même conduite manuelle et même billetterie que le train à vapeur.
 
 **Avion léger biplace civil** (`light_civil_plane`)
 - Monoplan à aile haute et hélice bipale, 8 blocs d'envergure, 6,5 de long, train fixe, fuselage blanc à bandes rouge et bleue,

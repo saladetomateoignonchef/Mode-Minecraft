@@ -104,7 +104,7 @@ public final class TrainStaff {
         long now = sl.getGameTime();
         List<MesaTrainCarEntity> wagons = new ArrayList<>();
         for (MesaTrainCarEntity c : cars) {
-            if (!c.isLoco() && !c.isFreight()) {
+            if (c.isPassengerCar()) {
                 wagons.add(c);
             }
         }

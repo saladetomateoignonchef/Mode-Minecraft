@@ -109,8 +109,38 @@ public final class TrainManager {
         return i == n ? MesaTrainCarEntity.ARMORED : i % 2 == 1 ? MesaTrainCarEntity.TANK : MesaTrainCarEntity.CONTAINER;
     }
 
+    /** Parmi les gares sans fret, une sur deux reçoit un TGV (rame de cinq éléments). */
+    public static boolean tgv(CityPlanner.City city) {
+        return !freight(city) && ((city.seed() >>> 13) & 1) == 0;
+    }
+
     public static void spawn(ServerLevel level, CityPlanner.City city) {
-        spawn(level, city, freight(city));
+        if (tgv(city)) {
+            spawnTgv(level, city);
+        } else {
+            spawn(level, city, freight(city));
+        }
+    }
+
+    /** TGV : motrice avant, voiture voyageurs, voiture-bar, seconde voiture voyageurs, motrice arrière ; un conducteur et deux contrôleurs. */
+    public static void spawnTgv(ServerLevel level, CityPlanner.City city) {
+        UUID id = UUID.randomUUID();
+        int[] kinds = {MesaTrainCarEntity.TGV_COACH, MesaTrainCarEntity.TGV_BAR, MesaTrainCarEntity.TGV_COACH, MesaTrainCarEntity.TGV_REAR};
+        double z = RailNetwork.railZ(city), x = city.middleX() + 0.5;
+        MesaTrainCarEntity loco = MesaTrainCarEntity.create(level, MesaTrainCarEntity.TGV_FRONT, id, 0);
+        loco.setWagonCount(kinds.length);
+        loco.startAt(city);
+        loco.moveTo(x, city.baseY() + 0.0625, z, 90, 0);
+        level.addFreshEntity(loco);
+        List<MesaTrainCarEntity> cars = new ArrayList<>();
+        for (int i = 1; i <= kinds.length; i++) {
+            MesaTrainCarEntity w = MesaTrainCarEntity.create(level, kinds[i - 1], id, i);
+            w.setWagonCount(kinds.length);
+            w.moveTo(x, city.baseY() + 0.0625, z, 90, 0);
+            level.addFreshEntity(w);
+            cars.add(w);
+        }
+        TrainStaff.crew(level, loco, cars);
     }
 
     public static void spawn(ServerLevel level, CityPlanner.City city, boolean freight) {
