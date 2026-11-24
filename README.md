@@ -90,6 +90,19 @@
 
 Mod **NeoForge** pour **Minecraft 1.21.1** : tout ce qu'on a toujours voulu dans Minecraft.
 
+## Décors de réalisme (111 objets)
+
+Une collection de décors modélisés en boîtes de couleur, générés par `tools/generate_realism_decor.py` (modèles, textures, états de bloc, butin, textes) : tous sont dans l'onglet créatif « Blocs et clés », orientables, et plusieurs ont une texture animée (télévision, cheminée, aquarium, lave-linge, écrans, tapis roulants, néons de tunnel).
+
+- **Maison** : canapé, fauteuil, tables, télévision, bibliothèque, cheminée, lampadaire, plantes, tapis, aquarium, piano, tableaux et miroir.
+- **Cuisine, salle de bain, chambre** : cuisinière, réfrigérateur, évier, plan de travail, micro-ondes, baignoire, douche, toilettes, lavabo, lave-linge, armoire, commode, table et lampe de chevet.
+- **Commerce et restauration** : rayons, caddie, étal de marché, vitrine réfrigérée, machine à café, comptoir de bar, table de restaurant, congélateur, mannequin, ardoise de menu.
+- **Rue, jardin et parc** : boîte aux lettres, cabine téléphonique, balançoire, toboggan, barbecue, parasol, nain de jardin, statue, table de pique-nique, parterre, bain d'oiseaux, rack à vélos, kiosque, distributeur de billets.
+- **Bureau et école** : bureau, ordinateur, imprimante, photocopieuse, classeur, chaise, tableaux noir et blanc, pupitre, casier, vidéoprojecteur, globe.
+- **Industrie et chantier** : palette, pile de caisses, fûts, établi, pupitre de commande, caisse à outils, barrière, bétonnière, tapis roulant, tuyauterie, cuve, chariot élévateur.
+- **Bases militaires et prison** : caisses de munitions, poste radio, table d'état-major, lit de camp, projecteur, sacs de sable, armoire à armes, bureau de garde, barbelés, table d'interrogatoire, panneau de cartes.
+- **Aéroport, hôpital, gare, métro** : 23 décors (carrousel à bagages, scanner X, moniteur cardiaque, signal ferroviaire, portillon de métro...).
+
 ## Installation et mises à jour automatiques
 1. **Une seule fois** : télécharge le dernier `.jar` sur la page
    [Releases](https://github.com/saladetomateoignonchef/Mode-Minecraft/releases/latest) et mets-le dans le dossier `mods`
