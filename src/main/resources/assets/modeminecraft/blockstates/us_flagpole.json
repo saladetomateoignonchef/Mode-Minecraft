@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/us_flagpole",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/us_flagpole",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/us_flagpole",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/us_flagpole",
+      "y": 270
+    }
+  }
+}

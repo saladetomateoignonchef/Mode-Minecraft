@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/drill_pipe",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/drill_pipe",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/drill_pipe",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/drill_pipe",
+      "y": 270
+    }
+  }
+}

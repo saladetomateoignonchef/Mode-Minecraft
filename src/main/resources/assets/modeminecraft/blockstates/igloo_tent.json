@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/igloo_tent",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/igloo_tent",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/igloo_tent",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/igloo_tent",
+      "y": 270
+    }
+  }
+}

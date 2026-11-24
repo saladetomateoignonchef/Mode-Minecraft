@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/tank_trap",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/tank_trap",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/tank_trap",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/tank_trap",
+      "y": 270
+    }
+  }
+}

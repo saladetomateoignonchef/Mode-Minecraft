@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/saloon_doors",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/saloon_doors",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/saloon_doors",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/saloon_doors",
+      "y": 270
+    }
+  }
+}

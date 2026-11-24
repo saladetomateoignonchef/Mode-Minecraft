@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/throne",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/throne",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/throne",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/throne",
+      "y": 270
+    }
+  }
+}

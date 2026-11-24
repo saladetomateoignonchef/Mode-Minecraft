@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/crank_telephone",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/crank_telephone",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/crank_telephone",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/crank_telephone",
+      "y": 270
+    }
+  }
+}

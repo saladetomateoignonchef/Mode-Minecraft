@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/pumpjack",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/pumpjack",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/pumpjack",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/pumpjack",
+      "y": 270
+    }
+  }
+}

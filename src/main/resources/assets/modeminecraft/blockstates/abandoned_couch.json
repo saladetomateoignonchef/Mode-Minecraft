@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/abandoned_couch",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/abandoned_couch",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/abandoned_couch",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/abandoned_couch",
+      "y": 270
+    }
+  }
+}

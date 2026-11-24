@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/dragon_statue",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/dragon_statue",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/dragon_statue",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/dragon_statue",
+      "y": 270
+    }
+  }
+}

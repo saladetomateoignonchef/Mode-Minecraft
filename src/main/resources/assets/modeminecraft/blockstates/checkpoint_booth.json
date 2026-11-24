@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/checkpoint_booth",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/checkpoint_booth",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/checkpoint_booth",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/checkpoint_booth",
+      "y": 270
+    }
+  }
+}

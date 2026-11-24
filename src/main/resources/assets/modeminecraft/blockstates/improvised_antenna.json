@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/improvised_antenna",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/improvised_antenna",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/improvised_antenna",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/improvised_antenna",
+      "y": 270
+    }
+  }
+}

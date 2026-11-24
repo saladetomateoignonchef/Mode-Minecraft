@@ -90,7 +90,7 @@
 
 Mod **NeoForge** pour **Minecraft 1.21.1** : tout ce qu'on a toujours voulu dans Minecraft.
 
-## Décors de réalisme (111 objets)
+## Décors de réalisme (211 objets)
 
 Une collection de décors modélisés en boîtes de couleur, générés par `tools/generate_realism_decor.py` (modèles, textures, états de bloc, butin, textes) : tous sont dans l'onglet créatif « Blocs et clés », orientables, et plusieurs ont une texture animée (télévision, cheminée, aquarium, lave-linge, écrans, tapis roulants, néons de tunnel).
 
@@ -101,6 +101,10 @@ Une collection de décors modélisés en boîtes de couleur, générés par `too
 - **Bureau et école** : bureau, ordinateur, imprimante, photocopieuse, classeur, chaise, tableaux noir et blanc, pupitre, casier, vidéoprojecteur, globe.
 - **Industrie et chantier** : palette, pile de caisses, fûts, établi, pupitre de commande, caisse à outils, barrière, bétonnière, tapis roulant, tuyauterie, cuve, chariot élévateur.
 - **Bases militaires et prison** : caisses de munitions, poste radio, table d'état-major, lit de camp, projecteur, sacs de sable, armoire à armes, bureau de garde, barbelés, table d'interrogatoire, panneau de cartes.
+- **Villes américaines, soviétiques, du désert et du Mesa** : comptoir de diner, juke-box, enseigne de motel, pompe rétro, drapeau ; affiche de propagande, monument à l'étoile rouge, samovar, poêle en faïence ; lanterne marocaine, narguilé, jarres, divan, tapis berbère, étal d'épices ; portes de saloon, abreuvoir, avis « Wanted », télégraphe, roue de chariot, pompe de ranch.
+- **Bases, bunkers, police et camps** : mât de drapeau, poste de contrôle, radar rotatif, herse, table de mess, panneau des missions ; étoile rouge, carte de situation, téléphone à manivelle, lit de fer, coffre mural ; caméra de surveillance, comptoir blindé, casiers de preuves, gyrophare ; feu de camp, tente, hamac, réchaud, traîneau, jerricans.
+- **Cartel, gangs, rebelles, pétrole** : table de comptage, alambic, malles de billets, bar de villa, trophée de taureau, lustre ; graffitis, baril de feu, canapé abandonné, caddie renversé, fil à linge, pneus ; barricade, bannière de faction, antenne de fortune, table de cartes, tonneau de poudre ; torchère, wagonnet de mine, pompe à balancier, grande vanne, casier de mineur, tuyaux de forage.
+- **Ports, plage, boss, fêtes** : bouée, bollard, filet de pêche, gouvernail, grue de quai, conteneurs, lampe de phare ; transat, planches de surf, filet de volley, canoë, pédalo, tente igloo ; trône, brasero, statue de dragon, coffre au trésor, porte-bannières, pilier runique, lustre ; guirlandes, sapin de Noël, citrouille, boule à facettes, borne d'arcade, baby-foot, billard.
 - **Aéroport, hôpital, gare, métro** : 23 décors (carrousel à bagages, scanner X, moniteur cardiaque, signal ferroviaire, portillon de métro...).
 
 ## Installation et mises à jour automatiques

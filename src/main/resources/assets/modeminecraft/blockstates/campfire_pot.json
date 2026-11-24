@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/campfire_pot",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/campfire_pot",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/campfire_pot",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/campfire_pot",
+      "y": 270
+    }
+  }
+}

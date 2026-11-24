@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/water_trough",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/water_trough",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/water_trough",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/water_trough",
+      "y": 270
+    }
+  }
+}
