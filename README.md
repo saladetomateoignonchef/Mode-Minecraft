@@ -52,6 +52,10 @@
 
 ![Hôpital](docs/videos/jeu_hopital.gif)
 
+**Aéroport civil de la métropole : terminal (enregistrement, sûreté, embarquement), aire de stationnement et décollage d'un avion de ligne régional** ([version MP4](docs/videos/jeu_aeroport.mp4))
+
+![Aéroport](docs/videos/jeu_aeroport.gif)
+
 **Véhicules terrestres : char M1A2 Abrams (conduite et tir au canon)** ([version MP4](docs/videos/jeu_vehicules.mp4))
 
 ![Véhicules terrestres](docs/videos/jeu_vehicules.gif)

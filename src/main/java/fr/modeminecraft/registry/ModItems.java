@@ -109,6 +109,11 @@ public final class ModItems {
     public static final DeferredItem<BlockItem> AC_UNIT = ITEMS.registerSimpleBlockItem(ModBlocks.AC_UNIT);
     public static final DeferredItem<BlockItem> WALL_CLOCK = ITEMS.registerSimpleBlockItem(ModBlocks.WALL_CLOCK);
     public static final DeferredItem<BlockItem> TRAFFIC_CONE = ITEMS.registerSimpleBlockItem(ModBlocks.TRAFFIC_CONE);
+    /** Décors de réalisme (aéroport, hôpital, gare, métro) : un objet par bloc, voir ModBlocks#REALISM. */
+    public static final java.util.Map<String, DeferredItem<BlockItem>> REALISM = new java.util.LinkedHashMap<>();
+    static {
+        ModBlocks.REALISM.forEach((id, block) -> REALISM.put(id, ITEMS.registerSimpleBlockItem(block)));
+    }
     /** Accessoires des scènes de rue : guitare du musicien, bombe de peinture de l'artiste. */
     public static final DeferredItem<Item> ACOUSTIC_GUITAR = ITEMS.registerSimpleItem("acoustic_guitar", new Item.Properties().stacksTo(1));
     public static final DeferredItem<Item> SPRAY_CAN = ITEMS.registerSimpleItem("spray_can", new Item.Properties().stacksTo(16));

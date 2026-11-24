@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/wheelchair",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/wheelchair",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/wheelchair",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/wheelchair",
+      "y": 270
+    }
+  }
+}

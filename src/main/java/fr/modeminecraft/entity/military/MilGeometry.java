@@ -235,6 +235,11 @@ public final class MilGeometry {
                 new float[][]{{0.3f, 1.15f, -0.3f}, {0.3f, 1.15f, 0.3f}},
                 new float[][]{},
                 new float[][]{{3.15f, 1.21f, 0.0f}}, 4.0f));
+        put("regional_airliner", new Geo(10.0f, 8.0f, null, null, null, null, null,
+                new float[][]{},
+                new float[][]{{7.4f, 2.3f, -0.55f}, {7.4f, 2.3f, 0.55f}, {4.0f, 1.95f, -0.75f}, {4.0f, 1.95f, 0.75f}, {2.5f, 1.95f, -0.75f}, {2.5f, 1.95f, 0.75f}, {1.0f, 1.95f, -0.75f}, {1.0f, 1.95f, 0.75f}},
+                new float[][]{},
+                new float[][]{{4.15f, 3.55f, -4.6f}, {4.15f, 3.55f, 4.6f}}, 13.0f));
         put("f86_sabre", new Geo(4.0f, 8.0f, null, null, null, null, null,
                 new float[][]{},
                 new float[][]{{2.7f, 1.55f, 0.0f}},

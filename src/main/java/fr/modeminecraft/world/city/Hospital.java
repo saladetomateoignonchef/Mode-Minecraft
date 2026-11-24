@@ -6,7 +6,6 @@ import fr.modeminecraft.registry.ModBlocks;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 /**
  * Hôpital de la métropole (2 x 2 chunks, 2 étages + héliport) :
@@ -74,6 +73,9 @@ final class Hospital {
             Deco.bench(b, x, 1, 6, Direction.NORTH);
         }
         Deco.vendingMachine(b, 4, 1, 7, Direction.EAST);
+        b.set(12, 1, 6, B.facing(ModBlocks.realism("wheelchair"), Direction.SOUTH));              // fauteuils roulants dans la salle d'attente
+        b.set(19, 1, 6, B.facing(ModBlocks.realism("wheelchair"), Direction.SOUTH));
+        b.set(10, 1, 3, B.facing(ModBlocks.realism("hospital_stretcher"), Direction.EAST));       // brancard à l'entrée des urgences
         Deco.extinguisher(b, 4, 2, 11);
         b.bot(8, 1, 5, Faction.CIVILIAN, BotRole.CIVILIAN, 4);
         b.bot(23, 1, 5, Faction.CIVILIAN, BotRole.CIVILIAN, 4);
@@ -88,6 +90,8 @@ final class Hospital {
             Deco.bed(b, x, 1, 21, Direction.NORTH, Blocks.WHITE_BED);
             drip(b, x + 1, 1, 14);
             drip(b, x + 1, 1, 22);
+            monitor(b, x - 1, 1, 15, Direction.EAST);
+            monitor(b, x - 1, 1, 21, Direction.EAST);
             b.set(x, 3, 17, Blocks.SEA_LANTERN);
         }
         b.fill(17, 1, 13, 17, 3, 24, Blocks.WHITE_CONCRETE);                                      // cloison
@@ -100,6 +104,8 @@ final class Hospital {
         b.fill(10, 0, 14, 16, 0, 23, Blocks.LIGHT_BLUE_CONCRETE);
         b.fill(12, 1, 18, 14, 1, 19, B.slab(Blocks.SMOOTH_QUARTZ_SLAB, true));                    // table d'opération
         b.fill(12, 2, 18, 14, 2, 19, Blocks.WHITE_CARPET.defaultBlockState());
+        b.set(13, 3, 18, B.facing(ModBlocks.realism("surgical_light"), Direction.NORTH));        // scialytiques au-dessus de la table
+        b.set(13, 3, 19, B.facing(ModBlocks.realism("surgical_light"), Direction.NORTH));
         b.set(13, 4, 18, Blocks.SEA_LANTERN);
         b.set(13, 4, 19, Blocks.SEA_LANTERN);
         b.set(11, 1, 22, B.slab(Blocks.SMOOTH_QUARTZ_SLAB, true));                                // plateau d'instruments
@@ -126,6 +132,7 @@ final class Hospital {
         for (int x = 5; x <= 25; x += 5) {
             Deco.bed(b, x, y1 + 1, 14, Direction.SOUTH, Blocks.WHITE_BED);                       // chambres au nord
             drip(b, x + 1, y1 + 1, 14);
+            monitor(b, x - 1, y1 + 1, 15, Direction.EAST);
             Deco.bed(b, x, y1 + 1, 22, Direction.NORTH, Blocks.WHITE_BED);                       // chambres au sud
             drip(b, x + 1, y1 + 1, 22);
             b.fill(x + 3, y1 + 1, 13, x + 3, y1 + 3, 24, Blocks.WHITE_CONCRETE);                  // cloisons de chambres
@@ -141,6 +148,8 @@ final class Hospital {
         b.chest(26, y1 + 1, 10, Direction.WEST, "hospital_pharmacy", false);
         b.chest(24, y1 + 1, 8, Direction.SOUTH, "hospital_pharmacy", false);
         Deco.extinguisher(b, 22, y1 + 2, 11);
+        b.set(22, y1 + 1, 8, B.facing(ModBlocks.realism("medical_cabinet"), Direction.SOUTH));    // armoires à pharmacie
+        b.set(26, y1 + 1, 8, B.facing(ModBlocks.realism("medical_cabinet"), Direction.SOUTH));
         for (int x = 7; x <= 23; x += 8) {
             b.set(x, y1 + 4, 10, Blocks.SEA_LANTERN);
         }
@@ -163,11 +172,14 @@ final class Hospital {
         }
     }
 
-    /** Pied à perfusion : barre de fer et lanterne, à côté du lit. */
+    /** Pied à perfusion à côté du lit. */
     private static void drip(B b, int x, int y, int z) {
-        b.set(x, y, z, Blocks.IRON_BARS.defaultBlockState());
-        b.set(x, y + 1, z, Blocks.IRON_BARS.defaultBlockState());
-        b.set(x, y + 2, z, Blocks.LANTERN.defaultBlockState().setValue(BlockStateProperties.HANGING, false));
+        b.set(x, y, z, B.facing(ModBlocks.realism("iv_stand"), Direction.WEST));
+    }
+
+    /** Moniteur cardiaque à la tête du lit, écran tourné vers le lit. */
+    private static void monitor(B b, int x, int y, int z, Direction toBed) {
+        b.set(x, y, z, B.facing(ModBlocks.realism("heart_monitor"), toBed));
     }
 
     private Hospital() {}

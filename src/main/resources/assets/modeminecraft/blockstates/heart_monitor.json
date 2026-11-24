@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/heart_monitor",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/heart_monitor",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/heart_monitor",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/heart_monitor",
+      "y": 270
+    }
+  }
+}

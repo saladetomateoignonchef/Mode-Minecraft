@@ -279,7 +279,14 @@ public enum MilType {
             ship(Role.GUNNER, 3), List.of(auto("phalanx", Kind.CIWS, 1, 3000, MilAmmo.CIWS_ROUNDS), auto("essm", Kind.SAM, 7, 64, MilAmmo.NAVAL_SAM))),
     KUZNETSOV("admiral_kuznetsov", Side.SOVIET, Chassis.SHIP, 52, 7500, 0.35f, 0.45f, 0.5f, 10000, 72, Flag.RADAR,
             ship(Role.GUNNER, 3), List.of(auto("kashtan", Kind.CIWS, 1, 3000, MilAmmo.CIWS_ROUNDS), gun("granit", Kind.NAVAL_MISSILE, 2, 40, 12, MilAmmo.ASHM),
-                    auto("kinzhal", Kind.SAM, 7, 48, MilAmmo.NAVAL_SAM)));
+                    auto("kinzhal", Kind.SAM, 7, 48, MilAmmo.NAVAL_SAM))),
+    /**
+     * Avion de ligne régional à turbopropulseurs (type ATR 72) : 8 places, aucun armement, virages lents. Il est garé sur
+     * l'aire de stationnement des aéroports civils des métropoles. À garder en dernier : l'ordre est enregistré dans les mondes.
+     */
+    REGIONAL_AIRLINER("regional_airliner", Side.CIVIL, Chassis.PLANE, 170, 700, 0.25f, 0.25f, 0.25f, 2600, 0, Flag.NONE,
+            List.of(seat(Role.PILOT, true), seat(Role.PASSENGER, true), seat(Role.PASSENGER, true), seat(Role.PASSENGER, true),
+                    seat(Role.PASSENGER, true), seat(Role.PASSENGER, true), seat(Role.PASSENGER, true), seat(Role.PASSENGER, true)), List.of());
 
     public enum Side { SOVIET, US, MERC, CIVIL }
 
@@ -384,13 +391,14 @@ public enum MilType {
 
     /** Gros porteur (bombardiers, transport) : virages lents, pas de voltige. */
     public boolean heavy() {
-        return this == B29_SUPERFORTRESS || this == TU_95 || this == C_130 || this == B_2;
+        return this == B29_SUPERFORTRESS || this == TU_95 || this == C_130 || this == B_2 || this == REGIONAL_AIRLINER;
     }
 
     /** Taux de virage maximal (degrés / tick) à pleine vitesse. */
     public float turnRate() {
         return switch (this) {
             case B29_SUPERFORTRESS, TU_95, C_130 -> 1.6f;
+            case REGIONAL_AIRLINER -> 2.0f;
             case B_2 -> 1.9f;
             case IL_2, SU_25, A_10, F_117, MIG_25 -> 3.2f;
             case SU_34, F_4E, F_15E -> 3.6f;

@@ -227,5 +227,27 @@ public final class ModBlocks {
     public static final DeferredBlock<Block> SHOOTING_TARGET = BLOCKS.register("shooting_target",
             () -> new fr.modeminecraft.block.ShootingTargetBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.TARGET).noOcclusion()));
 
+    /**
+     * Décors de réalisme (aéroport, hôpital, gare, métro) : tout vient de la table générée RealismDecoData (formes et lumière) ;
+     * modèles, textures et états de bloc sont produits par tools/generate_realism_decor.py.
+     */
+    public static final java.util.Map<String, DeferredBlock<Block>> REALISM = new java.util.LinkedHashMap<>();
+    static {
+        for (fr.modeminecraft.block.city.RealismDecoData.Def d : fr.modeminecraft.block.city.RealismDecoData.ALL) {
+            REALISM.put(d.id(), BLOCKS.register(d.id(), () -> {
+                BlockBehaviour.Properties props = deco(d.light());
+                if (d.passable()) {
+                    props = props.noCollission();
+                }
+                return new fr.modeminecraft.block.police.FacingDecoBlock(props, Block.box(d.x0(), d.y0(), d.z0(), d.x1(), d.y1(), d.z1()));
+            }));
+        }
+    }
+
+    /** Un décor de réalisme par son identifiant (pour la génération des bâtiments). */
+    public static Block realism(String id) {
+        return REALISM.get(id).get();
+    }
+
     private ModBlocks() {}
 }

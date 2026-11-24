@@ -285,6 +285,7 @@ public class MilVehicleEntity extends Entity {
             case SU_57 -> new float[]{19.0f, 4.0f, 3.8f};
             case P_51 -> new float[]{9.4f, 1.6f, 2.8f};
             case LIGHT_CIVIL_PLANE -> new float[]{6.5f, 1.8f, 2.5f};
+            case REGIONAL_AIRLINER -> new float[]{22f, 3.8f, 5.4f};
             case GERALD_FORD -> new float[]{130f, 34f, 19f};
             case KUZNETSOV -> new float[]{120f, 30f, 18f};
             case F_86 -> new float[]{10.8f, 1.8f, 3.2f};

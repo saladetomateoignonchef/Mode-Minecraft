@@ -239,6 +239,12 @@ public final class CityLayout {
                 if (in(dx, dz, -2, 1, -1, 2)) {
                     return multi("hospital", 14, -2, 1, 2, 2);                     // hôpital de la métropole
                 }
+                if (in(dx, dz, 10, 1, 11, 2)) {
+                    return multi("airport_terminal", 14, 10, 1, 2, 2);              // aéroport civil : terminal
+                }
+                if (in(dx, dz, 7, 4, 14, 6)) {
+                    return multi("airport_airside", 26, 7, 4, 8, 3);                // aéroport civil : aire de stationnement, taxiway et piste
+                }
                 if (in(dx, dz, -5, -5, -4, -4) || in(dx, dz, -11, 7, -10, 8)) {
                     int ax = dx < -6 ? -11 : -5, az = dz > 0 ? 7 : -5;
                     return multi("park", 12, ax, az, 2, 2);                        // parcs de quartier
