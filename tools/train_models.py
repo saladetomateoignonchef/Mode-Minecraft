@@ -10,6 +10,10 @@ TRAIN_COLORS = {
     "loco_red": "#8a1f1a", "wagon_red": ["#8a3a24", "#823622", "#924028"], "wagon_cream": ["#d9cdaa", "#d2c6a2", "#e0d4b2"],
     "roof_gray": ["#6a6e72", "#64686c", "#707478"], "plank": ["#8a6a42", "#826240", "#92724a"], "bench": ["#5a3a24", "#52341f", "#62402a"],
     "door_wood": ["#6a3a20", "#62351d", "#724024"], "rail_steel": "#3a3c40", "lamp_yellow": "#ffe9a0",
+    # wagons de marchandises
+    "tank_gray": ["#4a4e52", "#44484c", "#505458"], "tank_rust": ["#6b3a22", "#64361f", "#74402a"], "hazard": "#e8b81e",
+    "cont_blue": ["#1f4f8a", "#1b4880", "#245794"], "cont_red": ["#9a2a1f", "#92271c", "#a22f24"], "cont_green": ["#2f6a3a", "#2a6235", "#357442"],
+    "cont_rib": "#14161a", "armor_olive": ["#4b5a2a", "#455326", "#52622f"], "armor_dark": ["#2d3519", "#293115", "#323b1d"],
 }
 
 
@@ -128,6 +132,82 @@ def make(V0):
         for cx in (-3.9, -2.5, -1.7, 1.7, 2.5, 3.9):
             v.seat(cx, 1.05, -0.9)
             v.seat(cx, 1.05, 0.9)
+        return v
+
+
+    def bogies(v, L2):
+        """Châssis, plancher et deux bogies (comme le wagon de voyageurs)."""
+        v.box("hull", -L2, L2, 0.5, 0.85, -1.3, 1.3, "loco_black")
+        v.box("hull", -L2, L2, 0.85, 0.95, -1.45, 1.45, "plank")
+        for bx in (-3.3, 3.3):
+            for ax in (-0.55, 0.55):
+                for z in (-1.2, 1.2):
+                    wheel(v, bx + ax, z, 0.38)
+            v.box("hull", bx - 0.9, bx + 0.9, 0.4, 0.55, -1.1, 1.1, "loco_black")
+
+    @reg
+    def tank():
+        """Wagon-citerne : cuve cylindrique cerclée, dôme, échelles et passerelle."""
+        v = V("mesa_tank", 3.5)
+        L2 = 5.0
+        bogies(v, L2)
+        v.cyl("hull", "x", (2.05, 0.0), 1.1, -4.7, 4.7, "tank_gray")
+        for x in (-3.6, -1.2, 1.2, 3.6):                                              # cerclages
+            v.cyl("hull", "x", (2.05, 0.0), 1.14, x - 0.1, x + 0.1, "loco_black")
+        v.cyl("hull", "y", (0.0, 0.0), 0.38, 3.0, 3.35, "tank_rust")                  # dôme et trou d'homme
+        v.cyl("hull", "y", (0.0, 0.0), 0.22, 3.35, 3.5, "loco_black")
+        v.box("hull", -4.5, 4.5, 3.14, 3.2, -0.18, 0.18, "plank")                      # passerelle
+        for s in (-1, 1):                                                              # échelles d'extrémité
+            for z in (0.0,):
+                v.box("hull", s * 4.85, s * 4.95, 1.0, 3.0, z - 0.45, z - 0.38, "loco_black")
+                v.box("hull", s * 4.85, s * 4.95, 1.0, 3.0, z + 0.38, z + 0.45, "loco_black")
+                for h in (1.3, 1.8, 2.3, 2.8):
+                    v.box("hull", s * 4.85, s * 4.95, h, h + 0.06, z - 0.45, z + 0.45, "loco_black")
+        v.box("hull", -3.0, 3.0, 2.0, 2.5, 1.12, 1.16, "hazard")                       # losange / bandeau de danger
+        return v
+
+    @reg
+    def container():
+        """Wagon plat portant deux conteneurs de 20 pieds (nervures, portes, coins de renfort)."""
+        v = V("mesa_container", 3.5)
+        L2 = 5.0
+        bogies(v, L2)
+        for k, (x0, x1, col) in enumerate(((-4.85, -0.1, "cont_blue"), (0.1, 4.85, "cont_red"))):
+            v.box("hull", x0, x1, 1.0, 3.55, -1.25, 1.25, col)
+            for s in (-1, 1):                                                          # nervures verticales sur les flancs
+                z0, z1 = (1.25, 1.3) if s > 0 else (-1.3, -1.25)
+                x = x0 + 0.35
+                while x < x1 - 0.2:
+                    v.box("hull", x, x + 0.12, 1.1, 3.45, z0, z1, "cont_rib")
+                    x += 0.55
+            for xc in (x0, x1 - 0.12):                                                 # coins de renfort
+                v.box("hull", xc, xc + 0.12, 1.0, 3.55, -1.3, 1.3, "cont_rib")
+        v.box("hull", -4.85, 4.85, 3.5, 3.62, -1.3, 1.3, "cont_rib")                   # toits
+        return v
+
+    @reg
+    def armored():
+        """Wagon blindé de queue : casemate inclinée, créneaux, tourelle et canon, drapeau."""
+        v = V("mesa_armored", 3.5)
+        L2 = 5.0
+        bogies(v, L2)
+        v.box("hull", -4.9, 4.9, 0.95, 2.7, -1.35, 1.35, "armor_olive")                # caisse blindée
+        v.box("hull", -4.9, 4.9, 2.7, 3.1, -1.1, 1.1, "armor_olive")                   # pans inclinés (en deux marches)
+        v.box("hull", -4.9, 4.9, 3.1, 3.3, -0.8, 0.8, "armor_dark")
+        for x in (-3.8, -1.9, 0.0, 1.9, 3.8):                                          # meurtrières
+            for s in (-1, 1):
+                z0, z1 = (1.35, 1.4) if s > 0 else (-1.4, -1.35)
+                v.box("hull", x - 0.4, x + 0.4, 1.9, 2.15, z0, z1, "armor_dark")
+        for s in (-1, 1):                                                              # plaques de blindage rivetées
+            z0, z1 = (1.35, 1.42) if s > 0 else (-1.42, -1.35)
+            for x in (-4.4, -2.7, -0.9, 0.9, 2.7, 4.4):
+                v.box("hull", x - 0.12, x + 0.12, 1.1, 1.3, z0, z1, "armor_dark")
+        v.cyl("hull", "y", (0.0, 0.0), 0.95, 3.3, 3.75, "armor_olive")                  # tourelle
+        v.cyl("hull", "y", (0.0, 0.0), 1.0, 3.75, 3.85, "armor_dark")
+        v.box("hull", 0.6, 3.2, 3.45, 3.62, -0.09, 0.09, "armor_dark")                  # canon
+        v.box("hull", 3.2, 3.4, 3.42, 3.65, -0.12, 0.12, "loco_black")
+        v.box("hull", -0.1, 0.1, 3.85, 4.9, -0.04, 0.04, "loco_black")                  # mât et drapeau rouge
+        v.box("hull", 0.1, 0.9, 4.3, 4.9, -0.02, 0.02, "loco_red")
         return v
 
     return trains

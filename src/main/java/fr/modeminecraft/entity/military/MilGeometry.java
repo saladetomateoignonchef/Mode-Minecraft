@@ -365,6 +365,21 @@ public final class MilGeometry {
                 new float[][]{{-3.9f, 1.05f, -0.9f}, {-3.9f, 1.05f, 0.9f}, {-2.5f, 1.05f, -0.9f}, {-2.5f, 1.05f, 0.9f}, {-1.7f, 1.05f, -0.9f}, {-1.7f, 1.05f, 0.9f}, {1.7f, 1.05f, -0.9f}, {1.7f, 1.05f, 0.9f}, {2.5f, 1.05f, -0.9f}, {2.5f, 1.05f, 0.9f}, {3.9f, 1.05f, -0.9f}, {3.9f, 1.05f, 0.9f}},
                 new float[][]{},
                 new float[][]{}, 1.6f));
+        put("mesa_tank", new Geo(3.5f, 8.0f, null, null, null, null, null,
+                new float[][]{},
+                new float[][]{},
+                new float[][]{},
+                new float[][]{}, 1.45f));
+        put("mesa_container", new Geo(3.5f, 8.0f, null, null, null, null, null,
+                new float[][]{},
+                new float[][]{},
+                new float[][]{},
+                new float[][]{}, 1.45f));
+        put("mesa_armored", new Geo(3.5f, 8.0f, null, null, null, null, null,
+                new float[][]{},
+                new float[][]{},
+                new float[][]{},
+                new float[][]{}, 1.45f));
     }
 
     private MilGeometry() {}

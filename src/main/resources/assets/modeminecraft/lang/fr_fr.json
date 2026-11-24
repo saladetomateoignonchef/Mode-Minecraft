@@ -2385,5 +2385,6 @@
   "message.modeminecraft.injury.fracture.fall": "Fracture ! Vous vous êtes cassé la jambe en tombant",
   "message.modeminecraft.injury.fracture.blast": "Fracture ! Le souffle vous a cassé la jambe",
   "message.modeminecraft.injury.bleeding": "Vous saignez : bandage ou garrot !",
-  "item.modeminecraft.ambulance": "Ambulance"
+  "item.modeminecraft.ambulance": "Ambulance",
+  "message.modeminecraft.train.freight": "Wagon de marchandises : on n'y monte pas."
 }
