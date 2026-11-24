@@ -62,7 +62,7 @@ final class Hospital {
         b.set(19, 3, 7, B.facing(ModBlocks.NEON_SIGN_CYAN.get(), Direction.SOUTH));
         b.fill(8, 1, 9, 23, 3, 9, Blocks.WHITE_CONCRETE);                                        // cloison derrière le comptoir
         b.fill(14, 1, 9, 17, 3, 9, Blocks.AIR.defaultBlockState());
-        var pharmacist = b.bot(15, 1, 8, Faction.CIVILIAN, BotRole.CIVILIAN, 1);
+        var pharmacist = b.bot(15, 1, 9, Faction.CIVILIAN, BotRole.CIVILIAN, 1);
         if (pharmacist != null) {
             pharmacist.shopkeeper = true;
             pharmacist.pharmacy = true;
@@ -96,6 +96,7 @@ final class Hospital {
         b.bot(24, 1, 17, Faction.CIVILIAN, BotRole.CIVILIAN, 4);
         // bloc opératoire (milieu) : table, scialytique, plateau
         b.fill(10, 1, 13, 16, 3, 13, Blocks.WHITE_CONCRETE);
+        b.fill(15, 1, 13, 16, 3, 13, Blocks.AIR.defaultBlockState());                              // porte du bloc opératoire
         b.fill(10, 1, 24, 16, 3, 24, Blocks.WHITE_CONCRETE);
         b.fill(10, 0, 14, 16, 0, 23, Blocks.LIGHT_BLUE_CONCRETE);
         b.fill(12, 1, 18, 14, 1, 19, B.slab(Blocks.SMOOTH_QUARTZ_SLAB, true));                    // table d'opération
@@ -112,6 +113,7 @@ final class Hospital {
         b.set(5, 2, 14, B.facing(ModBlocks.SURVEILLANCE_MONITOR.get(), Direction.EAST));
         b.set(5, 1, 13, Blocks.IRON_BLOCK);
         b.fill(4, 1, 13, 9, 3, 13, Blocks.WHITE_CONCRETE);
+        b.fill(9, 1, 13, 9, 3, 13, Blocks.AIR.defaultBlockState());                                // porte du scanner
         b.fill(9, 1, 14, 9, 3, 24, Blocks.WHITE_CONCRETE);
         b.set(5, 3, 20, Blocks.SEA_LANTERN);
         b.bot(7, 1, 22, Faction.CIVILIAN, BotRole.CIVILIAN, 3);
@@ -142,6 +144,10 @@ final class Hospital {
         Deco.extinguisher(b, 22, y1 + 2, 11);
         for (int x = 7; x <= 23; x += 8) {
             b.set(x, y1 + 4, 10, Blocks.SEA_LANTERN);
+        }
+        for (int x = 6; x <= 26; x += 5) {                                                        // éclairage des chambres
+            b.set(x, y1 + 4, 16, Blocks.SEA_LANTERN);
+            b.set(x, y1 + 4, 20, Blocks.SEA_LANTERN);
         }
 
         // ---------------- toit : héliport

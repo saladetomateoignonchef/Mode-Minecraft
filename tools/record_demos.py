@@ -363,6 +363,88 @@ def drone():
         time.sleep(3)
 
 
+def hospital_origin():
+    """Coin de l'hôpital (repère de la génération) retrouvé grâce à l'ambulance garée dans sa baie."""
+    import re
+    out = sh("data get entity @e[type=modeminecraft:vehicle,nbt={VehicleType:7},limit=1] Pos")
+    m = re.findall(r"(-?\d+\.\d+)d", out)
+    if len(m) < 3:
+        raise SystemExit("hôpital introuvable : l'ambulance n'est pas chargée (voir « locate structure modeminecraft:city_plains »)")
+    return float(m[0]) - 7.5, float(m[1]) - 1.0, float(m[2]) - 1.5
+
+
+def blessures():
+    """Fracture en tombant, attelle puis plâtre ; saignement et garrot ; défibrillateur."""
+    sh("time set day")
+    reset(0, 80, 0, 0, 12)
+    sh("gamemode survival Demo")
+    sh("effect clear Demo")
+    sh("tp Demo 400 -59 400 0 12", 3)
+    for i, it in enumerate(("splint", "plaster_cast", "tourniquet", "defibrillator")):
+        sh(f"item replace entity Demo hotbar.{i} with modeminecraft:{it}", 0.05)
+    time.sleep(5)
+    with Take("jeu_blessures"):
+        time.sleep(1.5)
+        sh("damage Demo 9 minecraft:fall")             # chute : fracture
+        time.sleep(3)
+        pad.tap("1")                                  # attelle
+        time.sleep(0.5)
+        pad.move(3, 0, steps=1)
+        pad.click(3, 0.3)
+        time.sleep(3)
+        pad.tap("2")                                  # plâtre
+        time.sleep(0.5)
+        pad.move(3, 0, steps=1)
+        pad.click(3, 0.3)
+        time.sleep(3)
+        sh("effect give Demo modeminecraft:bleeding 30 0")    # blessure par balle : saignement
+        time.sleep(3)
+        pad.tap("3")                                  # garrot
+        time.sleep(0.5)
+        pad.move(3, 0, steps=1)
+        pad.click(3, 0.3)
+        time.sleep(3)
+        sh("damage Demo 12 minecraft:generic")        # blessure grave
+        time.sleep(2)
+        pad.tap("4")                                  # défibrillateur
+        time.sleep(0.5)
+        pad.move(3, 0, steps=1)
+        pad.click(3, 0.3)
+        time.sleep(3)
+    sh("gamemode creative Demo")
+
+
+def hopital():
+    """Visite de l'hôpital de la métropole : façade et ambulance, accueil et pharmacienne, salle de soins, bloc opératoire."""
+    sh("time set day")
+    sh("gamerule doDaylightCycle false")
+    camera(0)
+    pad.release_all()
+    sh("gamemode creative Demo")
+    ox, oy, oz = hospital_origin()
+    sh(f"tp Demo {ox + 15} {oy + 1} {oz - 14} 0 6", 4)
+    time.sleep(3)
+    with Take("jeu_hopital"):
+        time.sleep(2)
+        pad.down("w")                                 # on marche vers l'entrée
+        time.sleep(5.5)
+        pad.up("w")
+        sh(f"tp Demo {ox + 15} {oy + 1} {oz + 5} 0 8", 1)   # accueil
+        time.sleep(2.5)
+        pad.move(-40, 8, steps=8)
+        time.sleep(2)
+        sh(f"tp Demo {ox + 22} {oy + 1.4} {oz + 10.5} 0 8", 1)   # salle de soins (lits, perfusions)
+        time.sleep(1.5)
+        pad.move(60, 6, steps=12)
+        time.sleep(2.5)
+        sh(f"tp Demo {ox + 15.5} {oy + 1.4} {oz + 10.5} 0 12", 1)   # bloc opératoire
+        time.sleep(3)
+        pad.move(-50, 5, steps=10)
+        time.sleep(2)
+        sh(f"tp Demo {ox + 9.5} {oy + 1.4} {oz + 10.5} 0 12", 1)    # scanner
+        time.sleep(3)
+
+
 def largage():
     reset(0, -59, 0, 0, 0)
     sh("summon modeminecraft:airdrop 0 -20 8 {}")
@@ -375,7 +457,7 @@ def largage():
 
 
 SCENES = {"armes": armes, "melee": melee, "armures": armures, "vehicules": vehicules, "avion_leger": avion_leger, "porte_avions": porte_avions,
-          "bots": bots, "explosifs": explosifs, "helicoptere": helicoptere, "navire": navire, "drone": drone, "largage": largage}
+          "bots": bots, "explosifs": explosifs, "helicoptere": helicoptere, "navire": navire, "drone": drone, "largage": largage, "blessures": blessures, "hopital": hopital}
 
 if __name__ == "__main__":
     r = L.Rcon()
