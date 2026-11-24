@@ -385,6 +385,21 @@ public final class MilGeometry {
                 new float[][]{},
                 new float[][]{},
                 new float[][]{}, 1.45f));
+        put("tgv_power_car", new Geo(4.0f, 6.5f, null, null, null, null, null,
+                new float[][]{},
+                new float[][]{{2.3f, 1.1f, -0.7f}},
+                new float[][]{},
+                new float[][]{}, 1.89f));
+        put("tgv_coach", new Geo(3.5f, 8.0f, null, null, null, null, null,
+                new float[][]{},
+                new float[][]{{-3.6f, 1.0f, -0.9f}, {-3.6f, 1.0f, 0.9f}, {-2.4f, 1.0f, -0.9f}, {-2.4f, 1.0f, 0.9f}, {2.4f, 1.0f, -0.9f}, {2.4f, 1.0f, 0.9f}, {3.6f, 1.0f, -0.9f}, {3.6f, 1.0f, 0.9f}},
+                new float[][]{},
+                new float[][]{}, 1.88f));
+        put("tgv_bar_coach", new Geo(3.5f, 8.0f, null, null, null, null, null,
+                new float[][]{},
+                new float[][]{{-3.8f, 1.0f, -1.1f}, {-3.8f, 1.0f, 1.1f}, {3.8f, 1.0f, -1.1f}, {3.8f, 1.0f, 1.1f}, {-1.5f, 1.0f, -1.1f}, {-1.5f, 1.0f, 1.1f}, {1.5f, 1.0f, -1.1f}, {1.5f, 1.0f, 1.1f}},
+                new float[][]{},
+                new float[][]{}, 1.88f));
     }
 
     private MilGeometry() {}

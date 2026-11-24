@@ -52,9 +52,14 @@ import java.util.UUID;
  */
 public class MesaTrainCarEntity extends Entity {
     /** Éléments d'un train : locomotive, wagon de voyageurs, puis wagons de marchandises (à garder en fin de liste : stockés par numéro). */
-    public static final int LOCOMOTIVE = 0, WAGON = 1, TANK = 2, CONTAINER = 3, ARMORED = 4;
+    public static final int LOCOMOTIVE = 0, WAGON = 1, TANK = 2, CONTAINER = 3, ARMORED = 4,
+            /** TGV : motrice avant (conduite), voiture voyageurs, voiture-bar, motrice arrière (la même pièce tournée de 180 degrés). */
+            TGV_FRONT = 5, TGV_COACH = 6, TGV_BAR = 7, TGV_REAR = 8;
     public static final String LOCO_MODEL = "mesa_locomotive", WAGON_MODEL = "mesa_wagon", TANK_MODEL = "mesa_tank",
-            CONTAINER_MODEL = "mesa_container", ARMORED_MODEL = "mesa_armored";
+            CONTAINER_MODEL = "mesa_container", ARMORED_MODEL = "mesa_armored", TGV_POWER_MODEL = "tgv_power_car", TGV_COACH_MODEL = "tgv_coach",
+            TGV_BAR_MODEL = "tgv_bar_coach";
+    /** TGV : 144 km/h (2 blocs par tick), accélération et freinage plus puissants. */
+    public static final double TGV_V_MAX = 2.0, TGV_ACCEL = 0.016, TGV_DECEL = 0.03;
     public static final float LOCO_HALF = 4.4f, WAGON_LEN = 11.4f;
     public static final double V_MAX = 0.7, ACCEL = 0.008, DECEL = 0.012;
     public static final int STOP_TICKS = 500;                  // 25 secondes en gare
@@ -111,12 +116,34 @@ public class MesaTrainCarEntity extends Entity {
     }
 
     public boolean isLoco() {
-        return kind() == LOCOMOTIVE;
+        return kind() == LOCOMOTIVE || kind() == TGV_FRONT;
+    }
+
+    public boolean isTgv() {
+        return kind() >= TGV_FRONT;
+    }
+
+    /** Voiture où l'on monte : wagon de voyageurs, voiture de TGV ou voiture-bar (portes coulissantes, sièges). */
+    public boolean isPassengerCar() {
+        return kind() == WAGON || kind() == TGV_COACH || kind() == TGV_BAR;
+    }
+
+    /** Vitesse maximale, accélération et freinage de ce train (la locomotive décide pour toute la rame). */
+    private double vMax() {
+        return isTgv() ? TGV_V_MAX : V_MAX;
+    }
+
+    private double accel() {
+        return isTgv() ? TGV_ACCEL : ACCEL;
+    }
+
+    private double decel() {
+        return isTgv() ? TGV_DECEL : DECEL;
     }
 
     /** Wagon de marchandises (citerne, porte-conteneurs ou wagon blindé) : personne n'y monte, pas de portes. */
     public boolean isFreight() {
-        return kind() >= TANK;
+        return kind() >= TANK && kind() <= ARMORED;
     }
 
     public String modelId() {
@@ -125,6 +152,9 @@ public class MesaTrainCarEntity extends Entity {
             case TANK -> TANK_MODEL;
             case CONTAINER -> CONTAINER_MODEL;
             case ARMORED -> ARMORED_MODEL;
+            case TGV_FRONT, TGV_REAR -> TGV_POWER_MODEL;
+            case TGV_COACH -> TGV_COACH_MODEL;
+            case TGV_BAR -> TGV_BAR_MODEL;
             default -> WAGON_MODEL;
         };
     }
@@ -161,7 +191,7 @@ public class MesaTrainCarEntity extends Entity {
 
     // ------------------------------------------------------------------ sièges
     public int capacity() {
-        return isLoco() ? 1 : isFreight() ? 0 : 12;
+        return isLoco() ? 1 : isFreight() || kind() == TGV_REAR ? 0 : kind() == TGV_COACH ? 16 : kind() == TGV_BAR ? 8 : 12;
     }
 
     private float[] seat(int i) {
@@ -261,7 +291,7 @@ public class MesaTrainCarEntity extends Entity {
         if (level().isClientSide) {
             return InteractionResult.SUCCESS;
         }
-        if (isFreight()) {
+        if (isFreight() || kind() == TGV_REAR) {
             player.displayClientMessage(Component.translatable("message.modeminecraft.train.freight"), true);
             return InteractionResult.CONSUME;
         }
@@ -374,7 +404,7 @@ public class MesaTrainCarEntity extends Entity {
                 }
             }
         } else if (!allHere || !lookAheadLoaded(sl, dir)) {
-            speed = Math.max(0, speed - (float) DECEL);          // chunks ou wagons pas là : on ne fonce pas dans le vide
+            speed = Math.max(0, speed - (float) decel());          // chunks ou wagons pas là : on ne fonce pas dans le vide
         } else if (manual) {
             drive((Player) driver, len);
         } else if (auto) {
@@ -513,11 +543,11 @@ public class MesaTrainCarEntity extends Entity {
         double destCenter = sigma > 0 ? len : 0;
         double stop = destCenter + sigma * RailNetwork.STOP_AHEAD;
         double remaining = sigma * (stop - s);
-        double target = remaining <= 0 ? 0 : Math.min(V_MAX, Math.sqrt(2 * DECEL * remaining) + 0.02);
+        double target = remaining <= 0 ? 0 : Math.min(vMax(), Math.sqrt(2 * decel() * remaining) + 0.02);
         if (speed < target) {
-            speed = (float) Math.min(target, speed + ACCEL);
+            speed = (float) Math.min(target, speed + accel());
         } else if (speed > target) {
-            speed = (float) Math.max(target, speed - DECEL);
+            speed = (float) Math.max(target, speed - decel());
         }
         if (remaining <= 0.4 && speed < 0.06) {
             s = stop;
@@ -542,9 +572,9 @@ public class MesaTrainCarEntity extends Entity {
     private void drive(Player p, double len) {
         float zza = p.zza;
         if (zza > 0) {
-            speed = (float) Math.min(V_MAX, speed + ACCEL * 1.2);
+            speed = (float) Math.min(vMax(), speed + accel() * 1.2);
         } else if (zza < 0) {
-            speed = speed > 0.02f ? (float) (speed - DECEL * 2.5) : (float) Math.max(-0.2, speed - ACCEL);
+            speed = speed > 0.02f ? (float) (speed - decel() * 2.5) : (float) Math.max(-0.2, speed - accel());
         } else {
             speed = Math.abs(speed) < 0.004f ? 0 : speed - Math.signum(speed) * 0.002f;
         }
