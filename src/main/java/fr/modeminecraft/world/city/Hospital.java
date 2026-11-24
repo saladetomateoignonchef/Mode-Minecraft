@@ -62,11 +62,10 @@ final class Hospital {
         b.set(19, 3, 7, B.facing(ModBlocks.NEON_SIGN_CYAN.get(), Direction.SOUTH));
         b.fill(8, 1, 9, 23, 3, 9, Blocks.WHITE_CONCRETE);                                        // cloison derrière le comptoir
         b.fill(14, 1, 9, 17, 3, 9, Blocks.AIR.defaultBlockState());
-        var pharmacist = b.bot(15, 1, 9, Faction.CIVILIAN, BotRole.CIVILIAN, 1);
-        if (pharmacist != null) {
-            pharmacist.shopkeeper = true;
-            pharmacist.pharmacy = true;
-        }
+        b.bot(15, 1, 9, Faction.CIVILIAN, BotRole.CIVILIAN, 1, p -> {                           // drapeaux posés avant l'ajout (génération)
+            p.shopkeeper = true;
+            p.pharmacy = true;
+        });
         // salle d'attente : bancs, distributeur, extincteur
         for (int x = 5; x <= 11; x += 3) {
             Deco.bench(b, x, 1, 6, Direction.NORTH);
