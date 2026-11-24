@@ -364,13 +364,22 @@ def drone():
 
 
 def hospital_origin():
-    """Coin de l'hôpital (repère de la génération) retrouvé grâce à l'ambulance garée dans sa baie."""
+    """Coin de l'hôpital (repère de la génération) : il est à 2 chunks à l'ouest et 1 au sud du point de la ville retourné par « locate »."""
     import re
-    out = sh("data get entity @e[type=modeminecraft:vehicle,nbt={VehicleType:7},limit=1] Pos")
-    m = re.findall(r"(-?\d+\.\d+)d", out)
-    if len(m) < 3:
-        raise SystemExit("hôpital introuvable : l'ambulance n'est pas chargée (voir « locate structure modeminecraft:city_plains »)")
-    return float(m[0]) - 7.5, float(m[1]) - 1.0, float(m[2]) - 1.5
+    out = sh("locate structure modeminecraft:city_plains")
+    m = re.search(r"\[(-?\d+), ~, (-?\d+)\]", out)
+    if not m:
+        raise SystemExit("ville introuvable : " + out)
+    ox, oz = int(m.group(1)) - 32, int(m.group(2)) + 16
+    sh(f"tp Demo {ox + 15} -45 {oz - 12} 0 25", 6)        # charge les chunks de l'hôpital
+    # les entités de génération (ambulance, pharmacienne) ont pu être supprimées par une autre scène : on les remet
+    if "No entity" in sh(f"data get entity @e[type=modeminecraft:vehicle,nbt={{VehicleType:7}},x={ox + 7},y=-60,z={oz + 1},distance=..30,limit=1] Pos") or \
+            "found" in sh(f"data get entity @e[type=modeminecraft:vehicle,nbt={{VehicleType:7}},x={ox + 7},y=-60,z={oz + 1},distance=..30,limit=1] Pos"):
+        sh(f"summon modeminecraft:vehicle {ox + 7.5} -60 {oz + 1.5} {{VehicleType:7,Rotation:[90f,0f]}}")
+    if "No entity" in sh(f"data get entity @e[type=modeminecraft:human_bot,nbt={{Pharmacy:1b}},x={ox + 15},y=-60,z={oz + 9},distance=..12,limit=1] Pos") or \
+            "found" in sh(f"data get entity @e[type=modeminecraft:human_bot,nbt={{Pharmacy:1b}},x={ox + 15},y=-60,z={oz + 9},distance=..12,limit=1] Pos"):
+        sh(f"summon modeminecraft:human_bot {ox + 15.5} -60 {oz + 9.5} {{Pharmacy:1b,Shopkeeper:1b,Faction:\"civilian\",Role:\"CIVILIAN\",PersistenceRequired:1b}}")
+    return float(ox), -61.0, float(oz)
 
 
 def blessures():
@@ -404,7 +413,9 @@ def blessures():
         pad.move(3, 0, steps=1)
         pad.click(3, 0.3)
         time.sleep(3)
-        sh("damage Demo 12 minecraft:generic")        # blessure grave
+        sh("effect give Demo minecraft:instant_health 1 4")     # on se remet d'abord en forme
+        time.sleep(1)
+        sh("damage Demo 11 minecraft:generic")        # blessure grave (moins de la moitié des PV)
         time.sleep(2)
         pad.tap("4")                                  # défibrillateur
         time.sleep(0.5)
@@ -415,7 +426,7 @@ def blessures():
 
 
 def hopital():
-    """Visite de l'hôpital de la métropole : façade et ambulance, accueil et pharmacienne, salle de soins, bloc opératoire."""
+    """Visite de l'hôpital de la métropole : façade et ambulance, accueil et pharmacienne, salle de soins, ambulance."""
     sh("time set day")
     sh("gamerule doDaylightCycle false")
     camera(0)
@@ -437,11 +448,9 @@ def hopital():
         time.sleep(1.5)
         pad.move(60, 6, steps=12)
         time.sleep(2.5)
-        sh(f"tp Demo {ox + 15.5} {oy + 1.4} {oz + 10.5} 0 12", 1)   # bloc opératoire
-        time.sleep(3)
-        pad.move(-50, 5, steps=10)
-        time.sleep(2)
-        sh(f"tp Demo {ox + 9.5} {oy + 1.4} {oz + 10.5} 0 12", 1)    # scanner
+        sh(f"tp Demo {ox + 7.5} {oy + 1.6} {oz - 6} 0 6", 1)        # retour dehors : l'ambulance dans sa baie
+        time.sleep(1)
+        pad.move(70, 0, steps=14)
         time.sleep(3)
 
 
