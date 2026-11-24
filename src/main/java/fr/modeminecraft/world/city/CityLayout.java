@@ -111,13 +111,16 @@ public final class CityLayout {
             new Weighted("riad", 14, 0.30), new Weighted("riad_tall", 24, 0.16), new Weighted("oasis", 10, 0.14),
             new Weighted("market_hall", 10, 0.14), new Weighted("worksite", 14, 0.12), new Weighted("square", 10, 0.14)};
     private static final Weighted[] COMMERCE_POOL = {
-            new Weighted("office", 28, 0.24), new Weighted("supermarket", 10, 0.12), new Weighted("cafe", 10, 0.14),
-            new Weighted("shop", 10, 0.18), new Weighted("plaza", 10, 0.10), new Weighted("apartment", 22, 0.22)};
+            new Weighted("office", 28, 0.20), new Weighted("supermarket", 10, 0.10), new Weighted("cafe", 10, 0.12),
+            new Weighted("shop", 10, 0.14), new Weighted("plaza", 10, 0.08), new Weighted("apartment", 22, 0.18),
+            new Weighted("parking", 8, 0.08), new Weighted("market", 8, 0.06), new Weighted("pocket_park", 10, 0.04)};
     private static final Weighted[] RESIDENTIAL_POOL = {
-            new Weighted("house", 12, 0.36), new Weighted("apartment", 22, 0.24), new Weighted("gas_station", 10, 0.08),
-            new Weighted("plaza", 10, 0.10), new Weighted("shop", 12, 0.12), new Weighted("cafe", 12, 0.10)};
+            new Weighted("house", 12, 0.30), new Weighted("apartment", 22, 0.20), new Weighted("gas_station", 10, 0.06),
+            new Weighted("plaza", 10, 0.08), new Weighted("shop", 12, 0.08), new Weighted("cafe", 12, 0.06),
+            new Weighted("pocket_park", 10, 0.10), new Weighted("parking", 8, 0.06), new Weighted("market", 8, 0.06)};
     private static final Weighted[] INDUSTRIAL_POOL = {
-            new Weighted("warehouse", 18, 0.5), new Weighted("factory_m", 18, 0.3), new Weighted("gas_station", 10, 0.2)};
+            new Weighted("warehouse", 18, 0.40), new Weighted("factory_m", 18, 0.26), new Weighted("gas_station", 10, 0.14),
+            new Weighted("water_tower", 24, 0.10), new Weighted("parking", 8, 0.10)};
 
     private String[] kinds;                                        // type final de chaque parcelle de remplissage (voir diversify)
 
