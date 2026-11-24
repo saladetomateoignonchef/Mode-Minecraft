@@ -2385,5 +2385,6 @@
   "message.modeminecraft.injury.fracture.fall": "Fracture! You broke your leg in the fall",
   "message.modeminecraft.injury.fracture.blast": "Fracture! The blast broke your leg",
   "message.modeminecraft.injury.bleeding": "You are bleeding: bandage or tourniquet!",
-  "item.modeminecraft.ambulance": "Ambulance"
+  "item.modeminecraft.ambulance": "Ambulance",
+  "message.modeminecraft.train.freight": "Freight car: no passengers allowed."
 }

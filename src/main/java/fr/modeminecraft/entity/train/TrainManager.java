@@ -99,9 +99,23 @@ public final class TrainManager {
         return level.getBlockState(BlockPos.containing(city.middleX(), city.baseY(), z)).is(Blocks.RAIL);
     }
 
+    /** Un train de marchandises circule à la place du train de voyageurs dans une gare sur trois. */
+    public static boolean freight(CityPlanner.City city) {
+        return Math.floorMod(city.seed() >>> 11, 3) == 0;
+    }
+
+    /** Wagon de marchandises numéro i (1 = juste derrière la locomotive) d'un convoi de n wagons : citerne, conteneurs, wagon blindé en queue. */
+    static int freightKind(int i, int n) {
+        return i == n ? MesaTrainCarEntity.ARMORED : i % 2 == 1 ? MesaTrainCarEntity.TANK : MesaTrainCarEntity.CONTAINER;
+    }
+
     public static void spawn(ServerLevel level, CityPlanner.City city) {
+        spawn(level, city, freight(city));
+    }
+
+    public static void spawn(ServerLevel level, CityPlanner.City city, boolean freight) {
         UUID id = UUID.randomUUID();
-        int wagons = 2 + (int) ((city.seed() >>> 7) & 1);
+        int wagons = freight ? 3 + (int) ((city.seed() >>> 7) & 1) : 2 + (int) ((city.seed() >>> 7) & 1);
         double z = RailNetwork.railZ(city), x = city.middleX() + 0.5;
         MesaTrainCarEntity loco = MesaTrainCarEntity.create(level, MesaTrainCarEntity.LOCOMOTIVE, id, 0);
         loco.setWagonCount(wagons);
@@ -110,12 +124,12 @@ public final class TrainManager {
         level.addFreshEntity(loco);
         List<MesaTrainCarEntity> cars = new ArrayList<>();
         for (int i = 1; i <= wagons; i++) {
-            MesaTrainCarEntity w = MesaTrainCarEntity.create(level, MesaTrainCarEntity.WAGON, id, i);
+            MesaTrainCarEntity w = MesaTrainCarEntity.create(level, freight ? freightKind(i, wagons) : MesaTrainCarEntity.WAGON, id, i);
             w.setWagonCount(wagons);
             w.moveTo(x, city.baseY() + 0.0625, z, 90, 0);
             level.addFreshEntity(w);
             cars.add(w);
         }
-        TrainStaff.crew(level, loco, cars);
+        TrainStaff.crew(level, loco, freight ? List.of() : cars);                   // un convoi de marchandises n'a que son conducteur
     }
 }

@@ -50,7 +50,7 @@ public class MesaTrainRenderer extends EntityRenderer<MesaTrainCarEntity> {
         pose.scale(s, s, s);
         pose.translate(-(geo.ox() - 8) / 16f, 0, 0);
         draw(mc, pose, buffers, light, stack, car.modelId(), "hull");
-        if (!car.isLoco()) {
+        if (!car.isLoco() && !car.isFreight()) {
             // portes coulissantes : chaque battant glisse d'un mètre, vers l'arrière et vers l'avant du wagon
             float open = Mth.clamp(car.doors(partial), 0, 1) / s;
             pose.pushPose();

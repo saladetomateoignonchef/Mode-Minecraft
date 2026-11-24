@@ -51,8 +51,10 @@ import java.util.UUID;
  * O portes. À chaque arrêt, les fraudeurs étourdis par les contrôleurs sont expulsés sur le quai.
  */
 public class MesaTrainCarEntity extends Entity {
-    public static final int LOCOMOTIVE = 0, WAGON = 1;
-    public static final String LOCO_MODEL = "mesa_locomotive", WAGON_MODEL = "mesa_wagon";
+    /** Éléments d'un train : locomotive, wagon de voyageurs, puis wagons de marchandises (à garder en fin de liste : stockés par numéro). */
+    public static final int LOCOMOTIVE = 0, WAGON = 1, TANK = 2, CONTAINER = 3, ARMORED = 4;
+    public static final String LOCO_MODEL = "mesa_locomotive", WAGON_MODEL = "mesa_wagon", TANK_MODEL = "mesa_tank",
+            CONTAINER_MODEL = "mesa_container", ARMORED_MODEL = "mesa_armored";
     public static final float LOCO_HALF = 4.4f, WAGON_LEN = 11.4f;
     public static final double V_MAX = 0.7, ACCEL = 0.008, DECEL = 0.012;
     public static final int STOP_TICKS = 500;                  // 25 secondes en gare
@@ -112,8 +114,19 @@ public class MesaTrainCarEntity extends Entity {
         return kind() == LOCOMOTIVE;
     }
 
+    /** Wagon de marchandises (citerne, porte-conteneurs ou wagon blindé) : personne n'y monte, pas de portes. */
+    public boolean isFreight() {
+        return kind() >= TANK;
+    }
+
     public String modelId() {
-        return isLoco() ? LOCO_MODEL : WAGON_MODEL;
+        return switch (kind()) {
+            case LOCOMOTIVE -> LOCO_MODEL;
+            case TANK -> TANK_MODEL;
+            case CONTAINER -> CONTAINER_MODEL;
+            case ARMORED -> ARMORED_MODEL;
+            default -> WAGON_MODEL;
+        };
     }
 
     public boolean doorsOpen() {
@@ -148,7 +161,7 @@ public class MesaTrainCarEntity extends Entity {
 
     // ------------------------------------------------------------------ sièges
     public int capacity() {
-        return isLoco() ? 1 : 12;
+        return isLoco() ? 1 : isFreight() ? 0 : 12;
     }
 
     private float[] seat(int i) {
@@ -247,6 +260,10 @@ public class MesaTrainCarEntity extends Entity {
         }
         if (level().isClientSide) {
             return InteractionResult.SUCCESS;
+        }
+        if (isFreight()) {
+            player.displayClientMessage(Component.translatable("message.modeminecraft.train.freight"), true);
+            return InteractionResult.CONSUME;
         }
         MesaTrainCarEntity loco = leader();
         if (loco == null || Math.abs(loco.speed) > 0.05f) {
