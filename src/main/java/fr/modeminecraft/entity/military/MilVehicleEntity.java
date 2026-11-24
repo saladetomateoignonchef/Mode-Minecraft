@@ -1371,6 +1371,11 @@ public class MilVehicleEntity extends Entity {
                 speed = Math.max(speed, type().maxSpeed() * 0.7f);              // en vol : on garde la vitesse de croisière
             }
         }
+        // très endommagé (moins d'un quart des PV) : le moteur peut lâcher à tout moment (vol plané)
+        if (!level().isClientSide && !t.civil() && health() < t.health * 0.25f && !is(ENGINE_DOWN) && !is(WRECK) && random.nextInt(500) == 0) {
+            setState(ENGINE_DOWN, true);
+            announce("message.modeminecraft.mil.engine_failure");
+        }
         // régime des moteurs : calculé par celui qui fait voler l'avion (le serveur ne fait que l'afficher)
         spool = run ? Math.min(1, spool + 0.01f) : Math.max(0, spool - 0.005f);
         float r = spool;
@@ -2183,6 +2188,10 @@ public class MilVehicleEntity extends Entity {
             return;
         }
         hurtInternal((float) (t.health * f), null, null, false, 1f);
+        if (vertical && !is(GEAR_UP) && !is(WRECK) && random.nextFloat() < 0.5f) {
+            setState(GEAR_UP, true);                                               // atterrissage brutal : le train d'atterrissage cède
+            announce("message.modeminecraft.mil.gear_broken");
+        }
         if (kmh > 80 && !is(WRECK)) {
             setState(BURNING, true);                                               // début d'incendie moteur
             if (random.nextFloat() < 0.6f) {

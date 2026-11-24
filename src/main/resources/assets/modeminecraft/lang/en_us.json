@@ -2412,5 +2412,7 @@
   "block.modeminecraft.exit_sign": "Emergency exit sign",
   "block.modeminecraft.vent_fan": "Tunnel ventilation fan",
   "block.modeminecraft.emergency_generator": "Emergency generator",
-  "block.modeminecraft.electrical_cabinet": "Electrical cabinet"
+  "block.modeminecraft.electrical_cabinet": "Electrical cabinet",
+  "message.modeminecraft.mil.engine_failure": "[ALERT] Engine failure! Gliding.",
+  "message.modeminecraft.mil.gear_broken": "[ALERT] Landing gear collapsed: belly landing."
 }

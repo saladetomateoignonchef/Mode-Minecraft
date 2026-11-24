@@ -90,6 +90,8 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
     public boolean shopkeeper, robbed;
     /** Pharmacienne de l'hôpital : vend les soins (bandages, garrots, attelles, plâtres, défibrillateurs). */
     public boolean pharmacy;
+    /** Bandages qu'il lui reste pour se soigner en plein combat (voir BotGoals.SelfHeal). */
+    public int healsLeft = 2;
     public long lastTargetSeen;
     public int turretFireTicks;   // servant de tourelle : gâchette pressée
     public String debugState = "";
@@ -280,6 +282,7 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
         goalSelector.addGoal(1, new CivilianLife.HandsUp(this));
         goalSelector.addGoal(1, new BotGoals.Flee(this));
         goalSelector.addGoal(1, new BotGoals.DroneOperator(this));
+        goalSelector.addGoal(2, new BotGoals.SelfHeal(this));
         goalSelector.addGoal(2, new BotGoals.GunCombat(this));
         goalSelector.addGoal(2, new BotGoals.MeleeCombat(this));
         goalSelector.addGoal(3, new BotGoals.Warn(this));
@@ -823,6 +826,7 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
         tag.putBoolean("Ambush", ambush);
         tag.putBoolean("Shopkeeper", shopkeeper);
         tag.putBoolean("Pharmacy", pharmacy);
+        tag.putInt("Heals", healsLeft);
         tag.putBoolean("Robbed", robbed);
         if (home != null) {
             tag.put("Home", NbtUtils.writeBlockPos(home));
@@ -855,6 +859,7 @@ public class HumanBotEntity extends PathfinderMob implements net.minecraft.world
         ambush = tag.getBoolean("Ambush");
         shopkeeper = tag.getBoolean("Shopkeeper");
         pharmacy = tag.getBoolean("Pharmacy");
+        healsLeft = tag.contains("Heals") ? tag.getInt("Heals") : 2;
         robbed = tag.getBoolean("Robbed");
         entityData.set(SWORD_STATE, tag.getByte("Sword") == SWORD_DRAWN ? SWORD_DRAWN : SWORD_BACK);
         if (tag.getBoolean("Berserk")) {
