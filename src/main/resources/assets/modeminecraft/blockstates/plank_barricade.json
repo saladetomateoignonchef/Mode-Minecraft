@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/plank_barricade",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/plank_barricade",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/plank_barricade",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/plank_barricade",
+      "y": 270
+    }
+  }
+}

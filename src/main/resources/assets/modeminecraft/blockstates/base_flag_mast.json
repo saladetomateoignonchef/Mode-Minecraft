@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/base_flag_mast",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/base_flag_mast",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/base_flag_mast",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/base_flag_mast",
+      "y": 270
+    }
+  }
+}

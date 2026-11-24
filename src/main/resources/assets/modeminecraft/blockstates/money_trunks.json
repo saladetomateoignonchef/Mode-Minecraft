@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/money_trunks",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/money_trunks",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/money_trunks",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/money_trunks",
+      "y": 270
+    }
+  }
+}

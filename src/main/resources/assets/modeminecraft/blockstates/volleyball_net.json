@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/volleyball_net",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/volleyball_net",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/volleyball_net",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/volleyball_net",
+      "y": 270
+    }
+  }
+}

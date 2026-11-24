@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/wanted_poster",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/wanted_poster",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/wanted_poster",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/wanted_poster",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/bunker_blower",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/bunker_blower",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/bunker_blower",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/bunker_blower",
+      "y": 270
+    }
+  }
+}

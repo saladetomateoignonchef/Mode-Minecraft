@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/string_lights",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/string_lights",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/string_lights",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/string_lights",
+      "y": 270
+    }
+  }
+}

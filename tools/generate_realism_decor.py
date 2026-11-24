@@ -217,6 +217,14 @@ ANIMS.update(r2.ANIMS2)
 DECOS.extend(r2.DECOS2)
 KEYS = list(PAL)
 assert len(KEYS) <= 64, "palette trop grande (8 x 8 pastilles de 2 px)"
+# troisième série : seconde palette (texture « q ») pour les couleurs supplémentaires
+import realism_decor_3 as r3  # noqa: E402
+
+PAL_B = dict(r3.PAL3)
+KEYS_B = [k for k in PAL_B if k not in PAL]
+assert len(KEYS_B) <= 64, "seconde palette trop grande"
+ANIMS.update(r3.ANIMS3)
+DECOS.extend(r3.DECOS3)
 assert len({d["id"] for d in DECOS}) == len(DECOS), "identifiants de décors en double"
 
 
@@ -227,26 +235,33 @@ def write(path, data):
         f.write("\n")
 
 
-def palette_image():
+def palette_image(keys=None, colors=None):
+    keys = KEYS if keys is None else keys
+    colors = PAL if colors is None else colors
     img = Image.new("RGBA", (16, 16), (0, 0, 0, 255))
-    for i, k in enumerate(KEYS):
+    for i, k in enumerate(keys):
         u, v = (i % 8) * 2, (i // 8) * 2
         for y in range(2):
             for x in range(2):
-                img.putpixel((u + x, v + y), hex_rgb(PAL[k]) + (255,))
+                img.putpixel((u + x, v + y), hex_rgb(colors[k]) + (255,))
     return img
 
 
 def uv(key):
-    i = KEYS.index(key)
+    """Zone de la palette contenant la couleur : texture « #p » (palette principale) ou « #q » (seconde palette)."""
+    if key in KEYS:
+        i, tex = KEYS.index(key), "#p"
+    else:
+        i, tex = KEYS_B.index(key), "#q"
     u, v = (i % 8) * 2, (i // 8) * 2
-    return [u + 0.5, v + 0.5, u + 1.5, v + 1.5]
+    return [u + 0.5, v + 0.5, u + 1.5, v + 1.5], tex
 
 
 def build(d):
     name = d["id"]
     # une seule texture de palette partagée + une texture animée par bloc
     elements = []
+    used_q = False
     for e in d["elements"]:
         x0, y0, z0, x1, y1, z1, col = e[:7]
         over = e[7] if len(e) > 7 else {}
@@ -255,9 +270,13 @@ def build(d):
             if over.get(face) == "anim":
                 faces[face] = {"uv": [0, 0, 16, 16], "texture": "#a"}
             else:
-                faces[face] = {"uv": uv(col), "texture": "#p"}
+                box_uv, tex_ref = uv(col)
+                faces[face] = {"uv": box_uv, "texture": tex_ref}
+                used_q = used_q or tex_ref == "#q"
         elements.append({"from": [x0, y0, z0], "to": [x1, y1, z1], "faces": faces})
     tex = {"p": f"{MOD}:block/realism_palette", "particle": f"{MOD}:block/realism_palette"}
+    if used_q:
+        tex["q"] = f"{MOD}:block/realism_palette_b"
     if d.get("anim"):
         tex["a"] = f"{MOD}:block/{name}_anim"
         img, meta = ANIMS[d["anim"]]()
@@ -282,6 +301,7 @@ def main():
     path = os.path.join(ASSETS, "textures/block/realism_palette.png")
     os.makedirs(os.path.dirname(path), exist_ok=True)
     palette_image().save(path)
+    palette_image(KEYS_B, PAL_B).save(os.path.join(ASSETS, "textures/block/realism_palette_b.png"))
     rows = []
     for d in DECOS:
         box = build(d)

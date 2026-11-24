@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/quay_crane",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/quay_crane",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/quay_crane",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/quay_crane",
+      "y": 270
+    }
+  }
+}
