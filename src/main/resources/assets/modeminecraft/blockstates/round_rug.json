@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/round_rug",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/round_rug",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/round_rug",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/round_rug",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/pipe_run",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/pipe_run",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/pipe_run",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/pipe_run",
+      "y": 270
+    }
+  }
+}

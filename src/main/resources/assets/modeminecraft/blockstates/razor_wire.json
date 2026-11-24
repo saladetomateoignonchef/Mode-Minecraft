@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/razor_wire",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/razor_wire",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/razor_wire",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/razor_wire",
+      "y": 270
+    }
+  }
+}

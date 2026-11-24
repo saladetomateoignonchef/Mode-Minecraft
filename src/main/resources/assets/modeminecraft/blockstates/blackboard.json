@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/blackboard",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/blackboard",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/blackboard",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/blackboard",
+      "y": 270
+    }
+  }
+}
