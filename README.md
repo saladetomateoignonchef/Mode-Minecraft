@@ -56,6 +56,10 @@
 
 ![Aéroport](docs/videos/jeu_aeroport.gif)
 
+**Métro de la métropole : bouche de métro, quai et rame, tunnel et bunker à porte blindée** ([version MP4](docs/videos/jeu_metro.mp4))
+
+![Métro](docs/videos/jeu_metro.gif)
+
 **Véhicules terrestres : char M1A2 Abrams (conduite et tir au canon)** ([version MP4](docs/videos/jeu_vehicules.mp4))
 
 ![Véhicules terrestres](docs/videos/jeu_vehicules.gif)

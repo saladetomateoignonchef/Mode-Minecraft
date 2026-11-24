@@ -512,6 +512,46 @@ def aeroport():
     sh("kill @e[type=modeminecraft:regional_airliner,distance=..8]")
 
 
+def metro():
+    """Métro de la métropole (monde à sol profond : voir tools/demo_env.sh) : bouche de métro, quai et rame, tunnel, porte blindée du bunker et abri."""
+    import re
+    sh("time set day")
+    sh("gamerule doDaylightCycle false")
+    camera(0)
+    pad.release_all()
+    sh("gamemode creative Demo")
+    out = sh("locate structure modeminecraft:city_plains")
+    m = re.search(r"\[(-?\d+), ~, (-?\d+)\]", out)
+    if not m:
+        raise SystemExit("ville introuvable : " + out)
+    cx, cz = int(m.group(1)), int(m.group(2))             # point de la ville = coin du chunk central ; station au centre de l'avenue
+    sh(f"tp Demo {cx + 1.5} 120 {cz + 10} 0 10", 6)
+    oy = float(re.findall(r"(-?\d+\.\d+)d", sh("data get entity Demo Pos"))[1])     # niveau de la rue
+    sh(f"tp Demo {cx + 5} {oy + 3} {cz + 6} 45 25", 4)
+    with Take("jeu_metro"):
+        time.sleep(2.5)
+        pad.move(-60, 0, steps=12)                         # la bouche de métro sur le trottoir
+        time.sleep(2)
+        sh(f"tp Demo {cx + 1.5} {oy - 14} {cz + 13.5} 180 6", 1)   # en bas de l'échelle : couloir, portillons
+        time.sleep(2.5)
+        sh(f"tp Demo {cx + 12.5} {oy - 14} {cz + 6.5} 90 4", 1)    # le quai, la rame garée à gauche
+        time.sleep(1)
+        pad.move(60, 0, steps=14)
+        time.sleep(2)
+        pad.move(-120, 0, steps=24)
+        time.sleep(2)
+        sh(f"tp Demo {cx + 13.5} {oy - 15} {cz + 11.5} 90 3", 1)    # sur la voie sud : le tunnel
+        time.sleep(3)
+        sh(f"tp Demo {cx - 140} {oy - 15} {cz + 7.5} 90 3", 1)       # bout de ligne : la porte blindée du bunker
+        time.sleep(3)
+        sh(f"tp Demo {cx - 150} {oy - 15} {cz + 7.5} 270 6", 1)      # dans le bunker
+        time.sleep(1)
+        pad.move(-100, 0, steps=20)
+        time.sleep(2.5)
+        pad.move(200, 0, steps=30)
+        time.sleep(2)
+
+
 def largage():
     reset(0, -59, 0, 0, 0)
     sh("summon modeminecraft:airdrop 0 -20 8 {}")
@@ -524,7 +564,7 @@ def largage():
 
 
 SCENES = {"armes": armes, "melee": melee, "armures": armures, "vehicules": vehicules, "avion_leger": avion_leger, "porte_avions": porte_avions,
-          "bots": bots, "explosifs": explosifs, "helicoptere": helicoptere, "navire": navire, "drone": drone, "largage": largage, "blessures": blessures, "hopital": hopital, "aeroport": aeroport}
+          "bots": bots, "explosifs": explosifs, "helicoptere": helicoptere, "navire": navire, "drone": drone, "largage": largage, "blessures": blessures, "hopital": hopital, "aeroport": aeroport, "metro": metro}
 
 if __name__ == "__main__":
     r = L.Rcon()

@@ -135,6 +135,12 @@ final class CityGen {
         }
         // égouts sous la chaussée
         sewer(b, ns || !ew, ew || !ns, ns && ew);
+        // métro sous l'avenue est-ouest centrale (voir Metro)
+        if (Metro.onLine(dx, dz)) {
+            Metro.build(b, dx);
+        } else if (dz == 0 && dx == Metro.FIRST - 1) {
+            Metro.bunker(b);
+        }
         // habitants et police
         // (densités réduites : une métropole de 31 x 31 chunks comptait sinon ~400 habitants, trop lourd)
         if (ns && ew) {
