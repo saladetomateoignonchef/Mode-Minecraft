@@ -454,6 +454,64 @@ def hopital():
         time.sleep(3)
 
 
+def aeroport():
+    """Aéroport civil de la métropole : hall d'enregistrement, sûreté, salle d'embarquement, aire de stationnement, puis décollage d'un avion de ligne."""
+    import re
+    sh("time set day")
+    sh("gamerule doDaylightCycle false")
+    camera(0)
+    pad.release_all()
+    sh("gamemode creative Demo")
+    out = sh("locate structure modeminecraft:city_plains")
+    m = re.search(r"\[(-?\d+), ~, (-?\d+)\]", out)
+    if not m:
+        raise SystemExit("ville introuvable : " + out)
+    cx, cz = int(m.group(1)), int(m.group(2))
+    tx, tz = cx + 160, cz + 16                       # terminal : 10 chunks à l'est, 1 au sud du point de la ville
+    ax, az = cx + 112, cz + 64                       # aire de stationnement et piste : 7 chunks à l'est, 4 au sud
+    sh(f"tp Demo {tx + 16} -60 {tz - 12} 0 6", 6)
+    sh(f"tp Demo {ax + 40} -50 {az + 8} 0 10", 6)    # charge aussi l'aire de stationnement
+    sh("ride Demo dismount")                           # au cas où une prise précédente aurait laissé le pilote à bord
+    sh("kill @e[type=modeminecraft:regional_airliner,distance=..8]")
+    sh(f"tp Demo {tx + 16} -60 {tz - 12} 0 6", 4)
+    with Take("jeu_aeroport"):
+        time.sleep(2)
+        pad.down("w")                                # on marche vers l'entrée du terminal
+        time.sleep(3.2)
+        pad.up("w")
+        sh(f"tp Demo {tx + 16} -60 {tz + 6} 0 6", 1)       # hall d'enregistrement
+        time.sleep(1)
+        pad.move(-60, 0, steps=12)
+        time.sleep(1.2)
+        pad.move(120, 0, steps=20)
+        time.sleep(1.2)
+        sh(f"tp Demo {tx + 15} -60 {tz + 12.5} 0 8", 1)    # contrôle de sûreté : portiques et scanners
+        time.sleep(3)
+        sh(f"tp Demo {tx + 16} -60 {tz + 19} 0 5", 1)      # salle d'embarquement, avions derrière les baies vitrées
+        time.sleep(1)
+        pad.move(70, 0, steps=14)
+        time.sleep(1.5)
+        pad.move(-140, 0, steps=24)
+        time.sleep(1.5)
+        sh(f"tp Demo {ax + 44} -60 {az + 4} 20 8", 1)      # sur l'aire de stationnement
+        time.sleep(2)
+        pad.move(120, 0, steps=20)
+        time.sleep(2.5)
+        sh(f"tp Demo {ax + 10} -58 {az + 39}", 2)          # sur la piste (chunks chargés), puis l'avion de ligne, cap à l'est
+        sh(f"summon modeminecraft:regional_airliner {ax + 6} -61 {az + 39} {{Rotation:[270f,0f]}}", 2)
+        sh("ride Demo mount @e[type=modeminecraft:regional_airliner,limit=1,sort=nearest]", 1.5)
+        camera(1)
+        time.sleep(1.5)
+        pad.down("w")                                # plein gaz : roulage de décollage
+        time.sleep(6.5)
+        pad.move(0, -55, steps=12)                   # cabrer doucement
+        time.sleep(4)
+        pad.up("w")
+    camera(0)
+    pad.tap("Shift_L")
+    sh("kill @e[type=modeminecraft:regional_airliner,distance=..8]")
+
+
 def largage():
     reset(0, -59, 0, 0, 0)
     sh("summon modeminecraft:airdrop 0 -20 8 {}")
@@ -466,7 +524,7 @@ def largage():
 
 
 SCENES = {"armes": armes, "melee": melee, "armures": armures, "vehicules": vehicules, "avion_leger": avion_leger, "porte_avions": porte_avions,
-          "bots": bots, "explosifs": explosifs, "helicoptere": helicoptere, "navire": navire, "drone": drone, "largage": largage, "blessures": blessures, "hopital": hopital}
+          "bots": bots, "explosifs": explosifs, "helicoptere": helicoptere, "navire": navire, "drone": drone, "largage": largage, "blessures": blessures, "hopital": hopital, "aeroport": aeroport}
 
 if __name__ == "__main__":
     r = L.Rcon()
