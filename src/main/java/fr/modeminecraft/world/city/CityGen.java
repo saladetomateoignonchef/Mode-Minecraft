@@ -44,6 +44,10 @@ final class CityGen {
             case "warehouse" -> warehouse(b, layout.hash(dx, dz, 12));
             case "factory_m" -> factory(b, layout.hash(dx, dz, 13));
             case "plaza" -> plaza(b, layout.hash(dx, dz, 14));
+            case "parking" -> UrbanLots.parking(b, layout.hash(dx, dz, 15));
+            case "market" -> UrbanLots.market(b, layout.hash(dx, dz, 16));
+            case "pocket_park" -> UrbanLots.pocketPark(b, layout.hash(dx, dz, 17));
+            case "water_tower" -> UrbanLots.waterTower(b, layout.hash(dx, dz, 18));
             default -> {
             }
         }
@@ -470,7 +474,17 @@ final class CityGen {
 
     /** Maison de ville sur deux étages, avec jardin. */
     private static void townhouse(B b, double h) {
-        Block wall = h < 0.5 ? Blocks.BRICKS : Blocks.WHITE_TERRACOTTA;
+        // 8 palettes de façade x 3 gabarits (toit à deux pans, toit-terrasse avec balcon, porche à colonnes et garage) = 24 maisons
+        Block[] walls = {Blocks.BRICKS, Blocks.WHITE_TERRACOTTA, Blocks.SMOOTH_SANDSTONE, Blocks.ORANGE_TERRACOTTA, Blocks.LIGHT_GRAY_CONCRETE,
+                Blocks.WHITE_CONCRETE, Blocks.DARK_OAK_PLANKS, Blocks.YELLOW_TERRACOTTA};
+        Block[] roofs = {Blocks.DARK_OAK_PLANKS, Blocks.SPRUCE_PLANKS, Blocks.STONE_BRICKS, Blocks.BRICKS, Blocks.DEEPSLATE_TILES,
+                Blocks.BLUE_TERRACOTTA, Blocks.STONE_BRICKS, Blocks.RED_TERRACOTTA};
+        Block[] roofSlabs = {Blocks.DARK_OAK_SLAB, Blocks.SPRUCE_SLAB, Blocks.STONE_BRICK_SLAB, Blocks.BRICK_SLAB, Blocks.DEEPSLATE_TILE_SLAB,
+                Blocks.SMOOTH_STONE_SLAB, Blocks.STONE_BRICK_SLAB, Blocks.BRICK_SLAB};
+        Block[] shutters = {Blocks.DARK_OAK_TRAPDOOR, Blocks.SPRUCE_TRAPDOOR, Blocks.OAK_TRAPDOOR, Blocks.JUNGLE_TRAPDOOR};
+        int pal = (int) (h * 7919) % 8, layout = (int) (h * 1009) % 3;
+        Block wall = walls[pal], roof = roofs[pal], roofSlab = roofSlabs[pal];
+        Block shutter = shutters[(int) (h * 31) % shutters.length];
         b.ground(0, 0, 15, 15, Blocks.GRASS_BLOCK.defaultBlockState(), Blocks.DIRT.defaultBlockState(), 14);
         b.fill(0, -1, 0, 15, -1, 1, Blocks.SMOOTH_STONE);
         for (int f = 0; f < 2; f++) {
@@ -481,10 +495,40 @@ final class CityGen {
             b.fill(9, y + 1, 3, 10, y + 2, 3, Blocks.GLASS_PANE.defaultBlockState());
             b.fill(12, y + 1, 5, 12, y + 2, 8, Blocks.GLASS_PANE.defaultBlockState());
             b.set(7, y + 3, 6, Blocks.LANTERN.defaultBlockState().setValue(BlockStateProperties.HANGING, true));
+            for (int x : new int[]{4, 7, 8, 11}) {                                               // volets de part et d'autre des fenêtres
+                if (x != 7 && x != 8) {
+                    b.set(x, y + 1, 2, B.facing(shutter, Direction.NORTH).setValue(BlockStateProperties.OPEN, true));
+                }
+            }
         }
-        for (int i = 0; i <= 4; i++) {
-            b.fill(2 + i, 8 + i, 2, 13 - i, 8 + i, 11, B.slab(Blocks.DARK_OAK_SLAB, false));
-            b.fill(3 + i, 8 + i, 3, 12 - i, 8 + i, 10, Blocks.DARK_OAK_PLANKS.defaultBlockState());
+        switch (layout) {
+            case 0 -> {                                                                          // toit à deux pans
+                for (int i = 0; i <= 4; i++) {
+                    b.fill(2 + i, 8 + i, 2, 13 - i, 8 + i, 11, B.slab(roofSlab, false));
+                    b.fill(3 + i, 8 + i, 3, 12 - i, 8 + i, 10, roof.defaultBlockState());
+                }
+            }
+            case 1 -> {                                                                          // toit-terrasse et balcon
+                b.fill(3, 8, 3, 12, 8, 10, roof.defaultBlockState());
+                b.walls(3, 9, 3, 12, 9, 10, wall.defaultBlockState());
+                b.fill(5, 4, 2, 10, 4, 2, B.slab(roofSlab, false));
+                b.fill(5, 5, 2, 10, 5, 2, Blocks.IRON_BARS);
+                b.set(4, 9, 4, Blocks.POTTED_CACTUS);
+                b.set(11, 9, 9, Blocks.POTTED_FERN);
+                Deco.antenna(b, 11, 10, 4, 3);
+            }
+            default -> {                                                                         // porche à colonnes et garage
+                for (int i = 0; i <= 3; i++) {
+                    b.fill(2 + i, 8 + i, 2, 13 - i, 8 + i, 11, B.slab(roofSlab, false));
+                    b.fill(3 + i, 8 + i, 3, 12 - i, 8 + i, 10, roof.defaultBlockState());
+                }
+                b.fill(5, 3, 1, 10, 3, 2, B.slab(roofSlab, false));                                // auvent du porche
+                b.fill(5, 0, 1, 5, 2, 1, Blocks.STRIPPED_OAK_LOG);
+                b.fill(10, 0, 1, 10, 2, 1, Blocks.STRIPPED_OAK_LOG);
+                b.set(6, 0, 1, B.stairs(Blocks.OAK_STAIRS, Direction.SOUTH));
+                b.vehicle(13, 0, 13, fr.modeminecraft.entity.VehicleEntity.Type.SEDAN, 0);              // voiture dans l'allée
+                b.fill(12, -1, 11, 14, -1, 15, Blocks.GRAY_CONCRETE);
+            }
         }
         b.set(7, 1, 3, Blocks.SPRUCE_DOOR.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH));
         b.set(7, 2, 3, Blocks.SPRUCE_DOOR.defaultBlockState().setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.NORTH)
@@ -496,6 +540,13 @@ final class CityGen {
         b.set(11, 4, 9, B.facing(Blocks.LADDER, Direction.WEST));
         Deco.bed(b, 4, 5, 5, Direction.SOUTH, Blocks.RED_BED);
         b.chest(5, 5, 9, Direction.NORTH, "city_house", false);
+        // mobilier d'intérieur varié
+        b.set(8, 1, 5, B.facing(ModBlocks.realism(h < 0.5 ? "sofa" : "armchair"), Direction.SOUTH));
+        b.set(10, 1, 6, B.facing(ModBlocks.realism("coffee_table"), Direction.NORTH));
+        b.set(5, 1, 8, B.facing(ModBlocks.realism("tv_set"), Direction.WEST));
+        b.set(10, 5, 4, B.facing(ModBlocks.realism("wardrobe"), Direction.SOUTH));
+        b.set(7, 5, 5, B.facing(ModBlocks.realism("nightstand"), Direction.NORTH));
+        b.set(11, 1, 4, B.facing(ModBlocks.realism("floor_plant"), Direction.NORTH));
         b.fill(0, 0, 12, 15, 0, 12, Blocks.OAK_FENCE);
         b.set(2, 0, 14, Blocks.ROSE_BUSH);
         b.set(13, 0, 14, Blocks.LILAC);
