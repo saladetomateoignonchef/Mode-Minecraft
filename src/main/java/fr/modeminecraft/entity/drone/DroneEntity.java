@@ -793,7 +793,11 @@ public class DroneEntity extends LivingEntity {
                 level().playSound(null, getX(), getY(), getZ(), ModSounds.DRONE_PAIRED.get(), SoundSource.NEUTRAL, 1f, 1f);
                 player.displayClientMessage(Component.translatable("message.modeminecraft.drone.paired",
                         Component.translatable("item.modeminecraft." + t.id)).withStyle(ChatFormatting.GREEN), true);
+                return InteractionResult.CONSUME;
             }
+            // clic droit simple en visant le drone : la télécommande démarre le pilotage (avant, ce clic était « mangé » ici
+            // et on ne pouvait piloter qu'en regardant ailleurs que le drone)
+            stack.use(level(), player, hand);
             return InteractionResult.CONSUME;
         }
         // pile CR123A : recharge

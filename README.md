@@ -48,6 +48,10 @@
 
 ![Véhicules terrestres](docs/videos/jeu_vehicules.gif)
 
+**Drone Mavic : pose, appairage de la télécommande et pilotage à la caméra du drone** ([version MP4](docs/videos/jeu_drone.mp4))
+
+![Drone](docs/videos/jeu_drone.gif)
+
 **Hélicoptère UH-60 Black Hawk : décollage et vol** ([version MP4](docs/videos/jeu_helicoptere.mp4))
 
 ![Hélicoptère UH-60 Black Hawk](docs/videos/jeu_helicoptere.gif)
