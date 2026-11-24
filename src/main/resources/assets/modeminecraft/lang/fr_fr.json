@@ -2412,5 +2412,7 @@
   "block.modeminecraft.exit_sign": "Panneau de sortie de secours",
   "block.modeminecraft.vent_fan": "Ventilateur de tunnel",
   "block.modeminecraft.emergency_generator": "Groupe électrogène de secours",
-  "block.modeminecraft.electrical_cabinet": "Armoire électrique"
+  "block.modeminecraft.electrical_cabinet": "Armoire électrique",
+  "message.modeminecraft.mil.engine_failure": "[ALERTE] Panne moteur ! Vol plané.",
+  "message.modeminecraft.mil.gear_broken": "[ALERTE] Train d'atterrissage cassé : atterrissage sur le ventre."
 }

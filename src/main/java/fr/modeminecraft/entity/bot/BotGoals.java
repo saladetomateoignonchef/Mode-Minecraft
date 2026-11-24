@@ -868,6 +868,59 @@ public final class BotGoals {
         }
     }
 
+    /**
+     * Soin de soi : un combattant gravement blessé (moins de 45 % de ses PV) qui n'est plus sous le feu (pas touché depuis
+     * 2,5 s, cible hors de vue ou à plus de 14 blocs) s'arrête et pose un bandage (2 s) : +6 PV, saignement arrêté.
+     * Deux bandages par bot au plus.
+     */
+    static final class SelfHeal extends Goal {
+        private static final int DURATION = 40;
+        private final HumanBotEntity bot;
+        private int ticks;
+
+        SelfHeal(HumanBotEntity bot) {
+            this.bot = bot;
+            setFlags(EnumSet.of(Flag.MOVE));
+        }
+
+        @Override
+        public boolean canUse() {
+            if (!bot.faction().combatant() || bot.healsLeft <= 0 || bot.isPassenger() || bot.getHealth() >= bot.getMaxHealth() * 0.45f) {
+                return false;
+            }
+            if (bot.tickCount - bot.getLastHurtByMobTimestamp() < 50) {
+                return false;
+            }
+            LivingEntity t = bot.getTarget();
+            return t == null || !t.isAlive() || bot.distanceTo(t) > 14 || !bot.getSensing().hasLineOfSight(t);
+        }
+
+        @Override
+        public boolean canContinueToUse() {
+            return ticks < DURATION && bot.tickCount - bot.getLastHurtByMobTimestamp() > 10;
+        }
+
+        @Override
+        public void start() {
+            ticks = 0;
+            bot.getNavigation().stop();
+            bot.level().playSound(null, bot.getX(), bot.getY(), bot.getZ(), net.minecraft.sounds.SoundEvents.ARMOR_EQUIP_LEATHER.value(),
+                    net.minecraft.sounds.SoundSource.NEUTRAL, 0.8f, 1.0f);
+        }
+
+        @Override
+        public void tick() {
+            if (++ticks == DURATION) {
+                bot.heal(6);
+                bot.removeEffect(fr.modeminecraft.registry.ModEffects.BLEEDING);
+                bot.healsLeft--;
+                if (bot.level() instanceof net.minecraft.server.level.ServerLevel sl) {
+                    sl.sendParticles(net.minecraft.core.particles.ParticleTypes.HEART, bot.getX(), bot.getY() + 1.4, bot.getZ(), 4, 0.3, 0.3, 0.3, 0.05);
+                }
+            }
+        }
+    }
+
     static final class Flee extends Goal {
         private final HumanBotEntity bot;
 

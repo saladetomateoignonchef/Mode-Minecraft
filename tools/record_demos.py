@@ -43,7 +43,7 @@ def finish(name, fps=20, width=640):
     gif = os.path.join(OUT, name + ".gif")
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", raw, "-vf", f"scale={width}:-2", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "26", mp4], check=True)
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", raw, "-vf",
-                    f"fps=10,scale={min(width, 480)}:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=80:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=4",
+                    f"fps=8,scale=400:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=64:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=5",
                     "-loop", "0", gif], check=True)
     print(name, round(os.path.getsize(mp4) / 1e6, 1), "Mo mp4,", round(os.path.getsize(gif) / 1e6, 1), "Mo gif")
 
