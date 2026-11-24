@@ -405,6 +405,36 @@ def make(V0):
         return v
 
     @reg
+    def airliner():
+        """Avion de ligne régional à turbopropulseurs (type ATR 72) : 22 m de long, 27 m d'envergure, aile haute, deux
+        turbopropulseurs, dérive en T, fuselage blanc à bande bleue, hublots, 8 places. Aucun armement."""
+        v = V("regional_airliner", 10.0)
+        p, cy = "cs_white", 2.4
+        fuselage(v, p, -11.0, 11.0, cy, 1.5, nose=3.0, tail=6.0, tail_r=0.3)
+        canopy(v, 6.6, 8.4, cy + 0.55, 2.2, 0.7, key="glass", frame=p)                 # cockpit
+        for s in (-1, 1):
+            for i in range(11):                                                      # hublots de la cabine
+                v.box("hull", -6.5 + i * 1.1, -5.8 + i * 1.1, cy + 0.35, cy + 0.8, s * 1.485, s * 1.55, "glass")
+            v.box("hull", -9.5, 8.0, cy - 0.25, cy - 0.05, s * 1.46, s * 1.54, "cs_blue")   # bande bleue
+            v.box("hull", -10.5, -9.5, cy + 0.1, cy + 0.5, s * 1.1, s * 1.18, "cs_blue")
+        v.box("hull", 4.5, 5.9, cy - 1.0, cy + 1.0, -1.52, -1.46, "metal")             # porte passagers
+        wings(v, p, 2.4, 3.0, 1.6, 13.0, cy + 1.45, 0.4, sweep=0.0, z0=1.2, steps=9)
+        for s in (-1, 1):
+            v.cyl("hull", "x", (cy + 1.15, s * 4.6), 0.6, -1.2, 3.6, p)               # nacelles
+            v.cyl("hull", "x", (cy + 1.15, s * 4.6), 0.22, 3.6, 4.1, "cs_red")        # cône d'hélice
+            v.props.append((4.15, cy + 1.15, s * 4.6))
+            v.box("hull", 2.4 - 3.0, 2.4, cy + 1.2, cy + 1.45, s * 12.9, s * 13.0, "cs_red")   # saumons
+        fin(v, p, -11.2, 3.4, 1.6, 4.6, cy + 0.7, sweep=1.0)
+        tailplane(v, p, -10.2, 2.2, 1.2, 4.6, cy + 0.7 + 4.6, sweep=0.3)              # empennage en T
+        v.box("hull", -11.0, -8.0, cy + 3.6, cy + 5.2, -0.05, 0.05, "cs_blue")         # logo de dérive
+        gear(v, 1.0, 1.9, 8.2, cy, 0.55, 0.42)
+        v.seat(7.4, cy - 0.1, -0.55)                                                   # pilote et copilote
+        v.seat(7.4, cy - 0.1, 0.55)
+        for i in range(6):                                                             # 6 passagers : trois rangées de deux
+            v.seat(4.0 - (i // 2) * 1.5, cy - 0.45, -0.75 if i % 2 == 0 else 0.75)
+        return v
+
+    @reg
     def f86():
         v = V("f86_sabre", 4.0)
         p, cy = "alu", 1.6

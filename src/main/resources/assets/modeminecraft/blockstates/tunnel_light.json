@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/tunnel_light",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/tunnel_light",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/tunnel_light",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/tunnel_light",
+      "y": 270
+    }
+  }
+}

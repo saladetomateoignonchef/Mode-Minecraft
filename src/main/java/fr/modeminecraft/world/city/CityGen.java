@@ -38,6 +38,8 @@ final class CityGen {
             case "park" -> park(b);
             case "police" -> policeStation(b);
             case "hospital" -> Hospital.build(b);
+            case "airport_terminal" -> Airport.terminal(b);
+            case "airport_airside" -> Airport.airside(b);
             case "apartment" -> apartment(b, plot.above() - 4, layout.hash(dx, dz, 11));
             case "warehouse" -> warehouse(b, layout.hash(dx, dz, 12));
             case "factory_m" -> factory(b, layout.hash(dx, dz, 13));

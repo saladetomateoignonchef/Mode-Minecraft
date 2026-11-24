@@ -1,0 +1,34 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "vehicles",
+  "ingredients": [
+    {
+      "item": "modeminecraft:aircraft_engine",
+      "count": 2
+    },
+    {
+      "item": "modeminecraft:steel_plate",
+      "count": 24
+    },
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 16
+    },
+    {
+      "item": "minecraft:white_wool",
+      "count": 16
+    },
+    {
+      "item": "minecraft:glass",
+      "count": 16
+    },
+    {
+      "item": "modeminecraft:wheel_set",
+      "count": 1
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:regional_airliner",
+    "count": 1
+  }
+}

@@ -1262,7 +1262,7 @@ VEHICLES += tm.make(V)
 SHIPS = {"uss_gerald_r_ford", "admiral_kuznetsov", "kirov_cruiser", "admiral_gorshkov", "slava_cruiser", "udaloy_destroyer", "buyan_corvette", "arleigh_burke",
          "ticonderoga_cruiser", "zumwalt_destroyer", "ohio_submarine", "virginia_submarine", "mercenary_rhib",
          "mercenary_interceptor_boat", "mercenary_explosive_usv"}
-PLANES = {"light_civil_plane", "b29_superfortress", "il2_sturmovik", "la7", "mig15", "tu95_bear", "mig21", "mig25", "su25", "mig29", "su34", "su57",
+PLANES = {"light_civil_plane", "regional_airliner", "b29_superfortress", "il2_sturmovik", "la7", "mig15", "tu95_bear", "mig21", "mig25", "su25", "mig29", "su34", "su57",
           "p51_mustang", "f86_sabre", "f4_phantom", "c130_hercules", "a10_thunderbolt", "f117_nighthawk", "f15e_strike_eagle",
           "f16_falcon", "b2_spirit", "f22_raptor"}
 
