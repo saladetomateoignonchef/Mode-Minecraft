@@ -109,6 +109,52 @@ def main():
     for name in ("bandage", "first_aid_kit", "adrenaline_syringe"):
         with open(os.path.join(ASSETS, f"models/item/{name}.json"), "w", encoding="utf-8") as f:
             json.dump({"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{name}"}}, f, indent=2)
+    # blessures : garrot, attelle, plâtre, défibrillateur, effet « fracture »
+    def icon(name, fn):
+        im = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+        fn(ImageDraw.Draw(im))
+        im.save(os.path.join(ASSETS, f"textures/item/{name}.png"))
+        with open(os.path.join(ASSETS, f"models/item/{name}.json"), "w", encoding="utf-8") as f:
+            json.dump({"parent": "minecraft:item/generated", "textures": {"layer0": f"{MOD}:item/{name}"}}, f, indent=2)
+
+    def tourniquet(d):
+        d.rectangle([3, 6, 12, 10], fill="#2a2a2a", outline="#101010")        # sangle noire
+        d.rectangle([5, 4, 10, 6], fill="#c02028", outline="#801018")         # boucle
+        d.line([(7, 10), (7, 13)], fill="#e8e2d4", width=2)                    # molette
+        d.line([(4, 8), (11, 8)], fill="#5a5a5a")
+    icon("tourniquet", tourniquet)
+
+    def splint(d):
+        d.rectangle([6, 1, 9, 14], fill="#d8c8a0", outline="#8a7a58")         # tige rigide
+        for y in (4, 8, 12):
+            d.line([(4, y), (11, y)], fill="#e8e2d4", width=2)                  # bandes
+        d.line([(7, 2), (7, 13)], fill="#b8a880")
+    icon("splint", splint)
+
+    def cast(d):
+        d.rectangle([3, 3, 12, 13], fill="#f4f1ea", outline="#b8b0a0")         # manchon de plâtre
+        d.rectangle([5, 1, 10, 3], fill="#e0dccf", outline="#b8b0a0")
+        d.line([(4, 6), (11, 6)], fill="#d6d1c2")
+        d.line([(4, 9), (11, 9)], fill="#d6d1c2")
+        d.line([(6, 11), (9, 11)], fill="#3a78d0")                             # signature
+    icon("plaster_cast", cast)
+
+    def defib(d):
+        d.rectangle([2, 4, 13, 13], fill="#e8e8e8", outline="#808890")         # boîtier
+        d.rectangle([3, 5, 12, 8], fill="#1c3a2c")                              # écran
+        d.line([(3, 7), (5, 7), (6, 5), (8, 8), (9, 6), (12, 6)], fill="#40e070")
+        d.ellipse([4, 10, 6, 12], fill="#d02020")
+        d.ellipse([9, 10, 11, 12], fill="#d02020")
+        d.rectangle([6, 2, 9, 4], fill="#a8a8b0")
+    icon("defibrillator", defib)
+
+    eff = Image.new("RGBA", (18, 18), (0, 0, 0, 0))
+    de = ImageDraw.Draw(eff)
+    de.line([(9, 1), (7, 7), (11, 10), (8, 17)], fill="#e8e2d4", width=3)         # os brisé
+    de.line([(9, 1), (7, 7), (11, 10), (8, 17)], fill="#b8b0a0", width=1)
+    de.ellipse([5, 5, 13, 11], outline="#c02028")
+    os.makedirs(os.path.join(ASSETS, "textures/mob_effect"), exist_ok=True)
+    eff.save(os.path.join(ASSETS, "textures/mob_effect/fracture.png"))
     # œufs d'apparition
     factions = ["police", "swat", "militia", "rebel", "garrison", "soviet", "arctic", "mine_security", "cartel", "gang",
                 "sheriff", "refinery", "civilian", "trader", "falcon", "falcon_chief", "falcon_squad", "railway"]

@@ -236,6 +236,9 @@ public final class CityLayout {
                 if (in(dx, dz, 4, 1, 5, 2)) {
                     return multi("police", 22, 4, 1, 2, 2);                        // commissariat central
                 }
+                if (in(dx, dz, -2, 1, -1, 2)) {
+                    return multi("hospital", 14, -2, 1, 2, 2);                     // hôpital de la métropole
+                }
                 if (in(dx, dz, -5, -5, -4, -4) || in(dx, dz, -11, 7, -10, 8)) {
                     int ax = dx < -6 ? -11 : -5, az = dz > 0 ? 7 : -5;
                     return multi("park", 12, ax, az, 2, 2);                        // parcs de quartier

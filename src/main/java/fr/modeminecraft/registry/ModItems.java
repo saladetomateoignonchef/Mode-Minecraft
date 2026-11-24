@@ -1106,6 +1106,14 @@ public final class ModItems {
             () -> new fr.modeminecraft.item.MedicalItem(fr.modeminecraft.item.MedicalItem.Kind.FIRST_AID_KIT, new Item.Properties().stacksTo(4)));
     public static final DeferredItem<Item> ADRENALINE_SYRINGE = ITEMS.register("adrenaline_syringe",
             () -> new fr.modeminecraft.item.MedicalItem(fr.modeminecraft.item.MedicalItem.Kind.ADRENALINE, new Item.Properties().stacksTo(4).rarity(Rarity.UNCOMMON)));
+    public static final DeferredItem<Item> TOURNIQUET = ITEMS.register("tourniquet",
+            () -> new fr.modeminecraft.item.MedicalItem(fr.modeminecraft.item.MedicalItem.Kind.TOURNIQUET, new Item.Properties().stacksTo(8)));
+    public static final DeferredItem<Item> SPLINT = ITEMS.register("splint",
+            () -> new fr.modeminecraft.item.MedicalItem(fr.modeminecraft.item.MedicalItem.Kind.SPLINT, new Item.Properties().stacksTo(8)));
+    public static final DeferredItem<Item> PLASTER_CAST = ITEMS.register("plaster_cast",
+            () -> new fr.modeminecraft.item.MedicalItem(fr.modeminecraft.item.MedicalItem.Kind.CAST, new Item.Properties().stacksTo(4)));
+    public static final DeferredItem<Item> DEFIBRILLATOR = ITEMS.register("defibrillator",
+            () -> new fr.modeminecraft.item.MedicalItem(fr.modeminecraft.item.MedicalItem.Kind.DEFIBRILLATOR, new Item.Properties().stacksTo(1).rarity(Rarity.RARE)));
     // Véhicules
     // ================= VÉHICULES MILITAIRES & MUNITIONS LOURDES (mise à jour 0.4) =================
     public static final java.util.Map<fr.modeminecraft.entity.military.MilType, DeferredItem<Item>> MIL_VEHICLES =
@@ -1281,6 +1289,8 @@ public final class ModItems {
             () -> new fr.modeminecraft.item.VehicleItem(fr.modeminecraft.entity.VehicleEntity.Type.TAXI, new Item.Properties()));
     public static final DeferredItem<Item> BUS = ITEMS.register("bus",
             () -> new fr.modeminecraft.item.VehicleItem(fr.modeminecraft.entity.VehicleEntity.Type.BUS, new Item.Properties().rarity(Rarity.UNCOMMON)));
+    public static final DeferredItem<Item> AMBULANCE = ITEMS.register("ambulance",
+            () -> new fr.modeminecraft.item.VehicleItem(fr.modeminecraft.entity.VehicleEntity.Type.AMBULANCE, new Item.Properties().rarity(Rarity.UNCOMMON)));
     /** Sac à dos tactique : 18 cases, porté dans la case « sac à dos » de l'inventaire. */
     public static final DeferredItem<Item> TACTICAL_BACKPACK = ITEMS.register("tactical_backpack",
             () -> new fr.modeminecraft.item.tactical.BackpackItem(new Item.Properties().rarity(Rarity.UNCOMMON)));

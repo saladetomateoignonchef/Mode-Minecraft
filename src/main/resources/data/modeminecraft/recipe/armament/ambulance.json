@@ -1,0 +1,30 @@
+{
+  "type": "modeminecraft:armament",
+  "category": "weapons",
+  "ingredients": [
+    {
+      "item": "minecraft:iron_block",
+      "count": 4
+    },
+    {
+      "item": "minecraft:glass",
+      "count": 4
+    },
+    {
+      "item": "minecraft:white_concrete",
+      "count": 6
+    },
+    {
+      "item": "minecraft:red_dye",
+      "count": 3
+    },
+    {
+      "item": "modeminecraft:first_aid_kit",
+      "count": 2
+    }
+  ],
+  "result": {
+    "id": "modeminecraft:ambulance",
+    "count": 1
+  }
+}

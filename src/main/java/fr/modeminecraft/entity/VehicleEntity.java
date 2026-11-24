@@ -46,7 +46,9 @@ public class VehicleEntity extends Entity {
         // circulation des villes
         SEDAN("sedan", 0.72f, 0.026f, 3.6f, 50, 0.9f, 4, false, 2.0f, 1.5f),
         TAXI("taxi", 0.72f, 0.026f, 3.6f, 50, 0.9f, 4, false, 2.0f, 1.5f),
-        BUS("bus", 0.48f, 0.014f, 2.2f, 140, 0.6f, 8, false, 2.6f, 2.9f);
+        BUS("bus", 0.48f, 0.014f, 2.2f, 140, 0.6f, 8, false, 2.6f, 2.9f),
+        /** Ambulance de l'hôpital (gyrophares et sirène comme la voiture de police). À garder en dernier : le type est stocké par numéro. */
+        AMBULANCE("ambulance", 0.74f, 0.024f, 3.2f, 90, 0.5f, 4, true, 2.2f, 2.2f);
 
         public final String id;
         public final float maxSpeed, accel, turn, health, armor;
@@ -76,6 +78,7 @@ public class VehicleEntity extends Entity {
                 case SEDAN -> ModItems.SEDAN.get();
                 case TAXI -> ModItems.TAXI.get();
                 case BUS -> ModItems.BUS.get();
+                case AMBULANCE -> ModItems.AMBULANCE.get();
             };
         }
 
@@ -86,6 +89,7 @@ public class VehicleEntity extends Entity {
                 case POLICE_CAR, JEEP, SEDAN, TAXI -> new Vec3(i < 2 ? 0.25 : -0.65, 0.35, i % 2 == 0 ? -0.42 : 0.42);
                 case BUS -> i == 0 ? new Vec3(2.0, 0.9, -0.5) : new Vec3(1.0 - (i - 1) / 2 * 1.1, 0.9, (i - 1) % 2 == 0 ? -0.55 : 0.55);
                 case ARMORED_TRUCK -> new Vec3(i < 2 ? 1.6 : -0.8, 0.95, i % 2 == 0 ? -0.5 : 0.5);
+                case AMBULANCE -> new Vec3(i < 2 ? 0.9 : -0.9, 0.55, i % 2 == 0 ? -0.45 : 0.45);
             };
         }
     }

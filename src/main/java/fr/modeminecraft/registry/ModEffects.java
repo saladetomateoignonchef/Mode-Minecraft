@@ -29,5 +29,13 @@ public final class ModEffects {
     public static final DeferredHolder<MobEffect, MobEffect> BLEEDING = EFFECTS.register("bleeding",
             () -> new fr.modeminecraft.effect.BleedingEffect());
 
+    /** Fracture : jambe immobilisée par une attelle (niveau I) ou cassée (niveau II). Guérie par un plâtre. */
+    public static final DeferredHolder<MobEffect, MobEffect> FRACTURE = EFFECTS.register("fracture",
+            () -> new fr.modeminecraft.effect.FractureEffect()
+                    .addAttributeModifier(Attributes.MOVEMENT_SPEED, ModeMinecraft.id("fracture_speed"), -0.25,
+                            AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL)
+                    .addAttributeModifier(Attributes.JUMP_STRENGTH, ModeMinecraft.id("fracture_jump"), -0.25,
+                            AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+
     private ModEffects() {}
 }
