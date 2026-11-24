@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/conveyor_belt",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/conveyor_belt",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/conveyor_belt",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/conveyor_belt",
+      "y": 270
+    }
+  }
+}

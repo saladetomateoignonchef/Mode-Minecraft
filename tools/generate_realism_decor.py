@@ -11,6 +11,7 @@ import json
 import math
 import os
 import random
+import sys
 
 from PIL import Image
 
@@ -20,6 +21,7 @@ ASSETS = os.path.join(RES, "assets/modeminecraft")
 DATA = os.path.join(RES, "data/modeminecraft")
 JAVA = os.path.join(ROOT, "src/main/java/fr/modeminecraft/block/city/RealismDecoData.java")
 MOD = "modeminecraft"
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 PAL = {
     "white": "#ececea", "offwhite": "#d8d8d4", "gray": "#8a8e94", "dgray": "#4a4e54", "black": "#1c1d20", "steel": "#b4b8bf",
@@ -28,7 +30,6 @@ PAL = {
     "case_a": "#34506e", "case_b": "#7a2a2a", "case_c": "#3a5a3a", "case_d": "#8a6a2a", "wheel": "#202226", "belt": "#2a2c30",
     "lamp": "#fff2c0", "curtain": "#9ec8d8", "hazard": "#e8c020",
 }
-KEYS = list(PAL)
 
 
 def hex_rgb(h):
@@ -206,6 +207,17 @@ DECOS = [
     dict(id="electrical_cabinet", fr="Armoire électrique", en="Electrical cabinet", elements=[
         (1, 0, 4, 15, 30, 14, "gray"), (2, 1, 3.4, 14, 29, 4, "dgray"), (2, 1, 3.2, 14, 4, 3.4, "hazard"), (6, 14, 3.0, 10, 18, 3.2, "red"), (13, 15, 3.0, 14, 17, 3.2, "steel")]),
 ]
+
+
+# deuxième série (maison, cuisine, commerce, rue, bureau, industrie, militaire) : voir realism_decor_2.py
+import realism_decor_2 as r2  # noqa: E402
+
+PAL.update(r2.PAL2)
+ANIMS.update(r2.ANIMS2)
+DECOS.extend(r2.DECOS2)
+KEYS = list(PAL)
+assert len(KEYS) <= 64, "palette trop grande (8 x 8 pastilles de 2 px)"
+assert len({d["id"] for d in DECOS}) == len(DECOS), "identifiants de décors en double"
 
 
 def write(path, data):

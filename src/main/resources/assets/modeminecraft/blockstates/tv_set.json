@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/tv_set",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/tv_set",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/tv_set",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/tv_set",
+      "y": 270
+    }
+  }
+}

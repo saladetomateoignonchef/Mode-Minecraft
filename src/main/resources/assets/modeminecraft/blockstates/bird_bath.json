@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/bird_bath",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/bird_bath",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/bird_bath",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/bird_bath",
+      "y": 270
+    }
+  }
+}

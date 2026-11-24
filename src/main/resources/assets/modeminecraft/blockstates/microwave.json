@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/microwave",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/microwave",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/microwave",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/microwave",
+      "y": 270
+    }
+  }
+}

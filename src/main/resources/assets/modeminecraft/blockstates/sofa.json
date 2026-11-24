@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/sofa",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/sofa",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/sofa",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/sofa",
+      "y": 270
+    }
+  }
+}

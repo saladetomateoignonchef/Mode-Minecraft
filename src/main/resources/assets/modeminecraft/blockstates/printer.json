@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/printer",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/printer",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/printer",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/printer",
+      "y": 270
+    }
+  }
+}
