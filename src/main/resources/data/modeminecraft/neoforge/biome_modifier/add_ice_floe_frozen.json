@@ -1,8 +1,8 @@
 {
   "type": "neoforge:add_features",
   "biomes": [
-    "minecraft:frozen_ocean",
-    "minecraft:deep_frozen_ocean"
+    "minecraft:deep_frozen_ocean",
+    "minecraft:frozen_ocean"
   ],
   "features": [
     "modeminecraft:ice_floe_frozen"

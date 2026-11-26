@@ -1,11 +1,13 @@
 {
   "type": "neoforge:add_features",
   "biomes": [
-    "minecraft:swamp",
-    "minecraft:forest",
-    "minecraft:plains",
     "minecraft:birch_forest",
-    "minecraft:meadow"
+    "minecraft:forest",
+    "minecraft:frozen_river",
+    "minecraft:meadow",
+    "minecraft:plains",
+    "minecraft:river",
+    "minecraft:swamp"
   ],
   "features": [
     "modeminecraft:nature_river"

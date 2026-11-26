@@ -1,8 +1,0 @@
-{
-  "type": "neoforge:add_features",
-  "biomes": "#minecraft:is_river",
-  "features": [
-    "modeminecraft:nature_river"
-  ],
-  "step": "vegetal_decoration"
-}

@@ -1,6 +1,11 @@
 {
   "type": "neoforge:add_features",
-  "biomes": "#minecraft:is_river",
+  "biomes": [
+    "minecraft:frozen_river",
+    "minecraft:mangrove_swamp",
+    "minecraft:river",
+    "minecraft:swamp"
+  ],
   "features": [
     "modeminecraft:nature_shore_flora"
   ],
