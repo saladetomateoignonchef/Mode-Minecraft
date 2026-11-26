@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/soviet_flag_fringed",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/soviet_flag_fringed",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/soviet_flag_fringed",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/soviet_flag_fringed",
+      "y": 270
+    }
+  }
+}

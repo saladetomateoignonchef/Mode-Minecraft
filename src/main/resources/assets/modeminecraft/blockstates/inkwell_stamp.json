@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/inkwell_stamp",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/inkwell_stamp",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/inkwell_stamp",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/inkwell_stamp",
+      "y": 270
+    }
+  }
+}

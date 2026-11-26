@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/barbed_coil",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/barbed_coil",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/barbed_coil",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/barbed_coil",
+      "y": 270
+    }
+  }
+}

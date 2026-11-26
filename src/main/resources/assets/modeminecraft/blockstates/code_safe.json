@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/code_safe",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/code_safe",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/code_safe",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/code_safe",
+      "y": 270
+    }
+  }
+}

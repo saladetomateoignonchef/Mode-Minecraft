@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/rocket_model",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/rocket_model",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/rocket_model",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/rocket_model",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/shot_up_dummy",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/shot_up_dummy",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/shot_up_dummy",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/shot_up_dummy",
+      "y": 270
+    }
+  }
+}

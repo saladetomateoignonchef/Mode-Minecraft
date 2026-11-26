@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/wrecked_car_shell",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/wrecked_car_shell",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/wrecked_car_shell",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/wrecked_car_shell",
+      "y": 270
+    }
+  }
+}

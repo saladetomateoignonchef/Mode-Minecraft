@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/tube_radio",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/tube_radio",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/tube_radio",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/tube_radio",
+      "y": 270
+    }
+  }
+}

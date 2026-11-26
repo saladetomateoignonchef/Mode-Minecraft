@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/ladle_rack",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/ladle_rack",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/ladle_rack",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/ladle_rack",
+      "y": 270
+    }
+  }
+}

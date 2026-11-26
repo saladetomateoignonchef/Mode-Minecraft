@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/silo_hatch_deco",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/silo_hatch_deco",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/silo_hatch_deco",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/silo_hatch_deco",
+      "y": 270
+    }
+  }
+}
