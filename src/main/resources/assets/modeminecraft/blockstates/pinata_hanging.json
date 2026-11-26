@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/pinata_hanging",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/pinata_hanging",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/pinata_hanging",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/pinata_hanging",
+      "y": 270
+    }
+  }
+}

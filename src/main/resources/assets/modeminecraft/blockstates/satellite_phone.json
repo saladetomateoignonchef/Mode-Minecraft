@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/satellite_phone",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/satellite_phone",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/satellite_phone",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/satellite_phone",
+      "y": 270
+    }
+  }
+}

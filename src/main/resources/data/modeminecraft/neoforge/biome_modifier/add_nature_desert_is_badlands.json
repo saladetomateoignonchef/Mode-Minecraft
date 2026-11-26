@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_badlands",
+  "features": [
+    "modeminecraft:nature_desert"
+  ],
+  "step": "vegetal_decoration"
+}

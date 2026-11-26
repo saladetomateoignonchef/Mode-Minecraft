@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/airdrop_crate",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/airdrop_crate",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/airdrop_crate",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/airdrop_crate",
+      "y": 270
+    }
+  }
+}

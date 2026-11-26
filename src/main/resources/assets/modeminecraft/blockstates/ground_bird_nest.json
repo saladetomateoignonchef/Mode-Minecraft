@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/ground_bird_nest",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/ground_bird_nest",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/ground_bird_nest",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/ground_bird_nest",
+      "y": 270
+    }
+  }
+}

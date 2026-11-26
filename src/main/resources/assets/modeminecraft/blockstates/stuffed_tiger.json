@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/stuffed_tiger",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/stuffed_tiger",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/stuffed_tiger",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/stuffed_tiger",
+      "y": 270
+    }
+  }
+}

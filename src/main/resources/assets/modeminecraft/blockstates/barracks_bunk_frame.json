@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/barracks_bunk_frame",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/barracks_bunk_frame",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/barracks_bunk_frame",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/barracks_bunk_frame",
+      "y": 270
+    }
+  }
+}

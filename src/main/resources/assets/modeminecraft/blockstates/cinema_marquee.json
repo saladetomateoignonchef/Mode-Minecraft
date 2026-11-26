@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/cinema_marquee",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/cinema_marquee",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/cinema_marquee",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/cinema_marquee",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/small_water_mill",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/small_water_mill",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/small_water_mill",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/small_water_mill",
+      "y": 270
+    }
+  }
+}

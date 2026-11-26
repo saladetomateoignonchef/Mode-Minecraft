@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/boss_leather_chair",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/boss_leather_chair",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/boss_leather_chair",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/boss_leather_chair",
+      "y": 270
+    }
+  }
+}

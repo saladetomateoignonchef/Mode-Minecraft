@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/precision_scale",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/precision_scale",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/precision_scale",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/precision_scale",
+      "y": 270
+    }
+  }
+}

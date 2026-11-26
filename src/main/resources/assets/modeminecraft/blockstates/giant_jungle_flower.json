@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/giant_jungle_flower",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/giant_jungle_flower",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/giant_jungle_flower",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/giant_jungle_flower",
+      "y": 270
+    }
+  }
+}

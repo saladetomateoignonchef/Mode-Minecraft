@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/crashed_plane_wing",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/crashed_plane_wing",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/crashed_plane_wing",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/crashed_plane_wing",
+      "y": 270
+    }
+  }
+}

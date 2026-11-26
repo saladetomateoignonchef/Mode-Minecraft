@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/armored_hatch_door",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/armored_hatch_door",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/armored_hatch_door",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/armored_hatch_door",
+      "y": 270
+    }
+  }
+}

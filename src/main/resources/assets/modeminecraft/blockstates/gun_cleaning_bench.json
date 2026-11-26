@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/gun_cleaning_bench",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/gun_cleaning_bench",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/gun_cleaning_bench",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/gun_cleaning_bench",
+      "y": 270
+    }
+  }
+}

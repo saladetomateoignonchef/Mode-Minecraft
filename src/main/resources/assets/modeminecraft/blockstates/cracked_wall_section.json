@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/cracked_wall_section",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/cracked_wall_section",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/cracked_wall_section",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/cracked_wall_section",
+      "y": 270
+    }
+  }
+}

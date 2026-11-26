@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/pill_press",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/pill_press",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/pill_press",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/pill_press",
+      "y": 270
+    }
+  }
+}

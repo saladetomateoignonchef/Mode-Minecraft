@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/coffee_urn",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/coffee_urn",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/coffee_urn",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/coffee_urn",
+      "y": 270
+    }
+  }
+}

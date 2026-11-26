@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/fourth_july_banner",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/fourth_july_banner",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/fourth_july_banner",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/fourth_july_banner",
+      "y": 270
+    }
+  }
+}

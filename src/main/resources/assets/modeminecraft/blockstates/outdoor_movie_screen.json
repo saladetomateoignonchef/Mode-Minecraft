@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/outdoor_movie_screen",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/outdoor_movie_screen",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/outdoor_movie_screen",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/outdoor_movie_screen",
+      "y": 270
+    }
+  }
+}

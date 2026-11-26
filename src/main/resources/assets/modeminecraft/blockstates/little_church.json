@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/little_church",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/little_church",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/little_church",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/little_church",
+      "y": 270
+    }
+  }
+}

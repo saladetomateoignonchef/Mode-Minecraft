@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/mini_fridge",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/mini_fridge",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/mini_fridge",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/mini_fridge",
+      "y": 270
+    }
+  }
+}

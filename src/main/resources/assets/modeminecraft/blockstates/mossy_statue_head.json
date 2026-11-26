@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/mossy_statue_head",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/mossy_statue_head",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/mossy_statue_head",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/mossy_statue_head",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/purple_heart_case",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/purple_heart_case",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/purple_heart_case",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/purple_heart_case",
+      "y": 270
+    }
+  }
+}

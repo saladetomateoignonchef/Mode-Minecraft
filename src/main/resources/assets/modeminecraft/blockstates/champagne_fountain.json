@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/champagne_fountain",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/champagne_fountain",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/champagne_fountain",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/champagne_fountain",
+      "y": 270
+    }
+  }
+}

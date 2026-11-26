@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/hotdog_stand",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/hotdog_stand",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/hotdog_stand",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/hotdog_stand",
+      "y": 270
+    }
+  }
+}

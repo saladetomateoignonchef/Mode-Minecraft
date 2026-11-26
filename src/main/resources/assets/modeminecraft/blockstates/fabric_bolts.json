@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/fabric_bolts",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/fabric_bolts",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/fabric_bolts",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/fabric_bolts",
+      "y": 270
+    }
+  }
+}

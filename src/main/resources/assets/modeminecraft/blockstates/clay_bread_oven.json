@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/clay_bread_oven",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/clay_bread_oven",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/clay_bread_oven",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/clay_bread_oven",
+      "y": 270
+    }
+  }
+}

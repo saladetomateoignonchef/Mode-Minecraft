@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/scarecrow_field",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/scarecrow_field",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/scarecrow_field",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/scarecrow_field",
+      "y": 270
+    }
+  }
+}

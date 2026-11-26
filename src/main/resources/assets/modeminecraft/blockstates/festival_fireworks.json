@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/festival_fireworks",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/festival_fireworks",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/festival_fireworks",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/festival_fireworks",
+      "y": 270
+    }
+  }
+}

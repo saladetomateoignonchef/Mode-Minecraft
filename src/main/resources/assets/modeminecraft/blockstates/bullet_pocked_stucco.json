@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/bullet_pocked_stucco",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/bullet_pocked_stucco",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/bullet_pocked_stucco",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/bullet_pocked_stucco",
+      "y": 270
+    }
+  }
+}

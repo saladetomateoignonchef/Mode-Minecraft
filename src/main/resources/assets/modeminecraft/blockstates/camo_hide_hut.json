@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/camo_hide_hut",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/camo_hide_hut",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/camo_hide_hut",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/camo_hide_hut",
+      "y": 270
+    }
+  }
+}

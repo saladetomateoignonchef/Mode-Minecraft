@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/thanksgiving_corn",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/thanksgiving_corn",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/thanksgiving_corn",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/thanksgiving_corn",
+      "y": 270
+    }
+  }
+}

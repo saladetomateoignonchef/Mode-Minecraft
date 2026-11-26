@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/fish_smoker",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/fish_smoker",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/fish_smoker",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/fish_smoker",
+      "y": 270
+    }
+  }
+}

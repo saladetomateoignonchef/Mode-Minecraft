@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/russian_wall_clock",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/russian_wall_clock",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/russian_wall_clock",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/russian_wall_clock",
+      "y": 270
+    }
+  }
+}

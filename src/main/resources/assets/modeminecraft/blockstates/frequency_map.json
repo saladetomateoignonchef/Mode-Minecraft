@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/frequency_map",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/frequency_map",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/frequency_map",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/frequency_map",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/carcass_bones",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/carcass_bones",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/carcass_bones",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/carcass_bones",
+      "y": 270
+    }
+  }
+}

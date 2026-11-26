@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/broken_column",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/broken_column",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/broken_column",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/broken_column",
+      "y": 270
+    }
+  }
+}

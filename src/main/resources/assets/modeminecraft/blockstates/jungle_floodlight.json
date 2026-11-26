@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/jungle_floodlight",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/jungle_floodlight",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/jungle_floodlight",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/jungle_floodlight",
+      "y": 270
+    }
+  }
+}

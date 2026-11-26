@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_taiga",
+  "features": [
+    "modeminecraft:nature_camp"
+  ],
+  "step": "vegetal_decoration"
+}

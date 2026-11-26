@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/overgrown_temple_arch",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/overgrown_temple_arch",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/overgrown_temple_arch",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/overgrown_temple_arch",
+      "y": 270
+    }
+  }
+}

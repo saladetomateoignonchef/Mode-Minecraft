@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/icicle_cluster",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/icicle_cluster",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/icicle_cluster",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/icicle_cluster",
+      "y": 270
+    }
+  }
+}

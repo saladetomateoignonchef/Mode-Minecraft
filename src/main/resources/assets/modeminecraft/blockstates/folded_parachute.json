@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/folded_parachute",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/folded_parachute",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/folded_parachute",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/folded_parachute",
+      "y": 270
+    }
+  }
+}

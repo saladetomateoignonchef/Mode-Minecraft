@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/vegetable_patch",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/vegetable_patch",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/vegetable_patch",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/vegetable_patch",
+      "y": 270
+    }
+  }
+}

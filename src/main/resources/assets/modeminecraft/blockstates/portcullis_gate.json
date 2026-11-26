@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/portcullis_gate",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/portcullis_gate",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/portcullis_gate",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/portcullis_gate",
+      "y": 270
+    }
+  }
+}

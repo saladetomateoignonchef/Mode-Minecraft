@@ -84,6 +84,7 @@ final class CityGenRegions {
             b.set(7, 0, 6, Blocks.DECORATED_POT);
             Deco.searchlight(b, 12, 0, 3);
         }
+        DesertDecor.avenue(b, k);
         if (b.chance(0.35f)) {
             b.pair(7, 0, 8, Faction.MILITIA, 32);
         }
@@ -166,6 +167,7 @@ final class CityGenRegions {
         if (north != null && north.type().equals("avenue") && h > 0.4) {
             portrait(b, 4, 2, 1);
         }
+        DesertDecor.riad(b, h);
         if (h > 0.7) {
             b.chest(12, 1, 12, Direction.UP, "desert_uranium", true);                      // cache d'uranium de la milice
         }
@@ -296,6 +298,7 @@ final class CityGenRegions {
         b.pair(14, 0, 30, Faction.MILITIA, 18);
         b.pair(30, 6, 18, Faction.MILITIA, 10);
         b.bot(23, 16, 10, Faction.MILITIA, BotRole.SNIPER, 3);
+        DesertDecor.palace(b);
     }
 
     /** Grand Souk couvert (3 x 2 chunks) : étals, épices, tapis, narguilés, marchand. */
@@ -335,6 +338,7 @@ final class CityGenRegions {
         b.bot(10, 0, 20, Faction.CIVILIAN, BotRole.CIVILIAN, 16);
         b.bot(35, 0, 10, Faction.CIVILIAN, BotRole.CIVILIAN, 16);
         b.pair(20, 0, 28, Faction.MILITIA, 24);
+        DesertDecor.souk(b);
     }
 
     // =====================================================================================================

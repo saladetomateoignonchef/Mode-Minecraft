@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/fume_hood",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/fume_hood",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/fume_hood",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/fume_hood",
+      "y": 270
+    }
+  }
+}

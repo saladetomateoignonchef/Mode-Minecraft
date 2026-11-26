@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/firefly_swarm",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/firefly_swarm",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/firefly_swarm",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/firefly_swarm",
+      "y": 270
+    }
+  }
+}

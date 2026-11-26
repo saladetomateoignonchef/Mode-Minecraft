@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/watchtower_post",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/watchtower_post",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/watchtower_post",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/watchtower_post",
+      "y": 270
+    }
+  }
+}

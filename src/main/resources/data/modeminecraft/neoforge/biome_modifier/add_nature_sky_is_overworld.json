@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": [
+    "modeminecraft:nature_sky"
+  ],
+  "step": "vegetal_decoration"
+}

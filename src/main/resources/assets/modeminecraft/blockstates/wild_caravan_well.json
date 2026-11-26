@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/wild_caravan_well",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/wild_caravan_well",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/wild_caravan_well",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/wild_caravan_well",
+      "y": 270
+    }
+  }
+}

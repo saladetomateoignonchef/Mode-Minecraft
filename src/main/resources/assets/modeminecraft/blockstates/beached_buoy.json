@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/beached_buoy",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/beached_buoy",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/beached_buoy",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/beached_buoy",
+      "y": 270
+    }
+  }
+}

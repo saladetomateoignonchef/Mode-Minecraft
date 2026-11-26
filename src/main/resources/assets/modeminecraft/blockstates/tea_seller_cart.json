@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/tea_seller_cart",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/tea_seller_cart",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/tea_seller_cart",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/tea_seller_cart",
+      "y": 270
+    }
+  }
+}

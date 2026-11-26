@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/camouflaged_greenhouse",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/camouflaged_greenhouse",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/camouflaged_greenhouse",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/camouflaged_greenhouse",
+      "y": 270
+    }
+  }
+}

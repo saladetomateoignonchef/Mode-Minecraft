@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/irrigation_channel",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/irrigation_channel",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/irrigation_channel",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/irrigation_channel",
+      "y": 270
+    }
+  }
+}

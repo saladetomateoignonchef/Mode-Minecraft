@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/timber_support",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/timber_support",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/timber_support",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/timber_support",
+      "y": 270
+    }
+  }
+}

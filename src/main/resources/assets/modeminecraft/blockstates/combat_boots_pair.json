@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/combat_boots_pair",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/combat_boots_pair",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/combat_boots_pair",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/combat_boots_pair",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/ice_stalagmites",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/ice_stalagmites",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/ice_stalagmites",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/ice_stalagmites",
+      "y": 270
+    }
+  }
+}

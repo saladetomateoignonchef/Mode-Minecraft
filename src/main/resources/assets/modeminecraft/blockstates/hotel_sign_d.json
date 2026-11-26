@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/hotel_sign_d",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/hotel_sign_d",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/hotel_sign_d",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/hotel_sign_d",
+      "y": 270
+    }
+  }
+}
