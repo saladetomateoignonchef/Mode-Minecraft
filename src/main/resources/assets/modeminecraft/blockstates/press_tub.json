@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/press_tub",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/press_tub",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/press_tub",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/press_tub",
+      "y": 270
+    }
+  }
+}

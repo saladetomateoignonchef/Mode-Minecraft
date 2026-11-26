@@ -145,6 +145,7 @@ final class CityGenRegions2 {
                 b.fill(5, 0, 26, 10, 0, 26, B.slab(Blocks.DARK_OAK_SLAB, true));   // bar de la piscine
                 b.set(7, 1, 26, Blocks.BREWING_STAND);
                 b.bot(7, 0, 4, Faction.CARTEL, BotRole.SOLDIER, 10);
+                JungleDecor.pool(b);
             }
             case "airstrip" -> {
                 b.ground(0, 0, 15, 15, Blocks.GRASS_BLOCK.defaultBlockState(), Blocks.DIRT.defaultBlockState(), 10);
@@ -165,6 +166,7 @@ final class CityGenRegions2 {
                     b.fill(1, 0, 14, 1, 4, 14, Blocks.OAK_FENCE);                   // manche à air
                     b.set(2, 4, 14, Blocks.ORANGE_WOOL);
                 }
+                JungleDecor.airstrip(b, dx);
             }
             case "hangar_small" -> {
                 b.fill(1, 0, 2, 14, 0, 14, Blocks.GRAY_CONCRETE);
@@ -179,6 +181,7 @@ final class CityGenRegions2 {
                 b.chest(12, 1, 4, Direction.WEST, "cartel_safe", false);
                 b.set(7, 6, 8, Blocks.SEA_LANTERN);
                 b.pair(8, 1, 8, Faction.CARTEL, 10);
+                JungleDecor.hangar(b);
             }
             default -> {   // jardins tropicaux
                 for (int[] p : new int[][]{{4, 4}, {11, 9}}) {
@@ -198,6 +201,7 @@ final class CityGenRegions2 {
                 if (h > 0.5) {
                     b.pair(8, 0, 9, Faction.CARTEL, 18);
                 }
+                JungleDecor.garden(b, h);
             }
         }
     }
@@ -275,6 +279,7 @@ final class CityGenRegions2 {
         b.pair(12, 1, 20, Faction.CARTEL, 12);
         b.pair(16, 0, 30, Faction.CARTEL, 16);
         b.bot(24, 11, 24, Faction.CARTEL, BotRole.SNIPER, 3);
+        JungleDecor.hacienda(b);
     }
 
     // =====================================================================================================

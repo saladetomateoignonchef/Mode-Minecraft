@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/cctv_pole",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/cctv_pole",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/cctv_pole",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/cctv_pole",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/coca_plants",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/coca_plants",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/coca_plants",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/coca_plants",
+      "y": 270
+    }
+  }
+}

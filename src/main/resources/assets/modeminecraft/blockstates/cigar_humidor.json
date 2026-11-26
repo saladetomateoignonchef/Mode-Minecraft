@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/cigar_humidor",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/cigar_humidor",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/cigar_humidor",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/cigar_humidor",
+      "y": 270
+    }
+  }
+}

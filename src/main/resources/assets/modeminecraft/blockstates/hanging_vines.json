@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/hanging_vines",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/hanging_vines",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/hanging_vines",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/hanging_vines",
+      "y": 270
+    }
+  }
+}

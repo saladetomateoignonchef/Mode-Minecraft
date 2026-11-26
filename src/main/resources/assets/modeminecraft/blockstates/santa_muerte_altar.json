@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/santa_muerte_altar",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/santa_muerte_altar",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/santa_muerte_altar",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/santa_muerte_altar",
+      "y": 270
+    }
+  }
+}
