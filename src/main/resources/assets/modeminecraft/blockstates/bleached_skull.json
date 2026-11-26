@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/bleached_skull",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/bleached_skull",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/bleached_skull",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/bleached_skull",
+      "y": 270
+    }
+  }
+}

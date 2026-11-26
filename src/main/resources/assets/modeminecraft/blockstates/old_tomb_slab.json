@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/old_tomb_slab",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/old_tomb_slab",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/old_tomb_slab",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/old_tomb_slab",
+      "y": 270
+    }
+  }
+}

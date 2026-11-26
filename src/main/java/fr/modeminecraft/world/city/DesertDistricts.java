@@ -115,7 +115,7 @@ final class DesertDistricts {
             }
         }
         b.fill(0, 6, 0, 15, 6, 15, Blocks.TERRACOTTA);
-        b.fill(1, 7, 1, 14, 7, 14, B.slab(Blocks.ORANGE_TERRACOTTA, false));
+        b.fill(1, 7, 1, 14, 7, 14, B.slab(Blocks.RED_SANDSTONE_SLAB, false));
         Block[] cloth = {Blocks.RED_WOOL, Blocks.ORANGE_WOOL, Blocks.YELLOW_WOOL, Blocks.BLUE_WOOL};
         for (int x = 2; x <= 13; x++) {
             for (int z = 2; z <= 13; z += 5) {

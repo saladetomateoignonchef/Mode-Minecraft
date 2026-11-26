@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/frozen_geyser",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/frozen_geyser",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/frozen_geyser",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/frozen_geyser",
+      "y": 270
+    }
+  }
+}

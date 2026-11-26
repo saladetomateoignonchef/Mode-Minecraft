@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/fallen_branches",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/fallen_branches",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/fallen_branches",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/fallen_branches",
+      "y": 270
+    }
+  }
+}

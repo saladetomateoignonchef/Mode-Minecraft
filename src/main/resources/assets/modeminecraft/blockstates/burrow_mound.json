@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/burrow_mound",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/burrow_mound",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/burrow_mound",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/burrow_mound",
+      "y": 270
+    }
+  }
+}

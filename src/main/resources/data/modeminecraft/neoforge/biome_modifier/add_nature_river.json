@@ -1,0 +1,15 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "#minecraft:is_river",
+    "minecraft:swamp",
+    "minecraft:forest",
+    "minecraft:plains",
+    "minecraft:birch_forest",
+    "minecraft:meadow"
+  ],
+  "features": [
+    "modeminecraft:nature_river"
+  ],
+  "step": "vegetal_decoration"
+}

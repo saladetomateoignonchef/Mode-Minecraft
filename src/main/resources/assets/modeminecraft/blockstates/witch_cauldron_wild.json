@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/witch_cauldron_wild",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/witch_cauldron_wild",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/witch_cauldron_wild",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/witch_cauldron_wild",
+      "y": 270
+    }
+  }
+}

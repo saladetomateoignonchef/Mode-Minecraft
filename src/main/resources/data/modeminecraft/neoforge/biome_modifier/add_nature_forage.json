@@ -1,0 +1,13 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "#minecraft:is_forest",
+    "#minecraft:is_taiga",
+    "minecraft:plains",
+    "minecraft:meadow"
+  ],
+  "features": [
+    "modeminecraft:nature_forage"
+  ],
+  "step": "vegetal_decoration"
+}

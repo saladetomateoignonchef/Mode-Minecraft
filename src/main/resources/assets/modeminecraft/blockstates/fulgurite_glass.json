@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/fulgurite_glass",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/fulgurite_glass",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/fulgurite_glass",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/fulgurite_glass",
+      "y": 270
+    }
+  }
+}

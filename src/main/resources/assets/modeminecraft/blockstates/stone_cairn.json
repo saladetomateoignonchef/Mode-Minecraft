@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/stone_cairn",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/stone_cairn",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/stone_cairn",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/stone_cairn",
+      "y": 270
+    }
+  }
+}

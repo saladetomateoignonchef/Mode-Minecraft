@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/moored_rowboat",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/moored_rowboat",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/moored_rowboat",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/moored_rowboat",
+      "y": 270
+    }
+  }
+}

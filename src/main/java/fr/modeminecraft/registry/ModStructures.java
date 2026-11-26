@@ -46,5 +46,9 @@ public final class ModStructures {
     public static final DeferredHolder<net.minecraft.world.level.levelgen.feature.Feature<?>, fr.modeminecraft.world.road.CityBlendFeature> CITY_BLEND =
             FEATURES.register("city_blend", fr.modeminecraft.world.road.CityBlendFeature::new);
 
+    /** Décors de nature (troncs creux, cairns, ruines, épaves...) posés hors des villes selon le biome. */
+    public static final DeferredHolder<net.minecraft.world.level.levelgen.feature.Feature<?>, fr.modeminecraft.world.nature.NatureDecorFeature> NATURE_DECOR =
+            FEATURES.register("nature_decor", fr.modeminecraft.world.nature.NatureDecorFeature::new);
+
     private ModStructures() {}
 }

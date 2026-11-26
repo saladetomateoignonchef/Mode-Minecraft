@@ -1,0 +1,14 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "#minecraft:is_forest",
+    "#minecraft:is_taiga",
+    "#minecraft:is_mountain",
+    "minecraft:plains",
+    "minecraft:meadow"
+  ],
+  "features": [
+    "modeminecraft:nature_camp"
+  ],
+  "step": "vegetal_decoration"
+}

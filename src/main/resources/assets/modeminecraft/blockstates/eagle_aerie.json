@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/eagle_aerie",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/eagle_aerie",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/eagle_aerie",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/eagle_aerie",
+      "y": 270
+    }
+  }
+}

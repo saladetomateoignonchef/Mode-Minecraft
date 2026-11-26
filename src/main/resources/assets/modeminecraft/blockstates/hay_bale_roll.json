@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/hay_bale_roll",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/hay_bale_roll",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/hay_bale_roll",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/hay_bale_roll",
+      "y": 270
+    }
+  }
+}

@@ -257,6 +257,15 @@ KEYS_B = [k for k in PAL_B if k not in PAL]
 assert len(KEYS_B) <= 64, "seconde palette trop grande : %d" % len(KEYS_B)
 ANIMS.update(r7.ANIMS7)
 DECOS.extend(r7.DECOS7)
+# huitième série (nature : couleurs ajoutées à la première palette, qui avait de la place)
+import realism_decor_8 as r8  # noqa: E402
+
+PAL.update(r8.PAL8)
+KEYS = list(PAL)
+assert len(KEYS) <= 64, "palette trop grande : %d" % len(KEYS)
+KEYS_B = [k for k in PAL_B if k not in PAL]
+ANIMS.update(r8.ANIMS8)
+DECOS.extend(r8.DECOS8)
 assert len({d["id"] for d in DECOS}) == len(DECOS), "identifiants de décors en double"
 
 
