@@ -27,6 +27,17 @@ public final class ModParticles {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> CONTRAIL =
             PARTICLES.register("contrail", () -> new SimpleParticleType(true));
 
+    /** Nappe de brume d'altitude (autour des sommets). */
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> MIST = PARTICLES.register("mist", () -> new SimpleParticleType(true));
+    /** Luciole (visuelle seulement, silencieuse). */
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> FIREFLY = PARTICLES.register("firefly", () -> new SimpleParticleType(false));
+    /** Papillon (teinté par la couleur donnée à la création). */
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> BUTTERFLY = PARTICLES.register("butterfly", () -> new SimpleParticleType(false));
+    /** Empreinte de pas posée à plat sur le sol. */
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> FOOTPRINT = PARTICLES.register("footprint", () -> new SimpleParticleType(true));
+    /** Trace de pneu posée à plat sur le sol. */
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> TIRE_TRACK = PARTICLES.register("tire_track", () -> new SimpleParticleType(true));
+
     /** Point lumineux de la traînée des balles traçantes. */
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> TRACER =
             PARTICLES.register("tracer", () -> new SimpleParticleType(true));

@@ -63,6 +63,9 @@ public final class ClientSetup {
     @SubscribeEvent
     public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(PigeonRenderer.LAYER, PigeonRenderer::layer);
+        for (fr.modeminecraft.entity.wild.WildlifeEntity.Kind k : fr.modeminecraft.entity.wild.WildlifeEntity.Kind.values()) {
+            event.registerLayerDefinition(WildlifeRenderer.layer(k), () -> WildlifeRenderer.definition(k));
+        }
     }
 
     @SubscribeEvent
@@ -85,6 +88,9 @@ public final class ClientSetup {
         event.registerEntityRenderer(ModEntities.NUKE_CLOUD.get(), NukeCloudRenderer::new);
         event.registerEntityRenderer(ModEntities.HUMAN_BOT.get(), HumanBotRenderer::new);
         event.registerEntityRenderer(ModEntities.PIGEON.get(), PigeonRenderer::new);
+        for (fr.modeminecraft.entity.wild.WildlifeEntity.Kind k : fr.modeminecraft.entity.wild.WildlifeEntity.Kind.values()) {
+            event.registerEntityRenderer(ModEntities.WILD.get(k).get(), ctx -> new WildlifeRenderer(ctx, k));
+        }
         event.registerEntityRenderer(ModEntities.AIRDROP.get(), AirdropRenderer::new);
         event.registerEntityRenderer(ModEntities.GEYSER.get(), net.minecraft.client.renderer.entity.NoopRenderer::new);
         event.registerEntityRenderer(ModEntities.VEHICLE.get(), VehicleRenderer::new);
@@ -106,6 +112,11 @@ public final class ClientSetup {
         event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.CASING_STEEL.get(), CasingParticle.Provider::new);
         event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.CASING_SHELL.get(), s -> new CasingParticle.Provider(s, true));
         event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.CONTRAIL.get(), fr.modeminecraft.client.particle.ContrailParticle.Provider::new);
+        event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.MIST.get(), fr.modeminecraft.client.particle.NatureParticles.MistProvider::new);
+        event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.FIREFLY.get(), fr.modeminecraft.client.particle.NatureParticles.FireflyProvider::new);
+        event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.BUTTERFLY.get(), fr.modeminecraft.client.particle.NatureParticles.ButterflyProvider::new);
+        event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.FOOTPRINT.get(), s -> new fr.modeminecraft.client.particle.NatureParticles.PrintProvider(s, 0.16f));
+        event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.TIRE_TRACK.get(), s -> new fr.modeminecraft.client.particle.NatureParticles.PrintProvider(s, 0.5f));
         event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.TRACER.get(),
                 fr.modeminecraft.client.particle.TracerParticle.Provider::new);
         event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.MUZZLE_FLASH.get(),

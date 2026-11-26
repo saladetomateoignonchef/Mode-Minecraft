@@ -705,7 +705,8 @@ public final class RealismDecoData {
         new Def("water_iris", 0, true, 2, 0, 2, 14, 17, 14),
         new Def("pink_lily_pad", 0, true, 1, 0, 1, 15, 4, 15),
         new Def("white_lily_pad", 0, true, 1, 0, 1, 15, 4, 15),
-        new Def("hot_spring_vent", 4, true, 2, 0, 2, 14, 16, 14)
+        new Def("hot_spring_vent", 4, true, 2, 0, 2, 14, 16, 14),
+        new Def("water_puddle", 0, true, 0.5, 0, 0.5, 15.5, 0.8, 15.5)
     };
 
     private RealismDecoData() {}

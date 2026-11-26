@@ -803,5 +803,11 @@
     "sounds": [
       "modeminecraft:nature/stream_flow"
     ]
+  },
+  "nature.surf": {
+    "subtitle": "subtitles.modeminecraft.surf",
+    "sounds": [
+      "modeminecraft:nature/surf"
+    ]
   }
 }

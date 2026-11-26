@@ -240,7 +240,8 @@ public final class ModBlocks {
                     props = props.noCollission();
                 }
                 net.minecraft.world.phys.shapes.VoxelShape shape = Block.box(d.x0(), d.y0(), d.z0(), d.x1(), d.y1(), d.z1());
-                return d.id().equals("hot_spring_vent") ? new fr.modeminecraft.block.nature.SteamVentBlock(props, shape)
+                return d.id().equals("water_puddle") ? new fr.modeminecraft.block.nature.PuddleBlock(props, shape)
+                        : d.id().equals("hot_spring_vent") ? new fr.modeminecraft.block.nature.SteamVentBlock(props, shape)
                         : new fr.modeminecraft.block.police.FacingDecoBlock(props, shape);
             }));
         }

@@ -69,6 +69,17 @@ def stream():
     return norm(x[:-fade], 0.6)
 
 
+def surf():
+    """Ressac : une vague qui monte, déferle et se retire (bruit filtré 150-3500 Hz avec crête d'écume plus aiguë), 5 s."""
+    rng = np.random.default_rng(3)
+    n = SR * 5
+    t = np.arange(n) / SR
+    swell = np.sin(np.pi * np.clip(t / 4.6, 0, 1)) ** 2.0
+    body = band(rng.standard_normal(n), 150, 3500) * swell
+    foam = band(rng.standard_normal(n), 2500, 9000) * np.clip(np.sin(np.pi * np.clip((t - 1.2) / 2.8, 0, 1)), 0, 1) ** 2 * 0.45
+    return norm(body + foam, 0.7)
+
+
 def write_ogg(path, x):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     wav = path[:-4] + ".wav"
@@ -86,17 +97,20 @@ def main():
     for v in range(3):
         write_ogg(os.path.join(d, f"ice_crack_{v}.ogg"), ice_crack(11 + v))
     write_ogg(os.path.join(d, "stream_flow.ogg"), stream())
+    write_ogg(os.path.join(d, "surf.ogg"), surf())
     p = os.path.join(ROOT, "sounds.json")
     data = json.load(open(p, encoding="utf-8"))
     data["nature.ice_crack"] = {"subtitle": "subtitles.modeminecraft.ice_crack", "sounds": [f"modeminecraft:nature/ice_crack_{v}" for v in range(3)]}
+    data["nature.surf"] = {"subtitle": "subtitles.modeminecraft.surf", "sounds": ["modeminecraft:nature/surf"]}
     data["nature.stream_flow"] = {"subtitle": "subtitles.modeminecraft.stream_flow", "sounds": ["modeminecraft:nature/stream_flow"]}
     json.dump(data, open(p, "w", encoding="utf-8"), indent=2, ensure_ascii=False)
     open(p, "a").write("\n")
-    for lang, name, subs in (("fr_fr", "fr", ("Craquement de la glace", "Ruissellement d'un ruisseau")), ("en_us", "en", ("Ice cracking", "Stream trickling"))):
+    for lang, name, subs in (("fr_fr", "fr", ("Craquement de la glace", "Ruissellement d'un ruisseau", "Ressac")), ("en_us", "en", ("Ice cracking", "Stream trickling", "Waves breaking"))):
         lp = os.path.join(ROOT, "lang", f"{lang}.json")
         ld = json.load(open(lp, encoding="utf-8"))
         ld["subtitles.modeminecraft.ice_crack"] = subs[0]
         ld["subtitles.modeminecraft.stream_flow"] = subs[1]
+        ld["subtitles.modeminecraft.surf"] = subs[2]
         json.dump(ld, open(lp, "w", encoding="utf-8"), indent=2, ensure_ascii=False)
         open(lp, "a").write("\n")
     print("sons de nature écrits")
