@@ -789,5 +789,19 @@
     "sounds": [
       "modeminecraft:train/electric_zap"
     ]
+  },
+  "nature.ice_crack": {
+    "subtitle": "subtitles.modeminecraft.ice_crack",
+    "sounds": [
+      "modeminecraft:nature/ice_crack_0",
+      "modeminecraft:nature/ice_crack_1",
+      "modeminecraft:nature/ice_crack_2"
+    ]
+  },
+  "nature.stream_flow": {
+    "subtitle": "subtitles.modeminecraft.stream_flow",
+    "sounds": [
+      "modeminecraft:nature/stream_flow"
+    ]
   }
 }

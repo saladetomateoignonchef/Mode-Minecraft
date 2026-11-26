@@ -266,6 +266,11 @@ assert len(KEYS) <= 64, "palette trop grande : %d" % len(KEYS)
 KEYS_B = [k for k in PAL_B if k not in PAL]
 ANIMS.update(r8.ANIMS8)
 DECOS.extend(r8.DECOS8)
+# neuvième série (plantes du réalisme naturel, lot 1)
+import realism_decor_9 as r9  # noqa: E402
+
+DECOS.extend(r9.DECOS9)
+assert len({d["id"] for d in DECOS}) == len(DECOS), "identifiants de décors en double"
 assert len({d["id"] for d in DECOS}) == len(DECOS), "identifiants de décors en double"
 
 

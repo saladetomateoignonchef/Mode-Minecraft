@@ -3078,5 +3078,20 @@
   "block.modeminecraft.airdrop_crate": "Airdrop crate",
   "block.modeminecraft.tangled_parachute": "Tangled parachute",
   "block.modeminecraft.distress_beacon": "Distress beacon",
-  "block.modeminecraft.shipwreck_ribs": "Shipwreck ribs"
+  "block.modeminecraft.shipwreck_ribs": "Shipwreck ribs",
+  "block.modeminecraft.agave_plant": "Agave",
+  "block.modeminecraft.flowering_cactus_red": "Red flowering cactus",
+  "block.modeminecraft.flowering_cactus_yellow": "Yellow flowering cactus",
+  "block.modeminecraft.barrel_cactus": "Barrel cactus",
+  "block.modeminecraft.dry_shrub": "Dry shrub",
+  "block.modeminecraft.succulent_rosette": "Succulent rosette",
+  "block.modeminecraft.cattail_tall": "Tall cattails",
+  "block.modeminecraft.reed_bank": "Reed bank",
+  "block.modeminecraft.marsh_marigold": "Marsh marigold",
+  "block.modeminecraft.water_iris": "Water iris",
+  "block.modeminecraft.pink_lily_pad": "Pink water lily",
+  "block.modeminecraft.white_lily_pad": "White water lily",
+  "block.modeminecraft.hot_spring_vent": "Hot spring vent",
+  "subtitles.modeminecraft.ice_crack": "Ice cracking",
+  "subtitles.modeminecraft.stream_flow": "Stream trickling"
 }

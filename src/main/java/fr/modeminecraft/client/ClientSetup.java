@@ -105,6 +105,7 @@ public final class ClientSetup {
         event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.NEWSPAPER.get(), fr.modeminecraft.client.particle.NewspaperParticle.Provider::new);
         event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.CASING_STEEL.get(), CasingParticle.Provider::new);
         event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.CASING_SHELL.get(), s -> new CasingParticle.Provider(s, true));
+        event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.CONTRAIL.get(), fr.modeminecraft.client.particle.ContrailParticle.Provider::new);
         event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.TRACER.get(),
                 fr.modeminecraft.client.particle.TracerParticle.Provider::new);
         event.registerSpriteSet(fr.modeminecraft.registry.ModParticles.MUZZLE_FLASH.get(),

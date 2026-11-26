@@ -24,6 +24,10 @@ THEMES = {
     "ruins": (["#minecraft:is_overworld"], 35, 2, "vegetal_decoration"),
     "magic": (["#minecraft:is_forest", "minecraft:swamp", "minecraft:dark_forest", "minecraft:meadow", "#minecraft:is_taiga"], 28, 2, "vegetal_decoration"),
     "mine": (["#minecraft:is_overworld"], 3, 4, "underground_decoration"),
+    # réalisme naturel, lot 1 : plantes arides ([26]) et fluviales ([27]), denses
+    "arid_flora": (["minecraft:desert", "#minecraft:is_badlands"], 1, 5, "vegetal_decoration"),
+    "shore_flora": (["#minecraft:is_river", "minecraft:swamp", "minecraft:mangrove_swamp"], 2, 5, "vegetal_decoration"),
+    "pond_flora": (["#minecraft:is_river", "minecraft:swamp", "minecraft:mangrove_swamp", "minecraft:forest", "minecraft:plains"], 3, 5, "vegetal_decoration"),
     "wreck": (["#minecraft:is_overworld"], 60, 1, "vegetal_decoration"),
 }
 
@@ -53,4 +57,20 @@ for theme, (biomes, rarity, tries, step) in THEMES.items():
     for name, value in groups:
         write(f"{ROOT}/neoforge/biome_modifier/add_nature_{theme}_{name}.json",
               {"type": "neoforge:add_features", "biomes": value if isinstance(value, str) or len(value) > 1 else value[0], "features": [f"{MOD}:nature_{theme}"], "step": step})
-print(len(THEMES), "thèmes écrits")
+
+# ---- sources chaudes, geysers, banquise (lot 1 du réalisme naturel) : fonction, placement et modificateur de biome
+SPECIAL = {
+    "hot_spring": ("hot_spring", {"geyser": False}, 30, ["minecraft:snowy_plains", "minecraft:snowy_taiga", "minecraft:snowy_slopes", "minecraft:grove", "minecraft:ice_spikes",
+                                                       "minecraft:frozen_peaks", "minecraft:jagged_peaks", "minecraft:stony_peaks", "minecraft:windswept_hills"], "vegetal_decoration"),
+    "geyser": ("hot_spring", {"geyser": True}, 45, ["minecraft:snowy_plains", "minecraft:snowy_taiga", "minecraft:snowy_slopes", "minecraft:grove", "minecraft:ice_spikes",
+                                                  "minecraft:frozen_peaks", "minecraft:jagged_peaks", "minecraft:stony_peaks", "minecraft:windswept_hills"], "vegetal_decoration"),
+    "ice_floe_frozen": ("ice_floe", {"max_radius": 11}, 2, ["minecraft:frozen_ocean", "minecraft:deep_frozen_ocean"], "top_layer_modification"),
+    "ice_floe_cold": ("ice_floe", {"max_radius": 7}, 6, ["minecraft:cold_ocean", "minecraft:deep_cold_ocean"], "top_layer_modification"),
+}
+for name, (ftype, cfg, rarity, biomes, step) in SPECIAL.items():
+    write(f"{ROOT}/worldgen/configured_feature/{name}.json", {"type": f"{MOD}:{ftype}", "config": cfg})
+    write(f"{ROOT}/worldgen/placed_feature/{name}.json", {"feature": f"{MOD}:{name}", "placement": [
+        {"type": "minecraft:rarity_filter", "chance": rarity}, {"type": "minecraft:in_square"},
+        {"type": "minecraft:heightmap", "heightmap": "WORLD_SURFACE_WG"}, {"type": "minecraft:biome"}]})
+    write(f"{ROOT}/neoforge/biome_modifier/add_{name}.json", {"type": "neoforge:add_features", "biomes": biomes, "features": [f"{MOD}:{name}"], "step": step})
+print(len(THEMES), "thèmes écrits,", len(SPECIAL), "fonctions spéciales")

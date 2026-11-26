@@ -77,6 +77,12 @@ public final class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> DRONE_JAMMED = register("bot.drone_jammed");
     public static final DeferredHolder<SoundEvent, SoundEvent> VEHICLE_ENGINE = register("bot.vehicle_engine");
 
+    // ---- réalisme naturel
+    /** Craquement de la glace sous les pas, en biome froid. */
+    public static final DeferredHolder<SoundEvent, SoundEvent> ICE_CRACK = register("nature.ice_crack");
+    /** Ruissellement d'un ruisseau (eau courante en pente). */
+    public static final DeferredHolder<SoundEvent, SoundEvent> STREAM_FLOW = register("nature.stream_flow");
+
     // ---- mise à jour 0.3 : police, prison, ville vivante
     /** Sirène de police : entendue à 80 blocs. */
     public static final DeferredHolder<SoundEvent, SoundEvent> POLICE_SIREN = SOUNDS.register("bot.police_siren",

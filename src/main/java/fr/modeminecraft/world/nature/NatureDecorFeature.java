@@ -51,6 +51,9 @@ public class NatureDecorFeature extends Feature<NatureDecorFeature.Config> {
             Map.entry("ruins", List.of("broken_column", "overgrown_temple_arch", "old_tomb_slab", "mossy_statue_head", "dry_stone_wall", "ruined_well")),
             Map.entry("magic", List.of("menhir_ring", "runic_altar", "sacred_tree_shrine", "ancient_portal_arch", "firefly_swarm", "witch_cauldron_wild")),
             Map.entry("mine", List.of("ore_vein_rock", "mine_cart_wreck", "timber_support", "cave_glow_crystals", "stalagmite_cluster", "miner_lantern_hook")),
+            Map.entry("arid_flora", List.of("agave_plant", "flowering_cactus_red", "flowering_cactus_yellow", "barrel_cactus", "dry_shrub", "succulent_rosette")),
+            Map.entry("shore_flora", List.of("cattail_tall", "reed_bank", "marsh_marigold", "water_iris")),
+            Map.entry("pond_flora", List.of("pink_lily_pad", "white_lily_pad")),
             Map.entry("wreck", List.of("crashed_plane_wing", "rusted_car_wreck", "airdrop_crate", "tangled_parachute", "distress_beacon", "shipwreck_ribs")));
 
     public NatureDecorFeature() {
@@ -79,7 +82,7 @@ public class NatureDecorFeature extends Feature<NatureDecorFeature.Config> {
                 continue;
             }
             BlockPos spot = theme.equals("mine") ? caveFloor(level, p, rnd) : surface(level, p);
-            if (spot == null || !valid(level, spot, theme)) {
+            if (spot == null || !(theme.equals("pond_flora") ? onCalmWater(level, spot) : valid(level, spot, theme))) {
                 continue;
             }
             Block block = ModBlocks.realism(ids.get(rnd.nextInt(ids.size())));
@@ -117,6 +120,14 @@ public class NatureDecorFeature extends Feature<NatureDecorFeature.Config> {
         return null;
     }
 
+    /** Nénuphars : la case est de l'air posé sur une source d'eau, sans courant, avec de l'air au-dessus. */
+    private static boolean onCalmWater(WorldGenLevel level, BlockPos pos) {
+        BlockPos below = pos.below();
+        var fluid = level.getFluidState(below);
+        return level.getBlockState(pos).isAir() && level.getBlockState(pos.above()).isAir() && fluid.is(FluidTags.WATER) && fluid.isSource()
+                && level.getFluidState(pos).isEmpty();
+    }
+
     private static boolean valid(WorldGenLevel level, BlockPos pos, String theme) {
         BlockState here = level.getBlockState(pos);
         BlockPos below = pos.below();
@@ -130,7 +141,7 @@ public class NatureDecorFeature extends Feature<NatureDecorFeature.Config> {
         if (!level.getBlockState(pos.above()).isAir() && !level.getBlockState(pos.above()).canBeReplaced()) {
             return false;
         }
-        if (theme.equals("river") || theme.equals("beach")) {
+        if (theme.equals("river") || theme.equals("beach") || theme.equals("shore_flora")) {
             return waterNear(level, below, 6);
         }
         return true;

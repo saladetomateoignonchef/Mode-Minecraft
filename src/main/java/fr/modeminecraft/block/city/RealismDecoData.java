@@ -692,7 +692,20 @@ public final class RealismDecoData {
         new Def("airdrop_crate", 0, false, 0, 0, 0, 16, 18, 16),
         new Def("tangled_parachute", 0, false, 0, 0, 0, 16, 22, 16),
         new Def("distress_beacon", 11, false, 1, 0, 4, 15, 24, 12),
-        new Def("shipwreck_ribs", 0, false, 0, 0, 2, 16, 22, 14)
+        new Def("shipwreck_ribs", 0, false, 0, 0, 2, 16, 22, 14),
+        new Def("agave_plant", 0, true, 1, 0, 1, 15, 20, 15),
+        new Def("flowering_cactus_red", 0, true, 4, 0, 4.6, 12, 16, 11.4),
+        new Def("flowering_cactus_yellow", 0, true, 3, 0, 4, 13, 12, 12),
+        new Def("barrel_cactus", 0, true, 2, 0, 1.6, 14, 13, 14.4),
+        new Def("dry_shrub", 0, true, 2, 0, 2, 14, 13, 14),
+        new Def("succulent_rosette", 0, true, 2, 0, 2, 14, 9, 14),
+        new Def("cattail_tall", 0, true, 1.4, 0, 2.4, 13.6, 24, 13.6),
+        new Def("reed_bank", 0, true, 1, 0, 1, 15, 24, 15),
+        new Def("marsh_marigold", 0, true, 3, 0, 3, 13, 9, 13),
+        new Def("water_iris", 0, true, 2, 0, 2, 14, 17, 14),
+        new Def("pink_lily_pad", 0, true, 1, 0, 1, 15, 4, 15),
+        new Def("white_lily_pad", 0, true, 1, 0, 1, 15, 4, 15),
+        new Def("hot_spring_vent", 4, true, 2, 0, 2, 14, 16, 14)
     };
 
     private RealismDecoData() {}
