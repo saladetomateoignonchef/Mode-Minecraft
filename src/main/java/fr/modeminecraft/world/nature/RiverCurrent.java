@@ -46,11 +46,13 @@ public final class RiverCurrent {
         } else {
             return;
         }
-        if (!e.isInWater()) {
-            return;
-        }
         Level level = e.level();
         BlockPos pos = e.blockPosition();
+        // un objet qui flotte à la surface n'est pas « dans l'eau » : on regarde aussi la case sous lui
+        boolean wet = e.isInWater() || e instanceof ItemEntity && level.getFluidState(pos.below()).is(FluidTags.WATER);
+        if (!wet) {
+            return;
+        }
         if (!level.getBiome(pos).is(BiomeTags.IS_RIVER)) {
             return;
         }
