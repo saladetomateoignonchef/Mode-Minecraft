@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/dry_shrub",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/dry_shrub",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/dry_shrub",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/dry_shrub",
+      "y": 270
+    }
+  }
+}

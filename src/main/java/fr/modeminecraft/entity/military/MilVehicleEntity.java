@@ -3894,6 +3894,9 @@ public class MilVehicleEntity extends Entity {
     }
 
     // ------------------------------------------------------------------ client
+    /** Altitude (Y) au-dessus de laquelle un avion laisse une traînée de condensation. */
+    private static final int CONTRAIL_ALTITUDE = 135;
+
     private void clientFx() {
         MilType t = type();
         if (t.plane() && !isControlledByLocalInstance() && !is(CRASHING)) {
@@ -3909,6 +3912,14 @@ public class MilVehicleEntity extends Entity {
             // nez qui plonge et roulis désordonné
             tilt = Mth.lerp(0.05f, tilt, -35f);
             roll = Mth.lerp(0.1f, roll, (float) Math.sin(tickCount * 0.3) * 12f);
+        }
+        if (t.plane() && getY() > CONTRAIL_ALTITUDE && Math.abs(speed()) > 0.4 && !onGround() && tickCount % 2 == 0 && !is(CRASHING)) {
+            // [9] traînées de condensation : un filet derrière chaque réacteur (deux pour les avions lourds ou à réaction), un seul sinon
+            boolean twin = t.heavy() || t.geo() != null && t.geo().props().length == 0;
+            for (int i = 0; i < (twin ? 2 : 1); i++) {
+                Vec3 ex = toWorld(-dims(t)[0] / 2 - 0.5, 1.2, twin ? (i == 0 ? -1 : 1) * dims(t)[1] / 3 : 0);
+                level().addParticle(fr.modeminecraft.registry.ModParticles.CONTRAIL.get(), true, ex.x, ex.y, ex.z, 0, 0, 0);
+            }
         }
         if (Math.abs(speed()) > 0.05 && tickCount % 6 == 0 && !t.heli()) {
             Vec3 ex = toWorld(-dims(t)[0] / 2 + 0.3, 1.2, dims(t)[1] / 2 - 0.4);

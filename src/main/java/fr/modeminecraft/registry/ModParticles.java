@@ -23,6 +23,10 @@ public final class ModParticles {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> NEWSPAPER =
             PARTICLES.register("newspaper", () -> new SimpleParticleType(false));
 
+    /** Traînée de condensation d'un avion en haute altitude (blanche, persistante, qui s'élargit). */
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> CONTRAIL =
+            PARTICLES.register("contrail", () -> new SimpleParticleType(true));
+
     /** Point lumineux de la traînée des balles traçantes. */
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> TRACER =
             PARTICLES.register("tracer", () -> new SimpleParticleType(true));

@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/white_lily_pad",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/white_lily_pad",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/white_lily_pad",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/white_lily_pad",
+      "y": 270
+    }
+  }
+}

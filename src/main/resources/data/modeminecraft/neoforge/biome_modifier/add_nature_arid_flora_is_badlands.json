@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_badlands",
+  "features": [
+    "modeminecraft:nature_arid_flora"
+  ],
+  "step": "vegetal_decoration"
+}

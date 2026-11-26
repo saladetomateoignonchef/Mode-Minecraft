@@ -1,0 +1,6 @@
+{
+  "type": "modeminecraft:ice_floe",
+  "config": {
+    "max_radius": 11
+  }
+}

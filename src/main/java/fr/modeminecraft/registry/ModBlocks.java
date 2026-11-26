@@ -239,7 +239,9 @@ public final class ModBlocks {
                 if (d.passable()) {
                     props = props.noCollission();
                 }
-                return new fr.modeminecraft.block.police.FacingDecoBlock(props, Block.box(d.x0(), d.y0(), d.z0(), d.x1(), d.y1(), d.z1()));
+                net.minecraft.world.phys.shapes.VoxelShape shape = Block.box(d.x0(), d.y0(), d.z0(), d.x1(), d.y1(), d.z1());
+                return d.id().equals("hot_spring_vent") ? new fr.modeminecraft.block.nature.SteamVentBlock(props, shape)
+                        : new fr.modeminecraft.block.police.FacingDecoBlock(props, shape);
             }));
         }
     }

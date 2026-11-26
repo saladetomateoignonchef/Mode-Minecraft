@@ -3078,5 +3078,20 @@
   "block.modeminecraft.airdrop_crate": "Caisse de largage",
   "block.modeminecraft.tangled_parachute": "Parachute emmêlé",
   "block.modeminecraft.distress_beacon": "Balise de détresse",
-  "block.modeminecraft.shipwreck_ribs": "Côtes d'épave de bateau"
+  "block.modeminecraft.shipwreck_ribs": "Côtes d'épave de bateau",
+  "block.modeminecraft.agave_plant": "Agave",
+  "block.modeminecraft.flowering_cactus_red": "Cactus fleuri rouge",
+  "block.modeminecraft.flowering_cactus_yellow": "Cactus fleuri jaune",
+  "block.modeminecraft.barrel_cactus": "Cactus tonneau",
+  "block.modeminecraft.dry_shrub": "Buisson sec",
+  "block.modeminecraft.succulent_rosette": "Plante grasse en rosette",
+  "block.modeminecraft.cattail_tall": "Quenouilles hautes",
+  "block.modeminecraft.reed_bank": "Berge de roseaux",
+  "block.modeminecraft.marsh_marigold": "Populage des marais",
+  "block.modeminecraft.water_iris": "Iris d'eau",
+  "block.modeminecraft.pink_lily_pad": "Nénuphar à fleur rose",
+  "block.modeminecraft.white_lily_pad": "Nénuphar à fleur blanche",
+  "block.modeminecraft.hot_spring_vent": "Évent de source chaude",
+  "subtitles.modeminecraft.ice_crack": "Craquement de la glace",
+  "subtitles.modeminecraft.stream_flow": "Ruissellement d'un ruisseau"
 }

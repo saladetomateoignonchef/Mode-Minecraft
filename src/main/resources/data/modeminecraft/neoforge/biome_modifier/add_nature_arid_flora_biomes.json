@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "minecraft:desert",
+  "features": [
+    "modeminecraft:nature_arid_flora"
+  ],
+  "step": "vegetal_decoration"
+}

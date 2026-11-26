@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/reed_bank",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/reed_bank",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/reed_bank",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/reed_bank",
+      "y": 270
+    }
+  }
+}

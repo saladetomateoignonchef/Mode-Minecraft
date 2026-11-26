@@ -50,5 +50,12 @@ public final class ModStructures {
     public static final DeferredHolder<net.minecraft.world.level.levelgen.feature.Feature<?>, fr.modeminecraft.world.nature.NatureDecorFeature> NATURE_DECOR =
             FEATURES.register("nature_decor", fr.modeminecraft.world.nature.NatureDecorFeature::new);
 
+    /** Sources chaudes et geysers des biomes froids et montagneux. */
+    public static final DeferredHolder<net.minecraft.world.level.levelgen.feature.Feature<?>, fr.modeminecraft.world.nature.HotSpringFeature> HOT_SPRING =
+            FEATURES.register("hot_spring", fr.modeminecraft.world.nature.HotSpringFeature::new);
+    /** Banquise fracturée et icebergs des océans froids. */
+    public static final DeferredHolder<net.minecraft.world.level.levelgen.feature.Feature<?>, fr.modeminecraft.world.nature.IceFloeFeature> ICE_FLOE =
+            FEATURES.register("ice_floe", fr.modeminecraft.world.nature.IceFloeFeature::new);
+
     private ModStructures() {}
 }

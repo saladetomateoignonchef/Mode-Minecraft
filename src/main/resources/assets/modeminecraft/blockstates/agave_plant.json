@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/agave_plant",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/agave_plant",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/agave_plant",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/agave_plant",
+      "y": 270
+    }
+  }
+}
