@@ -44,6 +44,13 @@ for theme, (biomes, rarity, tries, step) in THEMES.items():
         placement.append({"type": "minecraft:height_range", "height": {"type": "minecraft:uniform", "min_inclusive": {"absolute": -40}, "max_inclusive": {"absolute": 30}}})
     placement.append({"type": "minecraft:biome"})
     write(f"{ROOT}/worldgen/placed_feature/nature_{theme}.json", {"feature": f"{MOD}:nature_{theme}", "placement": placement})
-    write(f"{ROOT}/neoforge/biome_modifier/add_nature_{theme}.json",
-          {"type": "neoforge:add_features", "biomes": biomes if len(biomes) > 1 else biomes[0], "features": [f"{MOD}:nature_{theme}"], "step": step})
+    # un modificateur par tag de biome (une liste ne peut pas mêler tags et identifiants), plus un pour les identifiants simples
+    tags = [b for b in biomes if b.startswith("#")]
+    ids = [b for b in biomes if not b.startswith("#")]
+    groups = [(t[len("#minecraft:"):] if t.startswith("#minecraft:") else t, t) for t in tags]
+    if ids:
+        groups.append(("biomes", ids))
+    for name, value in groups:
+        write(f"{ROOT}/neoforge/biome_modifier/add_nature_{theme}_{name}.json",
+              {"type": "neoforge:add_features", "biomes": value if isinstance(value, str) or len(value) > 1 else value[0], "features": [f"{MOD}:nature_{theme}"], "step": step})
 print(len(THEMES), "thèmes écrits")

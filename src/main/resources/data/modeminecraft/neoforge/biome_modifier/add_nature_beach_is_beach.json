@@ -1,9 +1,6 @@
 {
   "type": "neoforge:add_features",
-  "biomes": [
-    "#minecraft:is_beach",
-    "minecraft:stony_shore"
-  ],
+  "biomes": "#minecraft:is_beach",
   "features": [
     "modeminecraft:nature_beach"
   ],

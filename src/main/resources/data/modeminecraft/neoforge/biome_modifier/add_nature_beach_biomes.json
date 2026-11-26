@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "minecraft:stony_shore",
+  "features": [
+    "modeminecraft:nature_beach"
+  ],
+  "step": "vegetal_decoration"
+}

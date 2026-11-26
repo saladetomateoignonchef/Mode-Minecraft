@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_forest",
+  "features": [
+    "modeminecraft:nature_forage"
+  ],
+  "step": "vegetal_decoration"
+}

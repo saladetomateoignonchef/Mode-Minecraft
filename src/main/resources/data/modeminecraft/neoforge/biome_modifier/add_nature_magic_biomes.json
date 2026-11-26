@@ -1,11 +1,9 @@
 {
   "type": "neoforge:add_features",
   "biomes": [
-    "#minecraft:is_forest",
     "minecraft:swamp",
     "minecraft:dark_forest",
-    "minecraft:meadow",
-    "#minecraft:is_taiga"
+    "minecraft:meadow"
   ],
   "features": [
     "modeminecraft:nature_magic"
