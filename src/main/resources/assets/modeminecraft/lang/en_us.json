@@ -3093,5 +3093,12 @@
   "block.modeminecraft.white_lily_pad": "White water lily",
   "block.modeminecraft.hot_spring_vent": "Hot spring vent",
   "subtitles.modeminecraft.ice_crack": "Ice cracking",
-  "subtitles.modeminecraft.stream_flow": "Stream trickling"
+  "subtitles.modeminecraft.stream_flow": "Stream trickling",
+  "subtitles.modeminecraft.surf": "Waves breaking",
+  "block.modeminecraft.water_puddle": "Water puddle",
+  "entity.modeminecraft.eagle": "Eagle",
+  "entity.modeminecraft.gull": "Seagull",
+  "entity.modeminecraft.scorpion": "Scorpion",
+  "entity.modeminecraft.snake": "Snake",
+  "entity.modeminecraft.deer": "Deer"
 }

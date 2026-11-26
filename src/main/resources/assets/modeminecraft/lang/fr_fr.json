@@ -3093,5 +3093,12 @@
   "block.modeminecraft.white_lily_pad": "Nénuphar à fleur blanche",
   "block.modeminecraft.hot_spring_vent": "Évent de source chaude",
   "subtitles.modeminecraft.ice_crack": "Craquement de la glace",
-  "subtitles.modeminecraft.stream_flow": "Ruissellement d'un ruisseau"
+  "subtitles.modeminecraft.stream_flow": "Ruissellement d'un ruisseau",
+  "subtitles.modeminecraft.surf": "Ressac",
+  "block.modeminecraft.water_puddle": "Flaque d'eau",
+  "entity.modeminecraft.eagle": "Aigle",
+  "entity.modeminecraft.gull": "Mouette",
+  "entity.modeminecraft.scorpion": "Scorpion",
+  "entity.modeminecraft.snake": "Serpent",
+  "entity.modeminecraft.deer": "Cerf"
 }

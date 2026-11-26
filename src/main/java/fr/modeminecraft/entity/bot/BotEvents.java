@@ -48,6 +48,9 @@ public final class BotEvents {
         event.put(ModEntities.HUMAN_BOT.get(), HumanBotEntity.createAttributes().build());
         event.put(ModEntities.PIGEON.get(), fr.modeminecraft.entity.city.PigeonEntity.createAttributes().build());
         event.put(ModEntities.DRONE.get(), fr.modeminecraft.entity.drone.DroneEntity.createAttributes().build());
+        for (fr.modeminecraft.entity.wild.WildlifeEntity.Kind k : fr.modeminecraft.entity.wild.WildlifeEntity.Kind.values()) {
+            event.put(ModEntities.WILD.get(k).get(), fr.modeminecraft.entity.wild.WildlifeEntity.createAttributes(k).build());
+        }
     }
 
     /** Toute la faction (même groupe, 40 blocs) se retourne contre ce joueur. */

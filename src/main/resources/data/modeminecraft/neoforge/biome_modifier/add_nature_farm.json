@@ -1,0 +1,13 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:meadow",
+    "minecraft:plains",
+    "minecraft:savanna",
+    "minecraft:sunflower_plains"
+  ],
+  "features": [
+    "modeminecraft:nature_farm"
+  ],
+  "step": "vegetal_decoration"
+}

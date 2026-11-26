@@ -1,0 +1,14 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "minecraft:bamboo_jungle",
+    "minecraft:jungle",
+    "minecraft:mangrove_swamp",
+    "minecraft:sparse_jungle",
+    "minecraft:swamp"
+  ],
+  "features": [
+    "modeminecraft:nature_swamp"
+  ],
+  "step": "vegetal_decoration"
+}

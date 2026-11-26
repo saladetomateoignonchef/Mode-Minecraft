@@ -82,6 +82,8 @@ public final class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> ICE_CRACK = register("nature.ice_crack");
     /** Ruissellement d'un ruisseau (eau courante en pente). */
     public static final DeferredHolder<SoundEvent, SoundEvent> STREAM_FLOW = register("nature.stream_flow");
+    /** Ressac des vagues sur les plages et les rochers côtiers. */
+    public static final DeferredHolder<SoundEvent, SoundEvent> SURF = register("nature.surf");
 
     // ---- mise à jour 0.3 : police, prison, ville vivante
     /** Sirène de police : entendue à 80 blocs. */

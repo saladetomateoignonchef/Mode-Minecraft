@@ -51,4 +51,8 @@ DECOS9 = [
     dict(id="hot_spring_vent", fr="Évent de source chaude", en="Hot spring vent", anim="steam", light=4, passable=True, elements=[
         (2, 0, 2, 14, 3, 14, "cream"), (4, 3, 4, 12, 5, 12, "bone"), (6, 5, 6, 10, 7, 10, "tan"), (7, 7, 7, 9, 8, 9, "dgray"), (5, 3, 5, 11, 4, 11, "teal"),
         (6, 7.4, 6, 10, 12, 10, "steam_w", {"up": "anim", "north": "anim", "south": "anim", "east": "anim", "west": "anim"}), (7, 12, 7, 9, 16, 9, "steam_w", {"north": "anim", "south": "anim", "east": "anim", "west": "anim"})]),
+    # ================================================== [8] FLAQUE D'EAU (posée par la pluie, s'évapore au soleil : voir PuddleBlock)
+    dict(id="water_puddle", fr="Flaque d'eau", en="Water puddle", passable=True, elements=[
+        (1, 0, 2, 15, 0.7, 14, "water"), (3, 0, 0.5, 13, 0.7, 2, "water"), (3, 0, 14, 13, 0.7, 15.5, "water"), (0.5, 0, 4, 2, 0.7, 12, "water"), (14, 0, 4, 15.5, 0.7, 12, "water"),
+        (5, 0.7, 6, 9, 0.8, 9, "sky")]),
 ]

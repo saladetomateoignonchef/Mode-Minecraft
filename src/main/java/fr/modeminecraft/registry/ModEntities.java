@@ -123,6 +123,16 @@ public final class ModEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.entity.city.PigeonEntity>> PIGEON = ENTITY_TYPES.register("pigeon",
             () -> EntityType.Builder.<fr.modeminecraft.entity.city.PigeonEntity>of(fr.modeminecraft.entity.city.PigeonEntity::new, net.minecraft.world.entity.MobCategory.AMBIENT)
                     .sized(0.4f, 0.45f).clientTrackingRange(4).build("pigeon"));
+    /** Faune sauvage du réalisme naturel : aigle, mouette, scorpion, serpent, cerf (un type d'entité par espèce). */
+    public static final java.util.Map<fr.modeminecraft.entity.wild.WildlifeEntity.Kind, DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.entity.wild.WildlifeEntity>>> WILD =
+            new java.util.EnumMap<>(fr.modeminecraft.entity.wild.WildlifeEntity.Kind.class);
+    static {
+        for (fr.modeminecraft.entity.wild.WildlifeEntity.Kind k : fr.modeminecraft.entity.wild.WildlifeEntity.Kind.values()) {
+            WILD.put(k, ENTITY_TYPES.register(k.id(), () -> EntityType.Builder.<fr.modeminecraft.entity.wild.WildlifeEntity>of(
+                    (t, l) -> new fr.modeminecraft.entity.wild.WildlifeEntity(t, l, k), net.minecraft.world.entity.MobCategory.CREATURE)
+                    .sized(k.width, k.height).clientTrackingRange(k.flier() ? 10 : 8).build(k.id())));
+        }
+    }
     public static final DeferredHolder<EntityType<?>, EntityType<fr.modeminecraft.entity.PlacedExplosiveEntity>> PLACED_EXPLOSIVE = ENTITY_TYPES.register("placed_explosive",
             () -> EntityType.Builder.<fr.modeminecraft.entity.PlacedExplosiveEntity>of(fr.modeminecraft.entity.PlacedExplosiveEntity::new, MobCategory.MISC)
                     .sized(0.5f, 0.4f).clientTrackingRange(8).updateInterval(5).build("placed_explosive"));

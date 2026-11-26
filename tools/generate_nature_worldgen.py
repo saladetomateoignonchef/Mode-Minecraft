@@ -32,6 +32,45 @@ THEMES = {
 }
 
 
+VANILLA_JAR = "/root/.gradle/caches/neoformruntime/intermediate_results/stripServer_8bb3d3745bd6f4ac9d34d27c8a1809cf14c56fdd_resourcesOutput.jar"
+TAGS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "vanilla_biome_tags.json")
+
+
+def vanilla_tag(name, _seen=None):
+    """Biomes (identifiants) d'un tag vanilla, tags imbriqués inclus : lus dans le jar du jeu, puis mis en cache dans tools/vanilla_biome_tags.json."""
+    cache = json.load(open(TAGS_FILE, encoding="utf-8")) if os.path.exists(TAGS_FILE) else {}
+    if name in cache:
+        return cache[name]
+    import zipfile
+    out = []
+    with zipfile.ZipFile(VANILLA_JAR) as z:
+        data = json.loads(z.read(f"data/minecraft/tags/worldgen/biome/{name}.json"))
+    for v in data["values"]:
+        v = v["id"] if isinstance(v, dict) else v
+        if v.startswith("#minecraft:"):
+            out += vanilla_tag(v[len("#minecraft:"):])
+        else:
+            out.append(v)
+    out = sorted(set(out))
+    cache[name] = out
+    json.dump(cache, open(TAGS_FILE, "w", encoding="utf-8"), indent=1)
+    return out
+
+
+def expand(biomes):
+    """Liste de biomes sans doublon : les tags (sauf is_overworld, seul dans sa liste) sont remplacés par leur contenu. Une même fonction ne doit jamais
+    figurer deux fois dans un biome (cycle d'ordre des fonctions : « Feature order cycle found », plantage de la génération du monde)."""
+    if len(biomes) == 1 and biomes[0].startswith("#"):
+        return biomes[0]                                                     # un seul tag : aucun doublon possible
+    out = set()
+    for b in biomes:
+        if b.startswith("#minecraft:"):
+            out.update(vanilla_tag(b[len("#minecraft:"):]))
+        else:
+            out.add(b)
+    return sorted(out)
+
+
 def write(path, data):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
@@ -48,15 +87,10 @@ for theme, (biomes, rarity, tries, step) in THEMES.items():
         placement.append({"type": "minecraft:height_range", "height": {"type": "minecraft:uniform", "min_inclusive": {"absolute": -40}, "max_inclusive": {"absolute": 30}}})
     placement.append({"type": "minecraft:biome"})
     write(f"{ROOT}/worldgen/placed_feature/nature_{theme}.json", {"feature": f"{MOD}:nature_{theme}", "placement": placement})
-    # un modificateur par tag de biome (une liste ne peut pas mêler tags et identifiants), plus un pour les identifiants simples
-    tags = [b for b in biomes if b.startswith("#")]
-    ids = [b for b in biomes if not b.startswith("#")]
-    groups = [(t[len("#minecraft:"):] if t.startswith("#minecraft:") else t, t) for t in tags]
-    if ids:
-        groups.append(("biomes", ids))
-    for name, value in groups:
-        write(f"{ROOT}/neoforge/biome_modifier/add_nature_{theme}_{name}.json",
-              {"type": "neoforge:add_features", "biomes": value if isinstance(value, str) or len(value) > 1 else value[0], "features": [f"{MOD}:nature_{theme}"], "step": step})
+    # un seul modificateur par thème, avec une liste de biomes sans doublon
+    value = expand(biomes)
+    write(f"{ROOT}/neoforge/biome_modifier/add_nature_{theme}.json",
+          {"type": "neoforge:add_features", "biomes": value, "features": [f"{MOD}:nature_{theme}"], "step": step})
 
 # ---- sources chaudes, geysers, banquise (lot 1 du réalisme naturel) : fonction, placement et modificateur de biome
 SPECIAL = {
@@ -72,5 +106,5 @@ for name, (ftype, cfg, rarity, biomes, step) in SPECIAL.items():
     write(f"{ROOT}/worldgen/placed_feature/{name}.json", {"feature": f"{MOD}:{name}", "placement": [
         {"type": "minecraft:rarity_filter", "chance": rarity}, {"type": "minecraft:in_square"},
         {"type": "minecraft:heightmap", "heightmap": "WORLD_SURFACE_WG"}, {"type": "minecraft:biome"}]})
-    write(f"{ROOT}/neoforge/biome_modifier/add_{name}.json", {"type": "neoforge:add_features", "biomes": biomes, "features": [f"{MOD}:{name}"], "step": step})
+    write(f"{ROOT}/neoforge/biome_modifier/add_{name}.json", {"type": "neoforge:add_features", "biomes": sorted(set(biomes)), "features": [f"{MOD}:{name}"], "step": step})
 print(len(THEMES), "thèmes écrits,", len(SPECIAL), "fonctions spéciales")
