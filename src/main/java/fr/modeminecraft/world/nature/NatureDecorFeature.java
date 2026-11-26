@@ -94,9 +94,9 @@ public class NatureDecorFeature extends Feature<NatureDecorFeature.Config> {
         return any;
     }
 
-    /** Les blocs voisins doivent être dans la zone de 3 x 3 chunks accessible pendant la génération. */
+    /** Le décor reste dans le chunk du point d'origine (les heightmaps des voisins ne sont pas toujours prêtes). */
     private static boolean inChunkNeighbourhood(BlockPos origin, BlockPos p) {
-        return Math.abs((p.getX() >> 4) - (origin.getX() >> 4)) <= 1 && Math.abs((p.getZ() >> 4) - (origin.getZ() >> 4)) <= 1;
+        return (p.getX() >> 4) == (origin.getX() >> 4) && (p.getZ() >> 4) == (origin.getZ() >> 4);      // même chunk : heightmaps toujours prêtes
     }
 
     /** Première case d'air au-dessus du sol (heightmap de surface). */

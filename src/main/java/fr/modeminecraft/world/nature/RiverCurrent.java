@@ -25,8 +25,8 @@ import net.neoforged.neoforge.event.tick.EntityTickEvent;
 @EventBusSubscriber(modid = ModeMinecraft.MODID)
 public final class RiverCurrent {
     private static final int SCAN = 12;
-    /** Poussée par tick : nageurs, bateaux, objets. À l'équilibre (frottement de l'eau) : environ 1 à 1,5 bloc par seconde. */
-    private static final double SWIMMER = 0.012, BOAT = 0.010, ITEM = 0.016;
+    /** Vitesse cible du courant (blocs par tick) : nageurs, bateaux, objets. 0,05 bloc par tick = 1 bloc par seconde. */
+    private static final double SWIMMER = 0.055, BOAT = 0.06, ITEM = 0.045;
 
     @SubscribeEvent
     public static void onTick(EntityTickEvent.Post event) {
@@ -41,8 +41,8 @@ public final class RiverCurrent {
             power = BOAT;
         } else if (e instanceof ItemEntity) {
             power = ITEM;
-        } else if (e instanceof LivingEntity && !(e instanceof net.minecraft.world.entity.animal.WaterAnimal) && e.tickCount % 2 == 0) {
-            power = SWIMMER * 2;
+        } else if (e instanceof LivingEntity && !(e instanceof net.minecraft.world.entity.animal.WaterAnimal) && true) {
+            power = SWIMMER;
         } else {
             return;
         }
@@ -55,8 +55,17 @@ public final class RiverCurrent {
             return;
         }
         Vec3 flow = flow(level, pos);
-        if (flow != null) {
-            e.setDeltaMovement(e.getDeltaMovement().add(flow.scale(power)));
+        if (flow == null || flow.length() < 1.0E-3) {
+            return;
+        }
+        // la vitesse le long du courant est ramenée en douceur vers la vitesse cible (jamais freinée si l'on va déjà plus vite dans le sens du courant)
+        double mag = flow.length();
+        Vec3 u = flow.scale(1.0 / mag);
+        Vec3 dm = e.getDeltaMovement();
+        double along = dm.x * u.x + dm.z * u.z;
+        double target = power * mag;
+        if (along < target) {
+            e.setDeltaMovement(dm.add(u.scale((target - along) * 0.08)));
         }
     }
 

@@ -25,12 +25,13 @@ public class SteamVentBlock extends FacingDecoBlock {
 
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rnd) {
+        // animateTick n'est appelée qu'à intervalles aléatoires pour un bloc donné : on émet d'un coup tout un tronçon de colonne
         double x = pos.getX() + 0.5, y = pos.getY() + 0.5, z = pos.getZ() + 0.5;
-        if (rnd.nextInt(2) == 0) {
-            level.addAlwaysVisibleParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, true, x + (rnd.nextDouble() - 0.5) * 0.3, y, z + (rnd.nextDouble() - 0.5) * 0.3,
-                    (rnd.nextDouble() - 0.5) * 0.01, 0.06 + rnd.nextDouble() * 0.03, (rnd.nextDouble() - 0.5) * 0.01);
+        for (int i = 0; i < 5; i++) {
+            level.addAlwaysVisibleParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, true, x + (rnd.nextDouble() - 0.5) * 0.35, y + i * 0.45, z + (rnd.nextDouble() - 0.5) * 0.35,
+                    (rnd.nextDouble() - 0.5) * 0.01, 0.07 + rnd.nextDouble() * 0.03, (rnd.nextDouble() - 0.5) * 0.01);
         }
-        if (rnd.nextInt(6) == 0) {
+        if (rnd.nextInt(3) == 0) {
             level.addParticle(ParticleTypes.CLOUD, x, y + 0.6, z, (rnd.nextDouble() - 0.5) * 0.04, 0.12, (rnd.nextDouble() - 0.5) * 0.04);
         }
     }
