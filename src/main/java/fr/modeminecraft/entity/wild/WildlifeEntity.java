@@ -77,6 +77,7 @@ public class WildlifeEntity extends PathfinderMob {
         if (kind.flier()) {
             setNoGravity(true);
         }
+        initGoals();
     }
 
     public static AttributeSupplier.Builder createAttributes(Kind kind) {
@@ -90,8 +91,8 @@ public class WildlifeEntity extends PathfinderMob {
         this.radius = radius;
     }
 
-    @Override
-    protected void registerGoals() {
+    /** Appelé depuis le constructeur, une fois l'espèce connue (registerGoals() du parent s'exécute avant, quand elle est encore nulle). */
+    private void initGoals() {
         switch (kind) {
             case SCORPION, SNAKE -> {
                 goalSelector.addGoal(5, new RandomStrollGoal(this, 0.6, 240));          // reste longtemps immobile, à l'ombre des rochers

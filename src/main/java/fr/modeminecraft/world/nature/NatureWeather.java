@@ -53,7 +53,7 @@ public final class NatureWeather {
                 }
                 BlockPos hit = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, column).below();
                 BlockState top = level.getBlockState(hit);
-                if (!level.getFluidState(hit).isEmpty() || hit.getY() < level.getSeaLevel()) {
+                if (!level.getFluidState(hit).isEmpty()) {
                     continue;
                 }
                 int score = hit.getY() * 4 - (Math.abs(dx) + Math.abs(dz)) / 3 + (top.is(BlockTags.LOGS) || top.is(BlockTags.LEAVES) ? 6 : 0);
@@ -126,8 +126,9 @@ public final class NatureWeather {
     private static boolean flat(ServerLevel level, BlockPos pos) {
         for (Direction d : Direction.Plane.HORIZONTAL) {
             BlockPos n = pos.relative(d);
-            if (!level.getBlockState(n).isAir() || !level.getBlockState(n.below()).isFaceSturdy(level, n.below(), Direction.UP)) {
-                return false;
+            BlockState under = level.getBlockState(n.below());
+            if (!level.getBlockState(n).isAir() || under.isAir() || !under.getFluidState().isEmpty()) {
+                return false;                                                // chemin de terre compris (dalle de 15/16 : pas une face pleine)
             }
         }
         return true;

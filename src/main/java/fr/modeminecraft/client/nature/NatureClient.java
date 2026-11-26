@@ -37,7 +37,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
@@ -320,7 +319,7 @@ public final class NatureClient {
         PoseStack pose = event.getPoseStack();
         Matrix4f m = new Matrix4f(pose.last().pose());
         MultiBufferSource.BufferSource buffers = mc.renderBuffers().bufferSource();
-        VertexConsumer vc = buffers.getBuffer(RenderType.lightning());
+        VertexConsumer vc = buffers.getBuffer(RenderType.gui());                // sans brouillard (le type « lightning » en applique un : le ruban, plus loin que lui, disparaîtrait)
         int segments = 44;
         for (int k = 0; k < 3; k++) {
             double base = k * 2.3 + 0.6, span = 1.5;
@@ -336,7 +335,7 @@ public final class NatureClient {
                 quad(vc, m, p0[0], p0[1], p0[2], p1[0], p1[1], p1[2], p0[3] * 0.45f, p0[3], p1[3], new float[]{0.25f, 1f, 0.55f}, new float[]{0.6f, 0.3f, 1f}, i0, i1, 0.55f, 0f);
             }
         }
-        buffers.endBatch(RenderType.lightning());
+        buffers.endBatch(RenderType.gui());
     }
 
     private static float edge(int i, int n) {
@@ -361,36 +360,72 @@ public final class NatureClient {
     }
 
     // =================================================================================================== [42] eau turquoise des hauts-fonds
-    @SubscribeEvent
-    public static void onBlockColors(RegisterColorHandlersEvent.Block event) {
-        event.register((state, level, pos, tint) -> {
-            if (level == null || pos == null) {
-                return 0x3F76E4;
+    /** Redéfinit l'extension cliente de l'eau (textures identiques à celles de NeoForge) avec une teinte qui dépend de la profondeur. */
+    @SubscribeEvent(priority = net.neoforged.bus.api.EventPriority.LOW)
+    public static void onFluidExtensions(net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent event) {
+        event.registerFluidType(new net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions() {
+            private static final net.minecraft.resources.ResourceLocation STILL = net.minecraft.resources.ResourceLocation.withDefaultNamespace("block/water_still");
+            private static final net.minecraft.resources.ResourceLocation FLOW = net.minecraft.resources.ResourceLocation.withDefaultNamespace("block/water_flow");
+            private static final net.minecraft.resources.ResourceLocation OVERLAY = net.minecraft.resources.ResourceLocation.withDefaultNamespace("block/water_overlay");
+            private static final net.minecraft.resources.ResourceLocation UNDERWATER = net.minecraft.resources.ResourceLocation.withDefaultNamespace("textures/misc/underwater.png");
+
+            @Override
+            public net.minecraft.resources.ResourceLocation getStillTexture() {
+                return STILL;
             }
-            int base = BiomeColors.getAverageWaterColor(level, pos);
-            Minecraft mc = Minecraft.getInstance();
-            if (mc.level == null) {
-                return base;
+
+            @Override
+            public net.minecraft.resources.ResourceLocation getFlowingTexture() {
+                return FLOW;
             }
-            Holder<Biome> b = mc.level.getBiome(pos);
-            if (!(b.is(BiomeTags.IS_OCEAN) || b.is(BiomeTags.IS_BEACH) || b.is(BiomeTags.IS_RIVER))) {
-                return base;
+
+            @Override
+            public net.minecraft.resources.ResourceLocation getOverlayTexture() {
+                return OVERLAY;
             }
-            BlockPos.MutableBlockPos m = pos.mutable();
-            int depth = 0;
-            while (depth < 12 && level.getFluidState(m).is(FluidTags.WATER)) {
-                depth++;
-                m.move(Direction.DOWN);
+
+            @Override
+            public net.minecraft.resources.ResourceLocation getRenderOverlayTexture(Minecraft mc) {
+                return UNDERWATER;
             }
-            float t = Mth.clamp((depth - 1) / 8f, 0f, 1f);
-            t = t * t * (3 - 2 * t);
-            int shallow = 0x4FE3D2;                                          // turquoise
-            int deep = ((int) (((base >> 16) & 255) * 0.78) << 16) | ((int) (((base >> 8) & 255) * 0.8) << 8) | (int) ((base & 255) * 0.88);
-            int r = (int) Mth.lerp(t, (shallow >> 16) & 255, (deep >> 16) & 255);
-            int g = (int) Mth.lerp(t, (shallow >> 8) & 255, (deep >> 8) & 255);
-            int bl = (int) Mth.lerp(t, shallow & 255, deep & 255);
-            return (r << 16) | (g << 8) | bl;
-        }, Blocks.WATER);
+
+            @Override
+            public int getTintColor() {
+                return 0xFF3F76E4;
+            }
+
+            @Override
+            public int getTintColor(FluidState state, net.minecraft.world.level.BlockAndTintGetter level, BlockPos pos) {
+                return 0xFF000000 | waterColor(level, pos);
+            }
+        }, net.neoforged.neoforge.common.NeoForgeMod.WATER_TYPE.value());
+    }
+
+    /** Couleur de l'eau : celle du biome, sauf près des côtes et dans les rivières où elle passe du turquoise (peu profond) au bleu sombre (profond). */
+    static int waterColor(net.minecraft.world.level.BlockAndTintGetter level, BlockPos pos) {
+        int base = BiomeColors.getAverageWaterColor(level, pos);
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null) {
+            return base;
+        }
+        Holder<Biome> b = mc.level.getBiome(pos);
+        if (!(b.is(BiomeTags.IS_OCEAN) || b.is(BiomeTags.IS_BEACH) || b.is(BiomeTags.IS_RIVER))) {
+            return base;
+        }
+        BlockPos.MutableBlockPos m = pos.mutable();
+        int depth = 0;
+        while (depth < 12 && level.getFluidState(m).is(FluidTags.WATER)) {
+            depth++;
+            m.move(Direction.DOWN);
+        }
+        float t = Mth.clamp((depth - 1) / 8f, 0f, 1f);
+        t = t * t * (3 - 2 * t);
+        int shallow = 0x4FE3D2;                                              // turquoise
+        int deep = ((int) (((base >> 16) & 255) * 0.78) << 16) | ((int) (((base >> 8) & 255) * 0.8) << 8) | (int) ((base & 255) * 0.88);
+        int r = (int) Mth.lerp(t, (shallow >> 16) & 255, (deep >> 16) & 255);
+        int g = (int) Mth.lerp(t, (shallow >> 8) & 255, (deep >> 8) & 255);
+        int bl = (int) Mth.lerp(t, shallow & 255, deep & 255);
+        return (r << 16) | (g << 8) | bl;
     }
 
     // =================================================================================================== [29] empreintes et traces de pneus
