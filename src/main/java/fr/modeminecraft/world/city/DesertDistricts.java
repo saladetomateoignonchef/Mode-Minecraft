@@ -54,6 +54,7 @@ final class DesertDistricts {
         b.set(5, 13, 5, Blocks.BARREL.defaultBlockState().setValue(BlockStateProperties.FACING, Direction.UP));
         b.set(10, 13, 6, Blocks.WATER_CAULDRON.defaultBlockState().setValue(BlockStateProperties.LEVEL_CAULDRON, 3));
         b.chest(5, 5, 5, Direction.EAST, "city_house", false);
+        DesertDecor.riadTall(b, h);
         if (h > 0.5) {
             b.bot(7, 1, 7, Faction.CIVILIAN, BotRole.CIVILIAN, 4);
         } else if (h < 0.15) {
@@ -101,6 +102,7 @@ final class DesertDistricts {
         if (b.chance(0.5f)) {
             b.bot(7, 0, 3, Faction.CIVILIAN, BotRole.CIVILIAN, 10);
         }
+        DesertDecor.oasis(b, h);
     }
 
     /** Marché couvert : piliers, toit de terre cuite, étals alignés, lanternes. */
@@ -137,6 +139,7 @@ final class DesertDistricts {
         if (h > 0.4) {
             b.bot(5, 0, 9, Faction.CIVILIAN, BotRole.CIVILIAN, 8);
         }
+        DesertDecor.marketHall(b, h);
     }
 
     /** Chantier : échafaudages, murs inachevés, tas de sable, caisses et grue. */
@@ -171,6 +174,7 @@ final class DesertDistricts {
             b.bot(9, 0, 10, Faction.CIVILIAN, BotRole.CONTRACTOR, 6);
         }
         b.chest(4, 0, 10, Direction.EAST, "city_house", true);
+        DesertDecor.worksite(b, h);
     }
 
     /** Place publique : dallage en damier, fontaine, obélisque, bancs et lampadaires. */
@@ -206,5 +210,6 @@ final class DesertDistricts {
         if (b.chance(0.5f)) {
             b.pair(12, 0, 12, Faction.MILITIA, 12);
         }
+        DesertDecor.square(b, h);
     }
 }

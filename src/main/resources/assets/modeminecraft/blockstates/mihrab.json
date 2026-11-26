@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/mihrab",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/mihrab",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/mihrab",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/mihrab",
+      "y": 270
+    }
+  }
+}

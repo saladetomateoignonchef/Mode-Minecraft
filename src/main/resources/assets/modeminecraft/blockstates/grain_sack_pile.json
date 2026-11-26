@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/grain_sack_pile",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/grain_sack_pile",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/grain_sack_pile",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/grain_sack_pile",
+      "y": 270
+    }
+  }
+}

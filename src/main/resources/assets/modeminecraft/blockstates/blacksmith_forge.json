@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/blacksmith_forge",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/blacksmith_forge",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/blacksmith_forge",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/blacksmith_forge",
+      "y": 270
+    }
+  }
+}

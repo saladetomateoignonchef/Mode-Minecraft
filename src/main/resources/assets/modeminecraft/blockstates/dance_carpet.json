@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/dance_carpet",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/dance_carpet",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/dance_carpet",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/dance_carpet",
+      "y": 270
+    }
+  }
+}

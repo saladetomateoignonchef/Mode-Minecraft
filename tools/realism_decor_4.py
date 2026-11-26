@@ -292,7 +292,7 @@ DECOS4 = [
     dict(id="radiation_sign", fr="Panneau radiation", en="Radiation sign", passable=True, light=4, elements=[
         (7, 0, 7.4, 9, 16, 8.6, "steel"), (1, 14, 7, 15, 30, 9, "yellow"), (2, 15, 6.6, 14, 29, 7, "carbon"), (6, 20, 6.2, 10, 24, 6.6, "yellow"), (7, 16, 6.2, 9, 19, 6.6, "yellow"), (3, 25, 6.2, 6, 28, 6.6, "yellow"), (10, 25, 6.2, 13, 28, 6.6, "yellow"),
         (7.2, 21.2, 6, 8.8, 22.8, 6.4, "carbon")]),
-    dict(id="geiger_counter", fr="Compteur Geiger", en="Geiger counter", anim="blink", light=3, elements=[
+    dict(id="geiger_bench", fr="Compteur Geiger", en="Geiger counter", anim="blink", light=3, elements=[
         (4, 0, 4, 12, 9, 12, "olive"), (4.4, 2, 3.6, 11.6, 7, 4, "carbon", {"north": "anim"}), (5, 0, 3.4, 11, 2, 4, "dgray"), (6, 9, 6, 10, 11, 10, "dgray"), (7, 11, 7, 9, 20, 9, "steel"), (6, 20, 6, 10, 22, 10, "tin"),
         (12, 3, 6, 15, 5, 10, "carbon"), (13, 5, 7, 14, 9, 9, "steel"), (3, 6, 6, 4, 8, 10, "red")]),
     # ================================================== DÉFENSE

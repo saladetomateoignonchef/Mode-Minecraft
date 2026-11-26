@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/wrecked_pickup",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/wrecked_pickup",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/wrecked_pickup",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/wrecked_pickup",
+      "y": 270
+    }
+  }
+}

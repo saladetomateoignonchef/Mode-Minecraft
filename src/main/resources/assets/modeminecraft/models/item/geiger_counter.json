@@ -1,3 +1,6 @@
 {
-  "parent": "modeminecraft:block/geiger_counter"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "modeminecraft:item/geiger_counter"
+  }
 }

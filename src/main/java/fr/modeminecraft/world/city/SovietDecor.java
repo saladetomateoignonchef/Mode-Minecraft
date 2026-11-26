@@ -77,7 +77,7 @@ final class SovietDecor {
 
     static void generalBunker(B b) {
         put(b, "dual_launch_keys", 9, -5, 4, Direction.SOUTH);
-        put(b, "geiger_counter", 11, -5, 4, Direction.SOUTH);
+        put(b, "geiger_bench", 11, -5, 4, Direction.SOUTH);
         put(b, "launch_console", 13, -6, 4, Direction.WEST);
         put(b, "caged_bunker_lamp", 2, -4, 4, Direction.EAST);
         put(b, "radiation_sign", 6, -6, 2, Direction.SOUTH);

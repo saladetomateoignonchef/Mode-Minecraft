@@ -241,6 +241,14 @@ KEYS_B = [k for k in PAL_B if k not in PAL]
 assert len(KEYS_B) <= 64, "seconde palette trop grande : %d" % len(KEYS_B)
 ANIMS.update(r5.ANIMS5)
 DECOS.extend(r5.DECOS5)
+# sixième série (villages et cités du désert, très détaillée)
+import realism_decor_6 as r6  # noqa: E402
+
+PAL_B.update(r6.PAL6)
+KEYS_B = [k for k in PAL_B if k not in PAL]
+assert len(KEYS_B) <= 64, "seconde palette trop grande : %d" % len(KEYS_B)
+ANIMS.update(r6.ANIMS6)
+DECOS.extend(r6.DECOS6)
 assert len({d["id"] for d in DECOS}) == len(DECOS), "identifiants de décors en double"
 
 
