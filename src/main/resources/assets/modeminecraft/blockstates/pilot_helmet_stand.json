@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/pilot_helmet_stand",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/pilot_helmet_stand",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/pilot_helmet_stand",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/pilot_helmet_stand",
+      "y": 270
+    }
+  }
+}

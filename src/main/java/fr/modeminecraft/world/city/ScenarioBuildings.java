@@ -126,6 +126,9 @@ public final class ScenarioBuildings {
         b.bot(11, 0, 9, f, BotRole.SOLDIER, 5);
         b.bot(x0 - 2, 0, 5, f, BotRole.SOLDIER, 3);
         b.bot(x0 - 2, 0, 10, f, BotRole.OFFICER, 3);
+        if (us) {
+            UsDecor.dormitory(b);
+        }
     }
 
     /** Drapeau national (bannière murale) : bannière étoilée / drapeau rouge frappé de l'étoile. */
@@ -304,6 +307,9 @@ public final class ScenarioBuildings {
         if (side == Side.SOVIET) {
             SovietDecor.armory(b);
         }
+        if (side == Side.US) {
+            UsDecor.armory(b);
+        }
     }
 
     // ------------------------------------------------------------------ cantine
@@ -340,6 +346,9 @@ public final class ScenarioBuildings {
         if (side == Side.SOVIET) {
             SovietDecor.canteen(b);
         }
+        if (side == Side.US) {
+            UsDecor.canteen(b);
+        }
     }
 
     // ------------------------------------------------------------------ infirmerie
@@ -367,6 +376,9 @@ public final class ScenarioBuildings {
         if (side == Side.SOVIET) {
             SovietDecor.infirmary(b);
         }
+        if (side == Side.US) {
+            UsDecor.infirmary(b);
+        }
     }
 
     // ------------------------------------------------------------------ baraquement des caporaux (porte : Caporal)
@@ -389,6 +401,9 @@ public final class ScenarioBuildings {
         b.set(7, 4, 4, Blocks.SEA_LANTERN);
         b.set(7, 4, 10, Blocks.SEA_LANTERN);
         b.bot(9, 0, 8, side.ally, BotRole.SOLDIER, 3);
+        if (side == Side.US) {
+            UsDecor.corporals(b);
+        }
     }
 
     // ------------------------------------------------------------------ sous-officiers (3 chambres) / officiers (2 chambres, lit double)
@@ -459,6 +474,9 @@ public final class ScenarioBuildings {
         if (side == Side.SOVIET) {
             SovietDecor.club(b);
         }
+        if (side == Side.US) {
+            UsDecor.club(b);
+        }
     }
 
     // ------------------------------------------------------------------ salle de stratégie / état-major (Lieutenant)
@@ -499,6 +517,9 @@ public final class ScenarioBuildings {
         if (side == Side.SOVIET) {
             SovietDecor.warRoom(b);
         }
+        if (side == Side.US) {
+            UsDecor.warRoom(b);
+        }
     }
 
     // ------------------------------------------------------------------ résidence privée de commandement (Commandant)
@@ -525,6 +546,9 @@ public final class ScenarioBuildings {
         flag(b, 13, 3, 6, Direction.WEST, side);
         if (side == Side.SOVIET) {
             SovietDecor.residence(b);
+        }
+        if (side == Side.US) {
+            UsDecor.residence(b);
         }
     }
 
@@ -560,6 +584,9 @@ public final class ScenarioBuildings {
         if (side == Side.SOVIET) {
             SovietDecor.generalBunker(b);
         }
+        if (side == Side.US) {
+            UsDecor.generalBunker(b);
+        }
     }
 
     // ------------------------------------------------------------------ parking réservé des officiers (32 x 16)
@@ -584,6 +611,9 @@ public final class ScenarioBuildings {
             b.strategic(22, 0, 7, fr.modeminecraft.entity.military.MilType.S_400, 0);       // défense antiaérienne du QG
         }
         b.bot(15, 0, 14, side.ally, BotRole.SOLDIER, 2);
+        if (us) {
+            UsDecor.parking(b);
+        }
     }
 
     // ------------------------------------------------------------------ stand de tir (32 x 16)
@@ -607,6 +637,9 @@ public final class ScenarioBuildings {
         b.set(2, 0, 15, Blocks.AIR);
         sign(b, 3, 1, 15, Direction.SOUTH, label(side, "FIRING RANGE", "СТРЕЛЬБИЩЕ", "Stand de tir"));
         b.bot(2, 0, 8, side.ally, BotRole.OFFICER, 2);
+        if (side == Side.US) {
+            UsDecor.range(b);
+        }
         RangeChallenge.place(b, side);
     }
 }

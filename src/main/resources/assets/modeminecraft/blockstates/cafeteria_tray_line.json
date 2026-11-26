@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/cafeteria_tray_line",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/cafeteria_tray_line",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/cafeteria_tray_line",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/cafeteria_tray_line",
+      "y": 270
+    }
+  }
+}

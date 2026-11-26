@@ -233,7 +233,14 @@ KEYS_B = [k for k in PAL_B if k not in PAL]
 assert len(KEYS_B) <= 64, "seconde palette trop grande"
 ANIMS.update(r4.ANIMS4)
 DECOS.extend(r4.DECOS4)
-assert len({d["id"] for d in DECOS}) == len(DECOS), "identifiants de décors en double"
+# cinquième série (bases et villes américaines, très détaillée)
+import realism_decor_5 as r5  # noqa: E402
+
+PAL_B.update(r5.PAL5)
+KEYS_B = [k for k in PAL_B if k not in PAL]
+assert len(KEYS_B) <= 64, "seconde palette trop grande : %d" % len(KEYS_B)
+ANIMS.update(r5.ANIMS5)
+DECOS.extend(r5.DECOS5)
 assert len({d["id"] for d in DECOS}) == len(DECOS), "identifiants de décors en double"
 
 

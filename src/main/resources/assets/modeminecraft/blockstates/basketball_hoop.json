@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/basketball_hoop",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/basketball_hoop",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/basketball_hoop",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/basketball_hoop",
+      "y": 270
+    }
+  }
+}

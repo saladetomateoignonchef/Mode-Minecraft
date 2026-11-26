@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/wall_calendar_board",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/wall_calendar_board",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/wall_calendar_board",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/wall_calendar_board",
+      "y": 270
+    }
+  }
+}

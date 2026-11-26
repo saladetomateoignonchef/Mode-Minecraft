@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/desk_flag_set",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/desk_flag_set",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/desk_flag_set",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/desk_flag_set",
+      "y": 270
+    }
+  }
+}

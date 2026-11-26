@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/aircraft_boarding_ladder",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/aircraft_boarding_ladder",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/aircraft_boarding_ladder",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/aircraft_boarding_ladder",
+      "y": 270
+    }
+  }
+}

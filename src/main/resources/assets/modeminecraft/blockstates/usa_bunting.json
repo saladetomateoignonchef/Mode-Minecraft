@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "modeminecraft:block/usa_bunting",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "modeminecraft:block/usa_bunting",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "modeminecraft:block/usa_bunting",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "modeminecraft:block/usa_bunting",
+      "y": 270
+    }
+  }
+}
