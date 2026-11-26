@@ -7,7 +7,6 @@ import fr.modeminecraft.registry.ModParticles;
 import fr.modeminecraft.registry.ModSounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -48,7 +47,7 @@ import java.util.Map;
 
 /**
  * Réalisme naturel côté client (lot 2) : tempêtes de sable [1], brouillard matinal [2], blizzards [3], écume et ressac [4], brume de chaleur [5],
- * aurores boréales [6], brume des sommets [10], cascades [35], eau turquoise des hauts-fonds [42], empreintes et traces de pneus [29], et, pour la
+ * aurores boréales [6], brume des sommets [10], cascades [35], empreintes et traces de pneus [29], et, pour la
  * faune [19][20], lucioles (la nuit, muettes) et papillons (le jour). Tout se déduit de l'heure du monde et des biomes : rien n'est envoyé par le réseau.
  */
 @EventBusSubscriber(modid = ModeMinecraft.MODID, value = Dist.CLIENT)
@@ -357,75 +356,6 @@ public final class NatureClient {
         vc.addVertex(m, x1, yl1, z1).setColor(c0[0], c0[1], c0[2], aLow * i1);
         vc.addVertex(m, x1, yh1, z1).setColor(c1[0], c1[1], c1[2], aHigh * i1);
         vc.addVertex(m, x0, yh0, z0).setColor(c1[0], c1[1], c1[2], aHigh * i0);
-    }
-
-    // =================================================================================================== [42] eau turquoise des hauts-fonds
-    /** Redéfinit l'extension cliente de l'eau (textures identiques à celles de NeoForge) avec une teinte qui dépend de la profondeur. */
-    @SubscribeEvent(priority = net.neoforged.bus.api.EventPriority.LOW)
-    public static void onFluidExtensions(net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent event) {
-        event.registerFluidType(new net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions() {
-            private static final net.minecraft.resources.ResourceLocation STILL = net.minecraft.resources.ResourceLocation.withDefaultNamespace("block/water_still");
-            private static final net.minecraft.resources.ResourceLocation FLOW = net.minecraft.resources.ResourceLocation.withDefaultNamespace("block/water_flow");
-            private static final net.minecraft.resources.ResourceLocation OVERLAY = net.minecraft.resources.ResourceLocation.withDefaultNamespace("block/water_overlay");
-            private static final net.minecraft.resources.ResourceLocation UNDERWATER = net.minecraft.resources.ResourceLocation.withDefaultNamespace("textures/misc/underwater.png");
-
-            @Override
-            public net.minecraft.resources.ResourceLocation getStillTexture() {
-                return STILL;
-            }
-
-            @Override
-            public net.minecraft.resources.ResourceLocation getFlowingTexture() {
-                return FLOW;
-            }
-
-            @Override
-            public net.minecraft.resources.ResourceLocation getOverlayTexture() {
-                return OVERLAY;
-            }
-
-            @Override
-            public net.minecraft.resources.ResourceLocation getRenderOverlayTexture(Minecraft mc) {
-                return UNDERWATER;
-            }
-
-            @Override
-            public int getTintColor() {
-                return 0xFF3F76E4;
-            }
-
-            @Override
-            public int getTintColor(FluidState state, net.minecraft.world.level.BlockAndTintGetter level, BlockPos pos) {
-                return 0xFF000000 | waterColor(level, pos);
-            }
-        }, net.neoforged.neoforge.common.NeoForgeMod.WATER_TYPE.value());
-    }
-
-    /** Couleur de l'eau : celle du biome, sauf près des côtes et dans les rivières où elle passe du turquoise (peu profond) au bleu sombre (profond). */
-    static int waterColor(net.minecraft.world.level.BlockAndTintGetter level, BlockPos pos) {
-        int base = BiomeColors.getAverageWaterColor(level, pos);
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.level == null) {
-            return base;
-        }
-        Holder<Biome> b = mc.level.getBiome(pos);
-        if (!(b.is(BiomeTags.IS_OCEAN) || b.is(BiomeTags.IS_BEACH) || b.is(BiomeTags.IS_RIVER))) {
-            return base;
-        }
-        BlockPos.MutableBlockPos m = pos.mutable();
-        int depth = 0;
-        while (depth < 12 && level.getFluidState(m).is(FluidTags.WATER)) {
-            depth++;
-            m.move(Direction.DOWN);
-        }
-        float t = Mth.clamp((depth - 1) / 8f, 0f, 1f);
-        t = t * t * (3 - 2 * t);
-        int shallow = 0x4FE3D2;                                              // turquoise
-        int deep = ((int) (((base >> 16) & 255) * 0.78) << 16) | ((int) (((base >> 8) & 255) * 0.8) << 8) | (int) ((base & 255) * 0.88);
-        int r = (int) Mth.lerp(t, (shallow >> 16) & 255, (deep >> 16) & 255);
-        int g = (int) Mth.lerp(t, (shallow >> 8) & 255, (deep >> 8) & 255);
-        int bl = (int) Mth.lerp(t, shallow & 255, deep & 255);
-        return (r << 16) | (g << 8) | bl;
     }
 
     // =================================================================================================== [29] empreintes et traces de pneus

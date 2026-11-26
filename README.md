@@ -127,6 +127,26 @@ Cahier des charges « Amélioration du réalisme naturel et environnemental des 
 
 Les données de monde (thèmes de décors, sources chaudes, banquise) sont écrites par `tools/generate_nature_worldgen.py`.
 
+## Réalisme naturel des biomes (lots 2 et 3)
+
+Suite du cahier des charges (voir le lot 1 ci-dessus). Tout se déduit de l'heure du monde et des biomes : rien n'est envoyé par le réseau.
+
+- **[1] Tempêtes de sable** (désert, Mesa) : environ un jour sur trois, 3 500 à 6 000 ticks ; brouillard ocre qui réduit la visibilité à ~34 blocs, grains de sable portés par le vent, léger vent latéral sur le joueur à découvert.
+- **[2] Brouillard matinal** (plaines, marais, forêts, taïga) : de 22 500 à 2 500 (aube), à basse altitude seulement ; il se dissipe avec le soleil.
+- **[3] Blizzards** (biomes froids sous la pluie) : brouillard blanc, flocons presque horizontaux, vent latéral. L'accumulation de neige reste celle du jeu (pas de dépôt orienté côté vent).
+- **[4] Écume et ressac** : au bord de l'océan et des plages, éclaboussures et écume, bruit de vague synthétisé (`nature.surf`).
+- **[5] Brume de chaleur** (désert, ticks 5 000 à 10 000, temps clair) : approximation par une très légère oscillation du champ de vision (pas de shader de distorsion).
+- **[6] Aurores boréales** : trois rubans vert émeraude et violets ondulants, la nuit par ciel dégagé dans les biomes froids.
+- **[7] Foudre ciblée** : l'éclair se déplace vers le point le plus haut et le plus exposé dans 24 blocs (cimes, sommets) et noircit le bois (bloc de charbon), la roche (basalte) et brûle les feuilles ; jamais dans une ville.
+- **[8] Flaques temporaires** : pendant les averses, de fines flaques apparaissent sur les chemins de terre, la terre et la roche plate ; elles s'évaporent après la pluie (plus vite au soleil).
+- **[10] Brume des sommets** : nappes de brume autour de Y 105 à 165 dans les montagnes (Jagged, Stony et Frozen Peaks).
+- **[35] Cascades** : panache de brume et éclaboussures au pied des chutes d'au moins 4 blocs, avec bruit d'eau.
+- **[29] Traces de pas et de pneus** : empreintes sur le sable, la neige, la boue et la terre (joueurs, y compris distants, et véhicules au sol), qui s'estompent en 3 minutes.
+- **[12] Aigles** : planent en grands cercles à haute altitude au-dessus des montagnes et de la Mesa. **[13] Mouettes** : par groupes près des côtes, suivent les navires et se posent parfois. **[16] Scorpions et serpents** : discrets dans le désert, poison léger seulement si on leur marche dessus. **[17] Cerfs** : hardes en lisière de forêt qui s'enfuient devant un joueur qui court ou un véhicule. (Apparition par biome autour des joueurs, plafonds par espèce ; `/summon modeminecraft:eagle|gull|scorpion|snake|deer`.)
+- **[19] Lucioles** (nuit, marais et forêts, muettes) et **[20] papillons** (jour, autour des fleurs).
+
+Non livrés : **[23]** herbes et feuillages agités par le vent (demande un shader de sommets) et **[42]** eau turquoise selon la profondeur (NeoForge interdit de redéfinir la teinte de l'eau, ce qui faisait planter le jeu).
+
 ## Installation et mises à jour automatiques
 1. **Une seule fois** : télécharge le dernier `.jar` sur la page
    [Releases](https://github.com/saladetomateoignonchef/Mode-Minecraft/releases/latest) et mets-le dans le dossier `mods`
